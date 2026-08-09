@@ -1,0 +1,171 @@
+{
+  "id": "littleweb-main",
+  "type": "frame",
+  "name": "Littleweb — Главная",
+  "width": 1280,
+  "height": 900,
+  "fills": [{ "type": "solid", "color": "#f0eee6" }],
+  "children": [
+    {
+      "id": "navbar",
+      "type": "frame",
+      "name": "Навигация",
+      "x": 0, "y": 0,
+      "width": 1280, "height": 72,
+      "layout": "flex",
+      "justifyContent": "space-between",
+      "alignItems": "center",
+      "padding": { "left": 24, "right": 24 },
+      "children": [
+        {
+          "id": "logo",
+          "type": "rectangle",
+          "name": "Логотип Littleweb",
+          "width": 120, "height": 32,
+          "fills": [{ "type": "solid", "color": "#141413" }],
+          "cornerRadius": 4
+        },
+        {
+          "id": "nav-links",
+          "type": "frame",
+          "name": "Меню",
+          "layout": "flex",
+          "gap": 8,
+          "children": [
+            { "id": "nav-1", "type": "text", "content": "Главная", "fontSize": 12, "fontFamily": "Golos Text", "color": "#141413" },
+            { "id": "nav-2", "type": "text", "content": "О нас", "fontSize": 12, "fontFamily": "Golos Text", "color": "#141413" },
+            { "id": "nav-3", "type": "text", "content": "Контакты", "fontSize": 12, "fontFamily": "Golos Text", "color": "#141413" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hero",
+      "type": "frame",
+      "name": "Hero",
+      "x": 0, "y": 120,
+      "width": 1280, "height": 400,
+      "layout": "flex",
+      "gap": 76,
+      "padding": { "left": 24, "right": 24 },
+      "children": [
+        {
+          "id": "hero-left",
+          "type": "frame",
+          "name": "Заголовок",
+          "width": 500,
+          "children": [
+            {
+              "id": "hero-title",
+              "type": "text",
+              "content": "Разработка сайтов\nдля вашего бизнеса",
+              "fontSize": 61,
+              "fontFamily": "Golos Text",
+              "fontWeight": 700,
+              "lineHeight": 1.1,
+              "letterSpacing": -0.12,
+              "color": "#141413"
+            }
+          ]
+        },
+        {
+          "id": "hero-right",
+          "type": "frame",
+          "name": "Описание",
+          "width": 500,
+          "children": [
+            {
+              "id": "hero-desc",
+              "type": "text",
+              "content": "Современные корпоративные сайты на открытых технологиях. Полный цикл: от дизайна до деплоя.",
+              "fontSize": 20,
+              "fontFamily": "PT Serif",
+              "lineHeight": 1.4,
+              "color": "#141413"
+            },
+            {
+              "id": "hero-btn",
+              "type": "rectangle",
+              "name": "Кнопка",
+              "y": 80,
+              "width": 200,
+              "height": 46,
+              "fills": [{ "type": "solid", "color": "#d97757" }],
+              "cornerRadius": 8,
+              "children": [
+                {
+                  "id": "btn-text",
+                  "type": "text",
+                  "content": "Заказать сайт →",
+                  "fontSize": 16,
+                  "fontFamily": "Golos Text",
+                  "fontWeight": 600,
+                  "color": "#141413",
+                  "x": 20, "y": 12
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "services",
+      "type": "frame",
+      "name": "Услуги",
+      "x": 24, "y": 560,
+      "width": 1232, "height": 260,
+      "layout": "flex",
+      "gap": 24,
+      "children": [
+        {
+          "id": "service-1",
+          "type": "rectangle",
+          "name": "Карточка: Разработка",
+          "width": 380, "height": 260,
+          "fills": [{ "type": "solid", "color": "#faf9f5" }],
+          "cornerRadius": 24,
+          "children": [
+            { "id": "s1-label", "type": "text", "content": "УСЛУГА", "fontSize": 12, "fontFamily": "Golos Text", "fontWeight": 600, "color": "#b0aea5", "x": 24, "y": 24 },
+            { "id": "s1-title", "type": "text", "content": "Веб-разработка", "fontSize": 24, "fontFamily": "Golos Text", "fontWeight": 600, "color": "#141413", "x": 24, "y": 52 },
+            { "id": "s1-desc", "type": "text", "content": "Лендинги, корпоративные\nсайты, интернет-магазины\nна современном стеке.", "fontSize": 20, "fontFamily": "PT Serif", "lineHeight": 1.4, "color": "#141413", "x": 24, "y": 90 }
+          ]
+        },
+        {
+          "id": "service-2",
+          "type": "rectangle",
+          "name": "Карточка: Дизайн",
+          "width": 380, "height": 260,
+          "fills": [{ "type": "solid", "color": "#faf9f5" }],
+          "cornerRadius": 24,
+          "children": [
+            { "id": "s2-label", "type": "text", "content": "УСЛУГА", "fontSize": 12, "fontFamily": "Golos Text", "fontWeight": 600, "color": "#b0aea5", "x": 24, "y": 24 },
+            { "id": "s2-title", "type": "text", "content": "Дизайн-системы", "fontSize": 24, "fontFamily": "Golos Text", "fontWeight": 600, "color": "#141413", "x": 24, "y": 52 },
+            { "id": "s2-desc", "type": "text", "content": "Единая система компонентов\nи токенов для вашего\nбренда.", "fontSize": 20, "fontFamily": "PT Serif", "lineHeight": 1.4, "color": "#141413", "x": 24, "y": 90 }
+          ]
+        },
+        {
+          "id": "service-3",
+          "type": "rectangle",
+          "name": "Карточка: SEO",
+          "width": 380, "height": 260,
+          "fills": [{ "type": "solid", "color": "#f5e3c7" }],
+          "cornerRadius": 24,
+          "children": [
+            { "id": "s3-label", "type": "text", "content": "УСЛУГА", "fontSize": 12, "fontFamily": "Golos Text", "fontWeight": 600, "color": "#b0aea5", "x": 24, "y": 24 },
+            { "id": "s3-title", "type": "text", "content": "SEO-продвижение", "fontSize": 24, "fontFamily": "Golos Text", "fontWeight": 600, "color": "#141413", "x": 24, "y": 52 },
+            { "id": "s3-desc", "type": "text", "content": "Кластеризация запросов,\nанализ конкурентов,\nрост позиций.", "fontSize": 20, "fontFamily": "PT Serif", "lineHeight": 1.4, "color": "#141413", "x": 24, "y": 90 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "footer",
+      "type": "rectangle",
+      "name": "Футер",
+      "x": 0, "y": 860,
+      "width": 1280, "height": 40,
+      "fills": [{ "type": "solid", "color": "#141413" }]
+    }
+  ]
+}
