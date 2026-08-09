@@ -2,120 +2,468 @@
   "version": "2.14",
   "children": [
     {
-      "id": "page",
+      "id": "nav-bar",
       "type": "frame",
-      "name": "Страница",
+      "name": "Навигация",
+      "x": 0,
+      "y": 0,
       "width": 1280,
-      "height": 900,
-      "fill": "#f0eee6",
+      "height": 72,
+      "fill": "transparent",
+      "layout": "horizontal",
+      "alignItems": "center",
+      "justifyContent": "space_between",
+      "padding": [0, 24],
       "children": [
         {
-          "id": "logo",
-          "type": "rectangle",
-          "name": "Логотип",
-          "x": 24,
-          "y": 24,
-          "width": 120,
-          "height": 32,
-          "fill": "#141413",
-          "cornerRadius": 4
-        },
-        {
-          "id": "hero-heading",
+          "id": "nav-logo",
           "type": "text",
-          "name": "Заголовок",
-          "x": 24,
-          "y": 120,
-          "width": 600,
-          "content": "Разработка сайтов\nдля вашего бизнеса",
+          "name": "Логотип: Littleweb",
+          "content": "Littleweb",
           "fontFamily": "Golos Text",
-          "fontSize": 61,
+          "fontSize": 20,
           "fontWeight": 700,
-          "lineHeight": 1.1,
-          "letterSpacing": -0.12,
           "fill": "#141413",
           "textGrowth": "auto"
         },
         {
-          "id": "hero-desc",
-          "type": "text",
-          "name": "Описание",
-          "x": 24,
-          "y": 400,
+          "id": "nav-menu",
+          "type": "frame",
+          "name": "Меню",
+          "layout": "horizontal",
+          "gap": 8,
+          "alignItems": "center",
+          "children": [
+            {
+              "id": "nav-link-1",
+              "type": "text",
+              "name": "Ссылка: Каталог",
+              "content": "Каталог",
+              "fontFamily": "Golos Text",
+              "fontSize": 12,
+              "fontWeight": 500,
+              "fill": "#b0aea5",
+              "textGrowth": "auto"
+            },
+            {
+              "id": "nav-link-2",
+              "type": "text",
+              "name": "Ссылка: О нас",
+              "content": "О компании",
+              "fontFamily": "Golos Text",
+              "fontSize": 12,
+              "fontWeight": 500,
+              "fill": "#b0aea5",
+              "textGrowth": "auto"
+            },
+            {
+              "id": "nav-link-3",
+              "type": "text",
+              "name": "Ссылка: Контакты",
+              "content": "Контакты",
+              "fontFamily": "Golos Text",
+              "fontSize": 12,
+              "fontWeight": 500,
+              "fill": "#b0aea5",
+              "textGrowth": "auto"
+            },
+            {
+              "id": "nav-btn",
+              "type": "rectangle",
+              "name": "Кнопка: Заявка",
+              "width": 140,
+              "height": 36,
+              "fill": "#faf9f5",
+              "cornerRadius": [8, 8, 24, 24],
+              "children": [
+                {
+                  "id": "nav-btn-text",
+                  "type": "text",
+                  "name": "Текст кнопки",
+                  "x": 0,
+                  "y": 10,
+                  "width": 140,
+                  "content": "Оставить заявку",
+                  "fontFamily": "Golos Text",
+                  "fontSize": 12,
+                  "fontWeight": 600,
+                  "fill": "#141413",
+                  "textAlign": "center",
+                  "textGrowth": "fixed-width"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hero-section",
+      "type": "frame",
+      "name": "Hero секция",
+      "x": 0,
+      "y": 100,
+      "width": 1280,
+      "layout": "horizontal",
+      "gap": 76,
+      "padding": [80, 24],
+      "children": [
+        {
+          "id": "hero-left",
+          "type": "frame",
+          "name": "Левая колонка",
           "width": 500,
-          "content": "Современные корпоративные сайты на открытых технологиях. Полный цикл: от дизайна до деплоя.",
+          "layout": "vertical",
+          "gap": 24,
+          "children": [
+            {
+              "id": "hero-title",
+              "type": "text",
+              "name": "Заголовок H1",
+              "content": "Клейкая лента\nс логотипом от\nпроизводителя",
+              "fontFamily": "Golos Text",
+              "fontSize": 61,
+              "fontWeight": 700,
+              "lineHeight": 1.1,
+              "letterSpacing": -0.12,
+              "fill": "#141413",
+              "textGrowth": "auto"
+            }
+          ]
+        },
+        {
+          "id": "hero-right",
+          "type": "frame",
+          "name": "Правая колонка",
+          "width": 500,
+          "layout": "vertical",
+          "gap": 16,
+          "children": [
+            {
+              "id": "hero-desc",
+              "type": "text",
+              "name": "Описание под заголовком",
+              "content": "Собственное производство с 2003 года. Бесплатно разработаем макет, изготовим клише и предоставим образцы для тестирования.",
+              "fontFamily": "PT Serif",
+              "fontSize": 20,
+              "lineHeight": 1.4,
+              "fill": "#141413",
+              "textGrowth": "fixed-width",
+              "width": 500
+            },
+            {
+              "id": "hero-btn-clay",
+              "type": "rectangle",
+              "name": "Кнопка CTA (терракота)",
+              "width": 220,
+              "height": 46,
+              "fill": "#d97757",
+              "cornerRadius": [8, 8, 24, 24],
+              "children": [
+                {
+                  "id": "hero-btn-clay-text",
+                  "type": "text",
+                  "name": "Текст кнопки CTA",
+                  "x": 0,
+                  "y": 13,
+                  "width": 220,
+                  "content": "Рассчитать стоимость →",
+                  "fontFamily": "Golos Text",
+                  "fontSize": 16,
+                  "fontWeight": 600,
+                  "fill": "#141413",
+                  "textAlign": "center",
+                  "textGrowth": "fixed-width"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "categories-section",
+      "type": "frame",
+      "name": "Секция категорий",
+      "x": 24,
+      "y": 480,
+      "width": 1232,
+      "layout": "horizontal",
+      "gap": 24,
+      "children": [
+        {
+          "id": "cat-card-1",
+          "type": "rectangle",
+          "name": "Карточка: Стреппинг-ленты",
+          "width": 380,
+          "height": 280,
+          "fill": "#faf9f5",
+          "cornerRadius": 24,
+          "children": [
+            {
+              "id": "cat1-label",
+              "type": "text",
+              "name": "Метка",
+              "x": 24,
+              "y": 24,
+              "content": "КАТЕГОРИЯ",
+              "fontFamily": "Golos Text",
+              "fontSize": 12,
+              "fontWeight": 600,
+              "letterSpacing": -0.24,
+              "fill": "#b0aea5",
+              "textGrowth": "auto"
+            },
+            {
+              "id": "cat1-title",
+              "type": "text",
+              "name": "Название",
+              "x": 24,
+              "y": 48,
+              "content": "Стреппинг-ленты",
+              "fontFamily": "Golos Text",
+              "fontSize": 24,
+              "fontWeight": 600,
+              "fill": "#141413",
+              "textGrowth": "auto"
+            },
+            {
+              "id": "cat1-desc",
+              "type": "text",
+              "name": "Описание",
+              "x": 24,
+              "y": 88,
+              "width": 330,
+              "content": "Полипропиленовая лента 5–19 мм\nдля ручной и машинной упаковки.\nОт 56 руб./ролик.",
+              "fontFamily": "PT Serif",
+              "fontSize": 20,
+              "lineHeight": 1.4,
+              "fill": "#141413",
+              "textGrowth": "fixed-width"
+            },
+            {
+              "id": "cat1-link",
+              "type": "text",
+              "name": "Ссылка",
+              "x": 24,
+              "y": 240,
+              "content": "В каталог →",
+              "fontFamily": "Golos Text",
+              "fontSize": 14,
+              "fontWeight": 600,
+              "fill": "#d97757",
+              "textGrowth": "auto"
+            }
+          ]
+        },
+        {
+          "id": "cat-card-2",
+          "type": "rectangle",
+          "name": "Карточка: Клейкая лента",
+          "width": 380,
+          "height": 280,
+          "fill": "#faf9f5",
+          "cornerRadius": 24,
+          "children": [
+            {
+              "id": "cat2-label",
+              "type": "text",
+              "name": "Метка",
+              "x": 24,
+              "y": 24,
+              "content": "КАТЕГОРИЯ",
+              "fontFamily": "Golos Text",
+              "fontSize": 12,
+              "fontWeight": 600,
+              "letterSpacing": -0.24,
+              "fill": "#b0aea5",
+              "textGrowth": "auto"
+            },
+            {
+              "id": "cat2-title",
+              "type": "text",
+              "name": "Название",
+              "x": 24,
+              "y": 48,
+              "content": "Клейкая лента",
+              "fontFamily": "Golos Text",
+              "fontSize": 24,
+              "fontWeight": 600,
+              "fill": "#141413",
+              "textGrowth": "auto"
+            },
+            {
+              "id": "cat2-desc",
+              "type": "text",
+              "name": "Описание",
+              "x": 24,
+              "y": 88,
+              "width": 330,
+              "content": "Нова Ролл 203–208. С логотипом\nв 1–3 цвета. Специальные надписи.\nОт 45 мкм.",
+              "fontFamily": "PT Serif",
+              "fontSize": 20,
+              "lineHeight": 1.4,
+              "fill": "#141413",
+              "textGrowth": "fixed-width"
+            },
+            {
+              "id": "cat2-link",
+              "type": "text",
+              "name": "Ссылка",
+              "x": 24,
+              "y": 240,
+              "content": "В каталог →",
+              "fontFamily": "Golos Text",
+              "fontSize": 14,
+              "fontWeight": 600,
+              "fill": "#d97757",
+              "textGrowth": "auto"
+            }
+          ]
+        },
+        {
+          "id": "cat-card-3",
+          "type": "rectangle",
+          "name": "Карточка: ПЭТ-лента (избранная)",
+          "width": 380,
+          "height": 280,
+          "fill": "#f5e3c7",
+          "cornerRadius": 24,
+          "children": [
+            {
+              "id": "cat3-label",
+              "type": "text",
+              "name": "Метка",
+              "x": 24,
+              "y": 24,
+              "content": "НОВИНКА",
+              "fontFamily": "Golos Text",
+              "fontSize": 12,
+              "fontWeight": 600,
+              "letterSpacing": -0.24,
+              "fill": "#b0aea5",
+              "textGrowth": "auto"
+            },
+            {
+              "id": "cat3-title",
+              "type": "text",
+              "name": "Название",
+              "x": 24,
+              "y": 48,
+              "content": "ПЭТ-лента",
+              "fontFamily": "Golos Text",
+              "fontSize": 24,
+              "fontWeight": 600,
+              "fill": "#141413",
+              "textGrowth": "auto"
+            },
+            {
+              "id": "cat3-desc",
+              "type": "text",
+              "name": "Описание",
+              "x": 24,
+              "y": 88,
+              "width": 330,
+              "content": "Полиэстеровая стрепп-лента.\nПо прочности близка к стальной.\nБезопасна, пластична.",
+              "fontFamily": "PT Serif",
+              "fontSize": 20,
+              "lineHeight": 1.4,
+              "fill": "#141413",
+              "textGrowth": "fixed-width"
+            },
+            {
+              "id": "cat3-link",
+              "type": "text",
+              "name": "Ссылка",
+              "x": 24,
+              "y": 240,
+              "content": "Подробнее →",
+              "fontFamily": "Golos Text",
+              "fontSize": 14,
+              "fontWeight": 600,
+              "fill": "#d97757",
+              "textGrowth": "auto"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "about-section",
+      "type": "rectangle",
+      "name": "Блок О компании",
+      "x": 24,
+      "y": 800,
+      "width": 1232,
+      "height": 200,
+      "fill": "#faf9f5",
+      "cornerRadius": 24,
+      "children": [
+        {
+          "id": "about-label",
+          "type": "text",
+          "name": "Метка",
+          "x": 48,
+          "y": 32,
+          "content": "О КОМПАНИИ",
+          "fontFamily": "Golos Text",
+          "fontSize": 12,
+          "fontWeight": 600,
+          "letterSpacing": -0.24,
+          "fill": "#b0aea5",
+          "textGrowth": "auto"
+        },
+        {
+          "id": "about-title",
+          "type": "text",
+          "name": "Заголовок",
+          "x": 48,
+          "y": 56,
+          "content": "Производство упаковочных материалов с 2003 года",
+          "fontFamily": "PT Serif",
+          "fontSize": 36,
+          "fontWeight": 400,
+          "fill": "#141413",
+          "textGrowth": "auto"
+        },
+        {
+          "id": "about-text",
+          "type": "text",
+          "name": "Текст",
+          "x": 48,
+          "y": 108,
+          "width": 700,
+          "content": "Основное направление деятельности — производство адгезивных (клейких) лент промышленного, бытового и офисного назначения. С 2008 года выпускаем полипропиленовую ленту на итальянском оборудовании.",
           "fontFamily": "PT Serif",
           "fontSize": 20,
           "lineHeight": 1.4,
           "fill": "#141413",
           "textGrowth": "fixed-width"
-        },
+        }
+      ]
+    },
+    {
+      "id": "footer",
+      "type": "rectangle",
+      "name": "Футер",
+      "x": 0,
+      "y": 1040,
+      "width": 1280,
+      "height": 60,
+      "fill": "#141413",
+      "children": [
         {
-          "id": "hero-btn",
-          "type": "rectangle",
-          "name": "Кнопка Заказать",
-          "x": 24,
-          "y": 500,
-          "width": 200,
-          "height": 46,
-          "fill": "#d97757",
-          "cornerRadius": 8
-        },
-        {
-          "id": "hero-btn-text",
+          "id": "footer-text",
           "type": "text",
-          "name": "Текст кнопки",
-          "x": 36,
-          "y": 514,
-          "content": "Заказать сайт →",
-          "fontFamily": "Golos Text",
-          "fontSize": 16,
-          "fontWeight": 600,
-          "fill": "#141413",
-          "textGrowth": "auto"
-        },
-        {
-          "id": "card-1",
-          "type": "rectangle",
-          "name": "Карточка: Веб-разработка",
+          "name": "Текст футера",
           "x": 24,
-          "y": 580,
-          "width": 380,
-          "height": 260,
+          "y": 22,
+          "content": "© Littleweb — производство упаковочных материалов",
+          "fontFamily": "Golos Text",
+          "fontSize": 12,
+          "fontWeight": 400,
           "fill": "#faf9f5",
-          "cornerRadius": 24
-        },
-        {
-          "id": "card-2",
-          "type": "rectangle",
-          "name": "Карточка: Дизайн-системы",
-          "x": 428,
-          "y": 580,
-          "width": 380,
-          "height": 260,
-          "fill": "#faf9f5",
-          "cornerRadius": 24
-        },
-        {
-          "id": "card-3",
-          "type": "rectangle",
-          "name": "Карточка: SEO",
-          "x": 832,
-          "y": 580,
-          "width": 380,
-          "height": 260,
-          "fill": "#f5e3c7",
-          "cornerRadius": 24
-        },
-        {
-          "id": "footer",
-          "type": "rectangle",
-          "name": "Футер",
-          "x": 0,
-          "y": 860,
-          "width": 1280,
-          "height": 40,
-          "fill": "#141413"
+          "textGrowth": "auto"
         }
       ]
     }
