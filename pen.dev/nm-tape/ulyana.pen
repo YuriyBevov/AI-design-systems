@@ -4,9 +4,9 @@
     {
       "type": "frame",
       "id": "PoDQQ",
-      "x": -14542,
-      "y": 2006,
-      "name": "Tape Catalog Homepage Desktop — Creative 01 Signal Noir",
+      "x": -18378,
+      "y": 2409,
+      "name": "Рабочий вариант",
       "clip": true,
       "width": 1440,
       "height": 8874,
@@ -263,8 +263,9 @@
                       "id": "GP3vu",
                       "name": "Hero Title",
                       "fill": "#FFF4D6",
-                      "textGrowth": "fixed-width",
+                      "textGrowth": "fixed-width-height",
                       "width": "fill_container",
+                      "height": 315,
                       "content": "Клейкая лента \nи аксессуары \nдля упаковки вашего бизнеса",
                       "lineHeight": 1.08,
                       "fontFamily": "Oswald",
@@ -2687,16 +2688,17 @@
                   "width": 1280,
                   "fill": "#FFFFFF",
                   "gap": 36,
-                  "alignItems": "center",
                   "children": [
                     {
                       "type": "frame",
                       "id": "t5XHCV",
                       "name": "Benefits Creative Intro",
                       "width": 356,
+                      "height": 326,
                       "fill": "#FFFFFF",
                       "layout": "vertical",
                       "gap": 18,
+                      "justifyContent": "space_between",
                       "children": [
                         {
                           "type": "text",
@@ -3373,12 +3375,12 @@
                               "children": [
                                 {
                                   "type": "rectangle",
-                                  "id": "i90ji",
+                                  "id": "Haz5k",
                                   "name": "Logo Image",
                                   "fill": {
                                     "type": "image",
                                     "enabled": true,
-                                    "url": "images/logo-clean-flat.png",
+                                    "url": "../Desktop/local-projects/AI-design-systems/images/logo-clean-flat.png",
                                     "mode": "fit"
                                   },
                                   "width": "fill_container",
@@ -3709,13 +3711,15 @@
           "type": "frame",
           "id": "nBYo6",
           "layoutPosition": "absolute",
-          "x": 80,
-          "y": 24,
+          "x": 0,
+          "y": 0,
           "name": "Header",
-          "width": 1280,
+          "width": 1440,
           "fill": "#FFFFFF99",
           "stroke": "#FF8400",
-          "strokeWidth": 2,
+          "strokeWidth": {
+            "bottom": 2
+          },
           "effect": [
             {
               "type": "background_blur",
@@ -3744,7 +3748,7 @@
           "layout": "vertical",
           "padding": [
             10,
-            32
+            0
           ],
           "alignItems": "center",
           "children": [
@@ -3752,7 +3756,7 @@
               "type": "frame",
               "id": "gTg5E",
               "name": "Header Content Container",
-              "width": "fill_container",
+              "width": 1280,
               "layout": "vertical",
               "alignItems": "center",
               "children": [
@@ -3777,12 +3781,12 @@
                       "children": [
                         {
                           "type": "rectangle",
-                          "id": "g4nYh",
+                          "id": "v8YE5r",
                           "name": "Logo Image",
                           "fill": {
                             "type": "image",
                             "enabled": true,
-                            "url": "images/logo-clean-flat.png",
+                            "url": "../Desktop/local-projects/AI-design-systems/images/logo-clean-flat.png",
                             "mode": "fit"
                           },
                           "width": "fill_container",
@@ -4539,23 +4543,23 @@
       "value": 24
     }
   },
-  "fileToken": "220fa5e5-e340-4532-86f3-0ee77eb3e016",
+  "fileToken": "8264683e-6271-4de2-9712-0dbf26d6553e",
   "fonts": [
     {
       "name": "DINNextLTPro-Medium",
-      "url": "fonts/mcmaster.com/fe221f2207a7a6a5.woff2"
+      "url": "../Desktop/local-projects/AI-design-systems/fonts/mcmaster.com/fe221f2207a7a6a5.woff2"
     },
     {
       "name": "FuturaLTPro-BoldCond",
-      "url": "fonts/mcmaster.com/64953adb73674c89.woff2"
+      "url": "../Desktop/local-projects/AI-design-systems/fonts/mcmaster.com/64953adb73674c89.woff2"
     },
     {
       "name": "HelveticaNeueeTextPro-Md",
-      "url": "fonts/mcmaster.com/a2042b74b46ce778.woff2"
+      "url": "../Desktop/local-projects/AI-design-systems/fonts/mcmaster.com/a2042b74b46ce778.woff2"
     },
     {
       "name": "HelveticaNeueeTextPro-Roman",
-      "url": "fonts/mcmaster.com/6495702693c88e1f.woff2"
+      "url": "../Desktop/local-projects/AI-design-systems/fonts/mcmaster.com/6495702693c88e1f.woff2"
     }
   ]
 }
