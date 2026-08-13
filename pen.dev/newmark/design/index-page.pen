@@ -1447,6 +1447,7 @@
                       "id": "acd2K",
                       "name": "Print Methods Row",
                       "width": "fill_container",
+                      "height": 557,
                       "gap": 24,
                       "children": [
                         {
@@ -1640,6 +1641,7 @@
                           "id": "t1KTOH",
                           "name": "Print Card Межслойная печать",
                           "width": "fill_container",
+                          "height": 553,
                           "stroke": "#FF840055",
                           "strokeWidth": 1,
                           "layout": "vertical",
@@ -1662,6 +1664,7 @@
                               "id": "B5EL2u",
                               "name": "Межслойная печать Content",
                               "width": "fill_container",
+                              "height": 303,
                               "layout": "vertical",
                               "gap": 16,
                               "padding": 24,
@@ -1697,6 +1700,7 @@
                                   "id": "x11Zsd",
                                   "name": "Межслойная печать Benefits",
                                   "width": "fill_container",
+                                  "height": 102,
                                   "layout": "vertical",
                                   "gap": 16,
                                   "children": [
@@ -1753,36 +1757,6 @@
                                           "textGrowth": "fixed-width",
                                           "width": "fill_container",
                                           "content": "При отклеивании логотип остаётся на коробке",
-                                          "lineHeight": 1.45,
-                                          "fontFamily": "Manrope",
-                                          "fontSize": 16,
-                                          "fontWeight": "normal"
-                                        }
-                                      ]
-                                    },
-                                    {
-                                      "type": "frame",
-                                      "id": "gez0M",
-                                      "name": "Line Accent Низкая стоимость ролика",
-                                      "width": "fill_container",
-                                      "gap": 12,
-                                      "children": [
-                                        {
-                                          "type": "rectangle",
-                                          "id": "DDNsz",
-                                          "name": "Accent Bar",
-                                          "fill": "#FF8400",
-                                          "width": 3,
-                                          "height": 22
-                                        },
-                                        {
-                                          "type": "text",
-                                          "id": "E8tNL",
-                                          "name": "Accent Text",
-                                          "fill": "#C8C8C8",
-                                          "textGrowth": "fixed-width",
-                                          "width": "fill_container",
-                                          "content": "Низкая стоимость ролика",
                                           "lineHeight": 1.45,
                                           "fontFamily": "Manrope",
                                           "fontSize": 16,
