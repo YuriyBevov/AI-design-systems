@@ -614,16 +614,18 @@ svg {
 
 Адаптивные правила пишутся рядом с компонентом, к которому относятся.
 
+Проект верстается по принципу mobile-first: базовые стили описывают мобильную версию, а расширение интерфейса для планшетов и десктопа добавляется через min-width media queries.
+
 Хорошо:
 
 ```scss
 .product-card {
 	display: grid;
-	grid-template-columns: 1fr 1fr;
+	grid-template-columns: 1fr;
 	gap: var(--space-lg);
 
 	@include media(1024px) {
-		grid-template-columns: 1fr;
+		grid-template-columns: 1fr 1fr;
 	}
 }
 ```
@@ -1029,7 +1031,7 @@ CSS-переменные подходят для дизайн-токенов, т
 
 ```scss
 @mixin media($breakpoint) {
-	@media (max-width: $breakpoint) {
+	@media (min-width: $breakpoint) {
 		@content;
 	}
 }
@@ -1058,10 +1060,10 @@ CSS-переменные подходят для дизайн-токенов, т
 ```scss
 .product-card {
 	display: grid;
-	grid-template-columns: 1fr 1fr;
+	grid-template-columns: 1fr;
 
-	@include media(767px) {
-		grid-template-columns: 1fr;
+	@include media(1024px) {
+		grid-template-columns: 1fr 1fr;
 	}
 }
 
@@ -1146,6 +1148,7 @@ CSS-переменные подходят для дизайн-токенов, т
 - HTML не содержит оберток, созданных только ради удобства написания CSS;
 - стили страницы не ломают внутренности компонентов;
 - адаптивные правила лежат рядом с компонентами;
+- базовые стили написаны для мобильной версии, расширения добавлены через mobile-first media queries;
 - container queries меняют потомков контейнера, а не сам контейнер;
 - media queries, container queries и font-face подключаются через обязательные миксины;
 - внешние расстояния задаются родителем через `gap`, `padding` или layout-композицию;
