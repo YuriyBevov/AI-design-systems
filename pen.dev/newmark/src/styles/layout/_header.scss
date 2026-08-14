@@ -20,6 +20,11 @@
 	gap: var(--space-sm);
 }
 
+.header .button {
+	min-height: 34px;
+	padding: 8px 22px;
+}
+
 @media (min-width: 1180px) {
 	.header__actions {
 		display: flex;

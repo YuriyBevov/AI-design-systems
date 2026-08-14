@@ -5,8 +5,8 @@
 	justify-content: center;
 	gap: var(--space-sm);
 	width: fit-content;
-	min-height: 46px;
-	padding: 12px 22px;
+	min-height: 44px;
+	padding: 14px 22px;
 	font-family: var(--font-accent);
 	font-size: 14px;
 	font-weight: 700;
@@ -22,11 +22,13 @@
 }
 
 .button::after {
-	content: "→";
-	font-family: var(--font-primary);
-	font-size: 18px;
-	font-weight: 500;
-	line-height: 1;
+	content: "";
+	flex: 0 0 16px;
+	width: 16px;
+	height: 16px;
+	background-color: currentColor;
+	-webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14'/%3E%3Cpath d='m12 5 7 7-7 7'/%3E%3C/svg%3E") center / 16px 16px no-repeat;
+	mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14'/%3E%3Cpath d='m12 5 7 7-7 7'/%3E%3C/svg%3E") center / 16px 16px no-repeat;
 }
 
 .button--primary {
@@ -61,6 +63,24 @@
 
 .button--link:hover {
 	color: var(--color-white);
+}
+
+.print-card .button,
+.product-card .button,
+.catalog-group > .button,
+.form .button {
+	font-family: var(--font-primary);
+}
+
+.print-card .button::after,
+.product-card .button::after,
+.catalog-group > .button::after {
+	display: none;
+}
+
+.print-card__body .button,
+.product-card__body .button {
+	margin-top: auto;
 }
 
 .button-row {

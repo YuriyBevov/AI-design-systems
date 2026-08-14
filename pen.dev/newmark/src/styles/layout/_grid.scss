@@ -15,16 +15,29 @@
 }
 
 .grid-layout:has(.print-card),
-.grid-layout:has(.product-card),
+.grid-layout:has(.product-card) {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--space-lg);
+}
+
+.grid-layout:has(.print-card) .print-card,
+.grid-layout:has(.product-card) .product-card {
+	flex: 1 1 100%;
+}
+
 .grid-layout:has(.feature-card) {
 	grid-template-columns: 1fr;
 }
 
 @media (min-width: 760px) {
-	.grid-layout:has(.print-card),
-	.grid-layout:has(.product-card),
 	.grid-layout:has(.feature-card) {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	.grid-layout:has(.print-card) .print-card,
+	.grid-layout:has(.product-card) .product-card {
+		flex: 1 1 calc((100% - var(--space-lg)) / 2);
 	}
 
 	.grid-layout:has(.benefit-card) .benefit-card {
@@ -37,7 +50,11 @@
 		flex-basis: calc((100% - (var(--space-lg) * 2)) / 3);
 	}
 
-	.grid-layout:has(.product-card),
+	.grid-layout:has(.print-card) .print-card,
+	.grid-layout:has(.product-card) .product-card {
+		flex-basis: calc((100% - (var(--space-lg) * 2)) / 3);
+	}
+
 	.grid-layout:has(.feature-card) {
 		grid-template-columns: repeat(3, minmax(0, 1fr));
 	}
