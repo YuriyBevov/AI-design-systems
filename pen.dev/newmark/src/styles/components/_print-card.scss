@@ -57,12 +57,11 @@
 .feature-list__item::before {
 	content: "";
 	position: absolute;
-	top: 50%;
+	top: 0;
 	left: 0;
 	width: 2px;
-	height: 14px;
+	height: 100%;
 	background-color: var(--color-accent);
-	transform: translateY(-50%);
 }
 
 .print-card__conditions {

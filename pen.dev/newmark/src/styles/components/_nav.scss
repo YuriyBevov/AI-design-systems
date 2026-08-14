@@ -17,6 +17,10 @@
 	transition: color var(--transition-base);
 }
 
+.nav__link--featured {
+	font-size: 16px;
+}
+
 .nav__link:hover {
 	color: var(--color-accent);
 }

@@ -11,10 +11,18 @@
 .cta__content {
 	display: flex;
 	flex-direction: column;
-	gap: var(--space-md);
+	justify-content: space-between;
+	gap: var(--space-xl);
 	padding: var(--space-xl);
 	color: var(--color-dark-warm);
-	background: linear-gradient(135deg, #ff8400 0%, #f3a23a 100%);
+	background: linear-gradient(135deg, #ff8400 0%, #ff9f1c 45%, #d95f00 100%);
+}
+
+.cta__text {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-md);
+	max-width: 520px;
 }
 
 .cta__eyebrow {
@@ -24,10 +32,12 @@
 }
 
 .cta__title {
+	max-width: 360px;
 	color: var(--color-white);
 }
 
 .cta__description {
+	max-width: 520px;
 	color: var(--color-white);
 }
 
@@ -35,6 +45,8 @@
 	display: flex;
 	flex-direction: column;
 	gap: 14px;
+	width: 100%;
+	max-width: 560px;
 	padding: 18px;
 	color: var(--color-white);
 	background-color: var(--color-surface-strong);
@@ -71,7 +83,7 @@
 
 .cta__countdown-label {
 	color: var(--color-dark-warm);
-	font-size: 10px;
+	font-size: 12px;
 	line-height: 1;
 }
 
@@ -88,6 +100,6 @@
 	}
 
 	.cta__content {
-		padding: 72px 40px;
+		padding: 46px 40px 40px;
 	}
 }

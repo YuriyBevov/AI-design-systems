@@ -1,0 +1,25 @@
+.link-list {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+}
+
+.link-list__link,
+.link-list__text {
+	color: var(--color-text-muted);
+	font-size: 14px;
+	font-weight: 500;
+	line-height: 1.35;
+	transition: color var(--transition-base);
+}
+
+.link-list__link:hover {
+	color: var(--color-accent);
+}
+
+.link-list__link--accent {
+	color: var(--color-white);
+	font-family: var(--font-accent);
+	font-size: 20px;
+	font-weight: 700;
+}
