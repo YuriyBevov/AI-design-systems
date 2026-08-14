@@ -2,61 +2,59 @@
 	display: flex;
 	flex-direction: column;
 	gap: var(--space-2xl);
-}
 
-.catalog-group + .catalog-group {
-	margin-top: var(--space-2xl);
-}
+	+ .catalog-group {
+		margin-top: var(--space-2xl);
+	}
 
-.catalog-group__features {
-	display: grid;
-	gap: var(--space-md);
-	padding: clamp(16px, 4vw, 24px);
-	background-color: var(--color-dark-soft);
-	border: 1px solid var(--color-border-strong);
-}
+	&__features {
+		display: grid;
+		gap: var(--space-md);
+		padding: clamp(16px, 4vw, 24px);
+		background-color: var(--color-dark-soft);
+		border: 1px solid var(--color-border-strong);
 
-.catalog-group__features-item {
-	position: relative;
-	display: flex;
-	align-items: center;
-	padding-left: 14px;
-	color: var(--color-text-muted);
-	font-size: 16px;
-	line-height: 1.45;
-}
+		@media (min-width: 900px) {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
 
-.catalog-group__features-item::before {
-	content: "";
-	position: absolute;
-	top: 50%;
-	left: 0;
-	width: 2px;
-	height: 100%;
-	background-color: var(--color-accent);
-	transform: translateY(-50%);
-}
+	&__features-item {
+		position: relative;
+		display: flex;
+		align-items: center;
+		padding-left: 14px;
+		color: var(--color-text-muted);
+		font-size: 16px;
+		line-height: 1.45;
 
-.catalog-group__header {
-	display: flex;
-	flex-direction: column;
-	gap: var(--space-md);
-}
+		&::before {
+			content: "";
+			position: absolute;
+			top: 50%;
+			left: 0;
+			width: 2px;
+			height: 100%;
+			background-color: var(--color-accent);
+			transform: translateY(-50%);
+		}
+	}
 
-.catalog-group__title {
-	color: var(--color-white);
-	font-size: clamp(20px, 4vw, 42px);
-}
+	&__header {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+	}
 
-.catalog-group__offer {
-	max-width: 900px;
-	color: var(--color-text-muted);
-	font-size: clamp(16px, 2vw, 18px);
-	line-height: 1.55;
-}
+	&__title {
+		color: var(--color-white);
+		font-size: clamp(20px, 4vw, 42px);
+	}
 
-@media (min-width: 900px) {
-	.catalog-group__features {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
+	&__offer {
+		max-width: 900px;
+		color: var(--color-text-muted);
+		font-size: clamp(16px, 2vw, 18px);
+		line-height: 1.55;
 	}
 }

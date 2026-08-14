@@ -39,7 +39,8 @@
 
 	--duration-base: 0.2s;
 	--ease-base: ease;
-	--transition-base: var(--duration-base) var(--ease-base);
+	--transition-delay: 0.04s;
+	--transition-base: var(--duration-base) var(--ease-base) var(--transition-delay);
 }
 
 @media (min-width: 768px) {

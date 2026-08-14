@@ -12,26 +12,24 @@
 		color var(--transition-base),
 		background-color var(--transition-base),
 		border-color var(--transition-base);
-}
 
-.burger-button::before {
-	content: "";
-	width: 18px;
-	height: 2px;
-	background-color: currentColor;
-	box-shadow:
-		0 -6px 0 currentColor,
-		0 6px 0 currentColor;
-}
+	&::before {
+		content: "";
+		width: 18px;
+		height: 2px;
+		background-color: currentColor;
+		box-shadow:
+			0 -6px 0 currentColor,
+			0 6px 0 currentColor;
+	}
 
-.burger-button:hover {
-	color: var(--color-white);
-	background-color: var(--color-accent);
-	border-color: var(--color-accent);
-}
+	&:hover {
+		color: var(--color-white);
+		background-color: var(--color-accent);
+		border-color: var(--color-accent);
+	}
 
-@media (min-width: 1140px) {
-	.burger-button {
+	@media (min-width: 1140px) {
 		display: none;
 	}
 }

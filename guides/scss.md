@@ -941,7 +941,8 @@ CSS-переменные подходят для дизайн-токенов, т
 	--duration-base: 0.2s;
 	--duration-slow: 0.35s;
 	--ease-base: ease;
-	--transition-base: var(--duration-base) var(--ease-base);
+	--transition-delay: 0.04s;
+	--transition-base: var(--duration-base) var(--ease-base) var(--transition-delay);
 
 	--z-header: 100;
 	--z-dropdown: 200;
@@ -1026,6 +1027,7 @@ CSS-переменные подходят для дизайн-токенов, т
 --duration-base
 --duration-slow
 --ease-base
+--transition-delay
 --transition-base
 
 --z-header

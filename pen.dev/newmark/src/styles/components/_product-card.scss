@@ -3,48 +3,52 @@
 	flex-direction: column;
 	overflow: hidden;
 	border: 1px solid var(--color-border-strong);
-}
 
-.product-card__image-wrapper {
-	height: 230px;
-	overflow: hidden;
-}
+	&__image-wrapper {
+		height: 230px;
+		overflow: hidden;
+	}
 
-.product-card__image {
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
-}
+	&__image {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
 
-.product-card__body {
-	display: flex;
-	flex: 1;
-	flex-direction: column;
-	gap: var(--space-md);
-	align-items: flex-start;
-	padding: clamp(18px, 4vw, 24px);
-}
+	&__body {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+		gap: var(--space-md);
+		align-items: flex-start;
+		padding: clamp(18px, 4vw, 24px);
 
-.product-card__content {
-	display: flex;
-	flex-direction: column;
-	gap: var(--space-md);
-	width: 100%;
-}
+		.button {
+			margin-top: auto;
+		}
+	}
 
-.product-card__title {
-	color: var(--color-white);
-	font-size: 22px;
-	font-weight: 700;
-	line-height: 1.25;
-}
+	&__content {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+		width: 100%;
+	}
 
-.product-card__conditions {
-	color: var(--color-accent);
-	font-size: 14px;
-	font-weight: 700;
-	line-height: 1.4;
-	text-transform: uppercase;
+	&__title {
+		color: var(--color-white);
+		font-size: 22px;
+		font-weight: 700;
+		line-height: 1.25;
+	}
+
+	&__conditions {
+		color: var(--color-accent);
+		font-size: 14px;
+		font-weight: 700;
+		line-height: 1.4;
+		text-transform: uppercase;
+	}
 }
 
 .feature-list {
@@ -52,22 +56,22 @@
 	flex-direction: column;
 	gap: var(--space-sm);
 	margin-bottom: var(--space-md);
-}
 
-.feature-list__item {
-	position: relative;
-	padding-left: 14px;
-	color: var(--color-text-muted);
-	font-size: 16px;
-	line-height: 1.45;
-}
+	&__item {
+		position: relative;
+		padding-left: 14px;
+		color: var(--color-text-muted);
+		font-size: 16px;
+		line-height: 1.45;
 
-.feature-list__item::before {
-	content: "";
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 2px;
-	height: 100%;
-	background-color: var(--color-accent);
+		&::before {
+			content: "";
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 2px;
+			height: 100%;
+			background-color: var(--color-accent);
+		}
+	}
 }

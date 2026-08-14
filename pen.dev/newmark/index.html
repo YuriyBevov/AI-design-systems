@@ -43,10 +43,57 @@
         <button class="button button--primary header__callback" type="button" aria-label="Обратный звонок">
           <span class="button__text">Обратный звонок</span>
         </button>
-        <button class="burger-button" type="button" aria-label="Открыть меню" aria-expanded="false"></button>
+        <button class="burger-button" type="button" aria-label="Открыть меню" aria-controls="mobile-menu" aria-expanded="false"></button>
       </div>
     </div>
   </header>
+
+  <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+    <div class="mobile-menu__overlay"></div>
+    <div class="mobile-menu__panel" role="dialog" aria-modal="true" aria-label="Мобильное меню">
+      <div class="mobile-menu__header">
+        <a class="logo logo--mobile-menu" href="/" aria-label="НьюМарк">
+          <img class="logo__image" src="src/design/images/Frame%201.png" alt="НьюМарк" width="160" height="60" />
+        </a>
+        <button class="mobile-menu__close" type="button" aria-label="Закрыть меню"></button>
+      </div>
+
+      <nav class="mobile-menu__nav" aria-label="Мобильная навигация">
+        <ul class="mobile-menu__nav-list">
+          <li class="mobile-menu__nav-item"><a class="mobile-menu__nav-link" href="#">О&nbsp;компании</a></li>
+          <li class="mobile-menu__nav-item"><a class="mobile-menu__nav-link" href="#">Каталог</a></li>
+          <li class="mobile-menu__nav-item"><a class="mobile-menu__nav-link" href="#">Оплата и&nbsp;доставка</a></li>
+          <li class="mobile-menu__nav-item"><a class="mobile-menu__nav-link" href="#">Контакты</a></li>
+        </ul>
+      </nav>
+
+      <div class="mobile-menu__footer">
+        <ul class="link-list">
+          <li class="link-list__item"><a class="link-list__link link-list__link--accent" href="tel:+70000000000">+7 (000) 000-00-00</a></li>
+          <li class="link-list__item"><a class="link-list__link link-list__link--accent" href="mailto:sales@lenta.pro">sales@lenta.pro</a></li>
+          <li class="link-list__item"><span class="link-list__text">Пн–Пт 9:00–18:00</span></li>
+        </ul>
+        <ul class="social-list">
+          <li class="social-list__item">
+            <a class="social-list__link" href="#" aria-label="Telegram">
+              <svg class="social-list__icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m22 2-7 20-4-9-9-4 20-7Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+                <path d="M22 2 11 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg>
+            </a>
+          </li>
+          <li class="social-list__item">
+            <a class="social-list__link" href="#" aria-label="WhatsApp">
+              <svg class="social-list__icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5A8.48 8.48 0 0 1 21 11v.5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </a>
+          </li>
+        </ul>
+        <button class="button button--primary mobile-menu__callback" type="button">Обратный звонок</button>
+      </div>
+    </div>
+  </div>
 
   <main>
     <section class="hero">
