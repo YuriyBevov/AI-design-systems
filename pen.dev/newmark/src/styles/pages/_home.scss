@@ -1,7 +1,7 @@
 .hero {
 	padding-block: 64px;
 	background:
-		linear-gradient(125deg, #050505 0%, #0d0d0b 36%, #1a1009 70%, #2a1608 100%);
+		linear-gradient(225deg, #050505 0%, #0d0d0b 36%, #1a1009 70%, #2a1608 100%);
 }
 
 .hero .container {
@@ -76,5 +76,28 @@
 	.hero .container {
 		grid-template-columns: minmax(0, 590px) minmax(420px, 640px);
 		justify-content: space-between;
+	}
+}
+
+.advantages .section-header {
+	max-width: 360px;
+	margin-bottom: var(--space-2xl);
+}
+
+.advantages .section-description {
+	max-width: 360px;
+	font-size: 16px;
+}
+
+@media (min-width: 1024px) {
+	.advantages .container {
+		display: grid;
+		grid-template-columns: 360px minmax(0, 1fr);
+		gap: var(--space-2xl);
+		align-items: start;
+	}
+
+	.advantages .section-header {
+		margin-bottom: 0;
 	}
 }
