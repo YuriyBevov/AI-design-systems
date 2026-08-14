@@ -80,7 +80,7 @@
                       "fill": {
                         "type": "image",
                         "enabled": true,
-                        "url": "images/Frame%201.png",
+                        "url": "../images/logo.png",
                         "mode": "fill"
                       },
                       "width": 160,
@@ -496,7 +496,7 @@
                       "fill": {
                         "type": "image",
                         "enabled": true,
-                        "url": "images/Hero%20Tape%20Product%20Photo%20Card.png",
+                        "url": "../images/hero-img.png",
                         "mode": "fill"
                       },
                       "width": 640,
@@ -696,7 +696,7 @@
                               "fill": {
                                 "type": "image",
                                 "enabled": true,
-                                "url": "images/generated-1786634300284.png",
+                                "url": "../images/benefits-image-1.png",
                                 "mode": "fill"
                               },
                               "width": 410.6666666666667,
@@ -811,7 +811,7 @@
                               "fill": {
                                 "type": "image",
                                 "enabled": true,
-                                "url": "images/generated-1786634299572.png",
+                                "url": "../images/benefits-image-2.png",
                                 "mode": "fill"
                               },
                               "width": 410.6666666666667,
@@ -926,7 +926,7 @@
                               "fill": {
                                 "type": "image",
                                 "enabled": true,
-                                "url": "images/generated-1786634299163.png",
+                                "url": "../images/benefits-image-3.png",
                                 "mode": "fill"
                               },
                               "width": 410.66666666666663,
@@ -1052,7 +1052,7 @@
                               "fill": {
                                 "type": "image",
                                 "enabled": true,
-                                "url": "images/generated-1786634299925.png",
+                                "url": "../images/benefits-image-4.png",
                                 "mode": "fill"
                               },
                               "width": 628,
@@ -1168,7 +1168,7 @@
                               "fill": {
                                 "type": "image",
                                 "enabled": true,
-                                "url": "images/generated-1786634299747.png",
+                                "url": "../images/benefits-image-5.png",
                                 "mode": "fill"
                               },
                               "width": 628,
@@ -1467,7 +1467,7 @@
                               "fill": {
                                 "type": "image",
                                 "enabled": true,
-                                "url": "images/generated-1786634298631.png",
+                                "url": "../images/product-image-1.png",
                                 "mode": "fill"
                               },
                               "width": "fill_container",
@@ -1653,7 +1653,7 @@
                               "fill": {
                                 "type": "image",
                                 "enabled": true,
-                                "url": "images/generated-1786634299192.png",
+                                "url": "../images/product-image-2.png",
                                 "mode": "fill"
                               },
                               "width": "fill_container",
@@ -1929,7 +1929,7 @@
                                   "fill": {
                                     "type": "image",
                                     "enabled": true,
-                                    "url": "images/generated-1786634300079.png",
+                                    "url": "../images/product-image-3.png",
                                     "mode": "fill"
                                   },
                                   "width": "fill_container",
@@ -2030,7 +2030,7 @@
                                   "fill": {
                                     "type": "image",
                                     "enabled": true,
-                                    "url": "images/generated-1786634298285.png",
+                                    "url": "../images/product-image-4.png",
                                     "mode": "fill"
                                   },
                                   "width": "fill_container",
@@ -2131,7 +2131,7 @@
                                   "fill": {
                                     "type": "image",
                                     "enabled": true,
-                                    "url": "images/generated-1786634299929.png",
+                                    "url": "../images/product-image-5.png",
                                     "mode": "fill"
                                   },
                                   "width": "fill_container",
@@ -2337,7 +2337,7 @@
                                   "fill": {
                                     "type": "image",
                                     "enabled": true,
-                                    "url": "images/generated-1786634299279.png",
+                                    "url": "../images/product-image-6.png",
                                     "mode": "fill"
                                   },
                                   "width": "fill_container",
@@ -2439,7 +2439,7 @@
                                   "fill": {
                                     "type": "image",
                                     "enabled": true,
-                                    "url": "images/generated-1786634299675.png",
+                                    "url": "../images/product-image-7.png",
                                     "mode": "fill"
                                   },
                                   "width": "fill_container",
@@ -2553,7 +2553,7 @@
                                   "fill": {
                                     "type": "image",
                                     "enabled": true,
-                                    "url": "images/generated-1786634299396.png",
+                                    "url": "../images/product-image-8.png",
                                     "mode": "fill"
                                   },
                                   "width": "fill_container",
@@ -2675,7 +2675,7 @@
                                   "fill": {
                                     "type": "image",
                                     "enabled": true,
-                                    "url": "images/generated-1786634298242.png",
+                                    "url": "../images/product-image-9.png",
                                     "mode": "fill"
                                   },
                                   "width": "fill_container",
@@ -2777,7 +2777,7 @@
                                   "fill": {
                                     "type": "image",
                                     "enabled": true,
-                                    "url": "images/generated-1786634299718.png",
+                                    "url": "../images/product-image-10.png",
                                     "mode": "fill"
                                   },
                                   "width": "fill_container",
@@ -3987,7 +3987,7 @@
                                   "fill": {
                                     "type": "image",
                                     "enabled": true,
-                                    "url": "images/Frame%201.png",
+                                    "url": "../images/logo.png",
                                     "mode": "fill"
                                   },
                                   "width": 160,
