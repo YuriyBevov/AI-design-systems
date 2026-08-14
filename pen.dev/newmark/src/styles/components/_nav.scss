@@ -1,0 +1,28 @@
+.nav {
+	display: none;
+}
+
+.nav__list {
+	display: flex;
+	align-items: center;
+	gap: var(--space-lg);
+}
+
+.nav__link {
+	color: var(--color-white);
+	font-size: 14px;
+	font-weight: 600;
+	line-height: 1;
+	letter-spacing: 0.03em;
+	transition: color var(--transition-base);
+}
+
+.nav__link:hover {
+	color: var(--color-accent);
+}
+
+@media (min-width: 900px) {
+	.nav {
+		display: block;
+	}
+}

@@ -18,6 +18,18 @@ SCSS должен:
 
 Стили пишутся от общего к частному: сначала базовые настройки и токены, затем layout, затем компоненты, затем точечные исключения.
 
+## Чётные значения размеров
+
+В SCSS не используются нечётные значения в `px` для размеров, отступов, координат, ширин, высот и типографики. Если в макете указано нечётное значение, при переносе в код оно приводится к ближайшему меньшему чётному значению.
+
+Примеры:
+
+- `font-size: 19px` → `font-size: 18px`;
+- `padding: 13px 22px` → `padding: 12px 22px`;
+- `width: 3px` → `width: 2px`.
+
+Исключение допускается только для технических hairline-значений `1px` в `border`, `outline` и скрытых accessibility-паттернах, где уменьшение до `0px` удалит линию или сломает техническое поведение.
+
 ## Модульная система
 
 SCSS разбивается на отдельные файлы по зонам ответственности. Один файл должен решать одну понятную задачу.
@@ -50,53 +62,64 @@ SCSS разбивается на отдельные файлы по зонам �
 
 ## Рекомендуемая структура файлов
 
-Базовая структура:
+Базовая структура проекта:
 
 ```text
-styles/
-  main.scss
+index.html
 
-  abstracts/
-    _variables.scss
-    _tokens.scss
-    _mixins.scss
-    _functions.scss
+src/
+  design/
+    index-page.pen
+    images/
 
-  base/
-    _reset.scss
-    _fonts.scss
-    _global.scss
-    _typography.scss
+  fonts/
 
-  layout/
-    _container.scss
-    _section.scss
-    _header.scss
-    _footer.scss
-    _grid.scss
+  styles/
+    main.scss
 
-  components/
-    _button.scss
-    _card.scss
-    _product-card.scss
-    _section-header.scss
-    _form.scss
-    _field.scss
-    _modal.scss
-    _tabs.scss
-    _accordion.scss
+    abstracts/
+      _variables.scss
+      _tokens.scss
+      _mixins.scss
+      _functions.scss
 
-  pages/
-    _home.scss
-    _catalog.scss
-    _contacts.scss
+    base/
+      _reset.scss
+      _fonts.scss
+      _global.scss
+      _typography.scss
 
-  utilities/
-    _visually-hidden.scss
-    _helpers.scss
+    layout/
+      _container.scss
+      _section.scss
+      _header.scss
+      _footer.scss
+      _grid.scss
+
+    components/
+      _button.scss
+      _card.scss
+      _product-card.scss
+      _section-header.scss
+      _form.scss
+      _field.scss
+      _modal.scss
+      _tabs.scss
+      _accordion.scss
+
+    pages/
+      _home.scss
+      _catalog.scss
+      _contacts.scss
+
+    utilities/
+      _visually-hidden.scss
+      _helpers.scss
 ```
 
-`main.scss` только подключает модули и не содержит стили компонентов.
+`src` хранит исходники и ассеты проекта: дизайн-данные, изображения, шрифты и стили. HTML-файлы могут оставаться в корне страницы, но все пути к стилям, изображениям и шрифтам должны указывать на актуальные файлы внутри `src`.
+
+`src/styles/main.scss` только подключает модули и не содержит стили компонентов.
 
 Пример:
 
@@ -228,6 +251,16 @@ Layout-файлы отвечают за крупную сетку и струк�
 - редкие исключения, которые не принадлежат компоненту.
 
 В `pages` не нужно переписывать внутренние стили компонентов.
+
+### Граница между components, layout и pages
+
+Перед созданием SCSS-файла нужно определить ответственность блока:
+
+- `components/` — переиспользуемые самостоятельные сущности, которые можно перенести на другую страницу без изменения внутренней структуры: `button`, `product-card`, `section-header`, `form`, `social-list`;
+- `layout/` — общие структурные правила и крупные зоны раскладки: `container`, `section`, `header`, `footer`, `grid`;
+- `pages/` — уникальная композиция конкретной страницы, которая не предполагается как общий паттерн. Например, `hero` главной страницы остается в `pages/_home.scss`, если такой hero не используется повторно на других страницах.
+
+Если блок начинает повторяться на нескольких страницах и сохраняет одинаковую внутреннюю структуру, его нужно вынести из `pages/` в `components/`.
 
 ### utilities
 

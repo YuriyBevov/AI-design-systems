@@ -1,0 +1,38 @@
+.grid-layout {
+	display: grid;
+	gap: var(--space-lg);
+}
+
+.grid-layout:has(.benefit-card) {
+	grid-template-columns: 1fr;
+}
+
+.grid-layout:has(.print-card),
+.grid-layout:has(.product-card),
+.grid-layout:has(.feature-card) {
+	grid-template-columns: 1fr;
+}
+
+@media (min-width: 760px) {
+	.grid-layout:has(.benefit-card),
+	.grid-layout:has(.print-card),
+	.grid-layout:has(.product-card),
+	.grid-layout:has(.feature-card) {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+@media (min-width: 1120px) {
+	.grid-layout:has(.benefit-card) {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+
+	.grid-layout:has(.benefit-card) .benefit-card:nth-child(n + 4) {
+		grid-column: span 1;
+	}
+
+	.grid-layout:has(.product-card),
+	.grid-layout:has(.feature-card) {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+}

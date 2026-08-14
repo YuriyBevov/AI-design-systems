@@ -1,0 +1,13 @@
+.section {
+	padding-block: var(--space-section);
+}
+
+.section--dark {
+	background-color: transparent;
+}
+
+@media (min-width: 1024px) {
+	.section {
+		padding-block: var(--space-section-lg);
+	}
+}

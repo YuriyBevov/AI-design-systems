@@ -1,0 +1,27 @@
+.header {
+	position: sticky;
+	top: 0;
+	z-index: 10;
+	padding-block: 10px;
+	background-color: var(--color-dark);
+	border-bottom: 2px solid var(--color-accent);
+}
+
+.header .container {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--space-lg);
+}
+
+.header__actions {
+	display: none;
+	align-items: center;
+	gap: var(--space-sm);
+}
+
+@media (min-width: 1180px) {
+	.header__actions {
+		display: flex;
+	}
+}

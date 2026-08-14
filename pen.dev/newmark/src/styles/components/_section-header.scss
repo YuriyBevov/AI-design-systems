@@ -1,0 +1,18 @@
+.section-header {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-md);
+	max-width: 860px;
+	margin-bottom: var(--space-2xl);
+}
+
+.section-title {
+	color: var(--color-white);
+}
+
+.section-description {
+	max-width: 880px;
+	color: var(--color-text-muted);
+	font-size: clamp(16px, 2vw, 18px);
+	line-height: 1.55;
+}

@@ -1,0 +1,93 @@
+.cta {
+	padding-block: var(--space-section);
+}
+
+.cta__inner {
+	display: grid;
+	overflow: hidden;
+	border: 1px solid rgb(255 132 0 / 40%);
+}
+
+.cta__content {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-md);
+	padding: var(--space-xl);
+	color: var(--color-dark-warm);
+	background: linear-gradient(135deg, #ff8400 0%, #f3a23a 100%);
+}
+
+.cta__eyebrow {
+	font-size: 12px;
+	font-weight: 700;
+	text-transform: uppercase;
+}
+
+.cta__title {
+	color: var(--color-white);
+}
+
+.cta__description {
+	color: var(--color-white);
+}
+
+.cta__countdown {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+	padding: 18px;
+	color: var(--color-white);
+	background-color: var(--color-surface-strong);
+	border: 1px solid var(--color-border-inverse);
+}
+
+.cta__countdown-title {
+	font-size: 18px;
+	font-weight: 700;
+	line-height: 1.35;
+}
+
+.cta__countdown-row {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: var(--space-sm);
+}
+
+.cta__countdown-item {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: var(--space-2xs);
+	padding: 10px;
+	color: var(--color-dark);
+	background-color: var(--color-white);
+}
+
+.cta__countdown-value {
+	font-size: 24px;
+	font-weight: 700;
+	line-height: 1;
+}
+
+.cta__countdown-label {
+	color: var(--color-dark-warm);
+	font-size: 10px;
+	line-height: 1;
+}
+
+@media (min-width: 720px) {
+	.cta__countdown-row {
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+	}
+}
+
+@media (min-width: 1024px) {
+	.cta__inner {
+		grid-template-columns: 1fr 1fr;
+		min-height: 560px;
+	}
+
+	.cta__content {
+		padding: 72px 40px;
+	}
+}

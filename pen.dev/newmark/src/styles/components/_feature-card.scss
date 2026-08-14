@@ -1,0 +1,16 @@
+.feature-card {
+	display: flex;
+	min-height: 156px;
+	flex-direction: column;
+	gap: var(--space-sm);
+	padding: var(--space-lg);
+	border: 1px solid var(--color-accent);
+}
+
+.feature-card__title {
+	color: var(--color-accent);
+	font-size: 18px;
+	font-weight: 700;
+	line-height: 1.25;
+	text-transform: uppercase;
+}

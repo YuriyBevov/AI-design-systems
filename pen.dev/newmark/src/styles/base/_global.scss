@@ -1,0 +1,23 @@
+body {
+	min-height: 100vh;
+	font-family: var(--font-primary);
+	font-size: 16px;
+	line-height: 1.55;
+	color: var(--color-text);
+	background:
+		linear-gradient(135deg, #080807 0%, #0d0d0b 35%, #17110c 68%, #0d0d0b 100%);
+}
+
+main {
+	overflow: hidden;
+}
+
+::selection {
+	color: var(--color-white);
+	background-color: var(--color-accent);
+}
+
+:focus-visible {
+	outline: 2px solid var(--color-focus);
+	outline-offset: 4px;
+}
