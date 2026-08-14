@@ -4,7 +4,14 @@
 }
 
 .grid-layout:has(.benefit-card) {
-	grid-template-columns: 1fr;
+	display: flex;
+	flex-wrap: wrap;
+	column-gap: var(--space-lg);
+	row-gap: var(--space-md);
+}
+
+.grid-layout:has(.benefit-card) .benefit-card {
+	flex: 1 1 100%;
 }
 
 .grid-layout:has(.print-card),
@@ -14,21 +21,20 @@
 }
 
 @media (min-width: 760px) {
-	.grid-layout:has(.benefit-card),
 	.grid-layout:has(.print-card),
 	.grid-layout:has(.product-card),
 	.grid-layout:has(.feature-card) {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
+
+	.grid-layout:has(.benefit-card) .benefit-card {
+		flex: 1 1 calc((100% - var(--space-lg)) / 2);
+	}
 }
 
 @media (min-width: 1120px) {
-	.grid-layout:has(.benefit-card) {
-		grid-template-columns: repeat(3, minmax(0, 1fr));
-	}
-
-	.grid-layout:has(.benefit-card) .benefit-card:nth-child(n + 4) {
-		grid-column: span 1;
+	.grid-layout:has(.benefit-card) .benefit-card {
+		flex-basis: calc((100% - (var(--space-lg) * 2)) / 3);
 	}
 
 	.grid-layout:has(.product-card),
