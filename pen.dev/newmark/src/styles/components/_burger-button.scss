@@ -13,14 +13,9 @@
 		background-color var(--transition-base),
 		border-color var(--transition-base);
 
-	&::before {
-		content: "";
-		width: 18px;
-		height: 2px;
-		background-color: currentColor;
-		box-shadow:
-			0 -6px 0 currentColor,
-			0 6px 0 currentColor;
+	&__icon {
+		width: 24px;
+		height: 24px;
 	}
 
 	&:hover {

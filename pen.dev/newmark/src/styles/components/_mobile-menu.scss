@@ -77,7 +77,6 @@
 	}
 
 	&__close {
-		position: relative;
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
@@ -92,28 +91,16 @@
 			background-color var(--transition-base),
 			border-color var(--transition-base);
 
-		&::before,
-		&::after {
-			content: "";
-			position: absolute;
-			width: 18px;
-			height: 2px;
-			background-color: currentColor;
-		}
-
-		&::before {
-			transform: rotate(45deg);
-		}
-
-		&::after {
-			transform: rotate(-45deg);
-		}
-
 		&:hover {
 			color: var(--color-white);
 			background-color: var(--color-accent);
 			border-color: var(--color-accent);
 		}
+	}
+
+	&__close-icon {
+		width: 24px;
+		height: 24px;
 	}
 
 	&__nav {

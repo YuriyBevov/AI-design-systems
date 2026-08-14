@@ -321,6 +321,85 @@ min-height: 32px;
 - `benefits-image-4.png`
 - `benefits-image-5.png`
 
+## Добавление сборки проекта
+
+Следующим этапом начата локальная сборка именно внутри проекта `pen.dev/newmark/`, а не в корне репозитория. Это сделано потому, что у разных проектов в будущем могут отличаться сборщики, шаблонизаторы, обработка изображений и набор плагинов.
+
+Добавлены файлы:
+
+- `package.json`;
+- `vite.config.js`;
+- `postcss.config.js`;
+- `.browserslistrc`;
+- `src/scripts/main.js`;
+- `scripts/convert-images.mjs`;
+- `src/sprite/*.svg`.
+
+В качестве основы выбран Vite:
+
+- HTML остается entry-файлом проекта;
+- SCSS подключается через `src/scripts/main.js`;
+- CSS собирается Vite из `src/styles/main.scss`;
+- PostCSS и Autoprefixer используют `last 5 versions` и `not dead` из `.browserslistrc`;
+- изображения конвертируются в WebP отдельным скриптом на `sharp`;
+- SVG-иконки собираются в `sprite.svg` через `vite-plugin-svg-spritemap`.
+
+Также установлены зависимости, которые понадобятся дальше:
+
+- `imask`;
+- `swiper`;
+- `@fancyapps/ui`;
+- `gsap`.
+
+Inline SVG в разметке социальных ссылок и управляющих кнопок был заменен на использование SVG-спрайта:
+
+```html
+<svg class="social-list__icon" aria-hidden="true">
+	<use href="/sprite.svg#telegram"></use>
+</svg>
+```
+
+Картинки в рабочей разметке переключены на WebP-версии из `src/images/webp/`, а PNG остаются исходниками для конвертации.
+
+После добавления сборки выполнена production-сборка:
+
+```bash
+npm run build
+```
+
+Сборка прошла успешно. Dev-сервер Vite не удалось запустить в текущей sandbox-среде из-за ошибки доступа к порту `127.0.0.1:5173`, но production build работает.
+
+## Правка футера после добавления сборки
+
+Футер был уточнен по стилям:
+
+```scss
+.footer {
+	padding-block: var(--space-2xl);
+	background-color: var(--color-dark-soft);
+}
+```
+
+Это заменило прежний `padding-bottom` на симметричный вертикальный отступ и добавило фон всей футерной области.
+
+Позже были уточнены отступы нижней строки футера:
+
+- у `.footer__bottom` задан `gap: 12px var(--space-lg)`;
+- на ширине от `900px` добавлен `flex-wrap: wrap`;
+- у `.footer__legal` задан `gap: 8px var(--space-lg)`.
+
+## Правка секции advantages
+
+Для секции `.advantages` добавлен фон:
+
+```scss
+.advantages {
+	background-color: var(--color-dark-soft);
+}
+```
+
+После изменения выполнена production-сборка `npm run build`, сборка прошла успешно.
+
 ## Проверки
 
 В процессе работы регулярно выполнялись проверки:
