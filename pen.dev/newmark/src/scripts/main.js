@@ -1,6 +1,7 @@
 import "../styles/main.scss";
 import { initCreeperLines } from "./gsap/gsap-creeper-line";
 import { initGsapMenu } from "./gsap/gsap-menu";
+import { initGsapScrollUpButton } from "./gsap/gsap-scroll-up-button";
 
 initCreeperLines({
 	viewportSelector: ".creeper-line__track",
@@ -10,3 +11,4 @@ initCreeperLines({
 });
 
 initGsapMenu();
+initGsapScrollUpButton();

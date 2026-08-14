@@ -4,6 +4,13 @@ import svgSpritemap from "vite-plugin-svg-spritemap";
 export default defineConfig({
   root: ".",
   base: "./",
+  css: {
+    preprocessorOptions: {
+      scss: {
+        api: "modern-compiler",
+      },
+    },
+  },
   build: {
     outDir: "dist",
     emptyOutDir: true,

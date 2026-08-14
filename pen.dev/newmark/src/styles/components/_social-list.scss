@@ -27,21 +27,17 @@
 	&__icon {
 		width: 24px;
 		height: 24px;
+		fill: currentColor;
+
+		&--vk {
+			width: 28px;
+			height: 28px;
+		}
 	}
 }
 
 .footer {
 	.social-list {
 		padding-top: var(--space-xs);
-
-		&__link {
-			width: 32px;
-			height: 32px;
-		}
-
-		&__icon {
-			width: 16px;
-			height: 16px;
-		}
 	}
 }

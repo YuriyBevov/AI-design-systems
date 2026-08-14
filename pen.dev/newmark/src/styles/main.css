@@ -457,20 +457,21 @@ main {
   border: 1px solid transparent;
   transition: color var(--transition-base), background-color var(--transition-base), border-color var(--transition-base);
 }
-.button::after {
-  content: "";
-  display: none;
-  flex: 0 0 16px;
-  width: 16px;
-  height: 16px;
-  background-color: currentColor;
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14'/%3E%3Cpath d='m12 5 7 7-7 7'/%3E%3C/svg%3E") center/16px 16px no-repeat;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14'/%3E%3Cpath d='m12 5 7 7-7 7'/%3E%3C/svg%3E") center/16px 16px no-repeat;
-}
 .button__icon {
   flex: 0 0 auto;
   width: 18px;
   height: 18px;
+  fill: var(--color-white);
+}
+.button__icon--arrow {
+  width: 72px;
+  height: 19px;
+  fill: currentColor;
+}
+.button__icon--phone {
+  width: 28px;
+  height: 28px;
+  fill: currentColor;
 }
 .button--primary {
   background-color: var(--color-accent);
@@ -498,10 +499,6 @@ main {
 }
 .button--link:hover {
   color: var(--color-white);
-}
-
-a.button::after {
-  display: block;
 }
 
 .product-card .button,
@@ -549,8 +546,9 @@ a.button::after {
   transition: opacity var(--transition-base);
 }
 .burger-button__icon {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
+  fill: var(--color-accent);
 }
 .burger-button:hover, .burger-button:focus-visible {
   opacity: 0.6;
@@ -637,8 +635,9 @@ a.button::after {
   opacity: 0.6;
 }
 .mobile-menu__close-icon {
-  width: 24px;
-  height: 24px;
+  width: 16px;
+  height: 16px;
+  fill: var(--color-accent);
 }
 .mobile-menu__nav {
   padding: var(--space-xl) var(--mobile-menu-padding-inline);
@@ -689,6 +688,34 @@ a.button::after {
   }
 }
 
+.scroll-up-button {
+  position: fixed;
+  right: clamp(24px, 3vw, 32px);
+  bottom: 56px;
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  color: var(--color-accent);
+  background-color: var(--color-dark-soft);
+  border: 1px solid var(--color-border-strong);
+  cursor: pointer;
+  transition: opacity var(--transition-base);
+}
+.scroll-up-button::before {
+  content: "";
+  width: 20px;
+  height: 20px;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m18 15-6-6-6 6'/%3E%3C/svg%3E") center/20px 20px no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m18 15-6-6-6 6'/%3E%3C/svg%3E") center/20px 20px no-repeat;
+}
+.scroll-up-button:hover, .scroll-up-button:focus-visible {
+  opacity: 0.6;
+}
+
 .social-list {
   display: flex;
   align-items: center;
@@ -713,18 +740,15 @@ a.button::after {
 .social-list__icon {
   width: 24px;
   height: 24px;
+  fill: currentColor;
+}
+.social-list__icon--vk {
+  width: 28px;
+  height: 28px;
 }
 
 .footer .social-list {
   padding-top: var(--space-xs);
-}
-.footer .social-list__link {
-  width: 32px;
-  height: 32px;
-}
-.footer .social-list__icon {
-  width: 16px;
-  height: 16px;
 }
 
 .section-header {

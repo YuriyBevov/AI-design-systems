@@ -642,3 +642,162 @@ npx --no-install sass ../../component-library/gsap-menu/scss.scss ../../componen
 npx --no-install sass ../../component-library/gsap-creeper-line/scss.scss ../../component-library/gsap-creeper-line/css.css --no-source-map
 git diff --check -- component-library/gsap-menu component-library/gsap-creeper-line guides/agent.md
 ```
+
+## Адаптация GSAP Scroll Up Button
+
+В проект был добавлен модуль `src/scripts/gsap/scroll-up-btn.js` из другого проекта. Файл переименован в `src/scripts/gsap/gsap-scroll-up-button.js` и адаптирован под текущие правила:
+
+- убрана запись `window.gsap` и событие `gsap:ready`;
+- убрана автоинициализация внутри модуля;
+- экспортируется функция `initGsapScrollUpButton(options)`;
+- публичные `defaultOptions` оставлены только для реально вариативных настроек: контейнер, класс кнопки, aria-label, порог показа, сдвиг скрытого состояния, длительности и easing;
+- служебные значения вынесены в `internalSettings`;
+- старые классы `scroll-up-btn` и `main-btn` заменены на компонентный класс `scroll-up-button`;
+- модуль подключен в `src/scripts/main.js`;
+- добавлен SCSS-компонент `src/styles/components/_scroll-up-button.scss` и подключен в `src/styles/main.scss`.
+
+В `component-library` добавлен новый готовый компонент `gsap-scroll-up-button`:
+
+- `html.html` — заметка, что кнопка создается JavaScript автоматически;
+- `scss.scss` — исходные SCSS-стили;
+- `css.css` — скомпилированные CSS-стили;
+- `js.js` — переносимый JS-модуль;
+- `readme.md` — описание, подключение, options и поведение.
+
+Проверки:
+
+```bash
+npx --no-install sass ../../component-library/gsap-scroll-up-button/scss.scss ../../component-library/gsap-scroll-up-button/css.css --no-source-map
+npx --no-install sass src/styles/main.scss src/styles/main.css
+npm run build
+rg -n "scroll-up-btn|main-btn|window\\.gsap|gsap:ready|initScrollUpBtn|scroll-up-button|initGsapScrollUpButton" pen.dev/newmark/src component-library/gsap-scroll-up-button
+git diff --check -- pen.dev/newmark/src/scripts/gsap/gsap-scroll-up-button.js pen.dev/newmark/src/scripts/main.js pen.dev/newmark/src/styles/main.scss pen.dev/newmark/src/styles/main.css pen.dev/newmark/src/styles/components/_scroll-up-button.scss component-library/gsap-scroll-up-button
+```
+
+## Позиционирование Scroll Up Button
+
+В `src/styles/components/_scroll-up-button.scss` изменено позиционирование кнопки возврата наверх:
+
+```scss
+right: clamp(24px, 3vw, 32px);
+bottom: 60px;
+```
+
+Проверки:
+
+```bash
+npx --no-install sass src/styles/main.scss src/styles/main.css
+npm run build
+git diff --check -- pen.dev/newmark/src/styles/components/_scroll-up-button.scss pen.dev/newmark/src/styles/main.css
+```
+
+## Устранение Sass legacy JS API warning
+
+При сборке Vite выводил предупреждение:
+
+```text
+Deprecation Warning [legacy-js-api]: The legacy JS API is deprecated and will be removed in Dart Sass 2.0.0.
+```
+
+В `vite.config.js` для SCSS включен modern Sass API:
+
+```js
+css: {
+  preprocessorOptions: {
+    scss: {
+      api: "modern-compiler",
+    },
+  },
+},
+```
+
+После изменения `npm run build` прошел успешно без этого предупреждения.
+
+## Подключение новых иконок burger и close из SVG-спрайта
+
+В `src/sprite` добавлены новые иконки `icon-burger.svg` и `icon-cross.svg`. В `index.html` кнопка открытия мобильного меню переведена с `#menu` на `#icon-burger`, а кнопка закрытия — с `#close` на `#icon-cross`. Для SVG указаны корректные `viewBox` из исходных файлов:
+
+- burger: `0 0 17 12`;
+- close: `0 0 17 17`.
+
+В стилях добавлено правило `fill: var(--color-white)` для иконок внутри кнопок:
+
+- `.button__icon`;
+- `.burger-button__icon`;
+- `.mobile-menu__close-icon`.
+
+Позже для иконок открытия и закрытия меню уточнены отдельные значения: `.burger-button__icon` получила размер `20px` на `20px`, `.mobile-menu__close-icon` — `16px` на `16px`; обе иконки используют `fill: var(--color-accent)`, а общее белое заполнение осталось для обычных `.button__icon`.
+
+Проверки:
+
+```bash
+npx --no-install sass src/styles/main.scss src/styles/main.css
+npm run build
+rg -n "icon-burger|icon-cross|#menu|#close" pen.dev/newmark/index.html pen.dev/newmark/dist/index.html pen.dev/newmark/dist/sprite.svg
+rg -n "button__icon|burger-button__icon|mobile-menu__close-icon|fill: var\\(--color-white\\)" pen.dev/newmark/src/styles/main.css pen.dev/newmark/src/styles/components
+git diff --check -- pen.dev/newmark/index.html pen.dev/newmark/src/styles/components/_button.scss pen.dev/newmark/src/styles/components/_burger-button.scss pen.dev/newmark/src/styles/components/_mobile-menu.scss pen.dev/newmark/src/styles/main.css
+```
+
+## Подключение новых иконок соцсетей из SVG-спрайта
+
+В `src/sprite` добавлены новые иконки соцсетей: `icon-vk.svg` и `icon-max.svg`. Также актуальные иконки Telegram и WhatsApp теперь лежат как `icon-tg.svg` и `icon-whatsapp.svg`.
+
+В `index.html` обновлены все списки `.social-list` в шапке, мобильном меню и футере:
+
+- Telegram использует `#icon-tg`;
+- WhatsApp использует `#icon-whatsapp`;
+- ВКонтакте использует `#icon-vk`;
+- Max использует `#icon-max`.
+
+Для каждой иконки указан `viewBox` из исходного SVG. В `src/styles/components/_social-list.scss` добавлено `fill: currentColor` для `.social-list__icon`, чтобы filled-иконки красились от состояния ссылки.
+
+Позже для VK-иконки добавлен отдельный модификатор `.social-list__icon--vk`: SVG в шапке, мобильном меню и футере получил `width="28"` и `height="28"`, а в SCSS задан размер `28px` на `28px`.
+
+Проверки:
+
+```bash
+npx --no-install sass src/styles/main.scss src/styles/main.css
+npm run build
+rg -n "#telegram|#whatsapp|#vk|#icon-tg|#icon-whatsapp|#icon-vk|#icon-max" pen.dev/newmark/index.html pen.dev/newmark/dist/index.html pen.dev/newmark/dist/sprite.svg
+rg -o "id=\"icon-(tg|whatsapp|vk|max)\"" pen.dev/newmark/dist/sprite.svg
+git diff --check -- pen.dev/newmark/index.html pen.dev/newmark/src/styles/components/_social-list.scss pen.dev/newmark/src/styles/main.css
+```
+
+## Замена иконки телефона в кнопке обратного звонка
+
+В `src/sprite` добавлена новая иконка `icon-phone.svg`. В `index.html` кнопка обратного звонка в шапке переведена со старого `#phone` на `#icon-phone`.
+
+Позже иконка телефона в кнопке обратного звонка увеличена до `28px` на `28px`: в `index.html` обновлены атрибуты `width` и `height`, а в `src/styles/components/_button.scss` добавлен модификатор `.button__icon--phone`.
+
+Для `.button__icon--phone` добавлено `fill: currentColor`, чтобы иконка наследовала цвет кнопки: в обычном состоянии она остается белой, а при hover primary-кнопки становится акцентной.
+
+## Замена стрелки в кнопках на `long-arrow` из SVG-спрайта
+
+Старый механизм стрелки через `.button::after` и CSS-mask удален из `src/styles/components/_button.scss`. Во все ссылки-кнопки, где стрелка должна быть видимой (`Перейти`, `Подробнее`, `Смотреть в каталоге`), добавлена SVG-иконка:
+
+```html
+<svg class="button__icon button__icon--arrow" width="72" height="19" viewBox="0 0 72 19" aria-hidden="true">
+  <use href="/sprite.svg#long-arrow"></use>
+</svg>
+```
+
+Для `.button__icon--arrow` в SCSS задан размер `72px` на `19px` и `fill: currentColor`, чтобы цвет стрелки наследовался от состояния кнопки.
+
+Проверки:
+
+```bash
+npx --no-install sass src/styles/main.scss src/styles/main.css
+npm run build
+rg -n "button::after|a\\.button::after|button__icon--arrow|long-arrow" pen.dev/newmark/index.html pen.dev/newmark/src/styles/components/_button.scss pen.dev/newmark/src/styles/main.css pen.dev/newmark/dist/index.html pen.dev/newmark/dist/sprite.svg
+rg -c "button__icon--arrow" pen.dev/newmark/index.html pen.dev/newmark/dist/index.html
+git diff --check -- pen.dev/newmark/index.html pen.dev/newmark/src/styles/components/_button.scss pen.dev/newmark/src/styles/main.css
+```
+
+Проверки:
+
+```bash
+npm run build
+rg -n "#phone|#icon-phone" pen.dev/newmark/index.html pen.dev/newmark/dist/index.html pen.dev/newmark/dist/sprite.svg
+rg -o "id=\"icon-phone\"" pen.dev/newmark/dist/sprite.svg
+git diff --check -- pen.dev/newmark/index.html
+```
