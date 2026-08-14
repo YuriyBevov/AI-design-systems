@@ -3,7 +3,7 @@ import svgSpritemap from "vite-plugin-svg-spritemap";
 
 export default defineConfig({
   root: ".",
-  base: "./",
+  base: "/",
   css: {
     preprocessorOptions: {
       scss: {
