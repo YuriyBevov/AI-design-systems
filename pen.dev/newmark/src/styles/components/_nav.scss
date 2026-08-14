@@ -9,6 +9,9 @@
 }
 
 .nav__link {
+	display: flex;
+	align-items: center;
+	min-height: 32px;
 	color: var(--color-white);
 	font-size: 14px;
 	font-weight: 600;
@@ -25,7 +28,7 @@
 	color: var(--color-accent);
 }
 
-@media (min-width: 900px) {
+@media (min-width: 1140px) {
 	.nav {
 		display: block;
 	}

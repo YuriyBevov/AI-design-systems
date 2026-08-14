@@ -5,6 +5,7 @@
 	justify-content: center;
 	gap: var(--space-sm);
 	width: fit-content;
+	min-width: 160px;
 	min-height: 40px;
 	padding: 14px 22px;
 	font-family: var(--font-accent);
@@ -54,6 +55,7 @@
 }
 
 .button--link {
+	min-width: 0;
 	min-height: auto;
 	padding: 0;
 	color: var(--color-accent);
@@ -65,20 +67,17 @@
 	color: var(--color-white);
 }
 
-.print-card .button,
 .product-card .button,
 .catalog-group > .button,
 .form .button {
 	font-family: var(--font-primary);
 }
 
-.print-card .button::after,
 .product-card .button::after,
 .catalog-group > .button::after {
 	display: none;
 }
 
-.print-card__body .button,
 .product-card__body .button {
 	margin-top: auto;
 }
@@ -88,4 +87,20 @@
 	flex-wrap: wrap;
 	gap: var(--space-md);
 	align-items: center;
+}
+
+@media (max-width: 440px) {
+	.hero .button-row .button,
+	.request-form__actions .button {
+		width: 100%;
+	}
+}
+
+@media (max-width: 534px) {
+	.product-card__body .button,
+	.benefit-card__body .button,
+	.feature-card .button,
+	.catalog-group > .button {
+		width: 100%;
+	}
 }

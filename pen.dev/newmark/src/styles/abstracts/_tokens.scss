@@ -35,8 +35,7 @@
 	--space-lg: 24px;
 	--space-xl: 32px;
 	--space-2xl: 48px;
-	--space-section: 72px;
-	--space-section-lg: 96px;
+	--space-section: clamp(36px, 6vw, 72px);
 
 	--duration-base: 0.2s;
 	--ease-base: ease;

@@ -40,7 +40,10 @@
             </a>
           </li>
         </ul>
-        <button class="button button--primary" type="button">Обратный звонок</button>
+        <button class="button button--primary header__callback" type="button" aria-label="Обратный звонок">
+          <span class="button__text">Обратный звонок</span>
+        </button>
+        <button class="burger-button" type="button" aria-label="Открыть меню" aria-expanded="false"></button>
       </div>
     </div>
   </header>
@@ -60,6 +63,25 @@
         <div class="hero__image-wrapper">
           <img class="hero__image" src="src/design/images/Hero%20Tape%20Product%20Photo%20Card.png" alt="Рулоны клейкой ленты" width="640" height="620" />
         </div>
+      </div>
+    </section>
+
+    <section class="catalog-marquee" aria-label="Разделы каталога">
+      <div class="catalog-marquee__track">
+        <ul class="catalog-marquee__list">
+          <li class="catalog-marquee__item">Клейкая лента</li>
+          <li class="catalog-marquee__item">Стрейч-пленка</li>
+          <li class="catalog-marquee__item">Малярная лента</li>
+          <li class="catalog-marquee__item">Изоляционная лента</li>
+          <li class="catalog-marquee__item">Клейкая лента с&nbsp;логотипом</li>
+          <li class="catalog-marquee__item">Упаковочная лента</li>
+          <li class="catalog-marquee__item">ТПЛ</li>
+          <li class="catalog-marquee__item">Спец. ленты</li>
+          <li class="catalog-marquee__item">Сигнальные ленты</li>
+          <li class="catalog-marquee__item">Термостойкая малярная лента</li>
+          <li class="catalog-marquee__item">Ленты с&nbsp;нанесением</li>
+          <li class="catalog-marquee__item">Аксессуары</li>
+        </ul>
       </div>
     </section>
 
@@ -141,14 +163,14 @@
           </div>
 
           <div class="grid-layout">
-            <article class="print-card">
-              <div class="print-card__image-wrapper">
-                <img class="print-card__image" src="src/design/images/generated-1786634298631.png" alt="Поверхностная печать" width="400" height="300" />
+            <article class="product-card">
+              <div class="product-card__image-wrapper">
+                <img class="product-card__image" src="src/design/images/generated-1786634298631.png" alt="Поверхностная печать" width="400" height="300" />
               </div>
-              <div class="print-card__body">
-                <div class="print-card__content">
-                  <span class="print-card__title">Поверхностная печать</span>
-                  <span class="print-card__conditions">Минимальная партия&nbsp;—&nbsp;3&nbsp;коробки · срок&nbsp;—&nbsp;14&nbsp;дней</span>
+              <div class="product-card__body">
+                <div class="product-card__content">
+                  <span class="product-card__title">Поверхностная печать</span>
+                  <span class="product-card__conditions">Минимальная партия&nbsp;—&nbsp;3&nbsp;коробки · срок&nbsp;—&nbsp;14&nbsp;дней</span>
                   <ul class="feature-list">
                     <li class="feature-list__item">Быстрые сроки производства</li>
                     <li class="feature-list__item">Возможность сделать небольшую пробную партию</li>
@@ -158,14 +180,14 @@
               </div>
             </article>
 
-            <article class="print-card">
-              <div class="print-card__image-wrapper">
-                <img class="print-card__image" src="src/design/images/generated-1786634299192.png" alt="Межслойная печать" width="400" height="300" />
+            <article class="product-card">
+              <div class="product-card__image-wrapper">
+                <img class="product-card__image" src="src/design/images/generated-1786634299192.png" alt="Межслойная печать" width="400" height="300" />
               </div>
-              <div class="print-card__body">
-                <div class="print-card__content">
-                  <span class="print-card__title">Межслойная печать</span>
-                  <span class="print-card__conditions">Минимальная партия&nbsp;—&nbsp;30&nbsp;коробок · срок&nbsp;—&nbsp;30&nbsp;дней</span>
+              <div class="product-card__body">
+                <div class="product-card__content">
+                  <span class="product-card__title">Межслойная печать</span>
+                  <span class="product-card__conditions">Минимальная партия&nbsp;—&nbsp;30&nbsp;коробок · срок&nbsp;—&nbsp;30&nbsp;дней</span>
                   <ul class="feature-list">
                     <li class="feature-list__item">Логотип не&nbsp;стирается между&nbsp;плёнкой и&nbsp;клеем</li>
                     <li class="feature-list__item">При&nbsp;отклеивании логотип остаётся на&nbsp;коробке</li>
@@ -176,7 +198,7 @@
             </article>
           </div>
 
-          <a class="button button--primary" href="#">Перейти в&nbsp;раздел каталога</a>
+          <a class="button button--secondary" href="#">Перейти в&nbsp;раздел каталога</a>
         </div>
 
         <div class="catalog-group">
@@ -226,7 +248,7 @@
             </article>
           </div>
 
-          <a class="button button--secondary" href="#">Смотреть упаковочную ленту</a>
+          <a class="button button--secondary" href="#">Перейти в&nbsp;раздел каталога</a>
         </div>
 
         <div class="catalog-group">
@@ -238,11 +260,11 @@
           <div class="grid-layout">
             <article class="product-card">
               <div class="product-card__image-wrapper">
-                <img class="product-card__image" src="src/design/images/generated-1786634299279.png" alt="Термостойкая молярная лента(термокрепп)." width="400" height="300" />
+                <img class="product-card__image" src="src/design/images/generated-1786634299279.png" alt="Термостойкая малярная лента(термокрепп)." width="400" height="300" />
               </div>
               <div class="product-card__body">
                 <div class="product-card__content">
-                  <span class="product-card__title">Термостойкая молярная лента(термокрепп).</span>
+                  <span class="product-card__title">Термостойкая малярная лента(термокрепп).</span>
                   <p class="card-description">Выдерживает температурные режимы и&nbsp;помогает аккуратно защитить поверхности на&nbsp;производстве.</p>
                 </div>
                 <a class="button button--primary" href="#">Подробнее</a>
@@ -302,7 +324,7 @@
             </article>
           </div>
 
-          <a class="button button--primary" href="#">Перейти к&nbsp;специальным лентам</a>
+          <a class="button button--secondary" href="#">Перейти в&nbsp;раздел каталога</a>
         </div>
       </div>
     </section>
@@ -489,4 +511,3 @@
   </footer>
 </body>
 </html>
-

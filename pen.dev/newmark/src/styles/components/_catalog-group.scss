@@ -11,7 +11,7 @@
 .catalog-group__features {
 	display: grid;
 	gap: var(--space-md);
-	padding: var(--space-lg);
+	padding: clamp(16px, 4vw, 24px);
 	background-color: var(--color-dark-soft);
 	border: 1px solid var(--color-border-strong);
 }
@@ -45,12 +45,13 @@
 
 .catalog-group__title {
 	color: var(--color-white);
+	font-size: clamp(20px, 4vw, 42px);
 }
 
 .catalog-group__offer {
 	max-width: 900px;
 	color: var(--color-text-muted);
-	font-size: 18px;
+	font-size: clamp(16px, 2vw, 18px);
 	line-height: 1.55;
 }
 

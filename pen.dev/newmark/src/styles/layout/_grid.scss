@@ -14,14 +14,12 @@
 	flex: 1 1 100%;
 }
 
-.grid-layout:has(.print-card),
 .grid-layout:has(.product-card) {
 	display: flex;
 	flex-wrap: wrap;
 	gap: var(--space-lg);
 }
 
-.grid-layout:has(.print-card) .print-card,
 .grid-layout:has(.product-card) .product-card {
 	flex: 1 1 100%;
 }
@@ -35,7 +33,6 @@
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
 
-	.grid-layout:has(.print-card) .print-card,
 	.grid-layout:has(.product-card) .product-card {
 		flex: 1 1 calc((100% - var(--space-lg)) / 2);
 	}
@@ -50,7 +47,6 @@
 		flex-basis: calc((100% - (var(--space-lg) * 2)) / 3);
 	}
 
-	.grid-layout:has(.print-card) .print-card,
 	.grid-layout:has(.product-card) .product-card {
 		flex-basis: calc((100% - (var(--space-lg) * 2)) / 3);
 	}
