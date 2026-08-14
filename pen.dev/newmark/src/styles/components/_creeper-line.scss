@@ -1,7 +1,5 @@
-.catalog-marquee {
+.creeper-line {
 	overflow: hidden;
-	color: var(--color-dark);
-	background-color: var(--color-accent);
 
 	&__track {
 		overflow: hidden;
@@ -15,6 +13,7 @@
 		min-width: 100%;
 		padding: 14px 0;
 		white-space: nowrap;
+		will-change: transform;
 	}
 
 	&__item {
@@ -33,5 +32,10 @@
 			height: 6px;
 			background-color: currentColor;
 		}
+	}
+
+	&--catalog {
+		color: var(--color-dark);
+		background-color: var(--color-accent);
 	}
 }

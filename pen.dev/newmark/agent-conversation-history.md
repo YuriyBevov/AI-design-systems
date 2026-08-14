@@ -75,7 +75,7 @@
 - `components/_nav.scss`
 - `components/_social-list.scss`
 - `components/_link-list.scss`
-- `components/_catalog-marquee.scss`
+- `components/_creeper-line.scss`
 - `components/_burger-button.scss`
 - `layout/_grid.scss`
 - `layout/_section.scss`
@@ -400,6 +400,35 @@ npm run build
 
 После изменения выполнена production-сборка `npm run build`, сборка прошла успешно.
 
+## Адаптация GSAP-скрипта бегущей строки
+
+В проект был добавлен скрипт бегущей строки из другого проекта. После адаптации файл переименован в `src/scripts/gsap/gsap-creeper-line.js`, чтобы имя явно отражало связь с GSAP и назначение скрипта:
+
+- старые классы `crawl-line__viewport`, `crawl-line__track`, `crawl-line__item` заменены на `creeper-line__track`, `creeper-line__list`, `creeper-line__item`;
+- ожидание глобального `window.gsap` заменено на модульный импорт `gsap` из npm-пакета;
+- скрипт подключен в `src/scripts/main.js`;
+- для `.creeper-line__list` добавлено `will-change: transform`.
+
+После изменения выполнена production-сборка `npm run build`, сборка прошла успешно. Старые классы `crawl-line` в рабочих скриптах и стилях больше не используются.
+
+Скрипт дополнительно сделан универсальным:
+
+- селекторы viewport, track и item вынесены в объект настроек;
+- скорость анимации `speed` вынесена в тот же объект;
+- добавлены настройки `initializedDataKey`, `cloneAttribute` и `resizeDelay`;
+- `initCreeperLines(options)` теперь можно переиспользовать для других бегущих строк;
+- проектные классы `creeper-line` передаются при инициализации в `src/scripts/main.js`.
+
+Компонент бегущей строки также переименован из контекстного названия в универсальный `creeper-line`. Для текущего каталожного использования в HTML добавлен модификатор `creeper-line--catalog`, который задает цветовую схему конкретного контекста.
+
+Для объекта настроек скрипта добавлен JSDoc-комментарий `CreeperLineOptions`, чтобы назначение каждого поля было понятно вверху файла и поддерживалось IDE-подсказками.
+
+После проверки скрипта на магические значения дополнительные настройки были вынесены в `defaultOptions`: frame rate, media query, selector для изображений, имена событий, transform property, computed style properties, технические атрибуты, маркеры состояния, стартовая позиция, fallback-ширина, минимальное количество элементов и параметры клонирования.
+
+В `guides/agent.md` добавлено правило: в JavaScript, TypeScript, конфигурационных файлах и скриптах сборки не оставлять магические числа, строки и булевы значения внутри логики, если их назначение неочевидно. Такие значения нужно выносить в `options`, `defaultOptions`, `config` или именованные константы.
+
+JSDoc-описания настроек в `gsap-creeper-line.js` переведены в двуязычный формат: сначала русское описание, затем через `/` английское. В `guides/agent.md` добавлено правило применять такой формат к новым и редактируемым техническим комментариям, если рядом используется английское описание.
+
 ## Проверки
 
 В процессе работы регулярно выполнялись проверки:
@@ -439,3 +468,177 @@ npx --no-install sass pen.dev/newmark/src/styles/main.scss pen.dev/newmark/src/s
 - Для видимого русского текста следить за неразрывными пробелами.
 - Не использовать `<br>` без крайней необходимости.
 - Кнопки перехода могут иметь стрелку; обычные action-кнопки стрелку не получают.
+
+## Адаптация GSAP-скрипта мобильного меню
+
+Файл `src/scripts/gsap/menu.js`, добавленный из другого проекта, адаптирован под текущую разметку Newmark и переименован в `src/scripts/gsap/gsap-menu.js`, чтобы название соответствовало принятому принципу для GSAP-модулей.
+
+Что изменено:
+
+- старые селекторы `.menu`, `.menu__wrapper`, `.burger-btn--opener`, `.burger-btn--closer` заменены на текущие классы `.mobile-menu`, `.mobile-menu__panel`, `.mobile-menu__overlay`, `.burger-button`, `.mobile-menu__close`;
+- скрипт сделан универсальным через `initGsapMenu(options)`;
+- селекторы, класс состояния, breakpoint, aria-атрибуты, события, длительность, easing, значения GSAP и параметры блокировки body вынесены в `defaultOptions`;
+- к настройкам добавлен двуязычный JSDoc: сначала русское описание, затем английское через `/`;
+- меню подключено в `src/scripts/main.js`;
+- из SCSS убран CSS-переезд панели в открытом состоянии, чтобы transform-анимацией управлял GSAP без конфликта с transition;
+- сохранены состояния доступности: `aria-hidden` на меню и `aria-expanded` на burger-кнопке;
+- добавлено закрытие по overlay, кнопке закрытия, Escape и клику по ссылке меню;
+- при открытом меню блокируется прокрутка body с восстановлением прежнего inline-значения `overflow` после закрытия.
+
+Также упрощена стилизация компонента `component-library/gsap-creeper-line`: из примера удалены проектные CSS-переменные и контекстный модификатор каталога. В библиотечном варианте оставлены только минимальные стили, необходимые для просмотра и работы бегущей строки.
+
+Проверки:
+
+```bash
+npm run build
+npx --no-install sass src/styles/main.scss src/styles/main.css
+git diff --check -- pen.dev/newmark/src/scripts/gsap/gsap-menu.js pen.dev/newmark/src/scripts/main.js pen.dev/newmark/src/styles/components/_mobile-menu.scss component-library/gsap-creeper-line/css.css component-library/gsap-creeper-line/html.html component-library/gsap-creeper-line/readme.md
+```
+
+Production-сборка прошла успешно.
+
+## Коррекция transform у мобильного меню
+
+После проверки анимации мобильного меню из `_mobile-menu.scss` удален исходный `transform: translateX(100%)` у `.mobile-menu__panel`. Закрытое и открытое положения панели теперь задаются только через GSAP в `src/scripts/gsap/gsap-menu.js`, чтобы в открытом состоянии панель приходила к `translate(0px, 0px)` без конфликта CSS-transform и JS-анимации.
+
+Проверки:
+
+```bash
+npx --no-install sass src/styles/main.scss src/styles/main.css
+npm run build
+git diff --check -- pen.dev/newmark/src/styles/components/_mobile-menu.scss pen.dev/newmark/src/styles/main.css pen.dev/newmark/src/scripts/gsap/gsap-menu.js
+```
+
+## Исправление скачка страницы при блокировке body и оптимизация overlay меню
+
+Чтобы сайт не прыгал при открытии мобильного меню и скрытии скролла, добавлен `scrollbar-gutter: stable` для `html` в `src/styles/base/_global.scss`. Дополнительно обновлена функция `bodyLocker`: перед установкой `overflow: hidden` она сохраняет текущее inline-значение `overflow` и `scrollbarGutter`, выставляет стабильный gutter, а при разблокировке возвращает прежние значения.
+
+`src/scripts/gsap/gsap-menu.js` теперь использует общий `bodyLocker`, а настройки `bodySelector`, `scrollRootSelector`, `lockedBodyOverflowValue` и `stableScrollbarGutterValue` передаются из `defaultOptions`.
+
+Из стилей мобильного меню удален `backdrop-filter: blur(8px)`, потому что он вызывал дергание анимации. Также из `_mobile-menu.scss` убраны CSS-transition у элементов меню; анимация открытия и закрытия остается на уровне GSAP.
+
+Проверки:
+
+```bash
+npx --no-install sass src/styles/main.scss src/styles/main.css
+npm run build
+rg -n "backdrop-filter|transition|scrollbar-gutter|bodyLocker|overflow = \"auto\"" pen.dev/newmark/src/styles/components/_mobile-menu.scss pen.dev/newmark/src/styles/base/_global.scss pen.dev/newmark/src/scripts
+```
+
+## Уточнение настройки Escape в GSAP-меню
+
+В `src/scripts/gsap/gsap-menu.js` удалены дублирующие настройки `escapeKeyName` и `escapeKeyCode`, потому что обе были равны `"Escape"` и не разделяли реальные сущности. Оставлена одна настройка `escapeKey`, а закрытие меню по клавиатуре проверяется через `evt.key === settings.escapeKey`.
+
+Проверки:
+
+```bash
+rg -n "escapeKeyName|escapeKeyCode|escapeKey" pen.dev/newmark/src/scripts/gsap/gsap-menu.js
+npm run build
+git diff --check -- pen.dev/newmark/src/scripts/gsap/gsap-menu.js
+```
+
+## Цвет декоративных линий в мобильном меню
+
+В `src/styles/components/_mobile-menu.scss` цвет декоративных линий в шапке и перед футером мобильного меню заменен с `var(--color-border)` на `var(--color-accent)`.
+
+Проверки:
+
+```bash
+npx --no-install sass src/styles/main.scss src/styles/main.css
+npm run build
+git diff --check -- pen.dev/newmark/src/styles/components/_mobile-menu.scss pen.dev/newmark/src/styles/main.css
+```
+
+## Стилизация корневого scrollbar при `scrollbar-gutter`
+
+После добавления `scrollbar-gutter: stable` у корневого скролла появилась светлая браузерная полоса. В `src/styles/base/_global.scss` для `html` добавлен темный `background-color`, а также стили scrollbar:
+
+- `scrollbar-color` и `scrollbar-width` для Firefox;
+- `::-webkit-scrollbar`, `::-webkit-scrollbar-track`, `::-webkit-scrollbar-thumb` для Chromium/Safari.
+
+Трек скролла теперь использует `var(--color-background)`, а ползунок — `var(--color-border-strong)`.
+
+Проверки:
+
+```bash
+npx --no-install sass src/styles/main.scss src/styles/main.css
+npm run build
+git diff --check -- pen.dev/newmark/src/styles/base/_global.scss pen.dev/newmark/src/styles/main.css
+```
+
+## Hover/focus-состояния кнопок открытия и закрытия меню
+
+У кнопок `.burger-button` и `.mobile-menu__close` убраны эффекты смены цвета, фона и бордера при наведении и фокусе. Вместо этого для `:hover` и `:focus-visible` добавлено единое состояние:
+
+```scss
+opacity: 0.6;
+```
+
+Проверки:
+
+```bash
+npx --no-install sass src/styles/main.scss src/styles/main.css
+npm run build
+git diff --check -- pen.dev/newmark/src/styles/components/_burger-button.scss pen.dev/newmark/src/styles/components/_mobile-menu.scss pen.dev/newmark/src/styles/main.css
+```
+
+## Очистка публичных options в GSAP-компонентах
+
+В `src/scripts/gsap/gsap-menu.js` и `src/scripts/gsap/gsap-creeper-line.js` пересмотрены `defaultOptions`. Из публичных настроек удалены служебные значения, которые не должны настраиваться программистом при обычном подключении компонента: имена событий, `aria`-атрибуты, dataset-ключи, значения `true/false`, технические параметры GSAP, названия DOM-атрибутов и прочие внутренние константы.
+
+Теперь:
+
+- `defaultOptions` содержит только реально вариативные настройки компонента;
+- служебные значения вынесены в отдельный внутренний объект `internalSettings`;
+- `component-library/gsap-creeper-line/js.js` синхронизирован с рабочим скриптом проекта;
+- `component-library/gsap-creeper-line/readme.md` обновлен и больше не перечисляет внутренние технические значения как публичный API.
+
+Проверки:
+
+```bash
+npm run build
+git diff --check -- pen.dev/newmark/src/scripts/gsap/gsap-menu.js pen.dev/newmark/src/scripts/gsap/gsap-creeper-line.js component-library/gsap-creeper-line/js.js component-library/gsap-creeper-line/readme.md
+```
+
+## Уточнение единиц измерения в JSDoc GSAP-меню
+
+В `src/scripts/gsap/gsap-menu.js` для числовых настроек JSDoc уточнены единицы измерения:
+
+- `panelClosedXPercent` — проценты;
+- `duration` — секунды;
+- `panelStartDelay` — секунды.
+
+Проверки:
+
+```bash
+git diff --check -- pen.dev/newmark/src/scripts/gsap/gsap-menu.js
+npm run build
+```
+
+## Компонент GSAP Menu в библиотеке компонентов
+
+В `component-library` добавлен новый компонент `gsap-menu` с данными мобильного меню:
+
+- `html.html` — пример разметки с burger-кнопкой, overlay, panel, header, nav и footer;
+- `scss.scss` — исходные SCSS-стили компонента;
+- `css.css` — скомпилированные CSS-стили для быстрого просмотра;
+- `js.js` — переносимая версия `initGsapMenu(options)` на GSAP без импорта внутренних файлов проекта;
+- `readme.md` — описание компонента, подключение, options и поведение.
+
+Для существующего компонента `component-library/gsap-creeper-line` добавлен файл `scss.scss`, а `readme.md` обновлен: теперь рядом с `css.css` всегда должен быть исходный SCSS-файл.
+
+В `guides/agent.md` добавлено правило про структуру библиотеки готовых компонентов:
+
+- каждый компонент хранится в собственной папке;
+- минимальный состав: `html.html`, `scss.scss`, `css.css`, `js.js`, `readme.md`;
+- если у компонента есть CSS, рядом обязательно создается `scss.scss`;
+- библиотечные стили должны быть простыми, понятными и не привязанными к конкретному проекту;
+- библиотечный JavaScript должен быть переносимым и не импортировать внутренние файлы конкретного проекта.
+
+Проверки:
+
+```bash
+npx --no-install sass ../../component-library/gsap-menu/scss.scss ../../component-library/gsap-menu/css.css --no-source-map
+npx --no-install sass ../../component-library/gsap-creeper-line/scss.scss ../../component-library/gsap-creeper-line/css.css --no-source-map
+git diff --check -- component-library/gsap-menu component-library/gsap-creeper-line guides/agent.md
+```
