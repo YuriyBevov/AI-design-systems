@@ -1,5 +1,6 @@
 import "../styles/main.scss";
 import { initCreeperLines } from "./gsap/gsap-creeper-line";
+import { initGsapCountdown } from "./gsap/gsap-countdown";
 import { initGsapMenu } from "./gsap/gsap-menu";
 import { initGsapScrollUpButton } from "./gsap/gsap-scroll-up-button";
 
@@ -11,4 +12,5 @@ initCreeperLines({
 });
 
 initGsapMenu();
+initGsapCountdown();
 initGsapScrollUpButton();

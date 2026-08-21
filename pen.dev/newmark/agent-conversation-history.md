@@ -801,3 +801,37 @@ rg -n "#phone|#icon-phone" pen.dev/newmark/index.html pen.dev/newmark/dist/index
 rg -o "id=\"icon-phone\"" pen.dev/newmark/dist/sprite.svg
 git diff --check -- pen.dev/newmark/index.html
 ```
+
+## Компонент GSAP Countdown
+
+Статичный счетчик в CTA-форме заменен на самостоятельный компонент `.countdown`, чтобы его можно было переиспользовать вне конкретной формы или проекта.
+
+Что сделано:
+
+- добавлен модуль `src/scripts/gsap/gsap-countdown.js`;
+- добавлен SCSS-компонент `src/styles/components/_countdown.scss`;
+- компонент подключен в `src/scripts/main.js` через `initGsapCountdown()`;
+- в `src/styles/main.scss` подключен `components/countdown`;
+- разметка CTA переведена с контекстных классов `cta__countdown-*` на самостоятельные классы `countdown__*`;
+- в CTA оставлен только контекстный класс `cta__countdown` для позиционирования;
+- добавлена поддержка `data-countdown-duration` и `data-countdown-deadline`;
+- подписи единиц времени меняются с учетом русских падежей: `1 час`, `3 часа`, `5 часов`;
+- цифры при изменении разбиваются на отдельные символы и плавно анимируются через GSAP.
+
+От `SplitText` отказались: для цифр достаточно локального разбиения строки на символы внутри компонента, без зависимости от дополнительного GSAP-плагина.
+
+В `component-library` добавлен готовый компонент `gsap-countdown`:
+
+- `html.html`;
+- `scss.scss`;
+- `css.css`;
+- `js.js`;
+- `readme.md`.
+
+Проверки:
+
+```bash
+npx --no-install sass src/styles/main.scss src/styles/main.css
+npx --no-install sass ../../component-library/gsap-countdown/scss.scss ../../component-library/gsap-countdown/css.css --no-source-map
+npm run build
+```
