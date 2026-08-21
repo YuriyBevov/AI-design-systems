@@ -1,0 +1,237 @@
+.burger-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 40px;
+	color: #f6a800;
+	background-color: #24231f;
+	border: 1px solid #4a463b;
+	cursor: pointer;
+	transition: opacity 0.2s ease;
+
+	&__icon {
+		position: relative;
+		width: 20px;
+		height: 12px;
+
+		&,
+		&::before,
+		&::after {
+			display: block;
+			border-top: 2px solid currentColor;
+		}
+
+		&::before,
+		&::after {
+			content: "";
+			position: absolute;
+			right: 0;
+			left: 0;
+		}
+
+		&::before {
+			top: 4px;
+		}
+
+		&::after {
+			top: 10px;
+		}
+	}
+
+	&:hover,
+	&:focus-visible {
+		opacity: 0.6;
+	}
+
+	@media (min-width: 1140px) {
+		display: none;
+	}
+}
+
+.mobile-menu {
+	position: fixed;
+	inset: 0;
+	z-index: 20;
+	visibility: hidden;
+	pointer-events: none;
+
+	&.is-open {
+		visibility: visible;
+		pointer-events: auto;
+	}
+
+	&__overlay {
+		position: absolute;
+		inset: 0;
+		background-color: rgb(8 8 7 / 64%);
+	}
+
+	&__panel {
+		--mobile-menu-padding-inline: clamp(16px, 3vw, 24px);
+
+		position: relative;
+		z-index: 1;
+		display: flex;
+		flex-direction: column;
+		width: 95%;
+		max-width: 720px;
+		height: 100%;
+		padding: 0;
+		margin-left: auto;
+		color: #ffffff;
+		background-color: #181815;
+		overflow-y: auto;
+		scrollbar-color: transparent transparent;
+		scrollbar-width: thin;
+
+		&::-webkit-scrollbar {
+			width: 0;
+			height: 0;
+		}
+
+		&::-webkit-scrollbar-thumb,
+		&::-webkit-scrollbar-track {
+			background-color: transparent;
+		}
+	}
+
+	&__header {
+		position: sticky;
+		top: 0;
+		z-index: 2;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 24px;
+		padding: 10px var(--mobile-menu-padding-inline);
+		background-color: #181815;
+
+		&::after {
+			content: "";
+			position: absolute;
+			right: var(--mobile-menu-padding-inline);
+			bottom: 0;
+			left: var(--mobile-menu-padding-inline);
+			height: 2px;
+			background-color: #f6a800;
+		}
+	}
+
+	&__logo,
+	&__phone,
+	&__callback,
+	&__nav-link {
+		color: inherit;
+		text-decoration: none;
+	}
+
+	&__logo {
+		font-size: 20px;
+		font-weight: 700;
+		line-height: 1;
+	}
+
+	&__close {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 40px;
+		height: 40px;
+		color: #f6a800;
+		background-color: #24231f;
+		border: 1px solid #4a463b;
+		cursor: pointer;
+		transition: opacity 0.2s ease;
+
+		&:hover,
+		&:focus-visible {
+			opacity: 0.6;
+		}
+	}
+
+	&__close-icon {
+		position: relative;
+		width: 16px;
+		height: 16px;
+
+		&::before,
+		&::after {
+			content: "";
+			position: absolute;
+			top: 50%;
+			left: 0;
+			width: 100%;
+			border-top: 2px solid currentColor;
+		}
+
+		&::before {
+			transform: rotate(45deg);
+		}
+
+		&::after {
+			transform: rotate(-45deg);
+		}
+	}
+
+	&__nav {
+		padding: 32px var(--mobile-menu-padding-inline);
+	}
+
+	&__nav-list {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+		padding: 0;
+		margin: 0;
+		list-style: none;
+	}
+
+	&__nav-link {
+		display: flex;
+		align-items: center;
+		min-height: 44px;
+		font-size: 20px;
+		font-weight: 600;
+		line-height: 1.2;
+
+		&:hover {
+			color: #f6a800;
+		}
+	}
+
+	&__footer {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		gap: 24px;
+		padding: 24px var(--mobile-menu-padding-inline) 40px;
+		margin-top: auto;
+
+		&::before {
+			content: "";
+			position: absolute;
+			top: 0;
+			right: var(--mobile-menu-padding-inline);
+			left: var(--mobile-menu-padding-inline);
+			height: 2px;
+			background-color: #f6a800;
+		}
+	}
+
+	&__callback {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 160px;
+		min-height: 40px;
+		padding: 12px 24px;
+		color: #181815;
+		font-weight: 700;
+		background-color: #f6a800;
+	}
+
+	@media (min-width: 1140px) {
+		display: none;
+	}
+}

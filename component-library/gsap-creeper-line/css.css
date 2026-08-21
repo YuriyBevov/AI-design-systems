@@ -1,0 +1,36 @@
+.creeper-line {
+  overflow: hidden;
+  color: #181815;
+  background-color: #f6a800;
+}
+.creeper-line__track {
+  overflow: hidden;
+}
+.creeper-line__list {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 24px;
+  width: max-content;
+  min-width: 100%;
+  padding: 14px 0;
+  margin: 0;
+  list-style: none;
+  white-space: nowrap;
+  will-change: transform;
+}
+.creeper-line__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 24px;
+  font-family: "Arial Narrow", Arial, sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+}
+.creeper-line__item::after {
+  content: "";
+  width: 6px;
+  height: 6px;
+  background-color: currentColor;
+}

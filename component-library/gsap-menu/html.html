@@ -1,0 +1,34 @@
+<button class="burger-button" type="button" aria-label="Открыть меню" aria-expanded="false">
+	<span class="burger-button__icon" aria-hidden="true"></span>
+</button>
+
+<div class="mobile-menu" aria-hidden="true">
+	<div class="mobile-menu__overlay"></div>
+	<div class="mobile-menu__panel" role="dialog" aria-modal="true" aria-label="Меню">
+		<div class="mobile-menu__header">
+			<a class="mobile-menu__logo" href="/">Logo</a>
+			<button class="mobile-menu__close" type="button" aria-label="Закрыть меню">
+				<span class="mobile-menu__close-icon" aria-hidden="true"></span>
+			</button>
+		</div>
+
+		<nav class="mobile-menu__nav" aria-label="Основная навигация">
+			<ul class="mobile-menu__nav-list">
+				<li class="mobile-menu__nav-item">
+					<a class="mobile-menu__nav-link" href="#catalog">Каталог</a>
+				</li>
+				<li class="mobile-menu__nav-item">
+					<a class="mobile-menu__nav-link" href="#advantages">Преимущества</a>
+				</li>
+				<li class="mobile-menu__nav-item">
+					<a class="mobile-menu__nav-link" href="#contacts">Контакты</a>
+				</li>
+			</ul>
+		</nav>
+
+		<div class="mobile-menu__footer">
+			<a class="mobile-menu__phone" href="tel:+70000000000">+7 000 000-00-00</a>
+			<a class="mobile-menu__callback" href="#callback">Заказать звонок</a>
+		</div>
+	</div>
+</div>

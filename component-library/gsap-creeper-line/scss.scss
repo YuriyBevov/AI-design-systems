@@ -1,0 +1,40 @@
+.creeper-line {
+	overflow: hidden;
+	color: #181815;
+	background-color: #f6a800;
+
+	&__track {
+		overflow: hidden;
+	}
+
+	&__list {
+		display: flex;
+		flex-wrap: nowrap;
+		gap: 24px;
+		width: max-content;
+		min-width: 100%;
+		padding: 14px 0;
+		margin: 0;
+		list-style: none;
+		white-space: nowrap;
+		will-change: transform;
+	}
+
+	&__item {
+		display: inline-flex;
+		align-items: center;
+		gap: 24px;
+		font-family: "Arial Narrow", Arial, sans-serif;
+		font-size: 20px;
+		font-weight: 700;
+		line-height: 1;
+		text-transform: uppercase;
+
+		&::after {
+			content: "";
+			width: 6px;
+			height: 6px;
+			background-color: currentColor;
+		}
+	}
+}
