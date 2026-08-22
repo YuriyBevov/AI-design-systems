@@ -835,3 +835,16 @@ npx --no-install sass src/styles/main.scss src/styles/main.css
 npx --no-install sass ../../component-library/gsap-countdown/scss.scss ../../component-library/gsap-countdown/css.css --no-source-map
 npm run build
 ```
+
+## Исправление resize-логики GSAP Creeper Line
+
+В `src/scripts/gsap/gsap-creeper-line.js` исправлена причина скачка бегущей строки при изменении высоты экрана. Обработчик `resize` теперь сравнивает текущую ширину viewport с предыдущей и запускает пересчет только если ширина уменьшилась.
+
+Такая же правка внесена в библиотечный компонент `component-library/gsap-creeper-line/js.js`, а в `readme.md` добавлено пояснение: изменение высоты viewport игнорируется, чтобы мобильные браузерные панели не дергали ленту.
+
+Проверки:
+
+```bash
+npm run build
+git diff --check -- pen.dev/newmark/src/scripts/gsap/gsap-creeper-line.js component-library/gsap-creeper-line/js.js component-library/gsap-creeper-line/readme.md pen.dev/newmark/agent-conversation-history.md
+```

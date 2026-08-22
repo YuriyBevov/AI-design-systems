@@ -16,6 +16,8 @@ const internalSettings = {
 	resizeEventName: "resize",
 	mediaChangeEventName: "change",
 	transformProperty: "x",
+	scrollRootSelector: "html",
+	clientWidthProperty: "clientWidth",
 	columnGapProperty: "columnGap",
 	gapProperty: "gap",
 	idAttribute: "id",
@@ -76,6 +78,10 @@ export const initCreeperLines = (options = {}) => {
 		let x = internalSettings.initialPosition;
 		let ticker = null;
 		let resizeTimer = null;
+		let lastViewportWidth =
+			document.querySelector(internalSettings.scrollRootSelector)?.[
+				internalSettings.clientWidthProperty
+			] || window.innerWidth;
 
 		const clearClones = () => {
 			track
@@ -195,6 +201,17 @@ export const initCreeperLines = (options = {}) => {
 		});
 
 		window.addEventListener(internalSettings.resizeEventName, () => {
+			const currentViewportWidth =
+				document.querySelector(internalSettings.scrollRootSelector)?.[
+					internalSettings.clientWidthProperty
+				] || window.innerWidth;
+
+			if (currentViewportWidth >= lastViewportWidth) {
+				lastViewportWidth = currentViewportWidth;
+				return;
+			}
+
+			lastViewportWidth = currentViewportWidth;
 			clearTimeout(resizeTimer);
 			resizeTimer = setTimeout(start, settings.resizeDelay);
 		});
