@@ -1,5 +1,5 @@
 import { defineConfig } from "astro/config";
-import svgSpritemap from "vite-plugin-svg-spritemap";
+import { svgSpritePlugin } from "./scripts/svg-sprite-plugin.mjs";
 
 export default defineConfig({
   vite: {
@@ -11,22 +11,9 @@ export default defineConfig({
       },
     },
     plugins: [
-      svgSpritemap({
-        pattern: "src/sprite/**/*.svg",
+      svgSpritePlugin({
+        inputDir: "src/sprite",
         filename: "sprite.svg",
-        prefix: "",
-        svgo: {
-          multipass: true,
-          plugins: [
-            { name: "cleanupAttrs", params: { removeEmptyAttrs: true } },
-            {
-              name: "removeAttrs",
-              params: {
-                attrs: ["fill", "fill-rule", "stroke", "stroke-width"],
-              },
-            },
-          ],
-        },
       }),
     ],
   },

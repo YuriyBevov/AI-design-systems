@@ -27,6 +27,10 @@
 		height: 18px;
 		fill: var(--color-white);
 
+		* {
+			fill: currentColor;
+		}
+
 		&--arrow {
 			width: 36px;
 			height: 13px;

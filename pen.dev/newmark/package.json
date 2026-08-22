@@ -21,7 +21,6 @@
     "postcss": "^8.4.47",
     "sass": "^1.80.6",
     "sharp": "^0.33.5",
-    "vite": "^5.4.10",
-    "vite-plugin-svg-spritemap": "^1.0.2"
+    "vite": "^5.4.10"
   }
 }

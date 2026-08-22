@@ -29,6 +29,10 @@
 		height: 24px;
 		fill: currentColor;
 
+		* {
+			fill: currentColor;
+		}
+
 		&--vk {
 			width: 28px;
 			height: 28px;

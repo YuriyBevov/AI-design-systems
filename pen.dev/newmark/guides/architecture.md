@@ -81,7 +81,13 @@ Vite-настройки задаются внутри поля `vite` в `astro.
 
 Исходные SVG-иконки хранятся в `src/sprite/`.
 
-Спрайт собирается через `vite-plugin-svg-spritemap`, подключенный в `astro.config.mjs`.
+Спрайт собирается локальным Vite-плагином `scripts/svg-sprite-plugin.mjs`, подключенным в `astro.config.mjs`.
+
+Плагин должен:
+
+- отдавать `/sprite.svg` в dev-режиме до Astro fallback-роутинга;
+- записывать `sprite.svg` в `dist/` при `astro build`;
+- формировать `symbol id` из имени файла без дополнительного префикса.
 
 Не нужно хранить собранный `sprite.svg` в `public/`: это сборочный артефакт, а не исходник.
 
