@@ -870,6 +870,8 @@ main {
 }
 .content > h1::after {
   content: "";
+  position: relative;
+  top: 16px;
   display: block;
   width: 92px;
   height: 2px;
