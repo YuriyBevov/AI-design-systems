@@ -869,3 +869,22 @@ npm run build
 rg -n "tickDelay|setInterval|Math\\.floor\\(\\(deadline|secondBoundaryDelay|getNextDelay|setTimeout" pen.dev/newmark/src/scripts/gsap/gsap-countdown.js component-library/gsap-countdown/js.js component-library/gsap-countdown/readme.md
 git diff --check -- pen.dev/newmark/src/scripts/gsap/gsap-countdown.js component-library/gsap-countdown/js.js component-library/gsap-countdown/readme.md pen.dev/newmark/agent-conversation-history.md
 ```
+
+## Маска телефона через IMask
+
+Для поля телефона в форме заявки подключена маска через `imask`.
+
+Что сделано:
+
+- добавлен модуль `src/scripts/functions/initPhoneMasks.js`;
+- модуль подключен в `src/scripts/main.js`;
+- поле телефона получило атрибут `data-phone-mask`;
+- placeholder приведен к формату маски: `+7 (900) 000 - 00 - 00`;
+- маска задана как `+{7} (000) 000 - 00 - 00`.
+
+Проверки:
+
+```bash
+npm run build
+git diff --check -- pen.dev/newmark/index.html pen.dev/newmark/src/scripts/main.js pen.dev/newmark/src/scripts/functions/initPhoneMasks.js pen.dev/newmark/agent-conversation-history.md
+```

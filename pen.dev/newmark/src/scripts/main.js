@@ -1,4 +1,5 @@
 import "../styles/main.scss";
+import { initPhoneMasks } from "./functions/initPhoneMasks";
 import { initCreeperLines } from "./gsap/gsap-creeper-line";
 import { initGsapCountdown } from "./gsap/gsap-countdown";
 import { initGsapMenu } from "./gsap/gsap-menu";
@@ -14,3 +15,4 @@ initCreeperLines({
 initGsapMenu();
 initGsapCountdown();
 initGsapScrollUpButton();
+initPhoneMasks();
