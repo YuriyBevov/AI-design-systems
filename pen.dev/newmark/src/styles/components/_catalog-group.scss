@@ -23,20 +23,42 @@
 		position: relative;
 		display: flex;
 		align-items: center;
-		padding-left: 14px;
+		padding-bottom: var(--space-md);
 		color: var(--color-text-muted);
 		font-size: 16px;
 		line-height: 1.45;
 
-		&::before {
+		&:not(:last-child)::before {
 			content: "";
 			position: absolute;
-			top: 50%;
+			right: 0;
+			bottom: 0;
 			left: 0;
-			width: 2px;
-			height: 100%;
+			height: 2px;
 			background-color: var(--color-accent);
-			transform: translateY(-50%);
+		}
+
+		&:last-child {
+			padding-bottom: 0;
+		}
+
+		@media (min-width: 900px) {
+			padding-bottom: 0;
+			padding-left: 14px;
+
+			&:not(:last-child)::before,
+			&::before {
+				content: "";
+				position: absolute;
+				top: 50%;
+				right: auto;
+				bottom: auto;
+				left: 0;
+				width: 2px;
+				height: 100%;
+				background-color: var(--color-accent);
+				transform: translateY(-50%);
+			}
 		}
 	}
 
