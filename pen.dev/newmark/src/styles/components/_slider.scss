@@ -1,7 +1,10 @@
-.content-slider.swiper {
-	overflow: visible;
+.slider {
 	width: 100%;
 	margin-bottom: var(--space-md);
+
+	&.swiper {
+		overflow: visible;
+	}
 
 	&__wrapper {
 		align-items: stretch;

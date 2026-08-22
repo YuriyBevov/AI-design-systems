@@ -4,16 +4,16 @@ import "swiper/css";
 import "swiper/css/free-mode";
 
 const internalSettings = {
-	initializedDataKey: "contentSliderInitialized",
+	initializedDataKey: "sliderInitialized",
 	initializedValue: "true",
 };
 
 const defaultOptions = {
-	rootSelector: "[data-content-slider]",
+	rootSelector: "[data-slider]",
 	spaceBetween: 16,
 };
 
-export const initContentSliders = (options = {}) => {
+export const initSliders = (options = {}) => {
 	const settings = {
 		...defaultOptions,
 		...options,

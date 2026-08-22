@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import StaticPage from "../templates/StaticPage.astro";
+import StaticPageLayout from "../layouts/StaticPageLayout.astro";
 
 export function getStaticPaths() {
   const pageModules = import.meta.glob("../content/pages/*.md", { eager: true });
@@ -24,5 +24,5 @@ const { page } = Astro.props;
 ---
 
 <BaseLayout title={page.seoTitle ?? page.title} description={page.seoDescription}>
-  <StaticPage page={page} />
+  <StaticPageLayout page={page} />
 </BaseLayout>

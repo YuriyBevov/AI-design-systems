@@ -1036,3 +1036,22 @@ curl -I http://127.0.0.1:4321/sprite.svg
 - добавлен компонент `ContentSlider.astro`, который вставляется в Markdown через шорткод `{{ slider: id }}`;
 - для страницы `/about/` сгенерированы три изображения слайдера 400x300 и webp-версии;
 - все упоминания «Авалон» в странице о компании заменены на «Ньюмарк».
+
+## Архитектурная ревизия после перехода на Astro
+
+После ревизии устранены дубли и неуниверсальные именования.
+
+Что изменено:
+
+- `ContentSlider` переименован в универсальный компонент `Slider`;
+- CSS-класс `.content-slider` заменен на `.slider`;
+- инициализатор `initContentSliders` переименован в `initSliders`;
+- `StaticPage.astro` перенесен из `src/templates/` в `src/layouts/StaticPageLayout.astro`;
+- папка `src/templates/` больше не используется;
+- удален отдельный `vite.config.js`, потому что Vite-настройки живут в `astro.config.mjs`;
+- удалены ручные сборочные файлы `src/styles/main.css` и `src/styles/main.css.map`;
+- удалены дубли шрифтов и `sprite.svg` из `public/`;
+- шрифты подключаются из `src/fonts/`;
+- SVG-спрайт собирается из `src/sprite/` через `vite-plugin-svg-spritemap`;
+- `src/scripts/main.js` приведен к единому стилю: импорт init-функций и запуск через общий список;
+- добавлен гайд `guides/architecture.md`, который фиксирует эти правила на будущее.

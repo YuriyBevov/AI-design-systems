@@ -1,5 +1,5 @@
 ---
-import ContentSlider from "../components/ContentSlider.astro";
+import Slider from "../components/Slider.astro";
 
 const { page } = Astro.props;
 const breadcrumbs = page.breadcrumbs ?? [];
@@ -78,7 +78,7 @@ if (lastIndex < compiledContent.length) {
     <div class="content">
       {contentParts.map((part) => (
         part.type === "slider" ? (
-          <ContentSlider images={part.images} />
+          <Slider images={part.images} />
         ) : (
           <Fragment set:html={part.html} />
         )
