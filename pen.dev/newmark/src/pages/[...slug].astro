@@ -3,8 +3,16 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import StaticPage from "../templates/StaticPage.astro";
 
 export function getStaticPaths() {
-  const pageModules = import.meta.glob("../content/pages/*.json", { eager: true });
-  const pages = Object.values(pageModules).map((module) => module.default);
+  const pageModules = import.meta.glob("../content/pages/*.md", { eager: true });
+  const pages = Object.entries(pageModules).map(([path, module]) => {
+    const fileName = path.split("/").pop()?.replace(".md", "") ?? "";
+
+    return {
+      ...module.frontmatter,
+      slug: module.frontmatter.slug ?? fileName,
+      compiledContent: module.compiledContent,
+    };
+  });
 
   return pages.map((page) => ({
     params: { slug: page.slug },
@@ -15,6 +23,6 @@ export function getStaticPaths() {
 const { page } = Astro.props;
 ---
 
-<BaseLayout title={page.seoTitle} description={page.seoDescription}>
+<BaseLayout title={page.seoTitle ?? page.title} description={page.seoDescription}>
   <StaticPage page={page} />
 </BaseLayout>

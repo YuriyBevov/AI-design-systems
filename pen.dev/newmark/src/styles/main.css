@@ -891,10 +891,12 @@ main {
 .content > ol,
 .content > blockquote,
 .content > figure,
+.content > table,
 .content > .step-list,
 .content > .data-table-wrapper,
 .content > .faq-list,
-.content > .contact-list {
+.content > .contact-list,
+.content > .content-slider {
   color: var(--color-text-muted);
   font-size: 16px;
   line-height: 1.6;
@@ -904,10 +906,12 @@ main {
 .content > ol,
 .content > blockquote,
 .content > figure,
+.content > table,
 .content > .step-list,
 .content > .data-table-wrapper,
 .content > .faq-list,
-.content > .contact-list {
+.content > .contact-list,
+.content > .content-slider {
   margin-bottom: var(--space-md);
 }
 .content > ul,
@@ -941,6 +945,27 @@ main {
   font-size: 12px;
   font-style: italic;
   line-height: 1.4;
+}
+.content > table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--color-border);
+}
+.content > table th,
+.content > table td {
+  padding: 16px;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  text-align: left;
+  vertical-align: top;
+}
+.content > table th {
+  color: var(--color-white);
+  font-weight: 700;
+}
+.content > table tr:last-child th,
+.content > table tr:last-child td {
+  border-bottom: 0;
 }
 .content > hr {
   width: 100%;
@@ -1060,6 +1085,38 @@ main {
   font-size: 18px;
   font-weight: 700;
   line-height: 1.35;
+}
+
+.content-slider.swiper {
+  overflow: visible;
+  width: 100%;
+  margin-bottom: var(--space-md);
+}
+.content-slider.swiper__wrapper {
+  align-items: stretch;
+}
+.content-slider.swiper__slide {
+  width: 400px;
+  height: auto;
+  margin: 0;
+}
+.content-slider.swiper__image {
+  width: 400px;
+  height: 300px;
+  border: 1px solid var(--color-border);
+  object-fit: cover;
+}
+.content-slider.swiper__caption {
+  margin-top: var(--space-xs);
+  color: var(--color-text-muted);
+  font-size: 12px;
+  font-style: italic;
+  line-height: 1.4;
+}
+@media (max-width: 479px) {
+  .content-slider.swiper__slide, .content-slider.swiper__image {
+    width: calc(100vw - var(--container-padding) * 2);
+  }
 }
 
 .section-header {

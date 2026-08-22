@@ -1,0 +1,37 @@
+.content-slider.swiper {
+	overflow: visible;
+	width: 100%;
+	margin-bottom: var(--space-md);
+
+	&__wrapper {
+		align-items: stretch;
+	}
+
+	&__slide {
+		width: 400px;
+		height: auto;
+		margin: 0;
+	}
+
+	&__image {
+		width: 400px;
+		height: 300px;
+		border: 1px solid var(--color-border);
+		object-fit: cover;
+	}
+
+	&__caption {
+		margin-top: var(--space-xs);
+		color: var(--color-text-muted);
+		font-size: 12px;
+		font-style: italic;
+		line-height: 1.4;
+	}
+
+	@media (max-width: 479px) {
+		&__slide,
+		&__image {
+			width: calc(100vw - var(--container-padding) * 2);
+		}
+	}
+}

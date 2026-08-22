@@ -1,7 +1,58 @@
 ---
+import ContentSlider from "../components/ContentSlider.astro";
+
 const { page } = Astro.props;
-const blocks = page.contentBlocks ?? [];
 const breadcrumbs = page.breadcrumbs ?? [];
+const sliderData = page.sliders ?? {};
+const compiledContent = page.compiledContent ? await page.compiledContent() : "";
+const imageModules = import.meta.glob("../images/webp/*", { eager: true });
+
+const getImageSrc = (fileName) => {
+  const imageModule = Object.entries(imageModules).find(([path]) => (
+    path.endsWith(`/${fileName}`)
+  ))?.[1];
+
+  if (!imageModule) {
+    throw new Error(`Content image "${fileName}" was not found in src/images/webp/`);
+  }
+
+  return imageModule?.default?.src ?? imageModule?.default;
+};
+
+const getSliderImages = (sliderId) => {
+  return (sliderData[sliderId] ?? []).map((image) => ({
+    ...image,
+    src: getImageSrc(image.src),
+  }));
+};
+
+const contentParts = [];
+const sliderPattern = /<p>\s*\{\{\s*slider:\s*([a-z0-9-]+)\s*\}\}\s*<\/p>/gi;
+let lastIndex = 0;
+let match;
+
+while ((match = sliderPattern.exec(compiledContent)) !== null) {
+  if (match.index > lastIndex) {
+    contentParts.push({
+      type: "html",
+      html: compiledContent.slice(lastIndex, match.index),
+    });
+  }
+
+  contentParts.push({
+    type: "slider",
+    images: getSliderImages(match[1]),
+  });
+
+  lastIndex = sliderPattern.lastIndex;
+}
+
+if (lastIndex < compiledContent.length) {
+  contentParts.push({
+    type: "html",
+    html: compiledContent.slice(lastIndex),
+  });
+}
 ---
 
 {breadcrumbs.length > 0 && (
@@ -25,102 +76,13 @@ const breadcrumbs = page.breadcrumbs ?? [];
 <section class="section">
   <div class="container">
     <div class="content">
-      <h1>{page.h1}</h1>
-      {page.lead && <p>{page.lead}</p>}
-
-      {blocks.map((block) => (
-        <>
-          {block.type === "text" && (
-            <>
-              {block.title && <h2>{block.title}</h2>}
-              {(block.paragraphs ?? []).map((paragraph) => <p>{paragraph}</p>)}
-            </>
-          )}
-
-          {block.type === "image" && (
-            <figure>
-              <img src={block.src} alt={block.alt} width={block.width} height={block.height} loading="lazy" />
-              {block.caption && <figcaption>{block.caption}</figcaption>}
-            </figure>
-          )}
-
-          {block.type === "list" && (
-            <>
-              {block.title && <h2>{block.title}</h2>}
-              <ul>
-                {(block.items ?? []).map((item) => <li>{item}</li>)}
-              </ul>
-            </>
-          )}
-
-          {block.type === "steps" && (
-            <>
-              {block.title && <h2>{block.title}</h2>}
-              <ol class="step-list">
-                {(block.items ?? []).map((item) => (
-                  <li class="step-list__item">
-                    <span class="step-list__title">{item.title}</span>
-                    {item.text && <p class="step-list__text">{item.text}</p>}
-                  </li>
-                ))}
-              </ol>
-            </>
-          )}
-
-          {block.type === "table" && (
-            <>
-              {block.title && <h2>{block.title}</h2>}
-              <div class="data-table-wrapper">
-                <table class="data-table">
-                  <tbody>
-                    {(block.rows ?? []).map((row) => (
-                      <tr>
-                        <th scope="row">{row.name}</th>
-                        <td>{row.value}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </>
-          )}
-
-          {block.type === "faq" && (
-            <>
-              {block.title && <h2>{block.title}</h2>}
-              <div class="faq-list">
-                {(block.items ?? []).map((item) => (
-                  <details class="faq-list__item">
-                    <summary class="faq-list__question">{item.question}</summary>
-                    <p class="faq-list__answer">{item.answer}</p>
-                  </details>
-                ))}
-              </div>
-            </>
-          )}
-
-          {block.type === "contacts" && (
-            <>
-              {block.title && <h2>{block.title}</h2>}
-              <ul class="contact-list">
-                {(block.items ?? []).map((item) => (
-                  <li class="contact-list__item">
-                    <span class="contact-list__label">{item.label}</span>
-                    {item.href ? (
-                      <a class="contact-list__value" href={item.href}>{item.value}</a>
-                    ) : (
-                      <span class="contact-list__value">{item.value}</span>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </>
-          )}
-
-          {block.type === "separator" && <hr />}
-        </>
+      {contentParts.map((part) => (
+        part.type === "slider" ? (
+          <ContentSlider images={part.images} />
+        ) : (
+          <Fragment set:html={part.html} />
+        )
       ))}
-
     </div>
   </div>
 </section>
