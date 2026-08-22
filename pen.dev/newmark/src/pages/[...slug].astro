@@ -1,0 +1,20 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import StaticPage from "../templates/StaticPage.astro";
+
+export function getStaticPaths() {
+  const pageModules = import.meta.glob("../content/pages/*.json", { eager: true });
+  const pages = Object.values(pageModules).map((module) => module.default);
+
+  return pages.map((page) => ({
+    params: { slug: page.slug },
+    props: { page },
+  }));
+}
+
+const { page } = Astro.props;
+---
+
+<BaseLayout title={page.seoTitle} description={page.seoDescription}>
+  <StaticPage page={page} />
+</BaseLayout>

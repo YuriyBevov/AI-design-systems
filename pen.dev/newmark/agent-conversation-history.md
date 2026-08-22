@@ -960,3 +960,20 @@ rg -n "product-card__conditions|clarification" pen.dev/newmark/index.html pen.de
 npx --no-install sass src/styles/main.scss src/styles/main.css
 npm run build
 ```
+
+## Шаблон статичных страниц на Astro
+
+Создана первая версия шаблона статичных страниц.
+
+Что добавлено:
+
+- `src/layouts/BaseLayout.astro` - общая HTML-оболочка с header, footer, meta-тегами, стилями и клиентским JS;
+- `src/components/Header.astro` и `src/components/Footer.astro` - общие компоненты шапки и подвала для новых Astro-страниц;
+- `src/templates/StaticPage.astro` - шаблон статичной страницы;
+- `src/pages/[...slug].astro` - динамический роут для страниц из `src/content/pages/`;
+- `src/content/pages/delivery.json` - первая контентная страница для проверки шаблона;
+- `src/styles/components/_breadcrumbs.scss` - компонент хлебных крошек;
+- `src/styles/pages/_static-page.scss` - стили статичной страницы и контентных блоков;
+- `guides/ai-static-page.md` - проектная инструкция для ИИ по созданию статичных страниц.
+
+Шаблон поддерживает блоки `text`, `image`, `list`, `steps`, `table`, `faq`, `contacts` и отдельный CTA-блок.

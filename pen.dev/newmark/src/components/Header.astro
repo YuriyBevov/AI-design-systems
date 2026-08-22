@@ -1,0 +1,114 @@
+---
+import logoImage from "../images/webp/logo.webp";
+---
+
+<header class="header">
+  <div class="container">
+    <a class="logo logo--header" href="/" aria-label="НьюМарк">
+      <img class="logo__image" src={logoImage.src} alt="НьюМарк" width="160" height="60" />
+    </a>
+
+    <nav class="nav" aria-label="Основная навигация">
+      <ul class="nav__list">
+        <li class="nav__item"><a class="nav__link" href="/about/">О&nbsp;компании</a></li>
+        <li class="nav__item"><a class="nav__link nav__link--featured" href="/catalog/">Каталог</a></li>
+        <li class="nav__item"><a class="nav__link" href="/delivery/">Оплата и&nbsp;доставка</a></li>
+        <li class="nav__item"><a class="nav__link" href="/contacts/">Контакты</a></li>
+      </ul>
+    </nav>
+
+    <div class="header__actions">
+      <ul class="social-list">
+        <li class="social-list__item">
+          <a class="social-list__link" href="#" aria-label="Telegram">
+            <svg class="social-list__icon" width="24" height="24" viewBox="0 0 14 12" aria-hidden="true">
+              <use href="/sprite.svg#icon-tg"></use>
+            </svg>
+          </a>
+        </li>
+        <li class="social-list__item">
+          <a class="social-list__link" href="#" aria-label="ВКонтакте">
+            <svg class="social-list__icon social-list__icon--vk" width="28" height="28" viewBox="0 0 14 8" aria-hidden="true">
+              <use href="/sprite.svg#icon-vk"></use>
+            </svg>
+          </a>
+        </li>
+        <li class="social-list__item">
+          <a class="social-list__link" href="#" aria-label="Max">
+            <svg class="social-list__icon" width="24" height="24" viewBox="0 0 15 14" aria-hidden="true">
+              <use href="/sprite.svg#icon-max"></use>
+            </svg>
+          </a>
+        </li>
+      </ul>
+      <button class="button button--primary header__callback" type="button" aria-label="Обратный звонок">
+        <svg class="button__icon button__icon--phone" width="28" height="28" viewBox="0 0 24 24" aria-hidden="true">
+          <use href="/sprite.svg#icon-phone"></use>
+        </svg>
+        <span class="button__text">Обратный звонок</span>
+      </button>
+      <button class="burger-button" type="button" aria-label="Открыть меню" aria-controls="mobile-menu" aria-expanded="false">
+        <svg class="burger-button__icon" width="24" height="24" viewBox="0 0 17 12" aria-hidden="true">
+          <use href="/sprite.svg#icon-burger"></use>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+  <div class="mobile-menu__overlay"></div>
+  <div class="mobile-menu__panel" role="dialog" aria-modal="true" aria-label="Мобильное меню">
+    <div class="mobile-menu__header">
+      <a class="logo logo--mobile-menu" href="/" aria-label="НьюМарк">
+        <img class="logo__image" src={logoImage.src} alt="НьюМарк" width="160" height="60" />
+      </a>
+      <button class="mobile-menu__close" type="button" aria-label="Закрыть меню">
+        <svg class="mobile-menu__close-icon" width="24" height="24" viewBox="0 0 17 17" aria-hidden="true">
+          <use href="/sprite.svg#icon-cross"></use>
+        </svg>
+      </button>
+    </div>
+
+    <nav class="mobile-menu__nav" aria-label="Мобильная навигация">
+      <ul class="mobile-menu__nav-list">
+        <li class="mobile-menu__nav-item"><a class="mobile-menu__nav-link" href="/about/">О&nbsp;компании</a></li>
+        <li class="mobile-menu__nav-item"><a class="mobile-menu__nav-link" href="/catalog/">Каталог</a></li>
+        <li class="mobile-menu__nav-item"><a class="mobile-menu__nav-link" href="/delivery/">Оплата и&nbsp;доставка</a></li>
+        <li class="mobile-menu__nav-item"><a class="mobile-menu__nav-link" href="/contacts/">Контакты</a></li>
+      </ul>
+    </nav>
+
+    <div class="mobile-menu__footer">
+      <ul class="link-list">
+        <li class="link-list__item"><a class="link-list__link link-list__link--accent" href="tel:+70000000000">+7 (000) 000-00-00</a></li>
+        <li class="link-list__item"><a class="link-list__link link-list__link--accent" href="mailto:sales@lenta.pro">sales@lenta.pro</a></li>
+        <li class="link-list__item"><span class="link-list__text">Пн–Пт 9:00–18:00</span></li>
+      </ul>
+      <ul class="social-list">
+        <li class="social-list__item">
+          <a class="social-list__link" href="#" aria-label="Telegram">
+            <svg class="social-list__icon" width="24" height="24" viewBox="0 0 14 12" aria-hidden="true">
+              <use href="/sprite.svg#icon-tg"></use>
+            </svg>
+          </a>
+        </li>
+        <li class="social-list__item">
+          <a class="social-list__link" href="#" aria-label="ВКонтакте">
+            <svg class="social-list__icon social-list__icon--vk" width="28" height="28" viewBox="0 0 14 8" aria-hidden="true">
+              <use href="/sprite.svg#icon-vk"></use>
+            </svg>
+          </a>
+        </li>
+        <li class="social-list__item">
+          <a class="social-list__link" href="#" aria-label="Max">
+            <svg class="social-list__icon" width="24" height="24" viewBox="0 0 15 14" aria-hidden="true">
+              <use href="/sprite.svg#icon-max"></use>
+            </svg>
+          </a>
+        </li>
+      </ul>
+      <button class="button button--primary mobile-menu__callback" type="button">Обратный звонок</button>
+    </div>
+  </div>
+</div>

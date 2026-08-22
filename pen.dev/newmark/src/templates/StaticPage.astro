@@ -1,0 +1,147 @@
+---
+const { page } = Astro.props;
+const blocks = page.contentBlocks ?? [];
+const breadcrumbs = page.breadcrumbs ?? [];
+const cta = page.cta ?? {};
+---
+
+<article class="static-page">
+  <section class="static-page__hero">
+    <div class="container">
+      {breadcrumbs.length > 0 && (
+        <nav class="breadcrumbs" aria-label="Хлебные крошки">
+          <ol class="breadcrumbs__list">
+            {breadcrumbs.map((item, index) => (
+              <li class="breadcrumbs__item">
+                {item.href && index !== breadcrumbs.length - 1 ? (
+                  <a class="breadcrumbs__link" href={item.href}>{item.label}</a>
+                ) : (
+                  <span class="breadcrumbs__current">{item.label}</span>
+                )}
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )}
+      <div class="static-page__header">
+        <h1 class="static-page__title">{page.h1}</h1>
+        {page.lead && <p class="static-page__lead">{page.lead}</p>}
+      </div>
+    </div>
+  </section>
+
+  <div class="static-page__body">
+    <div class="container">
+      <div class="static-page__content">
+        {blocks.map((block) => (
+          <>
+            {block.type === "text" && (
+              <section class="content-block">
+                {block.title && <h2 class="content-block__title">{block.title}</h2>}
+                <div class="content-block__text">
+                  {(block.paragraphs ?? []).map((paragraph) => <p>{paragraph}</p>)}
+                </div>
+              </section>
+            )}
+
+            {block.type === "image" && (
+              <figure class="content-image">
+                <img class="content-image__media" src={block.src} alt={block.alt} width={block.width} height={block.height} loading="lazy" />
+                {block.caption && <figcaption class="content-image__caption">{block.caption}</figcaption>}
+              </figure>
+            )}
+
+            {block.type === "list" && (
+              <section class="content-block">
+                {block.title && <h2 class="content-block__title">{block.title}</h2>}
+                <ul class="content-list">
+                  {(block.items ?? []).map((item) => <li class="content-list__item">{item}</li>)}
+                </ul>
+              </section>
+            )}
+
+            {block.type === "steps" && (
+              <section class="content-block">
+                {block.title && <h2 class="content-block__title">{block.title}</h2>}
+                <ol class="content-steps">
+                  {(block.items ?? []).map((item) => (
+                    <li class="content-steps__item">
+                      <span class="content-steps__title">{item.title}</span>
+                      {item.text && <p class="content-steps__text">{item.text}</p>}
+                    </li>
+                  ))}
+                </ol>
+              </section>
+            )}
+
+            {block.type === "table" && (
+              <section class="content-block">
+                {block.title && <h2 class="content-block__title">{block.title}</h2>}
+                <div class="content-table-wrapper">
+                  <table class="content-table">
+                    <tbody>
+                      {(block.rows ?? []).map((row) => (
+                        <tr>
+                          <th scope="row">{row.name}</th>
+                          <td>{row.value}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            )}
+
+            {block.type === "faq" && (
+              <section class="content-block">
+                {block.title && <h2 class="content-block__title">{block.title}</h2>}
+                <div class="content-faq">
+                  {(block.items ?? []).map((item) => (
+                    <details class="content-faq__item">
+                      <summary class="content-faq__question">{item.question}</summary>
+                      <p class="content-faq__answer">{item.answer}</p>
+                    </details>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {block.type === "contacts" && (
+              <section class="content-block">
+                {block.title && <h2 class="content-block__title">{block.title}</h2>}
+                <ul class="content-contacts">
+                  {(block.items ?? []).map((item) => (
+                    <li class="content-contacts__item">
+                      <span class="content-contacts__label">{item.label}</span>
+                      {item.href ? (
+                        <a class="content-contacts__value" href={item.href}>{item.value}</a>
+                      ) : (
+                        <span class="content-contacts__value">{item.value}</span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+          </>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  {cta.enabled && (
+    <section class="static-page-cta">
+      <div class="container">
+        <div class="static-page-cta__inner">
+          <div class="static-page-cta__text">
+            <h2 class="static-page-cta__title">{cta.title}</h2>
+            {cta.description && <p class="static-page-cta__description">{cta.description}</p>}
+          </div>
+          {cta.buttonText && (
+            <a class="button button--primary" href={cta.href ?? "#"}>{cta.buttonText}</a>
+          )}
+        </div>
+      </div>
+    </section>
+  )}
+</article>

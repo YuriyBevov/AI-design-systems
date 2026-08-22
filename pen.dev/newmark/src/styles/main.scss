@@ -17,6 +17,7 @@
 @use "components/scroll-up-button";
 @use "components/countdown";
 @use "components/social-list";
+@use "components/breadcrumbs";
 @use "components/section-header";
 @use "components/card-description";
 @use "components/clarification";
@@ -28,3 +29,4 @@
 @use "components/form";
 @use "components/cta";
 @use "pages/home";
+@use "pages/static-page";

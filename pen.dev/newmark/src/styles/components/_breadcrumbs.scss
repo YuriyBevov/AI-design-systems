@@ -1,0 +1,37 @@
+.breadcrumbs {
+	margin-bottom: var(--space-lg);
+
+	&__list {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px 12px;
+	}
+
+	&__item {
+		display: inline-flex;
+		align-items: center;
+		gap: 12px;
+		color: var(--color-text-muted);
+		font-size: 12px;
+		line-height: 1.35;
+
+		&:not(:last-child)::after {
+			content: "";
+			width: 16px;
+			height: 1px;
+			background-color: var(--color-border-strong);
+		}
+	}
+
+	&__link {
+		transition: color var(--transition-base);
+
+		&:hover {
+			color: var(--color-accent);
+		}
+	}
+
+	&__current {
+		color: var(--color-white);
+	}
+}
