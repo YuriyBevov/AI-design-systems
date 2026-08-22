@@ -1037,23 +1037,17 @@ main {
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
+  padding-left: 18px;
   margin-bottom: var(--space-md);
+  list-style: disc;
 }
 .feature-list__item {
-  position: relative;
-  padding-left: 14px;
   color: var(--color-text-muted);
   font-size: 16px;
   line-height: 1.45;
 }
-.feature-list__item::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 2px;
-  height: 100%;
-  background-color: var(--color-accent);
+.feature-list__item::marker {
+  color: var(--color-accent);
 }
 
 .feature-card {
