@@ -29,14 +29,37 @@ const getSvgInner = (source) =>
 		.replace(/<\/svg>\s*$/i, "")
 		.trim();
 
+const normalizePaint = (source) => {
+	const protectedBlocks = [];
+	const protectedSource = source.replace(
+		/<(mask|clipPath)\b[\s\S]*?<\/\1>/gi,
+		(block) => {
+			const token = `__SVG_SPRITE_PROTECTED_${protectedBlocks.length}__`;
+
+			protectedBlocks.push(block);
+
+			return token;
+		},
+	);
+
+	return protectedBlocks.reduce(
+		(result, block, index) =>
+			result.replace(`__SVG_SPRITE_PROTECTED_${index}__`, block),
+		protectedSource
+			.replace(/\sfill="(?!none\b)[^"]*"/gi, ' fill="currentColor"')
+			.replace(/\sstroke="(?!none\b)[^"]*"/gi, ' stroke="currentColor"'),
+	);
+};
+
 const createSprite = (directory) => {
 	const symbols = readSvgFiles(directory).map((file) => {
 		const source = fs.readFileSync(file, "utf8");
 		const id = path.basename(file, ".svg");
 		const viewBox = getAttribute(source, "viewBox");
 		const viewBoxAttribute = viewBox ? ` viewBox="${viewBox}"` : "";
+		const content = normalizePaint(getSvgInner(source));
 
-		return `<symbol id="${id}"${viewBoxAttribute}>${getSvgInner(source)}</symbol>`;
+		return `<symbol id="${id}"${viewBoxAttribute} fill="currentColor">${content}</symbol>`;
 	});
 
 	return `<svg xmlns="http://www.w3.org/2000/svg">${symbols.join("")}</svg>`;

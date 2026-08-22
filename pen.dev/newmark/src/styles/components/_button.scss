@@ -25,11 +25,7 @@
 		flex: 0 0 auto;
 		width: 18px;
 		height: 18px;
-		fill: var(--color-white);
-
-		* {
-			fill: currentColor;
-		}
+		fill: currentColor;
 
 		&--arrow {
 			width: 36px;
