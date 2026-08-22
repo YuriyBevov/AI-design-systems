@@ -2,7 +2,7 @@
 	counter-reset: steps;
 	display: grid;
 	gap: var(--space-md);
-	padding-left: 0;
+	padding: 0;
 	list-style: none;
 
 	&__item {

@@ -54,11 +54,12 @@
 
 	> ul,
 	> ol {
-		padding-left: 18px;
+		padding: 0;
+		list-style-position: inside;
 	}
 
 	> ul {
-		list-style: outside;
+		list-style-type: disc;
 	}
 
 	> ul li::marker,
@@ -97,8 +98,4 @@
 		border: 0;
 		background-color: var(--color-border);
 	}
-}
-
-.breadcrumbs-section {
-	padding-block: var(--space-lg) 0;
 }

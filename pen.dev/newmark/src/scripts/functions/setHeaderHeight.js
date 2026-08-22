@@ -14,11 +14,6 @@ export const setHeaderHeight = () => {
 			"--page-head-section-offset",
 			`${pageHeadOffset}px`,
 		);
-		document.documentElement.style.setProperty(
-			"--breadcrumbs-section-offset",
-			`${breadcrumbsOffset}px`,
-		);
-
 		document.querySelectorAll(".page-head").forEach((pageHead) => {
 			const section = pageHead.closest("section");
 			const target = section || pageHead;

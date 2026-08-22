@@ -57,12 +57,17 @@ body,
 h1,
 h2,
 p,
-ul {
+ul,
+ol {
   margin: 0;
 }
 
-ul {
+ul,
+ol {
   padding: 0;
+}
+
+ul {
   list-style: none;
 }
 
@@ -817,12 +822,14 @@ main {
 }
 
 .breadcrumbs {
-  margin-bottom: var(--space-lg);
+  padding-block: var(--space-lg) 0;
 }
 .breadcrumbs__list {
   display: flex;
   flex-wrap: wrap;
   gap: 8px 12px;
+  padding: 0;
+  list-style: none;
 }
 .breadcrumbs__item {
   display: inline-flex;
@@ -898,10 +905,11 @@ main {
 }
 .content > ul,
 .content > ol {
-  padding-left: 18px;
+  padding: 0;
+  list-style-position: inside;
 }
 .content > ul {
-  list-style: outside;
+  list-style-type: disc;
 }
 .content > ul li::marker,
 .content > ol li::marker {
@@ -935,15 +943,11 @@ main {
   background-color: var(--color-border);
 }
 
-.breadcrumbs-section {
-  padding-block: var(--space-lg) 0;
-}
-
 .step-list {
   counter-reset: steps;
   display: grid;
   gap: var(--space-md);
-  padding-left: 0;
+  padding: 0;
   list-style: none;
 }
 .step-list__item {
@@ -1028,7 +1032,7 @@ main {
 .contact-list {
   display: grid;
   gap: var(--space-sm);
-  padding-left: 0;
+  padding: 0;
   list-style: none;
 }
 .contact-list__item {
@@ -1293,9 +1297,10 @@ main {
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
-  padding-left: 18px;
+  padding: 0;
   margin-bottom: var(--space-md);
   list-style: disc;
+  list-style-position: inside;
 }
 .feature-list__item {
   color: var(--color-text-muted);

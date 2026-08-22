@@ -5,23 +5,21 @@ const breadcrumbs = page.breadcrumbs ?? [];
 ---
 
 {breadcrumbs.length > 0 && (
-  <section class="breadcrumbs-section">
+  <div class="breadcrumbs" aria-label="Хлебные крошки">
     <div class="container">
-      <nav class="breadcrumbs" aria-label="Хлебные крошки">
-        <ol class="breadcrumbs__list">
-          {breadcrumbs.map((item, index) => (
-            <li class="breadcrumbs__item">
-              {item.href && index !== breadcrumbs.length - 1 ? (
-                <a class="breadcrumbs__link" href={item.href}>{item.label}</a>
-              ) : (
-                <span class="breadcrumbs__current">{item.label}</span>
-              )}
-            </li>
-          ))}
-        </ol>
-      </nav>
+      <ol class="breadcrumbs__list">
+        {breadcrumbs.map((item, index) => (
+          <li class="breadcrumbs__item">
+            {item.href && index !== breadcrumbs.length - 1 ? (
+              <a class="breadcrumbs__link" href={item.href}>{item.label}</a>
+            ) : (
+              <span class="breadcrumbs__current">{item.label}</span>
+            )}
+          </li>
+        ))}
+      </ol>
     </div>
-  </section>
+  </div>
 )}
 
 <section class="section">
