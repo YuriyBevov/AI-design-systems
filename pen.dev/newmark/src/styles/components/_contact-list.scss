@@ -1,0 +1,28 @@
+.contact-list {
+	display: grid;
+	gap: var(--space-sm);
+	padding-left: 0;
+	list-style: none;
+
+	&__item {
+		display: grid;
+		gap: 4px;
+		padding-bottom: var(--space-md);
+		border-bottom: 1px solid var(--color-border);
+	}
+
+	&__label {
+		color: var(--color-accent);
+		font-size: 12px;
+		font-weight: 700;
+		line-height: 1.2;
+		text-transform: uppercase;
+	}
+
+	&__value {
+		color: var(--color-white);
+		font-size: 18px;
+		font-weight: 700;
+		line-height: 1.35;
+	}
+}

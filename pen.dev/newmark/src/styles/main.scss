@@ -18,6 +18,11 @@
 @use "components/countdown";
 @use "components/social-list";
 @use "components/breadcrumbs";
+@use "components/content";
+@use "components/step-list";
+@use "components/data-table";
+@use "components/faq-list";
+@use "components/contact-list";
 @use "components/section-header";
 @use "components/card-description";
 @use "components/clarification";
@@ -29,4 +34,3 @@
 @use "components/form";
 @use "components/cta";
 @use "pages/home";
-@use "pages/static-page";

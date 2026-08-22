@@ -1,0 +1,104 @@
+.content {
+	max-width: 920px;
+
+	> * {
+		margin-block: 0;
+	}
+
+	> * + * {
+		margin-top: var(--space-md);
+	}
+
+	> h1 {
+		max-width: 760px;
+		color: var(--color-white);
+		font-family: var(--font-accent);
+		font-size: clamp(36px, 7vw, 64px);
+		font-weight: 700;
+		line-height: 1.15;
+		text-transform: uppercase;
+
+		&::after {
+			content: "";
+			display: block;
+			width: 92px;
+			height: 2px;
+			margin-top: var(--space-md);
+			background-color: var(--color-accent);
+		}
+	}
+
+	> h2 {
+		margin-top: var(--space-2xl);
+		color: var(--color-white);
+		font-family: var(--font-accent);
+		font-size: clamp(24px, 4vw, 36px);
+		font-weight: 700;
+		line-height: 1.2;
+		text-transform: uppercase;
+	}
+
+	> p,
+	> ul,
+	> ol,
+	> blockquote,
+	> figure,
+	> .step-list,
+	> .data-table-wrapper,
+	> .faq-list,
+	> .contact-list {
+		color: var(--color-text-muted);
+		font-size: 16px;
+		line-height: 1.6;
+	}
+
+	> ul,
+	> ol {
+		padding-left: 18px;
+	}
+
+	> ul {
+		list-style: outside;
+	}
+
+	> ul li::marker,
+	> ol li::marker {
+		color: var(--color-accent);
+	}
+
+	> blockquote {
+		padding-left: var(--space-lg);
+		border-left: 2px solid var(--color-accent);
+		font-style: italic;
+	}
+
+	> figure {
+		display: grid;
+		gap: var(--space-sm);
+
+		img {
+			width: 100%;
+			height: auto;
+			border: 1px solid var(--color-border);
+			object-fit: cover;
+		}
+
+		figcaption {
+			font-size: 12px;
+			font-style: italic;
+			line-height: 1.4;
+		}
+	}
+
+	> hr {
+		width: 100%;
+		height: 1px;
+		margin-block: var(--space-2xl);
+		border: 0;
+		background-color: var(--color-border);
+	}
+}
+
+.breadcrumbs-section {
+	padding-block: var(--space-lg) 0;
+}

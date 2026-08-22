@@ -1,6 +1,7 @@
 ---
 import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
+import RequestSection from "../components/RequestSection.astro";
 import "../styles/main.scss";
 
 const {
@@ -24,6 +25,7 @@ const {
     <main>
       <slot />
     </main>
+    <RequestSection />
     <Footer />
     <script>
       import "../scripts/main.js";
