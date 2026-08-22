@@ -30,10 +30,11 @@ initGsapCountdown({
 	itemSelector: ".countdown__item",
 	valueSelector: "[data-countdown-value]",
 	labelSelector: "[data-countdown-label]",
-	tickDelay: 1000,
 	duration: 0.45,
 	ease: "power2.out",
 });
 ```
 
 Для каждой единицы времени укажите `data-countdown-unit`: `days`, `hours`, `minutes` или `seconds`.
+
+Таймер не использует фиксированный `setInterval(1000)`: каждый следующий тик планируется по оставшемуся времени до следующей секундной границы. Это снижает дрейф таймера и не дает секундам подвисать или перескакивать при обычной работе вкладки.

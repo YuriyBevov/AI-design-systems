@@ -848,3 +848,24 @@ npm run build
 npm run build
 git diff --check -- pen.dev/newmark/src/scripts/gsap/gsap-creeper-line.js component-library/gsap-creeper-line/js.js component-library/gsap-creeper-line/readme.md pen.dev/newmark/agent-conversation-history.md
 ```
+
+## Исправление точности GSAP Countdown
+
+В `src/scripts/gsap/gsap-countdown.js` исправлена логика обновления секунд. Предыдущая версия использовала фиксированный `setInterval(1000)` и расчет через `Math.floor((deadline - Date.now()) / 1000)`. Из-за дрейфа интервала относительно реальных секундных границ значение могло повториться, а затем перескочить через секунду.
+
+Теперь компонент:
+
+- считает оставшееся время в миллисекундах;
+- переводит его в секунды через `Math.ceil`, чтобы не терять текущую секунду раньше времени;
+- вместо фиксированного интервала планирует следующий `setTimeout` по времени до ближайшей секундной границы;
+- добавляет небольшой буфер после границы, чтобы тик не сработал слишком рано.
+
+Такая же правка внесена в `component-library/gsap-countdown/js.js`, а `readme.md` обновлен: компонент явно не использует фиксированный `setInterval(1000)`.
+
+Проверки:
+
+```bash
+npm run build
+rg -n "tickDelay|setInterval|Math\\.floor\\(\\(deadline|secondBoundaryDelay|getNextDelay|setTimeout" pen.dev/newmark/src/scripts/gsap/gsap-countdown.js component-library/gsap-countdown/js.js component-library/gsap-countdown/readme.md
+git diff --check -- pen.dev/newmark/src/scripts/gsap/gsap-countdown.js component-library/gsap-countdown/js.js component-library/gsap-countdown/readme.md pen.dev/newmark/agent-conversation-history.md
+```

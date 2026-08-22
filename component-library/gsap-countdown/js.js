@@ -16,6 +16,7 @@ const internalSettings = {
 	ariaLiveValue: "polite",
 	ariaLabelAttribute: "aria-label",
 	secondDuration: 1000,
+	secondBoundaryDelay: 20,
 	minuteDuration: 60,
 	hourDuration: 60,
 	dayDuration: 24,
@@ -44,7 +45,6 @@ const unitForms = {
  * @property {string} itemSelector - Селектор элемента единицы времени / Selector of a time unit item.
  * @property {string} valueSelector - Селектор значения внутри единицы времени / Selector of the value inside a time unit.
  * @property {string} labelSelector - Селектор подписи внутри единицы времени / Selector of the label inside a time unit.
- * @property {number} tickDelay - Частота обновления в миллисекундах / Update interval in milliseconds.
  * @property {number} duration - Длительность смены цифр в секундах / Digit change duration in seconds.
  * @property {string} ease - Easing смены цифр / Digit change easing.
  */
@@ -55,7 +55,6 @@ const defaultOptions = {
 	itemSelector: ".countdown__item",
 	valueSelector: "[data-countdown-value]",
 	labelSelector: "[data-countdown-label]",
-	tickDelay: 1000,
 	duration: 0.45,
 	ease: "power2.out",
 };
@@ -103,10 +102,17 @@ const getDeadline = (root) => {
 	return Date.now() + durationValue * internalSettings.secondDuration;
 };
 
-const getTimeParts = (deadline) => {
+const getRemainingMilliseconds = (deadline) => {
+	return Math.max(
+		internalSettings.minCountdownValue,
+		deadline - Date.now(),
+	);
+};
+
+const getTimeParts = (remainingMilliseconds) => {
 	const totalSeconds = Math.max(
 		internalSettings.minCountdownValue,
-		Math.floor((deadline - Date.now()) / internalSettings.secondDuration),
+		Math.ceil(remainingMilliseconds / internalSettings.secondDuration),
 	);
 	const secondsInHour =
 		internalSettings.minuteDuration * internalSettings.hourDuration;
@@ -239,9 +245,25 @@ export const initGsapCountdown = (options = {}) => {
 				};
 			},
 		);
+		let timer = null;
+
+		const getNextDelay = () => {
+			const remainingMilliseconds = getRemainingMilliseconds(deadline);
+			const millisecondsToNextSecond =
+				remainingMilliseconds % internalSettings.secondDuration ||
+				internalSettings.secondDuration;
+
+			return millisecondsToNextSecond + internalSettings.secondBoundaryDelay;
+		};
+
+		const scheduleNextRender = () => {
+			clearTimeout(timer);
+			timer = setTimeout(render, getNextDelay());
+		};
 
 		const render = (shouldAnimate = true) => {
-			const timeParts = getTimeParts(deadline);
+			const remainingMilliseconds = getRemainingMilliseconds(deadline);
+			const timeParts = getTimeParts(remainingMilliseconds);
 
 			items.forEach((item) => {
 				if (!item.unit || !item.value || !item.label) {
@@ -264,11 +286,12 @@ export const initGsapCountdown = (options = {}) => {
 			);
 
 			if (timeParts.totalSeconds <= internalSettings.minCountdownValue) {
-				clearInterval(timer);
+				clearTimeout(timer);
+				return;
 			}
-		};
 
-		const timer = setInterval(render, settings.tickDelay);
+			scheduleNextRender();
+		};
 
 		render(false);
 	});
