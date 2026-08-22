@@ -40,6 +40,8 @@
 - `src/pages/` - Astro-роуты.
 - `src/content/` - Markdown-контент и правила работы с ним.
 
+Главная страница тоже должна использовать общий layout. Нельзя держать в `src/pages/index.astro` собственный `html`, `head`, `body`, `header`, сквозную форму заявки или `footer`: эти части подключаются через `BaseLayout`, `Header`, `RequestSection` и `Footer`.
+
 Папка `src/templates/` в проекте не используется. Для Astro-страниц достаточно `layouts` и `components`; дополнительный слой `templates` создает путаницу с `layouts`.
 
 ## Стили
