@@ -4,15 +4,21 @@ import StaticPageLayout from "../layouts/StaticPageLayout.astro";
 
 export function getStaticPaths() {
   const pageModules = import.meta.glob("../content/pages/*.md", { eager: true });
-  const pages = Object.entries(pageModules).map(([path, module]) => {
-    const fileName = path.split("/").pop()?.replace(".md", "") ?? "";
+  const pages = Object.entries(pageModules)
+    .filter(([path]) => {
+      const fileName = path.split("/").pop()?.replace(".md", "") ?? "";
 
-    return {
-      ...module.frontmatter,
-      slug: module.frontmatter.slug ?? fileName,
-      compiledContent: module.compiledContent,
-    };
-  });
+      return !fileName.startsWith("_");
+    })
+    .map(([path, module]) => {
+      const fileName = path.split("/").pop()?.replace(".md", "") ?? "";
+
+      return {
+        ...module.frontmatter,
+        slug: module.frontmatter.slug ?? fileName,
+        compiledContent: module.compiledContent,
+      };
+    });
 
   return pages.map((page) => ({
     params: { slug: page.slug },
