@@ -841,6 +841,13 @@ main {
   line-height: 1.55;
 }
 
+.clarification {
+  color: var(--color-accent);
+  font-size: 12px;
+  font-style: italic;
+  line-height: 1.4;
+}
+
 .benefit-card {
   position: relative;
   display: grid;
@@ -1024,13 +1031,6 @@ main {
   font-size: 22px;
   font-weight: 700;
   line-height: 1.25;
-}
-.product-card__conditions {
-  color: var(--color-accent);
-  font-size: 14px;
-  font-weight: 700;
-  line-height: 1.4;
-  text-transform: uppercase;
 }
 
 .feature-list {

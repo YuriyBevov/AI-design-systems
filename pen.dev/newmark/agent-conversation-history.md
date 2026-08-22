@@ -888,3 +888,27 @@ git diff --check -- pen.dev/newmark/src/scripts/gsap/gsap-countdown.js component
 npm run build
 git diff --check -- pen.dev/newmark/index.html pen.dev/newmark/src/scripts/main.js pen.dev/newmark/src/scripts/functions/initPhoneMasks.js pen.dev/newmark/agent-conversation-history.md
 ```
+
+## Компонент уточнения для условий в карточках
+
+Текст условий в карточках товара вынесен из элемента `product-card__conditions` в самостоятельный компонент `.clarification`.
+
+Что изменено:
+
+- условия перенесены под список `feature-list`;
+- текст приведен к формату со звездочкой в начале и значениями через запятую;
+- старый разделитель `·` заменен на запятую;
+- добавлено уточнение `срок производства`;
+- стили вынесены в `src/styles/components/_clarification.scss`;
+- размер текста задан `12px`;
+- текст сделан курсивным;
+- старый элемент `product-card__conditions` удален из разметки и SCSS;
+- примеры в `guides/html.md` и `guides/agent.md` обновлены на компонент `.clarification`.
+
+Проверки:
+
+```bash
+npx --no-install sass src/styles/main.scss src/styles/main.css
+npm run build
+rg -n "product-card__conditions|clarification" pen.dev/newmark/index.html pen.dev/newmark/src/styles guides
+```

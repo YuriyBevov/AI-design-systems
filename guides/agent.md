@@ -162,13 +162,13 @@
 Плохо:
 
 ```html
-<span class="product-card__conditions">Минимальная партия — 3 коробки · срок — 14 дней</span>
+<span class="clarification">*Минимальная партия — 3 коробки, срок производства — 14 дней</span>
 ```
 
 Хорошо:
 
 ```html
-<span class="product-card__conditions">Минимальная партия&nbsp;—&nbsp;3&nbsp;коробки · срок&nbsp;—&nbsp;14&nbsp;дней</span>
+<span class="clarification">*Минимальная партия&nbsp;—&nbsp;3&nbsp;коробки, срок&nbsp;производства&nbsp;—&nbsp;14&nbsp;дней</span>
 ```
 
 Правило применяется только к видимому тексту: заголовкам, описаниям, кнопкам, пунктам навигации, подписям форм и placeholder. Внутри тега `head` и в метатегах неразрывные пробелы не используются: `title`, `meta description`, `meta keywords`, Open Graph, Twitter Card и другие служебные данные пишутся с обычными пробелами. Если фрагмент уже связан неразрывным пробелом, повторно его не менять.
