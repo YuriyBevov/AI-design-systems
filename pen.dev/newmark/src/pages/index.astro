@@ -1,0 +1,664 @@
+---
+import benefitImage1 from "../images/webp/benefits-image-1.webp";
+import benefitImage2 from "../images/webp/benefits-image-2.webp";
+import benefitImage3 from "../images/webp/benefits-image-3.webp";
+import benefitImage4 from "../images/webp/benefits-image-4.webp";
+import benefitImage5 from "../images/webp/benefits-image-5.webp";
+import heroImage from "../images/webp/hero-img.webp";
+import logoImage from "../images/webp/logo.webp";
+import productImage1 from "../images/webp/product-image-1.webp";
+import productImage2 from "../images/webp/product-image-2.webp";
+import productImage3 from "../images/webp/product-image-3.webp";
+import productImage4 from "../images/webp/product-image-4.webp";
+import productImage5 from "../images/webp/product-image-5.webp";
+import productImage6 from "../images/webp/product-image-6.webp";
+import productImage7 from "../images/webp/product-image-7.webp";
+import productImage8 from "../images/webp/product-image-8.webp";
+import productImage9 from "../images/webp/product-image-9.webp";
+import productImage10 from "../images/webp/product-image-10.webp";
+---
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>НьюМарк — клейкая лента и аксессуары для упаковки вашего бизнеса</title>
+  <meta name="description" content="Описание сайта" />
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <a class="logo logo--header" href="/" aria-label="НьюМарк">
+        <img class="logo__image" src={logoImage.src} alt="НьюМарк" width="160" height="60" />
+      </a>
+
+      <nav class="nav" aria-label="Основная навигация">
+        <ul class="nav__list">
+          <li class="nav__item"><a class="nav__link" href="#">О&nbsp;компании</a></li>
+          <li class="nav__item"><a class="nav__link nav__link--featured" href="#">Каталог</a></li>
+          <li class="nav__item"><a class="nav__link" href="#">Оплата и&nbsp;доставка</a></li>
+          <li class="nav__item"><a class="nav__link" href="#">Контакты</a></li>
+        </ul>
+      </nav>
+
+      <div class="header__actions">
+        <ul class="social-list">
+          <li class="social-list__item">
+            <a class="social-list__link" href="#" aria-label="Telegram">
+              <svg class="social-list__icon" width="24" height="24" viewBox="0 0 14 12" aria-hidden="true">
+                <use href="/sprite.svg#icon-tg"></use>
+              </svg>
+            </a>
+          </li>
+
+          <li class="social-list__item">
+            <a class="social-list__link" href="#" aria-label="ВКонтакте">
+              <svg class="social-list__icon social-list__icon--vk" width="28" height="28" viewBox="0 0 14 8" aria-hidden="true">
+                <use href="/sprite.svg#icon-vk"></use>
+              </svg>
+            </a>
+          </li>
+          <li class="social-list__item">
+            <a class="social-list__link" href="#" aria-label="Max">
+              <svg class="social-list__icon" width="24" height="24" viewBox="0 0 15 14" aria-hidden="true">
+                <use href="/sprite.svg#icon-max"></use>
+              </svg>
+            </a>
+          </li>
+        </ul>
+        <button class="button button--primary header__callback" type="button" aria-label="Обратный звонок">
+          <svg class="button__icon button__icon--phone" width="28" height="28" viewBox="0 0 24 24" aria-hidden="true">
+            <use href="/sprite.svg#icon-phone"></use>
+          </svg>
+          <span class="button__text">Обратный звонок</span>
+        </button>
+        <button class="burger-button" type="button" aria-label="Открыть меню" aria-controls="mobile-menu" aria-expanded="false">
+          <svg class="burger-button__icon" width="24" height="24" viewBox="0 0 17 12" aria-hidden="true">
+            <use href="/sprite.svg#icon-burger"></use>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+    <div class="mobile-menu__overlay"></div>
+    <div class="mobile-menu__panel" role="dialog" aria-modal="true" aria-label="Мобильное меню">
+      <div class="mobile-menu__header">
+        <a class="logo logo--mobile-menu" href="/" aria-label="НьюМарк">
+          <img class="logo__image" src={logoImage.src} alt="НьюМарк" width="160" height="60" />
+        </a>
+        <button class="mobile-menu__close" type="button" aria-label="Закрыть меню">
+          <svg class="mobile-menu__close-icon" width="24" height="24" viewBox="0 0 17 17" aria-hidden="true">
+            <use href="/sprite.svg#icon-cross"></use>
+          </svg>
+        </button>
+      </div>
+
+      <nav class="mobile-menu__nav" aria-label="Мобильная навигация">
+        <ul class="mobile-menu__nav-list">
+          <li class="mobile-menu__nav-item"><a class="mobile-menu__nav-link" href="#">О&nbsp;компании</a></li>
+          <li class="mobile-menu__nav-item"><a class="mobile-menu__nav-link" href="#">Каталог</a></li>
+          <li class="mobile-menu__nav-item"><a class="mobile-menu__nav-link" href="#">Оплата и&nbsp;доставка</a></li>
+          <li class="mobile-menu__nav-item"><a class="mobile-menu__nav-link" href="#">Контакты</a></li>
+        </ul>
+      </nav>
+
+      <div class="mobile-menu__footer">
+        <ul class="link-list">
+          <li class="link-list__item"><a class="link-list__link link-list__link--accent" href="tel:+70000000000">+7 (000) 000-00-00</a></li>
+          <li class="link-list__item"><a class="link-list__link link-list__link--accent" href="mailto:sales@lenta.pro">sales@lenta.pro</a></li>
+          <li class="link-list__item"><span class="link-list__text">Пн–Пт 9:00–18:00</span></li>
+        </ul>
+        <ul class="social-list">
+          <li class="social-list__item">
+            <a class="social-list__link" href="#" aria-label="Telegram">
+              <svg class="social-list__icon" width="24" height="24" viewBox="0 0 14 12" aria-hidden="true">
+                <use href="/sprite.svg#icon-tg"></use>
+              </svg>
+            </a>
+          </li>
+
+          <li class="social-list__item">
+            <a class="social-list__link" href="#" aria-label="ВКонтакте">
+              <svg class="social-list__icon social-list__icon--vk" width="28" height="28" viewBox="0 0 14 8" aria-hidden="true">
+                <use href="/sprite.svg#icon-vk"></use>
+              </svg>
+            </a>
+          </li>
+          <li class="social-list__item">
+            <a class="social-list__link" href="#" aria-label="Max">
+              <svg class="social-list__icon" width="24" height="24" viewBox="0 0 15 14" aria-hidden="true">
+                <use href="/sprite.svg#icon-max"></use>
+              </svg>
+            </a>
+          </li>
+        </ul>
+        <button class="button button--primary mobile-menu__callback" type="button">Обратный звонок</button>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <div class="hero__content">
+          <h1 class="hero__title">Клейкая лента и&nbsp;аксессуары <span>для&nbsp;упаковки вашего бизнеса</span></h1>
+          <p class="hero__description">Подберём ленту под&nbsp;коробки, паллеты, маркировку и&nbsp;ежедневную упаковку. В&nbsp;каталоге&nbsp;—&nbsp;брендированный скотч, стрейч-плёнка, малярные и&nbsp;специальные ленты, диспенсеры и&nbsp;сопутствующие товары.</p>
+          <div class="button-row">
+            <button class="button button--primary" type="button">Оставить заявку</button>
+            <a class="button button--secondary" href="#">Перейти в&nbsp;каталог
+              <svg class="button__icon button__icon--arrow" width="36" height="19"  aria-hidden="true">
+                <use href="/sprite.svg#long-arrow"></use>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="hero__image-wrapper">
+          <img class="hero__image" src={heroImage.src} alt="Рулоны клейкой ленты" width="640" height="620" />
+        </div>
+      </div>
+    </section>
+
+    <section class="creeper-line creeper-line--catalog" aria-label="Разделы каталога">
+      <div class="creeper-line__track">
+        <ul class="creeper-line__list">
+          <li class="creeper-line__item">Клейкая лента</li>
+          <li class="creeper-line__item">Стрейч-пленка</li>
+          <li class="creeper-line__item">Малярная лента</li>
+          <li class="creeper-line__item">Изоляционная лента</li>
+          <li class="creeper-line__item">Клейкая лента с&nbsp;логотипом</li>
+          <li class="creeper-line__item">Упаковочная лента</li>
+          <li class="creeper-line__item">ТПЛ</li>
+          <li class="creeper-line__item">Спец. ленты</li>
+          <li class="creeper-line__item">Сигнальные ленты</li>
+          <li class="creeper-line__item">Термостойкая малярная лента</li>
+          <li class="creeper-line__item">Ленты с&nbsp;нанесением</li>
+          <li class="creeper-line__item">Аксессуары</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section section--dark">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Почему сотрудничать с&nbsp;нами выгодно</h2>
+        </div>
+        <div class="grid-layout">
+          <article class="benefit-card">
+            <div class="benefit-card__image-wrapper">
+              <img class="benefit-card__image" src={benefitImage1.src} alt="Собственное производство" width="400" height="300" />
+            </div>
+            <div class="benefit-card__body">
+              <span class="benefit-card__title">Собственное производство</span>
+              <p class="card-description">Собственное производство! Заключая контракт с&nbsp;нами, вы получаете прямой контракт с&nbsp;производителем</p>
+            </div>
+          </article>
+
+          <article class="benefit-card">
+            <div class="benefit-card__image-wrapper">
+              <img class="benefit-card__image" src={benefitImage2.src} alt="Прямые поставки" width="400" height="300" />
+            </div>
+            <div class="benefit-card__body">
+              <span class="benefit-card__title">Прямые поставки</span>
+              <p class="card-description">Мы осуществляем прямые поставки транспортными компаниями в&nbsp;любой город России.</p>
+            </div>
+          </article>
+
+          <article class="benefit-card">
+            <div class="benefit-card__image-wrapper">
+              <img class="benefit-card__image" src={benefitImage3.src} alt="Заявленные параметры" width="400" height="300" />
+            </div>
+            <div class="benefit-card__body">
+              <span class="benefit-card__title">Заявленные параметры</span>
+              <p class="card-description">Вы получаете заявленные параметры упаковочных лент, а&nbsp;также&nbsp;соответствие длин намоток</p>
+            </div>
+          </article>
+
+          <article class="benefit-card">
+            <div class="benefit-card__image-wrapper">
+              <img class="benefit-card__image" src={benefitImage4.src} alt="Гарантия возврата" width="400" height="300" />
+            </div>
+            <div class="benefit-card__body">
+              <span class="benefit-card__title">Гарантия возврата</span>
+              <p class="card-description">Мы гарантируем возврат денег в&nbsp;случае если «вдруг» вы сможете обнаружить какую-либо недостачу</p>
+            </div>
+          </article>
+
+          <article class="benefit-card">
+            <div class="benefit-card__image-wrapper">
+              <img class="benefit-card__image" src={benefitImage5.src} alt="Ниже цены" width="400" height="300" />
+            </div>
+            <div class="benefit-card__body">
+              <span class="benefit-card__title">Ниже цены</span>
+              <p class="card-description">Наши цены ниже относительно цен компаний-перепродавцов, присутствующих на&nbsp;рынке</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Что мы предлагаем</h2>
+          <p class="section-description">Три направления каталога закрывают полный цикл упаковки: брендирование, ежедневную упаковку и&nbsp;специализированные задачи производства или&nbsp;склада.</p>
+        </div>
+
+        <div class="catalog-group">
+          <ul class="catalog-group__features">
+            <li class="catalog-group__features-item">Разработка дизайна для&nbsp;брендированных лент бесплатно в&nbsp;день обращения</li>
+            <li class="catalog-group__features-item">Бесплатно изготовим клише с&nbsp;вашим дизайном</li>
+          </ul>
+
+          <div class="catalog-group__header">
+            <span class="catalog-group__title">Клейкая лента с&nbsp;логотипом</span>
+            <span class="catalog-group__offer">Сэкономите время на&nbsp;запуске брендированной упаковки: подготовим дизайн, клише и&nbsp;подберём тип печати под&nbsp;тираж.</span>
+          </div>
+
+          <div class="grid-layout">
+            <article class="product-card">
+              <div class="product-card__image-wrapper">
+                <img class="product-card__image" src={productImage1.src} alt="Поверхностная печать" width="400" height="300" />
+              </div>
+              <div class="product-card__body">
+                <div class="product-card__content">
+                  <span class="product-card__title">Поверхностная печать</span>
+                  <ul class="feature-list">
+                    <li class="feature-list__item">Быстрые сроки производства</li>
+                    <li class="feature-list__item">Возможность сделать небольшую пробную партию</li>
+                  </ul>
+                  <span class="clarification">*Минимальная партия&nbsp;—&nbsp;3&nbsp;коробки, срок&nbsp;производства&nbsp;—&nbsp;14&nbsp;дней</span>
+                </div>
+                <button class="button button--primary" type="button">Уточнить у&nbsp;менеджера</button>
+              </div>
+            </article>
+
+            <article class="product-card">
+              <div class="product-card__image-wrapper">
+                <img class="product-card__image" src={productImage2.src} alt="Межслойная печать" width="400" height="300" />
+              </div>
+              <div class="product-card__body">
+                <div class="product-card__content">
+                  <span class="product-card__title">Межслойная печать</span>
+                  <ul class="feature-list">
+                    <li class="feature-list__item">Логотип не&nbsp;стирается между&nbsp;плёнкой и&nbsp;клеем</li>
+                    <li class="feature-list__item">При&nbsp;отклеивании логотип остаётся на&nbsp;коробке</li>
+                  </ul>
+                  <span class="clarification">*Минимальная партия&nbsp;—&nbsp;30&nbsp;коробок, срок&nbsp;производства&nbsp;—&nbsp;30&nbsp;дней</span>
+                </div>
+                <button class="button button--primary" type="button">Уточнить у&nbsp;менеджера</button>
+              </div>
+            </article>
+          </div>
+
+          <a class="button button--secondary" href="#">Перейти в&nbsp;раздел каталога
+
+            <svg class="button__icon button__icon--arrow" width="72" height="19" viewBox="0 0 72 19" aria-hidden="true">
+
+              <use href="/sprite.svg#long-arrow"></use>
+
+            </svg>
+
+          </a>
+        </div>
+
+        <div class="catalog-group">
+          <div class="catalog-group__header">
+            <span class="catalog-group__title">Упаковочная лента</span>
+            <span class="catalog-group__offer">Подберём решения, которые не&nbsp;порвутся при&nbsp;упаковке тяжёлого груза и&nbsp;помогут быстро закрывать ежедневные задачи склада.</span>
+          </div>
+
+          <div class="grid-layout">
+            <article class="product-card">
+              <div class="product-card__image-wrapper">
+                <img class="product-card__image" src={productImage3.src} alt="Стрейч пленка" width="400" height="300" />
+              </div>
+              <div class="product-card__body">
+                <div class="product-card__content">
+                  <span class="product-card__title">Стрейч пленка</span>
+                  <p class="card-description">Плотно фиксирует товар на&nbsp;паллетах и&nbsp;защищает груз при&nbsp;хранении и&nbsp;перевозке.</p>
+                </div>
+                <a class="button button--primary" href="#">Подробнее
+                  <svg class="button__icon button__icon--arrow" width="72" height="19" viewBox="0 0 72 19" aria-hidden="true">
+                    <use href="/sprite.svg#long-arrow"></use>
+                  </svg>
+                </a>
+              </div>
+            </article>
+
+            <article class="product-card">
+              <div class="product-card__image-wrapper">
+                <img class="product-card__image" src={productImage4.src} alt="Малярная лента" width="400" height="300" />
+              </div>
+              <div class="product-card__body">
+                <div class="product-card__content">
+                  <span class="product-card__title">Малярная лента</span>
+                  <p class="card-description">Защитит поверхности при&nbsp;работах и&nbsp;легко снимается без&nbsp;повреждений.</p>
+                </div>
+                <a class="button button--primary" href="#">Подробнее
+                  <svg class="button__icon button__icon--arrow" width="72" height="19" viewBox="0 0 72 19" aria-hidden="true">
+                    <use href="/sprite.svg#long-arrow"></use>
+                  </svg>
+                </a>
+              </div>
+            </article>
+
+            <article class="product-card">
+              <div class="product-card__image-wrapper">
+                <img class="product-card__image" src={productImage5.src} alt="Спец. ленты" width="400" height="300" />
+              </div>
+              <div class="product-card__body">
+                <div class="product-card__content">
+                  <span class="product-card__title">Спец. ленты</span>
+                  <p class="card-description">Подберём ленту под&nbsp;нестандартные условия склада, производства и&nbsp;упаковки.</p>
+                </div>
+                <a class="button button--primary" href="#">Подробнее
+                  <svg class="button__icon button__icon--arrow" width="72" height="19" viewBox="0 0 72 19" aria-hidden="true">
+                    <use href="/sprite.svg#long-arrow"></use>
+                  </svg>
+                </a>
+              </div>
+            </article>
+          </div>
+
+          <a class="button button--secondary" href="#">Перейти в&nbsp;раздел каталога
+
+            <svg class="button__icon button__icon--arrow" width="72" height="19" viewBox="0 0 72 19" aria-hidden="true">
+
+              <use href="/sprite.svg#long-arrow"></use>
+
+            </svg>
+
+          </a>
+        </div>
+
+        <div class="catalog-group">
+          <div class="catalog-group__header">
+            <span class="catalog-group__title">Узкоспециализированные ленты</span>
+            <span class="catalog-group__offer">Подберём материал под&nbsp;температуру, монтаж, маркировку и&nbsp;безопасность&nbsp;—&nbsp;чтобы лента работала в&nbsp;конкретных условиях применения.</span>
+          </div>
+
+          <div class="grid-layout">
+            <article class="product-card">
+              <div class="product-card__image-wrapper">
+                <img class="product-card__image" src={productImage6.src} alt="Термостойкая малярная лента(термокрепп)." width="400" height="300" />
+              </div>
+              <div class="product-card__body">
+                <div class="product-card__content">
+                  <span class="product-card__title">Термостойкая малярная лента(термокрепп).</span>
+                  <p class="card-description">Выдерживает температурные режимы и&nbsp;помогает аккуратно защитить поверхности на&nbsp;производстве.</p>
+                </div>
+                <a class="button button--primary" href="#">Подробнее
+                  <svg class="button__icon button__icon--arrow" width="72" height="19" viewBox="0 0 72 19" aria-hidden="true">
+                    <use href="/sprite.svg#long-arrow"></use>
+                  </svg>
+                </a>
+              </div>
+            </article>
+
+            <article class="product-card">
+              <div class="product-card__image-wrapper">
+                <img class="product-card__image" src={productImage7.src} alt="ТПЛ" width="400" height="300" />
+              </div>
+              <div class="product-card__body">
+                <div class="product-card__content">
+                  <span class="product-card__title">ТПЛ</span>
+                  <p class="card-description">Прочная тканевая полиэтиленовая лента для&nbsp;ремонта, фиксации и&nbsp;упаковки.</p>
+                </div>
+                <a class="button button--primary" href="#">Подробнее
+                  <svg class="button__icon button__icon--arrow" width="72" height="19" viewBox="0 0 72 19" aria-hidden="true">
+                    <use href="/sprite.svg#long-arrow"></use>
+                  </svg>
+                </a>
+              </div>
+            </article>
+
+            <article class="product-card">
+              <div class="product-card__image-wrapper">
+                <img class="product-card__image" src={productImage8.src} alt="Изоляционная лента" width="400" height="300" />
+              </div>
+              <div class="product-card__body">
+                <div class="product-card__content">
+                  <span class="product-card__title">Изоляционная лента</span>
+                  <p class="card-description">Помогает безопасно изолировать соединения и&nbsp;маркировать рабочие зоны.</p>
+                </div>
+                <a class="button button--primary" href="#">Подробнее
+                  <svg class="button__icon button__icon--arrow" width="72" height="19" viewBox="0 0 72 19" aria-hidden="true">
+                    <use href="/sprite.svg#long-arrow"></use>
+                  </svg>
+                </a>
+              </div>
+            </article>
+
+            <article class="product-card">
+              <div class="product-card__image-wrapper">
+                <img class="product-card__image" src={productImage9.src} alt="Ленты с нанесением «осторожно хрупкое», «акция», «подарок»." width="400" height="300" />
+              </div>
+              <div class="product-card__body">
+                <div class="product-card__content">
+                  <span class="product-card__title">Ленты с&nbsp;нанесением «осторожно хрупкое», «акция», «подарок».</span>
+                  <p class="card-description">Ускоряют маркировку отправлений и&nbsp;делают упаковку понятнее для&nbsp;склада и&nbsp;клиента.</p>
+                </div>
+                <a class="button button--primary" href="#">Смотреть в&nbsp;каталоге
+                  <svg class="button__icon button__icon--arrow" width="72" height="19" viewBox="0 0 72 19" aria-hidden="true">
+                    <use href="/sprite.svg#long-arrow"></use>
+                  </svg>
+                </a>
+              </div>
+            </article>
+
+            <article class="product-card">
+              <div class="product-card__image-wrapper">
+                <img class="product-card__image" src={productImage10.src} alt="Сигнальные ленты" width="400" height="300" />
+              </div>
+              <div class="product-card__body">
+                <div class="product-card__content">
+                  <span class="product-card__title">Сигнальные ленты</span>
+                  <p class="card-description">Помогают быстро ограждать зоны, выделять опасные участки и&nbsp;организовывать пространство.</p>
+                </div>
+                <a class="button button--primary" href="#">Смотреть в&nbsp;каталоге
+                  <svg class="button__icon button__icon--arrow" width="72" height="19" viewBox="0 0 72 19" aria-hidden="true">
+                    <use href="/sprite.svg#long-arrow"></use>
+                  </svg>
+                </a>
+              </div>
+            </article>
+          </div>
+
+          <a class="button button--secondary" href="#">Перейти в&nbsp;раздел каталога
+
+            <svg class="button__icon button__icon--arrow" width="72" height="19" viewBox="0 0 72 19" aria-hidden="true">
+
+              <use href="/sprite.svg#long-arrow"></use>
+
+            </svg>
+
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--dark advantages">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Преимущества, которые работают</h2>
+          <p class="section-description">Для&nbsp;нас важна каждая деталь в&nbsp;производстве лент, а&nbsp;для&nbsp;вас&nbsp;—&nbsp;точность и&nbsp;уверенность в&nbsp;результате.</p>
+        </div>
+
+        <div class="grid-layout">
+          <article class="feature-card">
+            <span class="feature-card__title">Гибкое решение</span>
+            <p class="card-description">Подбираем ленту под&nbsp;ваши задачи и&nbsp;бюджет.</p>
+          </article>
+          <article class="feature-card">
+            <span class="feature-card__title">Сроки и&nbsp;качество</span>
+            <p class="card-description">Соблюдаем сроки и&nbsp;гарантируем стабильное качество.</p>
+          </article>
+          <article class="feature-card">
+            <span class="feature-card__title">Опыт и&nbsp;надёжность</span>
+            <p class="card-description">Работаем с&nbsp;2010&nbsp;года. Нам доверяют по&nbsp;всей России.</p>
+          </article>
+          <article class="feature-card">
+            <span class="feature-card__title">Поддержка клиентов</span>
+            <p class="card-description">Всегда на&nbsp;связи и&nbsp;готовы помочь на&nbsp;каждом этапе.</p>
+          </article>
+          <article class="feature-card">
+            <span class="feature-card__title">Быстрая отгрузка</span>
+            <p class="card-description">Ходовые позиции отправляем со&nbsp;склада в&nbsp;короткие сроки.</p>
+          </article>
+          <article class="feature-card">
+            <span class="feature-card__title">Честные параметры</span>
+            <p class="card-description">Намотка, клейкость и&nbsp;ширина соответствуют заявке.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section cta">
+      <div class="container">
+        <div class="cta__inner">
+          <div class="cta__content">
+            <div class="cta__text">
+              <span class="cta__eyebrow">Давайте работать вместе</span>
+              <span class="cta__title">Готовы оформить заказ?</span>
+              <p class="cta__description">Свяжитесь с&nbsp;нами для&nbsp;консультации и&nbsp;подбора ленты под&nbsp;вашу задачу</p>
+            </div>
+            <div class="countdown cta__countdown" data-countdown-duration="225368">
+              <span class="countdown__title">Успейте отправить заявку и&nbsp;получить выгодное предложение</span>
+              <div class="countdown__row">
+                <div class="countdown__item" data-countdown-unit="days">
+                  <span class="countdown__value" data-countdown-value>02</span>
+                  <span class="countdown__label" data-countdown-label>дня</span>
+                </div>
+                <div class="countdown__item" data-countdown-unit="hours">
+                  <span class="countdown__value" data-countdown-value>14</span>
+                  <span class="countdown__label" data-countdown-label>часов</span>
+                </div>
+                <div class="countdown__item" data-countdown-unit="minutes">
+                  <span class="countdown__value" data-countdown-value>36</span>
+                  <span class="countdown__label" data-countdown-label>минут</span>
+                </div>
+                <div class="countdown__item" data-countdown-unit="seconds">
+                  <span class="countdown__value" data-countdown-value>08</span>
+                  <span class="countdown__label" data-countdown-label>секунд</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <form class="request-form">
+            <div class="form-row">
+              <label class="field">
+                <span class="field__label">Ваше имя</span>
+                <input class="field__control" type="text" name="name" placeholder="Иван" />
+              </label>
+              <label class="field">
+                <span class="field__label">Название компании</span>
+                <input class="field__control" type="text" name="company" placeholder="Ооо компания" />
+              </label>
+            </div>
+
+            <div class="form-row">
+              <label class="field">
+                <span class="field__label">Email</span>
+                <input class="field__control" type="email" name="email" placeholder="mail@example.ru" />
+              </label>
+              <label class="field">
+                <span class="field__label">Телефон</span>
+                <input class="field__control" type="tel" name="phone" placeholder="+7 (900) 000 - 00 - 00" data-phone-mask />
+              </label>
+            </div>
+
+            <label class="field">
+              <span class="field__label">Комментарий к&nbsp;заявке</span>
+              <textarea class="field__control field__control--textarea" name="comment" placeholder="Опишите тип ленты, объём, город доставки или&nbsp;задачу упаковки"></textarea>
+            </label>
+
+            <div class="request-form__actions">
+              <label class="file-button">
+                <input class="file-button__input" type="file" accept=".pdf,.jpg,.png" />
+                <span class="file-button__label">Прикрепить файл</span>
+                <span class="file-button__hint">Pdf, jpg, png до&nbsp;10&nbsp;мб</span>
+              </label>
+              <button class="button button--primary" type="submit">Отправить заявку</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__top">
+        <a class="logo logo--footer" href="/" aria-label="НьюМарк">
+          <img class="logo__image" src={logoImage.src} alt="НьюМарк" width="160" height="60" />
+        </a>
+
+        <div class="footer__column">
+          <ul class="link-list">
+            <li class="link-list__item"><a class="link-list__link" href="#">Каталог</a></li>
+            <li class="link-list__item"><a class="link-list__link" href="#">О&nbsp;компании</a></li>
+            <li class="link-list__item"><a class="link-list__link" href="#">Оплата и&nbsp;доставка</a></li>
+            <li class="link-list__item"><a class="link-list__link" href="#">Контакты</a></li>
+          </ul>
+        </div>
+
+        <div class="footer__column">
+          <ul class="link-list">
+            <li class="link-list__item"><a class="link-list__link" href="#">Самовывоз со&nbsp;склада</a></li>
+            <li class="link-list__item"><a class="link-list__link" href="#">Доставка по&nbsp;городу</a></li>
+            <li class="link-list__item"><a class="link-list__link" href="#">Транспортные компании</a></li>
+          </ul>
+        </div>
+
+        <div class="footer__column">
+          <ul class="link-list">
+            <li class="link-list__item"><a class="link-list__link link-list__link--accent" href="tel:+70000000000">+7 (000) 000-00-00</a></li>
+            <li class="link-list__item"><a class="link-list__link link-list__link--accent" href="mailto:sales@lenta.pro">sales@lenta.pro</a></li>
+            <li class="link-list__item"><span class="link-list__text">Пн–Пт 9:00–18:00</span></li>
+          </ul>
+          <ul class="social-list">
+            <li class="social-list__item">
+              <a class="social-list__link" href="#" aria-label="Telegram">
+                <svg class="social-list__icon" width="24" height="24" viewBox="0 0 14 12" aria-hidden="true">
+                  <use href="/sprite.svg#icon-tg"></use>
+                </svg>
+              </a>
+            </li>
+            <li class="social-list__item">
+              <a class="social-list__link" href="#" aria-label="ВКонтакте">
+                <svg class="social-list__icon social-list__icon--vk" width="28" height="28" viewBox="0 0 14 8" aria-hidden="true">
+                  <use href="/sprite.svg#icon-vk"></use>
+                </svg>
+              </a>
+            </li>
+            <li class="social-list__item">
+              <a class="social-list__link" href="#" aria-label="Max">
+                <svg class="social-list__icon" width="24" height="24" viewBox="0 0 15 14" aria-hidden="true">
+                  <use href="/sprite.svg#icon-max"></use>
+                </svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer__bottom">
+        <span class="footer__copyright">© 2026, НьюМарк&nbsp;—&nbsp;каталог клейких лент, стрейч-плёнки и&nbsp;упаковочных аксессуаров</span>
+        <div class="footer__legal">
+          <a class="footer__legal-link" href="#">Реквизиты</a>
+          <a class="footer__legal-link" href="#">Политика конфиденциальности</a>
+          <a class="footer__legal-link" href="#">Условия продажи</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script>
+    import "../scripts/main.js";
+  </script>
+</body>
+</html>

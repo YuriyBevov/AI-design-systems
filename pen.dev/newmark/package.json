@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "npm run images:webp && vite build",
-    "preview": "vite preview",
+    "dev": "astro dev",
+    "build": "npm run images:webp && astro build",
+    "preview": "astro preview",
     "images:webp": "node scripts/convert-images.mjs"
   },
   "dependencies": {
@@ -16,6 +16,7 @@
     "swiper": "^11.1.15"
   },
   "devDependencies": {
+    "astro": "^7.2.4",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.47",
     "sass": "^1.80.6",
