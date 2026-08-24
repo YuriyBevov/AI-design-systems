@@ -14,7 +14,6 @@ const specifications = detail.specifications ?? product.card?.characteristics ??
 const price = product.card?.price ?? "От рублей/штука";
 const order = detail.order ?? {
   buttonLabel: "Заказать",
-  target: "#request",
 };
 ---
 
@@ -45,7 +44,9 @@ const order = detail.order ?? {
 
           <div class="product-detail__order">
             <span class="product-detail__price">{price}</span>
-            <a class="button button--primary" href={order.target}>{order.buttonLabel}</a>
+            <button class="button button--primary" type="button" aria-haspopup="dialog" data-modal-open="request" data-modal-product={product.title}>
+              {order.buttonLabel}
+            </button>
           </div>
         </div>
 

@@ -1,0 +1,42 @@
+<div class="modal" data-modal="request" aria-hidden="true">
+  <div class="modal__overlay" data-modal-close></div>
+  <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="request-modal-title" tabindex="-1">
+    <div class="modal__header">
+      <span class="modal__title" id="request-modal-title">Оставить заявку</span>
+      <button class="modal__close" type="button" aria-label="Закрыть окно" data-modal-close>
+        <svg class="modal__close-icon" width="20" height="20" viewBox="0 0 17 17" aria-hidden="true">
+          <use href="/sprite.svg?v=2#icon-cross"></use>
+        </svg>
+      </button>
+    </div>
+
+    <form class="request-form modal__form">
+      <label class="field modal__product-field" data-modal-product-field hidden>
+        <span class="field__label">Товар</span>
+        <input class="field__control" type="text" name="product" data-modal-product-control disabled />
+      </label>
+
+      <label class="field">
+        <span class="field__label">Ваше имя</span>
+        <input class="field__control" type="text" name="name" placeholder="Иван" />
+      </label>
+
+      <label class="field">
+        <span class="field__label">Телефон</span>
+        <input class="field__control" type="tel" name="phone" placeholder="+7 (900) 000 - 00 - 00" data-phone-mask />
+      </label>
+
+      <label class="field">
+        <span class="field__label">Эл. почта</span>
+        <input class="field__control" type="email" name="email" placeholder="mail@example.ru" />
+      </label>
+
+      <label class="consent-field">
+        <input class="consent-field__input" type="checkbox" name="agreement" required />
+        <span class="consent-field__text">Согласен на&nbsp;обработку персональных данных</span>
+      </label>
+
+      <button class="button button--primary modal__submit" type="submit">Отправить заявку</button>
+    </form>
+  </div>
+</div>
