@@ -24,6 +24,21 @@
 	}
 }
 
+.request-form.is-validation-active {
+	.field:has(.field__control:invalid),
+	.file-button:has(.file-button__input:invalid) {
+		border-color: var(--color-error);
+	}
+
+	.consent-field:has(.consent-field__input:invalid) {
+		color: var(--color-error);
+	}
+
+	.consent-field__input:invalid + .consent-field__text {
+		color: var(--color-error);
+	}
+}
+
 .field {
 	display: flex;
 	flex-direction: column;

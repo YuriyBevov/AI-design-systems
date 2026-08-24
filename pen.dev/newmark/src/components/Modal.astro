@@ -10,7 +10,7 @@
       </button>
     </div>
 
-    <form class="request-form modal__form">
+    <form class="request-form modal__form" novalidate>
       <label class="field modal__product-field" data-modal-product-field hidden>
         <span class="field__label">Товар</span>
         <input class="field__control" type="text" name="product" data-modal-product-control disabled />
@@ -18,12 +18,12 @@
 
       <label class="field">
         <span class="field__label">Ваше имя</span>
-        <input class="field__control" type="text" name="name" placeholder="Иван" />
+        <input class="field__control" type="text" name="name" placeholder="Иван" required />
       </label>
 
       <label class="field">
         <span class="field__label">Телефон</span>
-        <input class="field__control" type="tel" name="phone" placeholder="+7 (900) 000 - 00 - 00" data-phone-mask />
+        <input class="field__control" type="tel" name="phone" placeholder="+7 (900) 000 - 00 - 00" data-phone-mask required />
       </label>
 
       <label class="field">

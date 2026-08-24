@@ -30,15 +30,15 @@
         </div>
       </div>
 
-      <form class="request-form">
+      <form class="request-form" novalidate>
         <div class="form-row">
           <label class="field">
             <span class="field__label">Ваше имя</span>
-            <input class="field__control" type="text" name="name" placeholder="Иван" />
+            <input class="field__control" type="text" name="name" placeholder="Иван" required />
           </label>
           <label class="field">
             <span class="field__label">Название компании</span>
-            <input class="field__control" type="text" name="company" placeholder="Ооо компания" />
+            <input class="field__control" type="text" name="company" placeholder="Ооо компания" required />
           </label>
         </div>
 
@@ -49,13 +49,13 @@
           </label>
           <label class="field">
             <span class="field__label">Телефон</span>
-            <input class="field__control" type="tel" name="phone" placeholder="+7 (900) 000 - 00 - 00" data-phone-mask />
+            <input class="field__control" type="tel" name="phone" placeholder="+7 (900) 000 - 00 - 00" data-phone-mask required />
           </label>
         </div>
 
         <label class="field">
           <span class="field__label">Комментарий к&nbsp;заявке</span>
-          <textarea class="field__control field__control--textarea" name="comment" placeholder="Опишите тип ленты, объём, город доставки или&nbsp;задачу упаковки"></textarea>
+          <textarea class="field__control field__control--textarea" name="comment" placeholder="Опишите тип ленты, объём, город доставки или&nbsp;задачу упаковки" required></textarea>
         </label>
 
         <div class="request-form__actions">
@@ -63,6 +63,10 @@
             <input class="file-button__input" type="file" accept=".pdf,.jpg,.png" />
             <span class="file-button__label">Прикрепить файл</span>
             <span class="file-button__hint">Pdf, jpg, png до&nbsp;10&nbsp;мб</span>
+          </label>
+          <label class="consent-field">
+            <input class="consent-field__input" type="checkbox" name="agreement" required />
+            <span class="consent-field__text">Согласен на&nbsp;обработку персональных данных</span>
           </label>
           <button class="button button--primary" type="submit">Отправить заявку</button>
         </div>
