@@ -19,12 +19,14 @@ const { breadcrumbs, section } = Astro.props;
 
       <CategoryLinkList items={section.subsections} />
 
-      {section.products.length > 0 && (
+      {section.products.length > 0 ? (
         <div class="product-list" aria-label="Товары раздела">
           {section.products.map((product) => (
             <ProductItemCard product={product} />
           ))}
         </div>
+      ) : (
+        <p class="product-list-empty">Извините, в данном разделе пока нет товаров.</p>
       )}
     </div>
   </section>

@@ -1,0 +1,144 @@
+.product-detail {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: var(--space-xl);
+
+	&__media {
+		min-width: 0;
+		padding: clamp(12px, 2vw, 24px);
+		border: 1px solid var(--color-border);
+		background-color: var(--color-dark);
+
+		.slider {
+			margin-bottom: 0;
+		}
+
+		.slider__slide {
+			max-width: none;
+		}
+
+		.slider__image {
+			width: 100%;
+			max-width: none;
+			height: clamp(196px, 29.4vw, 364px);
+			border: 0;
+			object-fit: contain;
+		}
+	}
+
+	&__summary {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-lg);
+		min-width: 0;
+	}
+
+	&__title {
+		margin: 0;
+		color: var(--color-white);
+		font-size: clamp(24px, 4vw, 36px);
+		font-weight: 700;
+		line-height: 1.08;
+		text-wrap: balance;
+	}
+
+	&__lead {
+		margin: 0;
+		color: var(--color-text-muted);
+		font-size: 16px;
+		line-height: 1.55;
+	}
+
+	&__specifications {
+		display: grid;
+		gap: 0;
+		margin: 0;
+	}
+
+	&__specification {
+		display: flex;
+		gap: var(--space-xs);
+		align-items: baseline;
+		padding: 4px 0;
+		color: var(--color-text-muted);
+		font-size: 14px;
+		line-height: 1.4;
+
+		&::after {
+			content: "";
+			flex: 1;
+			order: 2;
+			min-width: 24px;
+			border-bottom: 1px dotted var(--color-border);
+			transform: translateY(-3px);
+		}
+	}
+
+	&__specification-name {
+		flex: none;
+		order: 1;
+		color: var(--color-text-muted);
+	}
+
+	&__specification-value {
+		order: 3;
+		margin: 0;
+		color: var(--color-white);
+		text-align: right;
+	}
+
+	&__order {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: var(--space-md);
+		align-items: center;
+	}
+
+	&__price {
+		color: var(--color-white);
+		font-size: 18px;
+		font-weight: 700;
+		line-height: 1.25;
+	}
+}
+
+.product-detail-description {
+	margin-top: var(--space-2xl);
+}
+
+@media (min-width: 720px) {
+	.product-detail {
+		&__order {
+			grid-template-columns: 1fr auto;
+		}
+	}
+}
+
+@media (min-width: 960px) {
+	.product-detail {
+		grid-template-columns: minmax(0, 0.7fr) minmax(360px, 1fr);
+		align-items: start;
+
+		&__media {
+			position: sticky;
+			top: calc(82px + var(--space-lg));
+		}
+	}
+}
+
+@media (max-width: 560px) {
+	.product-detail {
+		&__specification {
+			grid-template-columns: 1fr;
+			gap: 4px;
+
+			&::after {
+				display: none;
+			}
+		}
+
+		&__specification-value {
+			text-align: left;
+		}
+	}
+}

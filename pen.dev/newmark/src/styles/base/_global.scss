@@ -29,7 +29,7 @@ body {
 }
 
 main {
-	overflow: hidden;
+	overflow: clip;
 }
 
 :focus-visible {

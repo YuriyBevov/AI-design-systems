@@ -13,7 +13,11 @@ export const productsByParentId = products.reduce((groups, product) => {
   return groups;
 }, new Map());
 
+export const productById = new Map(products.map((product) => [product.id, product]));
+
 export const getCategoryById = (id) => categoryById.get(id);
+
+export const getProductById = (id) => productById.get(id);
 
 export const getCategoryAncestors = (category) => {
   const ancestors = [];
@@ -75,6 +79,32 @@ export const getCatalogSectionBreadcrumbs = (category) => {
   });
 
   return breadcrumbs;
+};
+
+export const getProductBreadcrumbs = (product) => {
+  const category = getCategoryById(product.parentId);
+  const breadcrumbs = category ? getCatalogSectionBreadcrumbs(category) : [
+    {
+      label: "Главная",
+      href: "/",
+    },
+    {
+      label: "Каталог",
+      href: "/catalog/",
+    },
+  ];
+
+  return [
+    ...breadcrumbs.map((item, index) => index === breadcrumbs.length - 1 && !item.href
+      ? {
+        ...item,
+        href: category ? getCatalogHref(category) : "/catalog/",
+      }
+      : item),
+    {
+      label: product.title,
+    },
+  ];
 };
 
 export const catalogSections = categories.map((category) => ({

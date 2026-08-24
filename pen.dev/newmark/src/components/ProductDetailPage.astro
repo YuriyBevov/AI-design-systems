@@ -1,0 +1,62 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Breadcrumbs from "./Breadcrumbs.astro";
+import Slider from "./Slider.astro";
+
+const { breadcrumbs, product } = Astro.props;
+const detail = product.detail ?? {};
+const gallery = detail.gallery?.length > 0 ? detail.gallery : [product.card?.image].filter(Boolean);
+const sliderImages = gallery.map((image, index) => ({
+  src: image.src ?? image,
+  alt: index === 0 ? product.card?.imageAlt ?? product.title : `${product.title} - изображение ${index + 1}`,
+}));
+const specifications = detail.specifications ?? product.card?.characteristics ?? [];
+const price = product.card?.price ?? "От рублей/штука";
+const order = detail.order ?? {
+  buttonLabel: "Заказать",
+  target: "#request",
+};
+---
+
+<BaseLayout title={detail.seo?.title ?? `${product.title} Newmark`} description={detail.seo?.description ?? detail.description}>
+  <Breadcrumbs items={breadcrumbs} />
+
+  <section class="section">
+    <div class="container">
+      <article class="product-detail">
+        <div class="product-detail__media">
+          <Slider images={sliderImages} />
+        </div>
+
+        <div class="product-detail__summary">
+          <h1 class="product-detail__title">{detail.title ?? product.title}</h1>
+          {detail.lead && <p class="product-detail__lead">{detail.lead}</p>}
+
+          {specifications.length > 0 && (
+            <dl class="product-detail__specifications">
+              {specifications.map((item) => (
+                <div class="product-detail__specification">
+                  <dt class="product-detail__specification-name">{item.label}</dt>
+                  <dd class="product-detail__specification-value">{item.value}</dd>
+                </div>
+              ))}
+            </dl>
+          )}
+
+          <div class="product-detail__order">
+            <span class="product-detail__price">{price}</span>
+            <a class="button button--primary" href={order.target}>{order.buttonLabel}</a>
+          </div>
+        </div>
+
+      </article>
+
+      {detail.description && (
+        <div class="product-detail-description content">
+          <h2>Описание</h2>
+          <p>{detail.description}</p>
+        </div>
+      )}
+    </div>
+  </section>
+</BaseLayout>

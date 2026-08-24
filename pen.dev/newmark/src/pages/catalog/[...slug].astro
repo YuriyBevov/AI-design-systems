@@ -1,20 +1,49 @@
 ---
 import CatalogSectionPage from "../../components/CatalogSectionPage.astro";
-import { catalogSections, getCatalogSectionBreadcrumbs } from "../../data/catalog/index.js";
+import ProductDetailPage from "../../components/ProductDetailPage.astro";
+import {
+  catalogSections,
+  getCatalogSectionBreadcrumbs,
+  getProductBreadcrumbs,
+  products,
+} from "../../data/catalog/index.js";
 
 export function getStaticPaths() {
-  return catalogSections.map((section) => ({
+  const sectionPaths = catalogSections.map((section) => ({
     params: {
       slug: section.path,
     },
     props: {
+      pageType: "section",
       breadcrumbs: getCatalogSectionBreadcrumbs(section),
       section,
     },
   }));
+
+  const productPaths = products.map((product) => ({
+    params: {
+      slug: product.href.replace(/^\/catalog\/|\/$/g, ""),
+    },
+    props: {
+      pageType: "product",
+      breadcrumbs: getProductBreadcrumbs(product),
+      product,
+    },
+  }));
+
+  return [...sectionPaths, ...productPaths];
 }
 
-const { breadcrumbs, section } = Astro.props;
+const {
+  breadcrumbs,
+  pageType,
+  product,
+  section,
+} = Astro.props;
 ---
 
-<CatalogSectionPage breadcrumbs={breadcrumbs} section={section} />
+{pageType === "product" ? (
+  <ProductDetailPage breadcrumbs={breadcrumbs} product={product} />
+) : (
+  <CatalogSectionPage breadcrumbs={breadcrumbs} section={section} />
+)}
