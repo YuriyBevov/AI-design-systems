@@ -1,0 +1,19 @@
+---
+import CatalogSectionPage from "../../components/CatalogSectionPage.astro";
+import { catalogSections } from "../../data/catalog.js";
+
+export function getStaticPaths() {
+  return catalogSections.map((section) => ({
+    params: {
+      section: section.slug,
+    },
+    props: {
+      section,
+    },
+  }));
+}
+
+const { section } = Astro.props;
+---
+
+<CatalogSectionPage section={section} />

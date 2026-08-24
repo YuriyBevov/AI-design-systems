@@ -1,0 +1,15 @@
+---
+const { items = [] } = Astro.props;
+---
+
+{items.length > 0 && (
+  <nav class="category-link-list" aria-label="Подразделы каталога">
+    <ul class="category-link-list__items">
+      {items.map((item) => (
+        <li class="category-link-list__item">
+          <a class="category-link-list__link" href={item.href}>{item.label}</a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+)}

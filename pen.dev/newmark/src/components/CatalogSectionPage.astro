@@ -1,0 +1,43 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Breadcrumbs from "./Breadcrumbs.astro";
+import CategoryLinkList from "./CategoryLinkList.astro";
+import ProductItemCard from "./ProductItemCard.astro";
+
+const { section } = Astro.props;
+
+const breadcrumbs = [
+  {
+    label: "Главная",
+    href: "/",
+  },
+  {
+    label: "Каталог",
+    href: "/catalog/",
+  },
+  {
+    label: section.title,
+  },
+];
+---
+
+<BaseLayout title={section.seo?.title ?? `${section.title} Newmark`} description={section.seo?.description ?? section.description}>
+  <Breadcrumbs items={breadcrumbs} />
+
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <h1 class="section-title">{section.title}</h1>
+        <p class="section-description">{section.description}</p>
+      </div>
+
+      <CategoryLinkList items={section.subsections} />
+
+      <div class="product-list" aria-label="Товары раздела">
+        {section.products.map((product) => (
+          <ProductItemCard product={product} />
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

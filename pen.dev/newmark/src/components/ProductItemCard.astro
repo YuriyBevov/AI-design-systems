@@ -1,0 +1,57 @@
+---
+const product = Astro.props.product ?? Astro.props;
+const {
+  title,
+  href,
+  card = {},
+  image = card.image,
+  imageAlt = card.imageAlt ?? title,
+  characteristics = card.characteristics ?? [],
+  price = card.price ?? "От р/шт",
+} = product;
+
+const normalizeCharacteristic = (characteristic) => {
+  if (typeof characteristic === "string") {
+    const [label, ...valueParts] = characteristic.split(":");
+
+    return {
+      label: label.trim(),
+      value: valueParts.join(":").trim(),
+    };
+  }
+
+  return characteristic;
+};
+
+const visibleCharacteristics = characteristics.slice(0, 5).map(normalizeCharacteristic);
+---
+
+<article class="product-item-card">
+  <div class="product-item-card__header">
+    <a class="product-item-card__media" href={href} aria-label={title}>
+      {image ? (
+        <img class="product-item-card__image" src={image.src ?? image} alt={imageAlt} width="320" height="240" />
+      ) : (
+        <span class="product-item-card__placeholder">Изображение скоро появится</span>
+      )}
+    </a>
+  </div>
+
+  <div class="product-item-card__body">
+    <a class="product-item-card__title" href={href}>{title}</a>
+
+    {visibleCharacteristics.length > 0 && (
+      <ul class="product-item-card__features">
+        {visibleCharacteristics.map((characteristic) => (
+          <li class="product-item-card__feature">
+            <span class="product-item-card__feature-name">{characteristic.label}</span>
+            <span class="product-item-card__feature-value">{characteristic.value}</span>
+          </li>
+        ))}
+      </ul>
+    )}
+
+    <span class="product-item-card__price">{price}</span>
+    <a class="button button--primary" href={product.detail?.order?.target ?? "#request"}>{product.detail?.order?.buttonLabel ?? "Заказать"}</a>
+  </div>
+</article>

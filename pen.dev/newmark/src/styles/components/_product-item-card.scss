@@ -1,0 +1,118 @@
+.product-list {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: var(--space-lg);
+}
+
+.product-item-card {
+	display: flex;
+	flex-direction: column;
+	min-height: 100%;
+	overflow: hidden;
+	background-color: var(--color-surface);
+	border: 1px solid var(--color-border-strong);
+
+	&__header {
+		background-color: var(--color-dark-deep);
+		border-bottom: 1px solid var(--color-border);
+	}
+
+	&__media {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		aspect-ratio: 4 / 3;
+		color: var(--color-text-soft);
+		background-color: var(--color-dark);
+	}
+
+	&__image {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	&__placeholder {
+		padding: var(--space-md);
+		font-size: 13px;
+		line-height: 1.4;
+		text-align: center;
+	}
+
+	&__body {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+		gap: var(--space-md);
+		align-items: flex-start;
+		padding: clamp(18px, 3vw, 24px);
+	}
+
+	&__title {
+		display: -webkit-box;
+		overflow: hidden;
+		color: var(--color-accent);
+		font-size: 16px;
+		font-weight: 700;
+		line-height: 1.35;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 2;
+	}
+
+	&__features {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+		width: 100%;
+		padding: 0;
+		list-style: none;
+	}
+
+	&__feature {
+		display: grid;
+		grid-template-columns: minmax(88px, 45%) minmax(0, 1fr);
+		gap: var(--space-xs);
+		color: var(--color-white);
+		font-size: 12px;
+		line-height: 1.35;
+	}
+
+	&__feature-name {
+		color: var(--color-text-muted);
+	}
+
+	&__feature-value {
+		text-align: right;
+	}
+
+	&__price {
+		margin-top: auto;
+		color: var(--color-white);
+		font-size: 16px;
+		font-weight: 700;
+		line-height: 1.3;
+	}
+
+	.button {
+		width: 100%;
+		font-family: var(--font-primary);
+	}
+}
+
+@media (min-width: 640px) {
+	.product-list {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+@media (min-width: 960px) {
+	.product-list {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+}
+
+@media (min-width: 1240px) {
+	.product-list {
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+	}
+}
