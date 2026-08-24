@@ -1,5 +1,5106 @@
 export const products = [
   {
+    "id": "vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-17-mkm-1-kg",
+    "parentId": "stretch-plenka",
+    "slug": "vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-17-mkm-1-kg",
+    "href": "/catalog/stretch-plenka/vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-17-mkm-1-kg/",
+    "title": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 17 мкм 1 кг",
+    "card": {
+      "image": "/catalog/products/arli-stretch/vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-17-mkm-1-kg.webp",
+      "imageAlt": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 17 мкм 1 кг",
+      "price": "От 191.50 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "1"
+        },
+        {
+          "label": "Длина (намотка), м",
+          "value": "127,88"
+        },
+        {
+          "label": "Цвет",
+          "value": "Черный"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 17 мкм 1 кг",
+      "lead": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 17 мкм 1 кг для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 17 мкм 1 кг подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: ширина, мм: 500, толщина, мкм: 17, вес, кг: 1, длина (намотка), м: 127,88. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-17-mkm-1-kg.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "1"
+        },
+        {
+          "label": "Длина (намотка), м",
+          "value": "127,88"
+        },
+        {
+          "label": "Цвет",
+          "value": "Черный"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 17 мкм 1 кг Newmark",
+        "description": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 17 мкм 1 кг для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-17-mkm-1-5-kg",
+    "parentId": "stretch-plenka",
+    "slug": "vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-17-mkm-1-5-kg",
+    "href": "/catalog/stretch-plenka/vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-17-mkm-1-5-kg/",
+    "title": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 17 мкм 1,5 кг",
+    "card": {
+      "image": "/catalog/products/arli-stretch/vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-17-mkm-1-5-kg.webp",
+      "imageAlt": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 17 мкм 1,5 кг",
+      "price": "От 294.80 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "1,5"
+        },
+        {
+          "label": "Длина (намотка), м",
+          "value": "191,8"
+        },
+        {
+          "label": "Цвет",
+          "value": "Черный"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 17 мкм 1,5 кг",
+      "lead": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 17 мкм 1,5 кг для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 17 мкм 1,5 кг подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: ширина, мм: 500, толщина, мкм: 17, вес, кг: 1,5, длина (намотка), м: 191,8. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-17-mkm-1-5-kg.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "1,5"
+        },
+        {
+          "label": "Длина (намотка), м",
+          "value": "191,8"
+        },
+        {
+          "label": "Цвет",
+          "value": "Черный"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 17 мкм 1,5 кг Newmark",
+        "description": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 17 мкм 1,5 кг для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-17-mkm-2-kg",
+    "parentId": "stretch-plenka",
+    "slug": "vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-17-mkm-2-kg",
+    "href": "/catalog/stretch-plenka/vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-17-mkm-2-kg/",
+    "title": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 17 мкм 2 кг",
+    "card": {
+      "image": "/catalog/products/arli-stretch/vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-17-mkm-2-kg.webp",
+      "imageAlt": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 17 мкм 2 кг",
+      "price": "От 387.80 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "2"
+        },
+        {
+          "label": "Длина (намотка), м",
+          "value": "255,75"
+        },
+        {
+          "label": "Цвет",
+          "value": "Черный"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 17 мкм 2 кг",
+      "lead": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 17 мкм 2 кг для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 17 мкм 2 кг подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: ширина, мм: 500, толщина, мкм: 17, вес, кг: 2, длина (намотка), м: 255,75. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-17-mkm-2-kg.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "2"
+        },
+        {
+          "label": "Длина (намотка), м",
+          "value": "255,75"
+        },
+        {
+          "label": "Цвет",
+          "value": "Черный"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 17 мкм 2 кг Newmark",
+        "description": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 17 мкм 2 кг для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-20-mkm-1-kg",
+    "parentId": "stretch-plenka",
+    "slug": "vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-20-mkm-1-kg",
+    "href": "/catalog/stretch-plenka/vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-20-mkm-1-kg/",
+    "title": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 20 мкм 1 кг",
+    "card": {
+      "image": "/catalog/products/arli-stretch/vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-20-mkm-1-kg.webp",
+      "imageAlt": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 20 мкм 1 кг",
+      "price": "От 191.50 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "1"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 20 мкм 1 кг",
+      "lead": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 20 мкм 1 кг для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 20 мкм 1 кг подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: ширина, мм: 500, толщина, мкм: 20, вес, кг: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-20-mkm-1-kg.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "1"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 20 мкм 1 кг Newmark",
+        "description": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 20 мкм 1 кг для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-20-mkm-1-5-kg",
+    "parentId": "stretch-plenka",
+    "slug": "vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-20-mkm-1-5-kg",
+    "href": "/catalog/stretch-plenka/vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-20-mkm-1-5-kg/",
+    "title": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 20 мкм 1,5 кг",
+    "card": {
+      "image": "/catalog/products/arli-stretch/vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-20-mkm-1-5-kg.webp",
+      "imageAlt": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 20 мкм 1,5 кг",
+      "price": "От 294.80 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "1,5"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 20 мкм 1,5 кг",
+      "lead": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 20 мкм 1,5 кг для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 20 мкм 1,5 кг подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: ширина, мм: 500, толщина, мкм: 20, вес, кг: 1,5. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-20-mkm-1-5-kg.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "1,5"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 20 мкм 1,5 кг Newmark",
+        "description": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 20 мкм 1,5 кг для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-20-mkm-2-kg",
+    "parentId": "stretch-plenka",
+    "slug": "vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-20-mkm-2-kg",
+    "href": "/catalog/stretch-plenka/vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-20-mkm-2-kg/",
+    "title": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 20 мкм 2 кг",
+    "card": {
+      "image": "/catalog/products/arli-stretch/vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-20-mkm-2-kg.webp",
+      "imageAlt": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 20 мкм 2 кг",
+      "price": "От 387.80 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "2"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 20 мкм 2 кг",
+      "lead": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 20 мкм 2 кг для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 20 мкм 2 кг подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: ширина, мм: 500, толщина, мкм: 20, вес, кг: 2. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-20-mkm-2-kg.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "2"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 20 мкм 2 кг Newmark",
+        "description": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 20 мкм 2 кг для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-23-mkm-1-kg",
+    "parentId": "stretch-plenka",
+    "slug": "vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-23-mkm-1-kg",
+    "href": "/catalog/stretch-plenka/vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-23-mkm-1-kg/",
+    "title": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 23 мкм 1 кг",
+    "card": {
+      "image": "/catalog/products/arli-stretch/vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-23-mkm-1-kg.webp",
+      "imageAlt": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 23 мкм 1 кг",
+      "price": "От 191.50 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "1"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 23 мкм 1 кг",
+      "lead": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 23 мкм 1 кг для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 23 мкм 1 кг подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: ширина, мм: 500, толщина, мкм: 23, вес, кг: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-23-mkm-1-kg.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "1"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 23 мкм 1 кг Newmark",
+        "description": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 23 мкм 1 кг для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-23-mkm-1-5-kg",
+    "parentId": "stretch-plenka",
+    "slug": "vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-23-mkm-1-5-kg",
+    "href": "/catalog/stretch-plenka/vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-23-mkm-1-5-kg/",
+    "title": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 23 мкм 1,5 кг",
+    "card": {
+      "image": "/catalog/products/arli-stretch/vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-23-mkm-1-5-kg.webp",
+      "imageAlt": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 23 мкм 1,5 кг",
+      "price": "От 294.80 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "1,5"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 23 мкм 1,5 кг",
+      "lead": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 23 мкм 1,5 кг для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 23 мкм 1,5 кг подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: ширина, мм: 500, толщина, мкм: 23, вес, кг: 1,5. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-23-mkm-1-5-kg.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "1,5"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 23 мкм 1,5 кг Newmark",
+        "description": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 23 мкм 1,5 кг для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-23-mkm-2-kg",
+    "parentId": "stretch-plenka",
+    "slug": "vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-23-mkm-2-kg",
+    "href": "/catalog/stretch-plenka/vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-23-mkm-2-kg/",
+    "title": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 23 мкм 2 кг",
+    "card": {
+      "image": "/catalog/products/arli-stretch/vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-23-mkm-2-kg.webp",
+      "imageAlt": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 23 мкм 2 кг",
+      "price": "От 387.80 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "2"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 23 мкм 2 кг",
+      "lead": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 23 мкм 2 кг для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 23 мкм 2 кг подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: ширина, мм: 500, толщина, мкм: 23, вес, кг: 2. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-23-mkm-2-kg.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "2"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 23 мкм 2 кг Newmark",
+        "description": "Вторичная стрейч-пленка для ручной упаковки (черная) 500 мм, 23 мкм 2 кг для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-17-mkm-1-kg",
+    "parentId": "stretch-plenka",
+    "slug": "vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-17-mkm-1-kg",
+    "href": "/catalog/stretch-plenka/vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-17-mkm-1-kg/",
+    "title": "Вторичная стрейч-пленка для ручной упаковки 500 мм, 17 мкм 1 кг",
+    "card": {
+      "image": "/catalog/products/arli-stretch/vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-17-mkm-1-kg.webp",
+      "imageAlt": "Вторичная стрейч-пленка для ручной упаковки 500 мм, 17 мкм 1 кг",
+      "price": "От 156.96 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "1"
+        },
+        {
+          "label": "Длина (намотка), м",
+          "value": "127,88"
+        },
+        {
+          "label": "Цвет",
+          "value": "Серый"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Вторичная стрейч-пленка для ручной упаковки 500 мм, 17 мкм 1 кг",
+      "lead": "Вторичная стрейч-пленка для ручной упаковки 500 мм, 17 мкм 1 кг для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Вторичная стрейч-пленка для ручной упаковки 500 мм, 17 мкм 1 кг подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: ширина, мм: 500, толщина, мкм: 17, вес, кг: 1, длина (намотка), м: 127,88. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-17-mkm-1-kg.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "1"
+        },
+        {
+          "label": "Длина (намотка), м",
+          "value": "127,88"
+        },
+        {
+          "label": "Цвет",
+          "value": "Серый"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Вторичная стрейч-пленка для ручной упаковки 500 мм, 17 мкм 1 кг Newmark",
+        "description": "Вторичная стрейч-пленка для ручной упаковки 500 мм, 17 мкм 1 кг для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-mashinnoi-upakovki-12-5-kg-500-mm-17-mkm-1-sort",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-mashinnoi-upakovki-12-5-kg-500-mm-17-mkm-1-sort",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-mashinnoi-upakovki-12-5-kg-500-mm-17-mkm-1-sort/",
+    "title": "Стрейч-пленка для машинной упаковки 12,5 кг 500 мм, 17 мкм, 1 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-mashinnoi-upakovki-12-5-kg-500-mm-17-mkm-1-sort.webp",
+      "imageAlt": "Стрейч-пленка для машинной упаковки 12,5 кг 500 мм, 17 мкм, 1 сорт",
+      "price": "От 2 286 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Длина, м",
+          "value": "1598,46"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "12,5"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для машинной упаковки 12,5 кг 500 мм, 17 мкм, 1 сорт",
+      "lead": "Стрейч-пленка для машинной упаковки 12,5 кг 500 мм, 17 мкм, 1 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для машинной упаковки 12,5 кг 500 мм, 17 мкм, 1 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: длина, м: 1598,46, ширина, мм: 500, толщина, мкм: 17, сорт: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-mashinnoi-upakovki-12-5-kg-500-mm-17-mkm-1-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Длина, м",
+          "value": "1598,46"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "12,5"
+        },
+        {
+          "label": "Цвет",
+          "value": "Прозрачный"
+        },
+        {
+          "label": "Минимальная партия, шт",
+          "value": "1"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для машинной упаковки 12,5 кг 500 мм, 17 мкм, 1 сорт Newmark",
+        "description": "Стрейч-пленка для машинной упаковки 12,5 кг 500 мм, 17 мкм, 1 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-mashinnoi-upakovki-12-5-kg-500-mm-20-mkm-1-sort",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-mashinnoi-upakovki-12-5-kg-500-mm-20-mkm-1-sort",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-mashinnoi-upakovki-12-5-kg-500-mm-20-mkm-1-sort/",
+    "title": "Стрейч-пленка для машинной упаковки 12,5 кг 500 мм, 20 мкм, 1 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-mashinnoi-upakovki-12-5-kg-500-mm-20-mkm-1-sort.webp",
+      "imageAlt": "Стрейч-пленка для машинной упаковки 12,5 кг 500 мм, 20 мкм, 1 сорт",
+      "price": "От 2 286 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Длина, м",
+          "value": "1358,69"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "12,5"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для машинной упаковки 12,5 кг 500 мм, 20 мкм, 1 сорт",
+      "lead": "Стрейч-пленка для машинной упаковки 12,5 кг 500 мм, 20 мкм, 1 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для машинной упаковки 12,5 кг 500 мм, 20 мкм, 1 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: длина, м: 1358,69, ширина, мм: 500, толщина, мкм: 20, сорт: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-mashinnoi-upakovki-12-5-kg-500-mm-20-mkm-1-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Длина, м",
+          "value": "1358,69"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "12,5"
+        },
+        {
+          "label": "Цвет",
+          "value": "Прозрачный"
+        },
+        {
+          "label": "Минимальная партия, шт",
+          "value": "1"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для машинной упаковки 12,5 кг 500 мм, 20 мкм, 1 сорт Newmark",
+        "description": "Стрейч-пленка для машинной упаковки 12,5 кг 500 мм, 20 мкм, 1 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-mashinnoi-upakovki-12-5-kg-500-mm-23-mkm-1-sort",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-mashinnoi-upakovki-12-5-kg-500-mm-23-mkm-1-sort",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-mashinnoi-upakovki-12-5-kg-500-mm-23-mkm-1-sort/",
+    "title": "Стрейч-пленка для машинной упаковки 12,5 кг 500 мм, 23 мкм, 1 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-mashinnoi-upakovki-12-5-kg-500-mm-23-mkm-1-sort.webp",
+      "imageAlt": "Стрейч-пленка для машинной упаковки 12,5 кг 500 мм, 23 мкм, 1 сорт",
+      "price": "От 2 286 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Длина, м",
+          "value": "1181,47"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "12,5"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для машинной упаковки 12,5 кг 500 мм, 23 мкм, 1 сорт",
+      "lead": "Стрейч-пленка для машинной упаковки 12,5 кг 500 мм, 23 мкм, 1 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для машинной упаковки 12,5 кг 500 мм, 23 мкм, 1 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: длина, м: 1181,47, ширина, мм: 500, толщина, мкм: 23, сорт: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-mashinnoi-upakovki-12-5-kg-500-mm-23-mkm-1-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Длина, м",
+          "value": "1181,47"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "12,5"
+        },
+        {
+          "label": "Цвет",
+          "value": "Прозрачный"
+        },
+        {
+          "label": "Минимальная партия, шт",
+          "value": "1"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для машинной упаковки 12,5 кг 500 мм, 23 мкм, 1 сорт Newmark",
+        "description": "Стрейч-пленка для машинной упаковки 12,5 кг 500 мм, 23 мкм, 1 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-mashinnoi-upakovki-15-kg-500-mm-17-mkm-1-sort",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-mashinnoi-upakovki-15-kg-500-mm-17-mkm-1-sort",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-mashinnoi-upakovki-15-kg-500-mm-17-mkm-1-sort/",
+    "title": "Стрейч-пленка для машинной упаковки 15 кг 500 мм, 17 мкм, 1 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-mashinnoi-upakovki-15-kg-500-mm-17-mkm-1-sort.webp",
+      "imageAlt": "Стрейч-пленка для машинной упаковки 15 кг 500 мм, 17 мкм, 1 сорт",
+      "price": "От 2 743 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Длина, м",
+          "value": "1918,5"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "15"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для машинной упаковки 15 кг 500 мм, 17 мкм, 1 сорт",
+      "lead": "Стрейч-пленка для машинной упаковки 15 кг 500 мм, 17 мкм, 1 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для машинной упаковки 15 кг 500 мм, 17 мкм, 1 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: длина, м: 1918,5, ширина, мм: 500, толщина, мкм: 17, сорт: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-mashinnoi-upakovki-15-kg-500-mm-17-mkm-1-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Длина, м",
+          "value": "1918,5"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "15"
+        },
+        {
+          "label": "Цвет",
+          "value": "Прозрачный"
+        },
+        {
+          "label": "Минимальная партия, шт",
+          "value": "1"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для машинной упаковки 15 кг 500 мм, 17 мкм, 1 сорт Newmark",
+        "description": "Стрейч-пленка для машинной упаковки 15 кг 500 мм, 17 мкм, 1 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-mashinnoi-upakovki-15-kg-500-mm-20-mkm-1-sort",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-mashinnoi-upakovki-15-kg-500-mm-20-mkm-1-sort",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-mashinnoi-upakovki-15-kg-500-mm-20-mkm-1-sort/",
+    "title": "Стрейч-пленка для машинной упаковки 15 кг 500 мм, 20 мкм, 1 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-mashinnoi-upakovki-15-kg-500-mm-20-mkm-1-sort.webp",
+      "imageAlt": "Стрейч-пленка для машинной упаковки 15 кг 500 мм, 20 мкм, 1 сорт",
+      "price": "От 2 743 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Длина, м",
+          "value": "1630,43"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "15"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для машинной упаковки 15 кг 500 мм, 20 мкм, 1 сорт",
+      "lead": "Стрейч-пленка для машинной упаковки 15 кг 500 мм, 20 мкм, 1 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для машинной упаковки 15 кг 500 мм, 20 мкм, 1 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: длина, м: 1630,43, ширина, мм: 500, толщина, мкм: 20, сорт: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-mashinnoi-upakovki-15-kg-500-mm-20-mkm-1-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Длина, м",
+          "value": "1630,43"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "15"
+        },
+        {
+          "label": "Цвет",
+          "value": "Прозрачный"
+        },
+        {
+          "label": "Минимальная партия, шт",
+          "value": "1"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для машинной упаковки 15 кг 500 мм, 20 мкм, 1 сорт Newmark",
+        "description": "Стрейч-пленка для машинной упаковки 15 кг 500 мм, 20 мкм, 1 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-mashinnoi-upakovki-15-kg-500-mm-23-mkm-1-sort",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-mashinnoi-upakovki-15-kg-500-mm-23-mkm-1-sort",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-mashinnoi-upakovki-15-kg-500-mm-23-mkm-1-sort/",
+    "title": "Стрейч-пленка для машинной упаковки 15 кг 500 мм, 23 мкм, 1 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-mashinnoi-upakovki-15-kg-500-mm-23-mkm-1-sort.webp",
+      "imageAlt": "Стрейч-пленка для машинной упаковки 15 кг 500 мм, 23 мкм, 1 сорт",
+      "price": "От 2 743 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Длина, м",
+          "value": "1417,76"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "15"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для машинной упаковки 15 кг 500 мм, 23 мкм, 1 сорт",
+      "lead": "Стрейч-пленка для машинной упаковки 15 кг 500 мм, 23 мкм, 1 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для машинной упаковки 15 кг 500 мм, 23 мкм, 1 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: длина, м: 1417,76, ширина, мм: 500, толщина, мкм: 23, сорт: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-mashinnoi-upakovki-15-kg-500-mm-23-mkm-1-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Длина, м",
+          "value": "1417,76"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "15"
+        },
+        {
+          "label": "Цвет",
+          "value": "Прозрачный"
+        },
+        {
+          "label": "Минимальная партия, шт",
+          "value": "1"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для машинной упаковки 15 кг 500 мм, 23 мкм, 1 сорт Newmark",
+        "description": "Стрейч-пленка для машинной упаковки 15 кг 500 мм, 23 мкм, 1 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-mashinnoi-upakovki-16-kg-500-mm-23-mkm-1-sort",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-mashinnoi-upakovki-16-kg-500-mm-23-mkm-1-sort",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-mashinnoi-upakovki-16-kg-500-mm-23-mkm-1-sort/",
+    "title": "Стрейч-пленка для машинной упаковки 16 кг 500 мм, 23 мкм, 1 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-mashinnoi-upakovki-16-kg-500-mm-23-mkm-1-sort.webp",
+      "imageAlt": "Стрейч-пленка для машинной упаковки 16 кг 500 мм, 23 мкм, 1 сорт",
+      "price": "От 2 907 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Длина, м",
+          "value": "1417,76"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "16"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для машинной упаковки 16 кг 500 мм, 23 мкм, 1 сорт",
+      "lead": "Стрейч-пленка для машинной упаковки 16 кг 500 мм, 23 мкм, 1 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для машинной упаковки 16 кг 500 мм, 23 мкм, 1 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: длина, м: 1417,76, ширина, мм: 500, толщина, мкм: 23, сорт: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-mashinnoi-upakovki-16-kg-500-mm-23-mkm-1-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Длина, м",
+          "value": "1417,76"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "16"
+        },
+        {
+          "label": "Цвет",
+          "value": "Прозрачный"
+        },
+        {
+          "label": "Минимальная партия, шт",
+          "value": "1"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для машинной упаковки 16 кг 500 мм, 23 мкм, 1 сорт Newmark",
+        "description": "Стрейч-пленка для машинной упаковки 16 кг 500 мм, 23 мкм, 1 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-ruchnoi-upakovki-0-7-kg-125-mm-17-mkm-1-sort",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-ruchnoi-upakovki-0-7-kg-125-mm-17-mkm-1-sort",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-0-7-kg-125-mm-17-mkm-1-sort/",
+    "title": "Стрейч-пленка для ручной упаковки 0,7 кг 125 мм, 17 мкм, 1 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-0-7-kg-125-mm-17-mkm-1-sort.webp",
+      "imageAlt": "Стрейч-пленка для ручной упаковки 0,7 кг 125 мм, 17 мкм, 1 сорт",
+      "price": "От 109.50 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Длина, м",
+          "value": "89,51"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "125"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "0,7"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для ручной упаковки 0,7 кг 125 мм, 17 мкм, 1 сорт",
+      "lead": "Стрейч-пленка для ручной упаковки 0,7 кг 125 мм, 17 мкм, 1 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для ручной упаковки 0,7 кг 125 мм, 17 мкм, 1 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: длина, м: 89,51, ширина, мм: 125, толщина, мкм: 17, сорт: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-0-7-kg-125-mm-17-mkm-1-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Длина, м",
+          "value": "89,51"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "125"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "0,7"
+        },
+        {
+          "label": "Цвет",
+          "value": "Прозрачный"
+        },
+        {
+          "label": "Минимальная партия, шт.",
+          "value": "24"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для ручной упаковки 0,7 кг 125 мм, 17 мкм, 1 сорт Newmark",
+        "description": "Стрейч-пленка для ручной упаковки 0,7 кг 125 мм, 17 мкм, 1 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-ruchnoi-upakovki-0-7-kg-125-mm-20-mkm-1-sort",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-ruchnoi-upakovki-0-7-kg-125-mm-20-mkm-1-sort",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-0-7-kg-125-mm-20-mkm-1-sort/",
+    "title": "Стрейч-пленка для ручной упаковки 0,7 кг 125 мм, 20 мкм, 1 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-0-7-kg-125-mm-20-mkm-1-sort.webp",
+      "imageAlt": "Стрейч-пленка для ручной упаковки 0,7 кг 125 мм, 20 мкм, 1 сорт",
+      "price": "От 109.50 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Длина, м",
+          "value": "76,08"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "125"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "0,7"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для ручной упаковки 0,7 кг 125 мм, 20 мкм, 1 сорт",
+      "lead": "Стрейч-пленка для ручной упаковки 0,7 кг 125 мм, 20 мкм, 1 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для ручной упаковки 0,7 кг 125 мм, 20 мкм, 1 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: длина, м: 76,08, ширина, мм: 125, толщина, мкм: 20, сорт: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-0-7-kg-125-mm-20-mkm-1-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Длина, м",
+          "value": "76,08"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "125"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "0,7"
+        },
+        {
+          "label": "Цвет",
+          "value": "Прозрачный"
+        },
+        {
+          "label": "Минимальная партия, шт.",
+          "value": "24"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для ручной упаковки 0,7 кг 125 мм, 20 мкм, 1 сорт Newmark",
+        "description": "Стрейч-пленка для ручной упаковки 0,7 кг 125 мм, 20 мкм, 1 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-ruchnoi-upakovki-0-7-kg-125-mm-23-mkm-1-sort",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-ruchnoi-upakovki-0-7-kg-125-mm-23-mkm-1-sort",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-0-7-kg-125-mm-23-mkm-1-sort/",
+    "title": "Стрейч-пленка для ручной упаковки 0,7 кг 125 мм, 23 мкм, 1 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-0-7-kg-125-mm-23-mkm-1-sort.webp",
+      "imageAlt": "Стрейч-пленка для ручной упаковки 0,7 кг 125 мм, 23 мкм, 1 сорт",
+      "price": "От 109.50 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Длина, м",
+          "value": "66,16"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "125"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "0,7"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для ручной упаковки 0,7 кг 125 мм, 23 мкм, 1 сорт",
+      "lead": "Стрейч-пленка для ручной упаковки 0,7 кг 125 мм, 23 мкм, 1 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для ручной упаковки 0,7 кг 125 мм, 23 мкм, 1 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: длина, м: 66,16, ширина, мм: 125, толщина, мкм: 23, сорт: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-0-7-kg-125-mm-23-mkm-1-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Длина, м",
+          "value": "66,16"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "125"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "0,7"
+        },
+        {
+          "label": "Цвет",
+          "value": "Прозрачный"
+        },
+        {
+          "label": "Минимальная партия, шт.",
+          "value": "24"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для ручной упаковки 0,7 кг 125 мм, 23 мкм, 1 сорт Newmark",
+        "description": "Стрейч-пленка для ручной упаковки 0,7 кг 125 мм, 23 мкм, 1 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-ruchnoi-upakovki-1-kg-250-mm-17-mkm-1-sort",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-ruchnoi-upakovki-1-kg-250-mm-17-mkm-1-sort",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-1-kg-250-mm-17-mkm-1-sort/",
+    "title": "Стрейч-пленка для ручной упаковки 1 кг 250 мм, 17 мкм, 1 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-1-kg-250-mm-17-mkm-1-sort.webp",
+      "imageAlt": "Стрейч-пленка для ручной упаковки 1 кг 250 мм, 17 мкм, 1 сорт",
+      "price": "От 179.70 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Длина, м",
+          "value": "127,88"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "250"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "7"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для ручной упаковки 1 кг 250 мм, 17 мкм, 1 сорт",
+      "lead": "Стрейч-пленка для ручной упаковки 1 кг 250 мм, 17 мкм, 1 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для ручной упаковки 1 кг 250 мм, 17 мкм, 1 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: длина, м: 127,88, ширина, мм: 250, толщина, мкм: 17, сорт: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-1-kg-250-mm-17-mkm-1-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Длина, м",
+          "value": "127,88"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "250"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "7"
+        },
+        {
+          "label": "Цвет",
+          "value": "Прозрачный"
+        },
+        {
+          "label": "Минимальная партия, шт.",
+          "value": "12"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для ручной упаковки 1 кг 250 мм, 17 мкм, 1 сорт Newmark",
+        "description": "Стрейч-пленка для ручной упаковки 1 кг 250 мм, 17 мкм, 1 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-ruchnoi-upakovki-1-kg-250-mm-20-mkm-1-sort",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-ruchnoi-upakovki-1-kg-250-mm-20-mkm-1-sort",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-1-kg-250-mm-20-mkm-1-sort/",
+    "title": "Стрейч-пленка для ручной упаковки 1 кг 250 мм, 20 мкм, 1 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-1-kg-250-mm-20-mkm-1-sort.webp",
+      "imageAlt": "Стрейч-пленка для ручной упаковки 1 кг 250 мм, 20 мкм, 1 сорт",
+      "price": "От 179.70 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Длина, м",
+          "value": "108,69"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "250"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "1"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для ручной упаковки 1 кг 250 мм, 20 мкм, 1 сорт",
+      "lead": "Стрейч-пленка для ручной упаковки 1 кг 250 мм, 20 мкм, 1 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для ручной упаковки 1 кг 250 мм, 20 мкм, 1 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: длина, м: 108,69, ширина, мм: 250, толщина, мкм: 20, сорт: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-1-kg-250-mm-20-mkm-1-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Длина, м",
+          "value": "108,69"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "250"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "1"
+        },
+        {
+          "label": "Цвет",
+          "value": "Прозрачный"
+        },
+        {
+          "label": "Минимальная партия, шт.",
+          "value": "12"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для ручной упаковки 1 кг 250 мм, 20 мкм, 1 сорт Newmark",
+        "description": "Стрейч-пленка для ручной упаковки 1 кг 250 мм, 20 мкм, 1 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-ruchnoi-upakovki-1-kg-250-mm-23-mkm-1-sort",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-ruchnoi-upakovki-1-kg-250-mm-23-mkm-1-sort",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-1-kg-250-mm-23-mkm-1-sort/",
+    "title": "Стрейч-пленка для ручной упаковки 1 кг 250 мм, 23 мкм, 1 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-1-kg-250-mm-23-mkm-1-sort.webp",
+      "imageAlt": "Стрейч-пленка для ручной упаковки 1 кг 250 мм, 23 мкм, 1 сорт",
+      "price": "От 179.70 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Длина, м",
+          "value": "94,52"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "250"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "1"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для ручной упаковки 1 кг 250 мм, 23 мкм, 1 сорт",
+      "lead": "Стрейч-пленка для ручной упаковки 1 кг 250 мм, 23 мкм, 1 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для ручной упаковки 1 кг 250 мм, 23 мкм, 1 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: длина, м: 94,52, ширина, мм: 250, толщина, мкм: 23, сорт: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-1-kg-250-mm-23-mkm-1-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Длина, м",
+          "value": "94,52"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "250"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "1"
+        },
+        {
+          "label": "Цвет",
+          "value": "Прозрачный"
+        },
+        {
+          "label": "Минимальная партия, шт.",
+          "value": "12"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для ручной упаковки 1 кг 250 мм, 23 мкм, 1 сорт Newmark",
+        "description": "Стрейч-пленка для ручной упаковки 1 кг 250 мм, 23 мкм, 1 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-ruchnoi-upakovki-1-kg-500-mm-17-mkm-1-sort",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-ruchnoi-upakovki-1-kg-500-mm-17-mkm-1-sort",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-1-kg-500-mm-17-mkm-1-sort/",
+    "title": "Стрейч-пленка для ручной упаковки 1 кг 500 мм, 17 мкм, 1 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-1-kg-500-mm-17-mkm-1-sort.webp",
+      "imageAlt": "Стрейч-пленка для ручной упаковки 1 кг 500 мм, 17 мкм, 1 сорт",
+      "price": "От 185.90 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Длина, м",
+          "value": "127,88"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "1"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для ручной упаковки 1 кг 500 мм, 17 мкм, 1 сорт",
+      "lead": "Стрейч-пленка для ручной упаковки 1 кг 500 мм, 17 мкм, 1 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для ручной упаковки 1 кг 500 мм, 17 мкм, 1 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: длина, м: 127,88, ширина, мм: 500, толщина, мкм: 17, сорт: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-1-kg-500-mm-17-mkm-1-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Длина, м",
+          "value": "127,88"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "1"
+        },
+        {
+          "label": "Цвет",
+          "value": "Прозрачный"
+        },
+        {
+          "label": "Минимальная партия, шт.",
+          "value": "6"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для ручной упаковки 1 кг 500 мм, 17 мкм, 1 сорт Newmark",
+        "description": "Стрейч-пленка для ручной упаковки 1 кг 500 мм, 17 мкм, 1 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-ruchnoi-upakovki-1-kg-500-mm-20-mkm-1-sort",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-ruchnoi-upakovki-1-kg-500-mm-20-mkm-1-sort",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-1-kg-500-mm-20-mkm-1-sort/",
+    "title": "Стрейч-пленка для ручной упаковки 1 кг 500 мм, 20 мкм, 1 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-1-kg-500-mm-20-mkm-1-sort.webp",
+      "imageAlt": "Стрейч-пленка для ручной упаковки 1 кг 500 мм, 20 мкм, 1 сорт",
+      "price": "От 185.90 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Длина, м",
+          "value": "108,69"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "1"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для ручной упаковки 1 кг 500 мм, 20 мкм, 1 сорт",
+      "lead": "Стрейч-пленка для ручной упаковки 1 кг 500 мм, 20 мкм, 1 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для ручной упаковки 1 кг 500 мм, 20 мкм, 1 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: длина, м: 108,69, ширина, мм: 500, толщина, мкм: 20, сорт: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-1-kg-500-mm-20-mkm-1-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Длина, м",
+          "value": "108,69"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "1"
+        },
+        {
+          "label": "Цвет",
+          "value": "Прозрачный"
+        },
+        {
+          "label": "Минимальная партия, шт",
+          "value": "6"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для ручной упаковки 1 кг 500 мм, 20 мкм, 1 сорт Newmark",
+        "description": "Стрейч-пленка для ручной упаковки 1 кг 500 мм, 20 мкм, 1 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-ruchnoi-upakovki-1-kg-500-mm-23-mkm-1-sort",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-ruchnoi-upakovki-1-kg-500-mm-23-mkm-1-sort",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-1-kg-500-mm-23-mkm-1-sort/",
+    "title": "Стрейч-пленка для ручной упаковки 1 кг 500 мм, 23 мкм, 1 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-1-kg-500-mm-23-mkm-1-sort.webp",
+      "imageAlt": "Стрейч-пленка для ручной упаковки 1 кг 500 мм, 23 мкм, 1 сорт",
+      "price": "От 185.90 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Длина, м",
+          "value": "94,52"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "1"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для ручной упаковки 1 кг 500 мм, 23 мкм, 1 сорт",
+      "lead": "Стрейч-пленка для ручной упаковки 1 кг 500 мм, 23 мкм, 1 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для ручной упаковки 1 кг 500 мм, 23 мкм, 1 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: длина, м: 94,52, ширина, мм: 500, толщина, мкм: 23, сорт: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-1-kg-500-mm-23-mkm-1-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Длина, м",
+          "value": "94,52"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "1"
+        },
+        {
+          "label": "Цвет",
+          "value": "Прозрачный"
+        },
+        {
+          "label": "Минимальная партия, шт",
+          "value": "6"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для ручной упаковки 1 кг 500 мм, 23 мкм, 1 сорт Newmark",
+        "description": "Стрейч-пленка для ручной упаковки 1 кг 500 мм, 23 мкм, 1 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-ruchnoi-upakovki-1-5-kg-500-mm-17-mkm-1-sort",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-ruchnoi-upakovki-1-5-kg-500-mm-17-mkm-1-sort",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-1-5-kg-500-mm-17-mkm-1-sort/",
+    "title": "Стрейч-пленка для ручной упаковки 1,5 кг 500 мм, 17 мкм, 1 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-1-5-kg-500-mm-17-mkm-1-sort.webp",
+      "imageAlt": "Стрейч-пленка для ручной упаковки 1,5 кг 500 мм, 17 мкм, 1 сорт",
+      "price": "От 276.15 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Длина, м",
+          "value": "191,81"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "1,5"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для ручной упаковки 1,5 кг 500 мм, 17 мкм, 1 сорт",
+      "lead": "Стрейч-пленка для ручной упаковки 1,5 кг 500 мм, 17 мкм, 1 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для ручной упаковки 1,5 кг 500 мм, 17 мкм, 1 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: длина, м: 191,81, ширина, мм: 500, толщина, мкм: 17, сорт: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-1-5-kg-500-mm-17-mkm-1-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Длина, м",
+          "value": "191,81"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "1,5"
+        },
+        {
+          "label": "Цвет",
+          "value": "Прозрачный"
+        },
+        {
+          "label": "Минимальная партия, шт",
+          "value": "6"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для ручной упаковки 1,5 кг 500 мм, 17 мкм, 1 сорт Newmark",
+        "description": "Стрейч-пленка для ручной упаковки 1,5 кг 500 мм, 17 мкм, 1 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-ruchnoi-upakovki-1-5-kg-500-mm-20-mkm-1-sort",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-ruchnoi-upakovki-1-5-kg-500-mm-20-mkm-1-sort",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-1-5-kg-500-mm-20-mkm-1-sort/",
+    "title": "Стрейч-пленка для ручной упаковки 1,5 кг 500 мм, 20 мкм, 1 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-1-5-kg-500-mm-20-mkm-1-sort.webp",
+      "imageAlt": "Стрейч-пленка для ручной упаковки 1,5 кг 500 мм, 20 мкм, 1 сорт",
+      "price": "От 276.15 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Длина, м",
+          "value": "163,04"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "1,5"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для ручной упаковки 1,5 кг 500 мм, 20 мкм, 1 сорт",
+      "lead": "Стрейч-пленка для ручной упаковки 1,5 кг 500 мм, 20 мкм, 1 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для ручной упаковки 1,5 кг 500 мм, 20 мкм, 1 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: длина, м: 163,04, ширина, мм: 500, толщина, мкм: 20, сорт: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-1-5-kg-500-mm-20-mkm-1-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Длина, м",
+          "value": "163,04"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "1,5"
+        },
+        {
+          "label": "Цвет",
+          "value": "Прозрачный"
+        },
+        {
+          "label": "Минимальная партия, шт",
+          "value": "6"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для ручной упаковки 1,5 кг 500 мм, 20 мкм, 1 сорт Newmark",
+        "description": "Стрейч-пленка для ручной упаковки 1,5 кг 500 мм, 20 мкм, 1 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-ruchnoi-upakovki-1-5-kg-500-mm-23-mkm-1-sort",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-ruchnoi-upakovki-1-5-kg-500-mm-23-mkm-1-sort",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-1-5-kg-500-mm-23-mkm-1-sort/",
+    "title": "Стрейч-пленка для ручной упаковки 1,5 кг 500 мм, 23 мкм, 1 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-1-5-kg-500-mm-23-mkm-1-sort.webp",
+      "imageAlt": "Стрейч-пленка для ручной упаковки 1,5 кг 500 мм, 23 мкм, 1 сорт",
+      "price": "От 276.15 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Длина, м",
+          "value": "141,77"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "1,5"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для ручной упаковки 1,5 кг 500 мм, 23 мкм, 1 сорт",
+      "lead": "Стрейч-пленка для ручной упаковки 1,5 кг 500 мм, 23 мкм, 1 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для ручной упаковки 1,5 кг 500 мм, 23 мкм, 1 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: длина, м: 141,77, ширина, мм: 500, толщина, мкм: 23, сорт: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-1-5-kg-500-mm-23-mkm-1-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Длина, м",
+          "value": "141,77"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "1,5"
+        },
+        {
+          "label": "Цвет",
+          "value": "Прозрачная"
+        },
+        {
+          "label": "Минимальная партия, шт",
+          "value": "6"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для ручной упаковки 1,5 кг 500 мм, 23 мкм, 1 сорт Newmark",
+        "description": "Стрейч-пленка для ручной упаковки 1,5 кг 500 мм, 23 мкм, 1 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-ruchnoi-upakovki-2-kg-500-mm-17-mkm-1-sort",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-ruchnoi-upakovki-2-kg-500-mm-17-mkm-1-sort",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-2-kg-500-mm-17-mkm-1-sort/",
+    "title": "Стрейч-пленка для ручной упаковки 2 кг 500 мм, 17 мкм, 1 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-2-kg-500-mm-17-mkm-1-sort.webp",
+      "imageAlt": "Стрейч-пленка для ручной упаковки 2 кг 500 мм, 17 мкм, 1 сорт",
+      "price": "От 426.40 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Длина, м",
+          "value": "255,75"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "2"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для ручной упаковки 2 кг 500 мм, 17 мкм, 1 сорт",
+      "lead": "Стрейч-пленка для ручной упаковки 2 кг 500 мм, 17 мкм, 1 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для ручной упаковки 2 кг 500 мм, 17 мкм, 1 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: длина, м: 255,75, ширина, мм: 500, толщина, мкм: 17, сорт: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-2-kg-500-mm-17-mkm-1-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Длина, м",
+          "value": "255,75"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "2"
+        },
+        {
+          "label": "Цвет",
+          "value": "Прозрачная"
+        },
+        {
+          "label": "Минимальная партия, шт",
+          "value": "6"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для ручной упаковки 2 кг 500 мм, 17 мкм, 1 сорт Newmark",
+        "description": "Стрейч-пленка для ручной упаковки 2 кг 500 мм, 17 мкм, 1 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-ruchnoi-upakovki-2-kg-500-mm-20-mkm-1-sort",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-ruchnoi-upakovki-2-kg-500-mm-20-mkm-1-sort",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-2-kg-500-mm-20-mkm-1-sort/",
+    "title": "Стрейч-пленка для ручной упаковки 2 кг 500 мм, 20 мкм, 1 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-2-kg-500-mm-20-mkm-1-sort.webp",
+      "imageAlt": "Стрейч-пленка для ручной упаковки 2 кг 500 мм, 20 мкм, 1 сорт",
+      "price": "От 426.40 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Длина, м",
+          "value": "217,39"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "2"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для ручной упаковки 2 кг 500 мм, 20 мкм, 1 сорт",
+      "lead": "Стрейч-пленка для ручной упаковки 2 кг 500 мм, 20 мкм, 1 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для ручной упаковки 2 кг 500 мм, 20 мкм, 1 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: длина, м: 217,39, ширина, мм: 500, толщина, мкм: 20, сорт: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-2-kg-500-mm-20-mkm-1-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Длина, м",
+          "value": "217,39"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "2"
+        },
+        {
+          "label": "Цвет",
+          "value": "Прозрачная"
+        },
+        {
+          "label": "Минимальная партия, шт",
+          "value": "6"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для ручной упаковки 2 кг 500 мм, 20 мкм, 1 сорт Newmark",
+        "description": "Стрейч-пленка для ручной упаковки 2 кг 500 мм, 20 мкм, 1 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-ruchnoi-upakovki-2-kg-500-mm-20-mkm-1-sort-cvetnoi",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-ruchnoi-upakovki-2-kg-500-mm-20-mkm-1-sort-cvetnoi",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-2-kg-500-mm-20-mkm-1-sort-cvetnoi/",
+    "title": "Стрейч-пленка для ручной упаковки 2 кг 500 мм, 20 мкм, 1 сорт цветной",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-2-kg-500-mm-20-mkm-1-sort-cvetnoi.webp",
+      "imageAlt": "Стрейч-пленка для ручной упаковки 2 кг 500 мм, 20 мкм, 1 сорт цветной",
+      "price": "От 423.30 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Длина, м",
+          "value": "217,39"
+        },
+        {
+          "label": "Тип сырья",
+          "value": "Первичное"
+        },
+        {
+          "label": "Материал",
+          "value": "LLDPE 100% перв."
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для ручной упаковки 2 кг 500 мм, 20 мкм, 1 сорт цветной",
+      "lead": "Стрейч-пленка для ручной упаковки 2 кг 500 мм, 20 мкм, 1 сорт цветной для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для ручной упаковки 2 кг 500 мм, 20 мкм, 1 сорт цветной подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: ширина, мм: 500, толщина, мкм: 20, длина, м: 217,39, тип сырья: Первичное. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-2-kg-500-mm-20-mkm-1-sort-cvetnoi.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Длина, м",
+          "value": "217,39"
+        },
+        {
+          "label": "Тип сырья",
+          "value": "Первичное"
+        },
+        {
+          "label": "Материал",
+          "value": "LLDPE 100% перв."
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для ручной упаковки 2 кг 500 мм, 20 мкм, 1 сорт цветной Newmark",
+        "description": "Стрейч-пленка для ручной упаковки 2 кг 500 мм, 20 мкм, 1 сорт цветной для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-ruchnoi-upakovki-2-kg-500-mm-23-mkm-1-sort",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-ruchnoi-upakovki-2-kg-500-mm-23-mkm-1-sort",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-2-kg-500-mm-23-mkm-1-sort/",
+    "title": "Стрейч-пленка для ручной упаковки 2 кг 500 мм, 23 мкм, 1 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-2-kg-500-mm-23-mkm-1-sort.webp",
+      "imageAlt": "Стрейч-пленка для ручной упаковки 2 кг 500 мм, 23 мкм, 1 сорт",
+      "price": "От 426.40 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Длина, м",
+          "value": "189,03"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "2"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для ручной упаковки 2 кг 500 мм, 23 мкм, 1 сорт",
+      "lead": "Стрейч-пленка для ручной упаковки 2 кг 500 мм, 23 мкм, 1 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для ручной упаковки 2 кг 500 мм, 23 мкм, 1 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: длина, м: 189,03, ширина, мм: 500, толщина, мкм: 23, сорт: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-2-kg-500-mm-23-mkm-1-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Длина, м",
+          "value": "189,03"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "2"
+        },
+        {
+          "label": "Цвет",
+          "value": "Прозрачная"
+        },
+        {
+          "label": "Минимальная партия, шт",
+          "value": "6"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для ручной упаковки 2 кг 500 мм, 23 мкм, 1 сорт Newmark",
+        "description": "Стрейч-пленка для ручной упаковки 2 кг 500 мм, 23 мкм, 1 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-ruchnoi-upakovki-2-kg-500-mm-23-mkm-1-sort-goluboi",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-ruchnoi-upakovki-2-kg-500-mm-23-mkm-1-sort-goluboi",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-2-kg-500-mm-23-mkm-1-sort-goluboi/",
+    "title": "Стрейч-пленка для ручной упаковки 2 кг 500 мм, 23 мкм, 1 сорт голубой",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-2-kg-500-mm-23-mkm-1-sort-goluboi.webp",
+      "imageAlt": "Стрейч-пленка для ручной упаковки 2 кг 500 мм, 23 мкм, 1 сорт голубой",
+      "price": "От 423.30 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Длина, м",
+          "value": "189,03"
+        },
+        {
+          "label": "Тип сырья",
+          "value": "Первичное"
+        },
+        {
+          "label": "Материал",
+          "value": "LLDPE 100% перв."
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для ручной упаковки 2 кг 500 мм, 23 мкм, 1 сорт голубой",
+      "lead": "Стрейч-пленка для ручной упаковки 2 кг 500 мм, 23 мкм, 1 сорт голубой для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для ручной упаковки 2 кг 500 мм, 23 мкм, 1 сорт голубой подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: ширина, мм: 500, толщина, мкм: 23, длина, м: 189,03, тип сырья: Первичное. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-2-kg-500-mm-23-mkm-1-sort-goluboi.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Длина, м",
+          "value": "189,03"
+        },
+        {
+          "label": "Тип сырья",
+          "value": "Первичное"
+        },
+        {
+          "label": "Материал",
+          "value": "LLDPE 100% перв."
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для ручной упаковки 2 кг 500 мм, 23 мкм, 1 сорт голубой Newmark",
+        "description": "Стрейч-пленка для ручной упаковки 2 кг 500 мм, 23 мкм, 1 сорт голубой для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-ruchnoi-upakovki-belaya-1-kg-500-mm-17-mkm-1-sort",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-ruchnoi-upakovki-belaya-1-kg-500-mm-17-mkm-1-sort",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-belaya-1-kg-500-mm-17-mkm-1-sort/",
+    "title": "Стрейч-пленка для ручной упаковки белая 1 кг 500 мм, 17 мкм, 1 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-belaya-1-kg-500-mm-17-mkm-1-sort.webp",
+      "imageAlt": "Стрейч-пленка для ручной упаковки белая 1 кг 500 мм, 17 мкм, 1 сорт",
+      "price": "От 199.65 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Длина, м",
+          "value": "127,88"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "1"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для ручной упаковки белая 1 кг 500 мм, 17 мкм, 1 сорт",
+      "lead": "Стрейч-пленка для ручной упаковки белая 1 кг 500 мм, 17 мкм, 1 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для ручной упаковки белая 1 кг 500 мм, 17 мкм, 1 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: длина, м: 127,88, ширина, мм: 500, толщина, мкм: 17, сорт: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-belaya-1-kg-500-mm-17-mkm-1-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Длина, м",
+          "value": "127,88"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "1"
+        },
+        {
+          "label": "Цвет",
+          "value": "Белый"
+        },
+        {
+          "label": "Минимальная партия, шт",
+          "value": "6"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для ручной упаковки белая 1 кг 500 мм, 17 мкм, 1 сорт Newmark",
+        "description": "Стрейч-пленка для ручной упаковки белая 1 кг 500 мм, 17 мкм, 1 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-ruchnoi-upakovki-belaya-1-kg-500-mm-20-mkm-1-sort",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-ruchnoi-upakovki-belaya-1-kg-500-mm-20-mkm-1-sort",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-belaya-1-kg-500-mm-20-mkm-1-sort/",
+    "title": "Стрейч-пленка для ручной упаковки белая 1 кг 500 мм, 20 мкм, 1 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-belaya-1-kg-500-mm-20-mkm-1-sort.webp",
+      "imageAlt": "Стрейч-пленка для ручной упаковки белая 1 кг 500 мм, 20 мкм, 1 сорт",
+      "price": "От 199.65 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Длина, м",
+          "value": "108,69"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "1"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для ручной упаковки белая 1 кг 500 мм, 20 мкм, 1 сорт",
+      "lead": "Стрейч-пленка для ручной упаковки белая 1 кг 500 мм, 20 мкм, 1 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для ручной упаковки белая 1 кг 500 мм, 20 мкм, 1 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: длина, м: 108,69, ширина, мм: 500, толщина, мкм: 20, сорт: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-belaya-1-kg-500-mm-20-mkm-1-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Длина, м",
+          "value": "108,69"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "1"
+        },
+        {
+          "label": "Цвет",
+          "value": "Белый"
+        },
+        {
+          "label": "Минимальная партия, шт",
+          "value": "6"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для ручной упаковки белая 1 кг 500 мм, 20 мкм, 1 сорт Newmark",
+        "description": "Стрейч-пленка для ручной упаковки белая 1 кг 500 мм, 20 мкм, 1 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-ruchnoi-upakovki-belaya-1-kg-500-mm-23-mkm-1-sort",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-ruchnoi-upakovki-belaya-1-kg-500-mm-23-mkm-1-sort",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-belaya-1-kg-500-mm-23-mkm-1-sort/",
+    "title": "Стрейч-пленка для ручной упаковки белая 1 кг 500 мм, 23 мкм, 1 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-belaya-1-kg-500-mm-23-mkm-1-sort.webp",
+      "imageAlt": "Стрейч-пленка для ручной упаковки белая 1 кг 500 мм, 23 мкм, 1 сорт",
+      "price": "От 199.65 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Длина, м",
+          "value": "94,52"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "1"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для ручной упаковки белая 1 кг 500 мм, 23 мкм, 1 сорт",
+      "lead": "Стрейч-пленка для ручной упаковки белая 1 кг 500 мм, 23 мкм, 1 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для ручной упаковки белая 1 кг 500 мм, 23 мкм, 1 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: длина, м: 94,52, ширина, мм: 500, толщина, мкм: 23, сорт: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-belaya-1-kg-500-mm-23-mkm-1-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Длина, м",
+          "value": "94,52"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "1"
+        },
+        {
+          "label": "Цвет",
+          "value": "Белый"
+        },
+        {
+          "label": "Минимальная партия, шт",
+          "value": "6"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для ручной упаковки белая 1 кг 500 мм, 23 мкм, 1 сорт Newmark",
+        "description": "Стрейч-пленка для ручной упаковки белая 1 кг 500 мм, 23 мкм, 1 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-ruchnoi-upakovki-belaya-1-5-kg-500-mm-17-mkm-1-sort",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-ruchnoi-upakovki-belaya-1-5-kg-500-mm-17-mkm-1-sort",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-belaya-1-5-kg-500-mm-17-mkm-1-sort/",
+    "title": "Стрейч-пленка для ручной упаковки белая 1,5 кг 500 мм, 17 мкм, 1 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-belaya-1-5-kg-500-mm-17-mkm-1-sort.webp",
+      "imageAlt": "Стрейч-пленка для ручной упаковки белая 1,5 кг 500 мм, 17 мкм, 1 сорт",
+      "price": "От 298.55 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Длина, м",
+          "value": "191,81"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "1,5"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для ручной упаковки белая 1,5 кг 500 мм, 17 мкм, 1 сорт",
+      "lead": "Стрейч-пленка для ручной упаковки белая 1,5 кг 500 мм, 17 мкм, 1 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для ручной упаковки белая 1,5 кг 500 мм, 17 мкм, 1 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: длина, м: 191,81, ширина, мм: 500, толщина, мкм: 17, сорт: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-belaya-1-5-kg-500-mm-17-mkm-1-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Длина, м",
+          "value": "191,81"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "1,5"
+        },
+        {
+          "label": "Цвет",
+          "value": "Белый"
+        },
+        {
+          "label": "Минимальная партия, шт",
+          "value": "6"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для ручной упаковки белая 1,5 кг 500 мм, 17 мкм, 1 сорт Newmark",
+        "description": "Стрейч-пленка для ручной упаковки белая 1,5 кг 500 мм, 17 мкм, 1 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-ruchnoi-upakovki-belaya-1-5-kg-500-mm-20-mkm-1-sort",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-ruchnoi-upakovki-belaya-1-5-kg-500-mm-20-mkm-1-sort",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-belaya-1-5-kg-500-mm-20-mkm-1-sort/",
+    "title": "Стрейч-пленка для ручной упаковки белая 1,5 кг 500 мм, 20 мкм, 1 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-belaya-1-5-kg-500-mm-20-mkm-1-sort.webp",
+      "imageAlt": "Стрейч-пленка для ручной упаковки белая 1,5 кг 500 мм, 20 мкм, 1 сорт",
+      "price": "От 298.55 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Длина, м",
+          "value": "163,04"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "1,5"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для ручной упаковки белая 1,5 кг 500 мм, 20 мкм, 1 сорт",
+      "lead": "Стрейч-пленка для ручной упаковки белая 1,5 кг 500 мм, 20 мкм, 1 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для ручной упаковки белая 1,5 кг 500 мм, 20 мкм, 1 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: длина, м: 163,04, ширина, мм: 500, толщина, мкм: 20, сорт: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-belaya-1-5-kg-500-mm-20-mkm-1-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Длина, м",
+          "value": "163,04"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "1,5"
+        },
+        {
+          "label": "Цвет",
+          "value": "Белый"
+        },
+        {
+          "label": "Минимальная партия, шт",
+          "value": "6"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для ручной упаковки белая 1,5 кг 500 мм, 20 мкм, 1 сорт Newmark",
+        "description": "Стрейч-пленка для ручной упаковки белая 1,5 кг 500 мм, 20 мкм, 1 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-ruchnoi-upakovki-belaya-1-5-kg-500-mm-23-mkm-1-sort",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-ruchnoi-upakovki-belaya-1-5-kg-500-mm-23-mkm-1-sort",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-belaya-1-5-kg-500-mm-23-mkm-1-sort/",
+    "title": "Стрейч-пленка для ручной упаковки белая 1,5 кг 500 мм, 23 мкм, 1 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-belaya-1-5-kg-500-mm-23-mkm-1-sort.webp",
+      "imageAlt": "Стрейч-пленка для ручной упаковки белая 1,5 кг 500 мм, 23 мкм, 1 сорт",
+      "price": "От 298.55 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Длина, м",
+          "value": "141,77"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "1,5"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для ручной упаковки белая 1,5 кг 500 мм, 23 мкм, 1 сорт",
+      "lead": "Стрейч-пленка для ручной упаковки белая 1,5 кг 500 мм, 23 мкм, 1 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для ручной упаковки белая 1,5 кг 500 мм, 23 мкм, 1 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: длина, м: 141,77, ширина, мм: 500, толщина, мкм: 23, сорт: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-belaya-1-5-kg-500-mm-23-mkm-1-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Длина, м",
+          "value": "141,77"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "1,5"
+        },
+        {
+          "label": "Цвет",
+          "value": "Белый"
+        },
+        {
+          "label": "Минимальная партия, шт",
+          "value": "6"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для ручной упаковки белая 1,5 кг 500 мм, 23 мкм, 1 сорт Newmark",
+        "description": "Стрейч-пленка для ручной упаковки белая 1,5 кг 500 мм, 23 мкм, 1 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-ruchnoi-upakovki-belaya-2-kg-500-mm-17-mkm-1-sort",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-ruchnoi-upakovki-belaya-2-kg-500-mm-17-mkm-1-sort",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-belaya-2-kg-500-mm-17-mkm-1-sort/",
+    "title": "Стрейч-пленка для ручной упаковки белая 2 кг 500 мм, 17 мкм, 1 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-belaya-2-kg-500-mm-17-mkm-1-sort.webp",
+      "imageAlt": "Стрейч-пленка для ручной упаковки белая 2 кг 500 мм, 17 мкм, 1 сорт",
+      "price": "От 387.55 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Длина, м",
+          "value": "255,75"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "2"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для ручной упаковки белая 2 кг 500 мм, 17 мкм, 1 сорт",
+      "lead": "Стрейч-пленка для ручной упаковки белая 2 кг 500 мм, 17 мкм, 1 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для ручной упаковки белая 2 кг 500 мм, 17 мкм, 1 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: длина, м: 255,75, ширина, мм: 500, толщина, мкм: 17, сорт: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-belaya-2-kg-500-mm-17-mkm-1-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Длина, м",
+          "value": "255,75"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "2"
+        },
+        {
+          "label": "Цвет",
+          "value": "Белый"
+        },
+        {
+          "label": "Минимальная пария, шт",
+          "value": "6"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для ручной упаковки белая 2 кг 500 мм, 17 мкм, 1 сорт Newmark",
+        "description": "Стрейч-пленка для ручной упаковки белая 2 кг 500 мм, 17 мкм, 1 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-ruchnoi-upakovki-belaya-2-kg-500-mm-20-mkm-1-sort",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-ruchnoi-upakovki-belaya-2-kg-500-mm-20-mkm-1-sort",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-belaya-2-kg-500-mm-20-mkm-1-sort/",
+    "title": "Стрейч-пленка для ручной упаковки белая 2 кг 500 мм, 20 мкм, 1 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-belaya-2-kg-500-mm-20-mkm-1-sort.webp",
+      "imageAlt": "Стрейч-пленка для ручной упаковки белая 2 кг 500 мм, 20 мкм, 1 сорт",
+      "price": "От 387.55 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Длина, м",
+          "value": "217,39"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "2"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для ручной упаковки белая 2 кг 500 мм, 20 мкм, 1 сорт",
+      "lead": "Стрейч-пленка для ручной упаковки белая 2 кг 500 мм, 20 мкм, 1 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для ручной упаковки белая 2 кг 500 мм, 20 мкм, 1 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: длина, м: 217,39, ширина, мм: 500, толщина, мкм: 20, сорт: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-belaya-2-kg-500-mm-20-mkm-1-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Длина, м",
+          "value": "217,39"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "2"
+        },
+        {
+          "label": "Цвет",
+          "value": "Белый"
+        },
+        {
+          "label": "Минимальная партия, шт",
+          "value": "6"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для ручной упаковки белая 2 кг 500 мм, 20 мкм, 1 сорт Newmark",
+        "description": "Стрейч-пленка для ручной упаковки белая 2 кг 500 мм, 20 мкм, 1 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-ruchnoi-upakovki-belaya-2-kg-500-mm-23-mkm-1-sort",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-ruchnoi-upakovki-belaya-2-kg-500-mm-23-mkm-1-sort",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-belaya-2-kg-500-mm-23-mkm-1-sort/",
+    "title": "Стрейч-пленка для ручной упаковки белая 2 кг 500 мм, 23 мкм, 1 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-belaya-2-kg-500-mm-23-mkm-1-sort.webp",
+      "imageAlt": "Стрейч-пленка для ручной упаковки белая 2 кг 500 мм, 23 мкм, 1 сорт",
+      "price": "От 387.55 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Длина, м",
+          "value": "189,03"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "2"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для ручной упаковки белая 2 кг 500 мм, 23 мкм, 1 сорт",
+      "lead": "Стрейч-пленка для ручной упаковки белая 2 кг 500 мм, 23 мкм, 1 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для ручной упаковки белая 2 кг 500 мм, 23 мкм, 1 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: длина, м: 189,03, ширина, мм: 500, толщина, мкм: 23, сорт: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-belaya-2-kg-500-mm-23-mkm-1-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Длина, м",
+          "value": "189,03"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "2"
+        },
+        {
+          "label": "Цвет",
+          "value": "Белый"
+        },
+        {
+          "label": "Минимальная партия, шт",
+          "value": "6"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для ручной упаковки белая 2 кг 500 мм, 23 мкм, 1 сорт Newmark",
+        "description": "Стрейч-пленка для ручной упаковки белая 2 кг 500 мм, 23 мкм, 1 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-ruchnoi-upakovki-chernaya-1-kg-500-mm-17-mkm-1-sort",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-ruchnoi-upakovki-chernaya-1-kg-500-mm-17-mkm-1-sort",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-chernaya-1-kg-500-mm-17-mkm-1-sort/",
+    "title": "Стрейч-пленка для ручной упаковки черная 1 кг 500 мм, 17 мкм, 1 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-chernaya-1-kg-500-mm-17-mkm-1-sort.webp",
+      "imageAlt": "Стрейч-пленка для ручной упаковки черная 1 кг 500 мм, 17 мкм, 1 сорт",
+      "price": "От 199.65 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Длина, м",
+          "value": "127,88"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "1"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для ручной упаковки черная 1 кг 500 мм, 17 мкм, 1 сорт",
+      "lead": "Стрейч-пленка для ручной упаковки черная 1 кг 500 мм, 17 мкм, 1 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для ручной упаковки черная 1 кг 500 мм, 17 мкм, 1 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: ширина, мм: 500, толщина, мкм: 17, длина, м: 127,88, сорт: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-chernaya-1-kg-500-mm-17-mkm-1-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Длина, м",
+          "value": "127,88"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "1"
+        },
+        {
+          "label": "Цвет",
+          "value": "Черный"
+        },
+        {
+          "label": "Минимальная партия, шт.",
+          "value": "6"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для ручной упаковки черная 1 кг 500 мм, 17 мкм, 1 сорт Newmark",
+        "description": "Стрейч-пленка для ручной упаковки черная 1 кг 500 мм, 17 мкм, 1 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-ruchnoi-upakovki-chernaya-1-kg-500-mm-20-mkm-1-sort",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-ruchnoi-upakovki-chernaya-1-kg-500-mm-20-mkm-1-sort",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-chernaya-1-kg-500-mm-20-mkm-1-sort/",
+    "title": "Стрейч-пленка для ручной упаковки черная 1 кг 500 мм, 20 мкм, 1 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-chernaya-1-kg-500-mm-20-mkm-1-sort.webp",
+      "imageAlt": "Стрейч-пленка для ручной упаковки черная 1 кг 500 мм, 20 мкм, 1 сорт",
+      "price": "От 199.65 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Длина, м",
+          "value": "108,69"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "1"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для ручной упаковки черная 1 кг 500 мм, 20 мкм, 1 сорт",
+      "lead": "Стрейч-пленка для ручной упаковки черная 1 кг 500 мм, 20 мкм, 1 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для ручной упаковки черная 1 кг 500 мм, 20 мкм, 1 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: длина, м: 108,69, ширина, мм: 500, толщина, мкм: 20, сорт: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-chernaya-1-kg-500-mm-20-mkm-1-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Длина, м",
+          "value": "108,69"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "1"
+        },
+        {
+          "label": "Цвет",
+          "value": "Черный"
+        },
+        {
+          "label": "Минимальная партия, шт",
+          "value": "6"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для ручной упаковки черная 1 кг 500 мм, 20 мкм, 1 сорт Newmark",
+        "description": "Стрейч-пленка для ручной упаковки черная 1 кг 500 мм, 20 мкм, 1 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-ruchnoi-upakovki-chernaya-1-kg-500-mm-23-mkm-1-sort",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-ruchnoi-upakovki-chernaya-1-kg-500-mm-23-mkm-1-sort",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-chernaya-1-kg-500-mm-23-mkm-1-sort/",
+    "title": "Стрейч-пленка для ручной упаковки черная 1 кг 500 мм, 23 мкм, 1 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-chernaya-1-kg-500-mm-23-mkm-1-sort.webp",
+      "imageAlt": "Стрейч-пленка для ручной упаковки черная 1 кг 500 мм, 23 мкм, 1 сорт",
+      "price": "От 199.65 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Длина, м",
+          "value": "94,52"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "1"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для ручной упаковки черная 1 кг 500 мм, 23 мкм, 1 сорт",
+      "lead": "Стрейч-пленка для ручной упаковки черная 1 кг 500 мм, 23 мкм, 1 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для ручной упаковки черная 1 кг 500 мм, 23 мкм, 1 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: длина, м: 94,52, ширина, мм: 500, толщина, мкм: 23, сорт: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-chernaya-1-kg-500-mm-23-mkm-1-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Длина, м",
+          "value": "94,52"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "1"
+        },
+        {
+          "label": "Цвет",
+          "value": "Черный"
+        },
+        {
+          "label": "Минимальная партия, шт",
+          "value": "6"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для ручной упаковки черная 1 кг 500 мм, 23 мкм, 1 сорт Newmark",
+        "description": "Стрейч-пленка для ручной упаковки черная 1 кг 500 мм, 23 мкм, 1 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-ruchnoi-upakovki-chernaya-1-5-kg-500-mm-17-mkm-1-sort",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-ruchnoi-upakovki-chernaya-1-5-kg-500-mm-17-mkm-1-sort",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-chernaya-1-5-kg-500-mm-17-mkm-1-sort/",
+    "title": "Стрейч-пленка для ручной упаковки черная 1,5 кг 500 мм, 17 мкм, 1 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-chernaya-1-5-kg-500-mm-17-mkm-1-sort.webp",
+      "imageAlt": "Стрейч-пленка для ручной упаковки черная 1,5 кг 500 мм, 17 мкм, 1 сорт",
+      "price": "От 298.55 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Длина, м",
+          "value": "191,81"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "1,5"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для ручной упаковки черная 1,5 кг 500 мм, 17 мкм, 1 сорт",
+      "lead": "Стрейч-пленка для ручной упаковки черная 1,5 кг 500 мм, 17 мкм, 1 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для ручной упаковки черная 1,5 кг 500 мм, 17 мкм, 1 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: длина, м: 191,81, ширина, мм: 500, толщина, мкм: 17, сорт: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-chernaya-1-5-kg-500-mm-17-mkm-1-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Длина, м",
+          "value": "191,81"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "1,5"
+        },
+        {
+          "label": "Цвет",
+          "value": "Черный"
+        },
+        {
+          "label": "Минимальная партия",
+          "value": "6"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для ручной упаковки черная 1,5 кг 500 мм, 17 мкм, 1 сорт Newmark",
+        "description": "Стрейч-пленка для ручной упаковки черная 1,5 кг 500 мм, 17 мкм, 1 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-ruchnoi-upakovki-chernaya-1-5-kg-500-mm-20-mkm-1-sort",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-ruchnoi-upakovki-chernaya-1-5-kg-500-mm-20-mkm-1-sort",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-chernaya-1-5-kg-500-mm-20-mkm-1-sort/",
+    "title": "Стрейч-пленка для ручной упаковки черная 1,5 кг 500 мм, 20 мкм, 1 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-chernaya-1-5-kg-500-mm-20-mkm-1-sort.webp",
+      "imageAlt": "Стрейч-пленка для ручной упаковки черная 1,5 кг 500 мм, 20 мкм, 1 сорт",
+      "price": "От 298.55 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Длина, м",
+          "value": "163,04"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "1,5"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для ручной упаковки черная 1,5 кг 500 мм, 20 мкм, 1 сорт",
+      "lead": "Стрейч-пленка для ручной упаковки черная 1,5 кг 500 мм, 20 мкм, 1 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для ручной упаковки черная 1,5 кг 500 мм, 20 мкм, 1 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: длина, м: 163,04, ширина, мм: 500, толщина, мкм: 20, сорт: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-chernaya-1-5-kg-500-mm-20-mkm-1-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Длина, м",
+          "value": "163,04"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "1,5"
+        },
+        {
+          "label": "Цвет",
+          "value": "Черный"
+        },
+        {
+          "label": "Минимальная партия, шт",
+          "value": "6"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для ручной упаковки черная 1,5 кг 500 мм, 20 мкм, 1 сорт Newmark",
+        "description": "Стрейч-пленка для ручной упаковки черная 1,5 кг 500 мм, 20 мкм, 1 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-ruchnoi-upakovki-chernaya-1-5-kg-500-mm-23-mkm-1-sort",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-ruchnoi-upakovki-chernaya-1-5-kg-500-mm-23-mkm-1-sort",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-chernaya-1-5-kg-500-mm-23-mkm-1-sort/",
+    "title": "Стрейч-пленка для ручной упаковки черная 1,5 кг 500 мм, 23 мкм, 1 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-chernaya-1-5-kg-500-mm-23-mkm-1-sort.webp",
+      "imageAlt": "Стрейч-пленка для ручной упаковки черная 1,5 кг 500 мм, 23 мкм, 1 сорт",
+      "price": "От 298.55 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Длина, м",
+          "value": "141,77"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "1,5"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для ручной упаковки черная 1,5 кг 500 мм, 23 мкм, 1 сорт",
+      "lead": "Стрейч-пленка для ручной упаковки черная 1,5 кг 500 мм, 23 мкм, 1 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для ручной упаковки черная 1,5 кг 500 мм, 23 мкм, 1 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: длина, м: 141,77, ширина, мм: 500, толщина, мкм: 23, сорт: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-chernaya-1-5-kg-500-mm-23-mkm-1-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Длина, м",
+          "value": "141,77"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "1,5"
+        },
+        {
+          "label": "Цвет",
+          "value": "Черный"
+        },
+        {
+          "label": "Минимальная партия, шт",
+          "value": "6"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для ручной упаковки черная 1,5 кг 500 мм, 23 мкм, 1 сорт Newmark",
+        "description": "Стрейч-пленка для ручной упаковки черная 1,5 кг 500 мм, 23 мкм, 1 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-ruchnoi-upakovki-chernaya-2-kg-500-mm-17-mkm-1-sort",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-ruchnoi-upakovki-chernaya-2-kg-500-mm-17-mkm-1-sort",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-chernaya-2-kg-500-mm-17-mkm-1-sort/",
+    "title": "Стрейч-пленка для ручной упаковки черная 2 кг 500 мм, 17 мкм, 1 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-chernaya-2-kg-500-mm-17-mkm-1-sort.webp",
+      "imageAlt": "Стрейч-пленка для ручной упаковки черная 2 кг 500 мм, 17 мкм, 1 сорт",
+      "price": "От 387.55 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Длина, м",
+          "value": "255,75"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "2"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для ручной упаковки черная 2 кг 500 мм, 17 мкм, 1 сорт",
+      "lead": "Стрейч-пленка для ручной упаковки черная 2 кг 500 мм, 17 мкм, 1 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для ручной упаковки черная 2 кг 500 мм, 17 мкм, 1 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: длина, м: 255,75, ширина, мм: 500, толщина, мкм: 17, сорт: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-chernaya-2-kg-500-mm-17-mkm-1-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Длина, м",
+          "value": "255,75"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "2"
+        },
+        {
+          "label": "Цвет",
+          "value": "Черный"
+        },
+        {
+          "label": "Минимальная партия, шт",
+          "value": "6"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для ручной упаковки черная 2 кг 500 мм, 17 мкм, 1 сорт Newmark",
+        "description": "Стрейч-пленка для ручной упаковки черная 2 кг 500 мм, 17 мкм, 1 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-ruchnoi-upakovki-chernaya-2-kg-500-mm-20-mkm-1-sort",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-ruchnoi-upakovki-chernaya-2-kg-500-mm-20-mkm-1-sort",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-chernaya-2-kg-500-mm-20-mkm-1-sort/",
+    "title": "Стрейч-пленка для ручной упаковки черная 2 кг 500 мм, 20 мкм, 1 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-chernaya-2-kg-500-mm-20-mkm-1-sort.webp",
+      "imageAlt": "Стрейч-пленка для ручной упаковки черная 2 кг 500 мм, 20 мкм, 1 сорт",
+      "price": "От 387.55 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Длина, м",
+          "value": "217,39"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "2"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для ручной упаковки черная 2 кг 500 мм, 20 мкм, 1 сорт",
+      "lead": "Стрейч-пленка для ручной упаковки черная 2 кг 500 мм, 20 мкм, 1 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для ручной упаковки черная 2 кг 500 мм, 20 мкм, 1 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: длина, м: 217,39, ширина, мм: 500, толщина, мкм: 20, сорт: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-chernaya-2-kg-500-mm-20-mkm-1-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Длина, м",
+          "value": "217,39"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "2"
+        },
+        {
+          "label": "Цвет",
+          "value": "Черный"
+        },
+        {
+          "label": "Минимальная партия, шт",
+          "value": "6"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для ручной упаковки черная 2 кг 500 мм, 20 мкм, 1 сорт Newmark",
+        "description": "Стрейч-пленка для ручной упаковки черная 2 кг 500 мм, 20 мкм, 1 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "streich-plenka-dlya-ruchnoi-upakovki-chernaya-2-kg-500-mm-23-mkm-1-sort",
+    "parentId": "stretch-plenka",
+    "slug": "streich-plenka-dlya-ruchnoi-upakovki-chernaya-2-kg-500-mm-23-mkm-1-sort",
+    "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-chernaya-2-kg-500-mm-23-mkm-1-sort/",
+    "title": "Стрейч-пленка для ручной упаковки черная 2 кг 500 мм, 23 мкм, 1 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-chernaya-2-kg-500-mm-23-mkm-1-sort.webp",
+      "imageAlt": "Стрейч-пленка для ручной упаковки черная 2 кг 500 мм, 23 мкм, 1 сорт",
+      "price": "От 387.55 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Длина, м",
+          "value": "189,03"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "2"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Стрейч-пленка для ручной упаковки черная 2 кг 500 мм, 23 мкм, 1 сорт",
+      "lead": "Стрейч-пленка для ручной упаковки черная 2 кг 500 мм, 23 мкм, 1 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Стрейч-пленка для ручной упаковки черная 2 кг 500 мм, 23 мкм, 1 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: длина, м: 189,03, ширина, мм: 500, толщина, мкм: 23, сорт: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/streich-plenka-dlya-ruchnoi-upakovki-chernaya-2-kg-500-mm-23-mkm-1-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Длина, м",
+          "value": "189,03"
+        },
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Сорт",
+          "value": "1"
+        },
+        {
+          "label": "Вес ролика, кг",
+          "value": "2"
+        },
+        {
+          "label": "Цвет",
+          "value": "Черный"
+        },
+        {
+          "label": "Минимальная партия, шт",
+          "value": "6"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Стрейч-пленка для ручной упаковки черная 2 кг 500 мм, 23 мкм, 1 сорт Newmark",
+        "description": "Стрейч-пленка для ручной упаковки черная 2 кг 500 мм, 23 мкм, 1 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-17-mkm-2-sort-12-5-kg",
+    "parentId": "stretch-plenka",
+    "slug": "upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-17-mkm-2-sort-12-5-kg",
+    "href": "/catalog/stretch-plenka/upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-17-mkm-2-sort-12-5-kg/",
+    "title": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 17 мкм 2 сорт, 12,5 кг",
+    "card": {
+      "image": "/catalog/products/arli-stretch/upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-17-mkm-2-sort-12-5-kg.webp",
+      "imageAlt": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 17 мкм 2 сорт, 12,5 кг",
+      "price": "От 2 062 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "12,5"
+        },
+        {
+          "label": "Длина (намотка), м",
+          "value": "1598,46"
+        },
+        {
+          "label": "Цвет",
+          "value": "Серый"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 17 мкм 2 сорт, 12,5 кг",
+      "lead": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 17 мкм 2 сорт, 12,5 кг для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 17 мкм 2 сорт, 12,5 кг подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: ширина, мм: 500, толщина, мкм: 17, вес, кг: 12,5, длина (намотка), м: 1598,46. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-17-mkm-2-sort-12-5-kg.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "12,5"
+        },
+        {
+          "label": "Длина (намотка), м",
+          "value": "1598,46"
+        },
+        {
+          "label": "Цвет",
+          "value": "Серый"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 17 мкм 2 сорт, 12,5 кг Newmark",
+        "description": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 17 мкм 2 сорт, 12,5 кг для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-17-mkm-2-sort-15-kg",
+    "parentId": "stretch-plenka",
+    "slug": "upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-17-mkm-2-sort-15-kg",
+    "href": "/catalog/stretch-plenka/upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-17-mkm-2-sort-15-kg/",
+    "title": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 17 мкм 2 сорт, 15 кг",
+    "card": {
+      "image": "/catalog/products/arli-stretch/upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-17-mkm-2-sort-15-kg.webp",
+      "imageAlt": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 17 мкм 2 сорт, 15 кг",
+      "price": "От 2 472 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "15"
+        },
+        {
+          "label": "Длина (намотка), м",
+          "value": "1 918,15"
+        },
+        {
+          "label": "Цвет",
+          "value": "Серый"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 17 мкм 2 сорт, 15 кг",
+      "lead": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 17 мкм 2 сорт, 15 кг для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 17 мкм 2 сорт, 15 кг подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: ширина, мм: 500, толщина, мкм: 17, вес, кг: 15, длина (намотка), м: 1 918,15. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-17-mkm-2-sort-15-kg.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "15"
+        },
+        {
+          "label": "Длина (намотка), м",
+          "value": "1 918,15"
+        },
+        {
+          "label": "Цвет",
+          "value": "Серый"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 17 мкм 2 сорт, 15 кг Newmark",
+        "description": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 17 мкм 2 сорт, 15 кг для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-20-mkm-2-sort-12-5-kg",
+    "parentId": "stretch-plenka",
+    "slug": "upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-20-mkm-2-sort-12-5-kg",
+    "href": "/catalog/stretch-plenka/upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-20-mkm-2-sort-12-5-kg/",
+    "title": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 20 мкм 2 сорт, 12,5 кг",
+    "card": {
+      "image": "/catalog/products/arli-stretch/upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-20-mkm-2-sort-12-5-kg.webp",
+      "imageAlt": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 20 мкм 2 сорт, 12,5 кг",
+      "price": "От 2 062 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "12,5"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 20 мкм 2 сорт, 12,5 кг",
+      "lead": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 20 мкм 2 сорт, 12,5 кг для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 20 мкм 2 сорт, 12,5 кг подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: ширина, мм: 500, толщина, мкм: 20, вес, кг: 12,5. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-20-mkm-2-sort-12-5-kg.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "12,5"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 20 мкм 2 сорт, 12,5 кг Newmark",
+        "description": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 20 мкм 2 сорт, 12,5 кг для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-20-mkm-2-sort-15-kg",
+    "parentId": "stretch-plenka",
+    "slug": "upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-20-mkm-2-sort-15-kg",
+    "href": "/catalog/stretch-plenka/upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-20-mkm-2-sort-15-kg/",
+    "title": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 20 мкм 2 сорт, 15 кг",
+    "card": {
+      "image": "/catalog/products/arli-stretch/upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-20-mkm-2-sort-15-kg.webp",
+      "imageAlt": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 20 мкм 2 сорт, 15 кг",
+      "price": "От 2 472 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "15к"
+        },
+        {
+          "label": "Длина (намотка), м",
+          "value": "1 630,43"
+        },
+        {
+          "label": "Цвет",
+          "value": "Серый"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 20 мкм 2 сорт, 15 кг",
+      "lead": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 20 мкм 2 сорт, 15 кг для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 20 мкм 2 сорт, 15 кг подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: ширина, мм: 500, толщина, мкм: 20, вес, кг: 15к, длина (намотка), м: 1 630,43. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-20-mkm-2-sort-15-kg.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "15к"
+        },
+        {
+          "label": "Длина (намотка), м",
+          "value": "1 630,43"
+        },
+        {
+          "label": "Цвет",
+          "value": "Серый"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 20 мкм 2 сорт, 15 кг Newmark",
+        "description": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 20 мкм 2 сорт, 15 кг для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-23-mkm-2-sort-12-5-kg",
+    "parentId": "stretch-plenka",
+    "slug": "upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-23-mkm-2-sort-12-5-kg",
+    "href": "/catalog/stretch-plenka/upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-23-mkm-2-sort-12-5-kg/",
+    "title": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 23 мкм 2 сорт, 12,5 кг",
+    "card": {
+      "image": "/catalog/products/arli-stretch/upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-23-mkm-2-sort-12-5-kg.webp",
+      "imageAlt": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 23 мкм 2 сорт, 12,5 кг",
+      "price": "От 2 062 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "12,5"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 23 мкм 2 сорт, 12,5 кг",
+      "lead": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 23 мкм 2 сорт, 12,5 кг для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 23 мкм 2 сорт, 12,5 кг подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: ширина, мм: 500, толщина, мкм: 23, вес, кг: 12,5. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-23-mkm-2-sort-12-5-kg.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "12,5"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 23 мкм 2 сорт, 12,5 кг Newmark",
+        "description": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 23 мкм 2 сорт, 12,5 кг для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-23-mkm-2-sort-15-kg",
+    "parentId": "stretch-plenka",
+    "slug": "upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-23-mkm-2-sort-15-kg",
+    "href": "/catalog/stretch-plenka/upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-23-mkm-2-sort-15-kg/",
+    "title": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 23 мкм 2 сорт, 15 кг",
+    "card": {
+      "image": "/catalog/products/arli-stretch/upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-23-mkm-2-sort-15-kg.webp",
+      "imageAlt": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 23 мкм 2 сорт, 15 кг",
+      "price": "От 2 472 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "15"
+        },
+        {
+          "label": "Длина (намотка), м",
+          "value": "1 417,69"
+        },
+        {
+          "label": "Цвет",
+          "value": "Серый"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 23 мкм 2 сорт, 15 кг",
+      "lead": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 23 мкм 2 сорт, 15 кг для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 23 мкм 2 сорт, 15 кг подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: ширина, мм: 500, толщина, мкм: 23, вес, кг: 15, длина (намотка), м: 1 417,69. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-23-mkm-2-sort-15-kg.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "15"
+        },
+        {
+          "label": "Длина (намотка), м",
+          "value": "1 417,69"
+        },
+        {
+          "label": "Цвет",
+          "value": "Серый"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 23 мкм 2 сорт, 15 кг Newmark",
+        "description": "Упаковочная стрейч-пленка для машинной упаковки 500 мм, 23 мкм 2 сорт, 15 кг для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-17-mkm-1-5-kg-2-sort",
+    "parentId": "stretch-plenka",
+    "slug": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-17-mkm-1-5-kg-2-sort",
+    "href": "/catalog/stretch-plenka/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-17-mkm-1-5-kg-2-sort/",
+    "title": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 17 мкм 1,5 кг 2 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-17-mkm-1-5-kg-2-sort.webp",
+      "imageAlt": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 17 мкм 1,5 кг 2 сорт",
+      "price": "От 238.80 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "1,5"
+        },
+        {
+          "label": "Длина (намотка), м",
+          "value": "191,8"
+        },
+        {
+          "label": "Цвет",
+          "value": "Серый"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 17 мкм 1,5 кг 2 сорт",
+      "lead": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 17 мкм 1,5 кг 2 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 17 мкм 1,5 кг 2 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: ширина, мм: 500, толщина, мкм: 17, вес, кг: 1,5, длина (намотка), м: 191,8. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-17-mkm-1-5-kg-2-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "1,5"
+        },
+        {
+          "label": "Длина (намотка), м",
+          "value": "191,8"
+        },
+        {
+          "label": "Цвет",
+          "value": "Серый"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 17 мкм 1,5 кг 2 сорт Newmark",
+        "description": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 17 мкм 1,5 кг 2 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-17-mkm-2-kg-2-sort",
+    "parentId": "stretch-plenka",
+    "slug": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-17-mkm-2-kg-2-sort",
+    "href": "/catalog/stretch-plenka/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-17-mkm-2-kg-2-sort/",
+    "title": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 17 мкм 2 кг 2 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-17-mkm-2-kg-2-sort.webp",
+      "imageAlt": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 17 мкм 2 кг 2 сорт",
+      "price": "От 312.50 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "2"
+        },
+        {
+          "label": "Длина (намотка), м",
+          "value": "255,75"
+        },
+        {
+          "label": "Цвет",
+          "value": "Серый"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 17 мкм 2 кг 2 сорт",
+      "lead": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 17 мкм 2 кг 2 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 17 мкм 2 кг 2 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: ширина, мм: 500, толщина, мкм: 17, вес, кг: 2, длина (намотка), м: 255,75. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-17-mkm-2-kg-2-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "2"
+        },
+        {
+          "label": "Длина (намотка), м",
+          "value": "255,75"
+        },
+        {
+          "label": "Цвет",
+          "value": "Серый"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 17 мкм 2 кг 2 сорт Newmark",
+        "description": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 17 мкм 2 кг 2 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-20-mkm-1-kg-2-sort",
+    "parentId": "stretch-plenka",
+    "slug": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-20-mkm-1-kg-2-sort",
+    "href": "/catalog/stretch-plenka/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-20-mkm-1-kg-2-sort/",
+    "title": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 20 мкм 1 кг 2 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-20-mkm-1-kg-2-sort.webp",
+      "imageAlt": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 20 мкм 1 кг 2 сорт",
+      "price": "От 156.96 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "1"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 20 мкм 1 кг 2 сорт",
+      "lead": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 20 мкм 1 кг 2 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 20 мкм 1 кг 2 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: ширина, мм: 500, толщина, мкм: 20, вес, кг: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-20-mkm-1-kg-2-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "1"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 20 мкм 1 кг 2 сорт Newmark",
+        "description": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 20 мкм 1 кг 2 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-20-mkm-1-5-kg-2-sort",
+    "parentId": "stretch-plenka",
+    "slug": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-20-mkm-1-5-kg-2-sort",
+    "href": "/catalog/stretch-plenka/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-20-mkm-1-5-kg-2-sort/",
+    "title": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 20 мкм 1,5 кг 2 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-20-mkm-1-5-kg-2-sort.webp",
+      "imageAlt": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 20 мкм 1,5 кг 2 сорт",
+      "price": "От 238.80 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "1,5"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 20 мкм 1,5 кг 2 сорт",
+      "lead": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 20 мкм 1,5 кг 2 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 20 мкм 1,5 кг 2 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: ширина, мм: 500, толщина, мкм: 20, вес, кг: 1,5. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-20-mkm-1-5-kg-2-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "1,5"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 20 мкм 1,5 кг 2 сорт Newmark",
+        "description": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 20 мкм 1,5 кг 2 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-20-mkm-2-kg-2-sort",
+    "parentId": "stretch-plenka",
+    "slug": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-20-mkm-2-kg-2-sort",
+    "href": "/catalog/stretch-plenka/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-20-mkm-2-kg-2-sort/",
+    "title": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 20 мкм 2 кг 2 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-20-mkm-2-kg-2-sort.webp",
+      "imageAlt": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 20 мкм 2 кг 2 сорт",
+      "price": "От 312.50 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "2"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 20 мкм 2 кг 2 сорт",
+      "lead": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 20 мкм 2 кг 2 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 20 мкм 2 кг 2 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: ширина, мм: 500, толщина, мкм: 20, вес, кг: 2. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-20-mkm-2-kg-2-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "2"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 20 мкм 2 кг 2 сорт Newmark",
+        "description": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 20 мкм 2 кг 2 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-23-mkm-1-kg-2-sort",
+    "parentId": "stretch-plenka",
+    "slug": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-23-mkm-1-kg-2-sort",
+    "href": "/catalog/stretch-plenka/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-23-mkm-1-kg-2-sort/",
+    "title": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 23 мкм 1 кг 2 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-23-mkm-1-kg-2-sort.webp",
+      "imageAlt": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 23 мкм 1 кг 2 сорт",
+      "price": "От 156.96 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "1"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 23 мкм 1 кг 2 сорт",
+      "lead": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 23 мкм 1 кг 2 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 23 мкм 1 кг 2 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: ширина, мм: 500, толщина, мкм: 23, вес, кг: 1. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-23-mkm-1-kg-2-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "1"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 23 мкм 1 кг 2 сорт Newmark",
+        "description": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 23 мкм 1 кг 2 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-23-mkm-1-5-kg-2-sort",
+    "parentId": "stretch-plenka",
+    "slug": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-23-mkm-1-5-kg-2-sort",
+    "href": "/catalog/stretch-plenka/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-23-mkm-1-5-kg-2-sort/",
+    "title": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 23 мкм 1,5 кг 2 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-23-mkm-1-5-kg-2-sort.webp",
+      "imageAlt": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 23 мкм 1,5 кг 2 сорт",
+      "price": "От 238.80 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "1,5"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 23 мкм 1,5 кг 2 сорт",
+      "lead": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 23 мкм 1,5 кг 2 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 23 мкм 1,5 кг 2 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: ширина, мм: 500, толщина, мкм: 23, вес, кг: 1,5. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-23-mkm-1-5-kg-2-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "1,5"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 23 мкм 1,5 кг 2 сорт Newmark",
+        "description": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 23 мкм 1,5 кг 2 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-23-mkm-2-kg-2-sort",
+    "parentId": "stretch-plenka",
+    "slug": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-23-mkm-2-kg-2-sort",
+    "href": "/catalog/stretch-plenka/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-23-mkm-2-kg-2-sort/",
+    "title": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 23 мкм 2 кг 2 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-23-mkm-2-kg-2-sort.webp",
+      "imageAlt": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 23 мкм 2 кг 2 сорт",
+      "price": "От 312.50 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "2"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 23 мкм 2 кг 2 сорт",
+      "lead": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 23 мкм 2 кг 2 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 23 мкм 2 кг 2 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: ширина, мм: 500, толщина, мкм: 23, вес, кг: 2. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-23-mkm-2-kg-2-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "2"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 23 мкм 2 кг 2 сорт Newmark",
+        "description": "Упаковочная стрейч-пленка для ручной упаковки 500 мм, 23 мкм 2 кг 2 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-biznes-500-mm-17-mkm-2-kg-2-sort",
+    "parentId": "stretch-plenka",
+    "slug": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-biznes-500-mm-17-mkm-2-kg-2-sort",
+    "href": "/catalog/stretch-plenka/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-biznes-500-mm-17-mkm-2-kg-2-sort/",
+    "title": "Упаковочная стрейч-пленка для ручной упаковки Бизнес 500 мм, 17 мкм 2 кг 2 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-biznes-500-mm-17-mkm-2-kg-2-sort.webp",
+      "imageAlt": "Упаковочная стрейч-пленка для ручной упаковки Бизнес 500 мм, 17 мкм 2 кг 2 сорт",
+      "price": "От 305.90 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "2"
+        },
+        {
+          "label": "Длина (намотка), м",
+          "value": "255,75"
+        },
+        {
+          "label": "Цвет",
+          "value": "Серый"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Упаковочная стрейч-пленка для ручной упаковки Бизнес 500 мм, 17 мкм 2 кг 2 сорт",
+      "lead": "Упаковочная стрейч-пленка для ручной упаковки Бизнес 500 мм, 17 мкм 2 кг 2 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Упаковочная стрейч-пленка для ручной упаковки Бизнес 500 мм, 17 мкм 2 кг 2 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: ширина, мм: 500, толщина, мкм: 17, вес, кг: 2, длина (намотка), м: 255,75. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-biznes-500-mm-17-mkm-2-kg-2-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "17"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "2"
+        },
+        {
+          "label": "Длина (намотка), м",
+          "value": "255,75"
+        },
+        {
+          "label": "Цвет",
+          "value": "Серый"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Упаковочная стрейч-пленка для ручной упаковки Бизнес 500 мм, 17 мкм 2 кг 2 сорт Newmark",
+        "description": "Упаковочная стрейч-пленка для ручной упаковки Бизнес 500 мм, 17 мкм 2 кг 2 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-biznes-500-mm-20-mkm-2-kg-2-sort",
+    "parentId": "stretch-plenka",
+    "slug": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-biznes-500-mm-20-mkm-2-kg-2-sort",
+    "href": "/catalog/stretch-plenka/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-biznes-500-mm-20-mkm-2-kg-2-sort/",
+    "title": "Упаковочная стрейч-пленка для ручной упаковки Бизнес 500 мм, 20 мкм 2 кг 2 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-biznes-500-mm-20-mkm-2-kg-2-sort.webp",
+      "imageAlt": "Упаковочная стрейч-пленка для ручной упаковки Бизнес 500 мм, 20 мкм 2 кг 2 сорт",
+      "price": "От 305.90 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "2"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Упаковочная стрейч-пленка для ручной упаковки Бизнес 500 мм, 20 мкм 2 кг 2 сорт",
+      "lead": "Упаковочная стрейч-пленка для ручной упаковки Бизнес 500 мм, 20 мкм 2 кг 2 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Упаковочная стрейч-пленка для ручной упаковки Бизнес 500 мм, 20 мкм 2 кг 2 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: ширина, мм: 500, толщина, мкм: 20, вес, кг: 2. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-biznes-500-mm-20-mkm-2-kg-2-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "20"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "2"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Упаковочная стрейч-пленка для ручной упаковки Бизнес 500 мм, 20 мкм 2 кг 2 сорт Newmark",
+        "description": "Упаковочная стрейч-пленка для ручной упаковки Бизнес 500 мм, 20 мкм 2 кг 2 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
+    "id": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-biznes-500-mm-23-mkm-2-kg-2-sort",
+    "parentId": "stretch-plenka",
+    "slug": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-biznes-500-mm-23-mkm-2-kg-2-sort",
+    "href": "/catalog/stretch-plenka/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-biznes-500-mm-23-mkm-2-kg-2-sort/",
+    "title": "Упаковочная стрейч-пленка для ручной упаковки Бизнес 500 мм, 23 мкм 2 кг 2 сорт",
+    "card": {
+      "image": "/catalog/products/arli-stretch/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-biznes-500-mm-23-mkm-2-kg-2-sort.webp",
+      "imageAlt": "Упаковочная стрейч-пленка для ручной упаковки Бизнес 500 мм, 23 мкм 2 кг 2 сорт",
+      "price": "От 305.90 рублей/штука",
+      "characteristics": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "2"
+        }
+      ]
+    },
+    "detail": {
+      "title": "Упаковочная стрейч-пленка для ручной упаковки Бизнес 500 мм, 23 мкм 2 кг 2 сорт",
+      "lead": "Упаковочная стрейч-пленка для ручной упаковки Бизнес 500 мм, 23 мкм 2 кг 2 сорт для паллетирования, фиксации грузов, хранения и транспортировки продукции.",
+      "description": "Упаковочная стрейч-пленка для ручной упаковки Бизнес 500 мм, 23 мкм 2 кг 2 сорт подходит для задач упаковки, маркировки, фиксации и комплектации заказов. Основные параметры: ширина, мм: 500, толщина, мкм: 23, вес, кг: 2. Точные условия поставки и наличие уточняются при заказе.",
+      "gallery": [
+        "/catalog/products/arli-stretch/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-biznes-500-mm-23-mkm-2-kg-2-sort.webp"
+      ],
+      "specifications": [
+        {
+          "label": "Ширина, мм",
+          "value": "500"
+        },
+        {
+          "label": "Толщина, мкм",
+          "value": "23"
+        },
+        {
+          "label": "Вес, кг",
+          "value": "2"
+        }
+      ],
+      "advantages": [],
+      "order": {
+        "buttonLabel": "Заказать",
+        "target": "#request"
+      },
+      "seo": {
+        "title": "Упаковочная стрейч-пленка для ручной упаковки Бизнес 500 мм, 23 мкм 2 кг 2 сорт Newmark",
+        "description": "Упаковочная стрейч-пленка для ручной упаковки Бизнес 500 мм, 23 мкм 2 кг 2 сорт для каталога упаковочных материалов Newmark."
+      }
+    }
+  },
+  {
     "id": "alyuminievaya-kleikaya-lenta-48mm-40m",
     "parentId": "kleikaya-lenta",
     "slug": "alyuminievaya-kleikaya-lenta-48mm-40m",

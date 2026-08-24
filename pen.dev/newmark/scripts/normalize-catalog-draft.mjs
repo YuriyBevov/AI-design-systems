@@ -1,9 +1,11 @@
-import { readFile, writeFile } from "node:fs/promises";
+import { readdir, readFile, writeFile } from "node:fs/promises";
+import path from "node:path";
 
-const inputPath = "src/data/catalog/imports/arli-adhesive-draft.json";
+const inputDir = "src/data/catalog/imports";
 const outputPath = "src/data/catalog/products.js";
 
 const categoryPaths = {
+  "stretch-plenka": "stretch-plenka",
   "kleikaya-lenta": "kleikaya-lenta",
   "malyarnaya-lenta": "kleikaya-lenta/malyarnaya-lenta",
   "termostoykaya-malyarnaya": "kleikaya-lenta/termostoykaya-malyarnaya",
@@ -11,6 +13,10 @@ const categoryPaths = {
   "lenty-s-naneseniem": "kleikaya-lenta/lenty-s-naneseniem",
   "izolyatsionnaya-lenta": "kleikaya-lenta/izolyatsionnaya-lenta",
   "poverhnostnaya-pechat": "kleikaya-lenta/s-logotipom/poverhnostnaya-pechat",
+};
+const fallbackParentIds = {
+  "arli-adhesive": "kleikaya-lenta",
+  "arli-stretch": "stretch-plenka",
 };
 
 const categoryOrder = Object.keys(categoryPaths);
@@ -110,7 +116,21 @@ const splitMergedCharacteristic = (characteristic) => {
 
 const normalizeCharacteristics = (characteristics) => characteristics.flatMap(splitMergedCharacteristic);
 
+const isProductLike = (product) => {
+  const characteristics = normalizeCharacteristics(product.detail.specifications);
+
+  return Boolean(product.title && product.card.image && product.card.price)
+    && characteristics.length > 0
+    && characteristics.every((item) => item.value.length <= 180);
+};
+
 const getParentId = (product) => {
+  const fallbackParentId = fallbackParentIds[product.source?.name];
+
+  if (fallbackParentId === "stretch-plenka") {
+    return fallbackParentId;
+  }
+
   const title = normalizeTitle(product.title).toLowerCase();
   const sourceUrl = product.source?.url?.toLowerCase() ?? "";
 
@@ -138,11 +158,12 @@ const getParentId = (product) => {
     return "poverhnostnaya-pechat";
   }
 
-  return "kleikaya-lenta";
+  return fallbackParentId ?? "kleikaya-lenta";
 };
 
 const getLead = (title, parentId) => {
   const purposeByParentId = {
+    "stretch-plenka": "для паллетирования, фиксации грузов, хранения и транспортировки продукции",
     "malyarnaya-lenta": "для защиты поверхностей при отделочных и покрасочных работах",
     "termostoykaya-malyarnaya": "для работ с повышенной температурной нагрузкой",
     tpl: "для фиксации, ремонта, монтажа и производственных задач",
@@ -175,10 +196,23 @@ const sortProducts = (products) => products.sort((a, b) => {
   return a.title.localeCompare(b.title, "ru");
 });
 
-const draft = JSON.parse(await readFile(inputPath, "utf8"));
-const seenIds = new Map();
+const getDraftPaths = async () => {
+  const filenames = await readdir(inputDir);
 
-const uniqueDraftProducts = draft.products.filter((product) => {
+  return filenames
+    .filter((filename) => filename.endsWith("-draft.json"))
+    .map((filename) => path.join(inputDir, filename))
+    .sort();
+};
+
+const draftPaths = await getDraftPaths();
+const drafts = (await Promise.all(draftPaths.map(async (draftPath) => JSON.parse(await readFile(draftPath, "utf8")))))
+  .filter((draft) => fallbackParentIds[draft.source?.name]);
+const seenIds = new Map();
+const draftProducts = drafts.flatMap((draft) => draft.products);
+const productLikeDraftProducts = draftProducts.filter(isProductLike);
+
+const uniqueDraftProducts = productLikeDraftProducts.filter((product) => {
   const baseId = product.slug;
   const nextIndex = seenIds.get(baseId) ?? 0;
 
@@ -241,8 +275,10 @@ const distribution = products.reduce((acc, product) => {
 }, {});
 
 console.log(JSON.stringify({
-  sourceProducts: draft.products.length,
-  skippedDuplicates: draft.products.length - uniqueDraftProducts.length,
+  sources: drafts.map((draft) => draft.source.name),
+  sourceProducts: draftProducts.length,
+  skippedNonProducts: draftProducts.length - productLikeDraftProducts.length,
+  skippedDuplicates: productLikeDraftProducts.length - uniqueDraftProducts.length,
   products: products.length,
   distribution,
 }, null, 2));

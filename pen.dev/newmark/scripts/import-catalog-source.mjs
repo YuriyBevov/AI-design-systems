@@ -62,6 +62,14 @@ const CHARACTERISTIC_LABEL_MAP = {
   "Цена с НДС за коробку, руб": "Стоимость коробки с НДС",
   "Цена за коробку, руб": "Стоимость коробки с НДС",
 };
+const CHARACTERISTIC_LABEL_STOP_WORDS = [
+  "Описание",
+  "Отзывы",
+  "Оплата",
+  "Доставка",
+  "Чтобы приобрести",
+  "template.load",
+];
 
 const sleep = (ms) => new Promise((resolve) => {
   setTimeout(resolve, ms);
@@ -301,13 +309,15 @@ const extractCharacteristics = (html) => {
     return [];
   }
 
-  const endCandidates = ["Описание", "Отзывы", "Оплата", "Доставка"]
+  const endCandidates = CHARACTERISTIC_LABEL_STOP_WORDS
     .map((marker) => text.indexOf(marker, start + "Характеристики".length))
     .filter((index) => index !== -1);
   const end = endCandidates.length > 0 ? Math.min(...endCandidates) : start + 900;
   const chunk = text.slice(start + "Характеристики".length, end);
+  const markerPattern = /(?:^|\s)([А-ЯЁA-Z][А-ЯЁа-яёA-Za-z0-9\s/().,+-]{1,64}?)\s+—\s+/g;
+  const blockedLabelPattern = new RegExp(CHARACTERISTIC_LABEL_STOP_WORDS.join("|"), "i");
 
-  const markers = CHARACTERISTIC_LABELS
+  const knownMarkers = CHARACTERISTIC_LABELS
     .map((label) => {
       const escapedLabel = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       const match = chunk.match(new RegExp(`(?:^|\\s)(${escapedLabel})\\s+—\\s+`, "i"));
@@ -322,8 +332,27 @@ const extractCharacteristics = (html) => {
         markerStart: match.index,
       };
     })
-    .filter(Boolean)
-    .sort((a, b) => a.markerStart - b.markerStart);
+    .filter(Boolean);
+
+  const dynamicMarkers = [...chunk.matchAll(markerPattern)]
+    .map((match) => ({
+      label: match[1].trim(),
+      start: match.index + match[0].length,
+      markerStart: match.index,
+    }))
+    .filter((marker) => !blockedLabelPattern.test(marker.label));
+
+  const markerMap = [...knownMarkers, ...dynamicMarkers].reduce((map, marker) => {
+    const key = `${marker.markerStart}:${marker.start}`;
+
+    if (!map.has(key)) {
+      map.set(key, marker);
+    }
+
+    return map;
+  }, new Map());
+
+  const markers = [...markerMap.values()].sort((a, b) => a.markerStart - b.markerStart);
 
   const pairs = markers.map((marker, index) => {
     const nextMarker = markers[index + 1];
@@ -343,7 +372,7 @@ const extractProduct = async (url, html) => {
   const characteristics = extractCharacteristics(html);
   const price = extractPrice(html);
 
-  if (!title || characteristics.length === 0) {
+  if (!title || characteristics.length === 0 || characteristics.some((item) => item.value.length > 180)) {
     return null;
   }
 
