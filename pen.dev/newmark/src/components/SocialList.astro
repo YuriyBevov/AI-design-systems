@@ -1,0 +1,21 @@
+---
+const { items = [] } = Astro.props;
+---
+
+<ul class="social-list">
+  {items.map((item) => (
+    <li class="social-list__item">
+      <a class="social-list__link" href={item.href} aria-label={item.label}>
+        <svg
+          class:list={["social-list__icon", item.icon === "icon-vk" && "social-list__icon--vk"]}
+          width={item.width ?? 24}
+          height={item.height ?? 24}
+          viewBox={item.viewBox}
+          aria-hidden="true"
+        >
+          <use href={`/sprite.svg?v=2#${item.icon}`}></use>
+        </svg>
+      </a>
+    </li>
+  ))}
+</ul>

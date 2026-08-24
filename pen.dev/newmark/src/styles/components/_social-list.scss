@@ -2,6 +2,8 @@
 	display: flex;
 	align-items: center;
 	gap: var(--space-sm);
+	padding: 0;
+	list-style: none;
 
 	&__link {
 		display: inline-flex;

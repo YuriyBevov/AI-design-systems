@@ -1,9 +1,13 @@
 ---
+import LinkList from "../components/LinkList.astro";
+import SocialList from "../components/SocialList.astro";
 import Slider from "../components/Slider.astro";
 
 const { page } = Astro.props;
 const breadcrumbs = page.breadcrumbs ?? [];
+const linkListData = page.linkLists ?? {};
 const sliderData = page.sliders ?? {};
+const socialListData = page.socialLists ?? {};
 const compiledContent = page.compiledContent ? await page.compiledContent() : "";
 const imageModules = import.meta.glob("../images/webp/*", { eager: true });
 
@@ -27,11 +31,11 @@ const getSliderImages = (sliderId) => {
 };
 
 const contentParts = [];
-const sliderPattern = /<p>\s*\{\{\s*slider:\s*([a-z0-9-]+)\s*\}\}\s*<\/p>/gi;
+const componentPattern = /<p>\s*\{\{\s*(slider|link-list|social-list):\s*([a-z0-9-]+)\s*\}\}\s*<\/p>/gi;
 let lastIndex = 0;
 let match;
 
-while ((match = sliderPattern.exec(compiledContent)) !== null) {
+while ((match = componentPattern.exec(compiledContent)) !== null) {
   if (match.index > lastIndex) {
     contentParts.push({
       type: "html",
@@ -39,12 +43,28 @@ while ((match = sliderPattern.exec(compiledContent)) !== null) {
     });
   }
 
-  contentParts.push({
-    type: "slider",
-    images: getSliderImages(match[1]),
-  });
+  if (match[1] === "slider") {
+    contentParts.push({
+      type: "slider",
+      images: getSliderImages(match[2]),
+    });
+  }
 
-  lastIndex = sliderPattern.lastIndex;
+  if (match[1] === "link-list") {
+    contentParts.push({
+      type: "link-list",
+      items: linkListData[match[2]] ?? [],
+    });
+  }
+
+  if (match[1] === "social-list") {
+    contentParts.push({
+      type: "social-list",
+      items: socialListData[match[2]] ?? [],
+    });
+  }
+
+  lastIndex = componentPattern.lastIndex;
 }
 
 if (lastIndex < compiledContent.length) {
@@ -79,6 +99,10 @@ if (lastIndex < compiledContent.length) {
       {contentParts.map((part) => (
         part.type === "slider" ? (
           <Slider images={part.images} />
+        ) : part.type === "link-list" ? (
+          <LinkList items={part.items} />
+        ) : part.type === "social-list" ? (
+          <SocialList items={part.items} />
         ) : (
           <Fragment set:html={part.html} />
         )
