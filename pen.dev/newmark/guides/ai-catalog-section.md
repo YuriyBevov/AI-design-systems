@@ -6,6 +6,22 @@
 
 Страница раздела каталога должна использовать универсальный шаблон `CatalogSectionPage`. Новые разделы добавляются через `src/data/catalog.js`, а не копированием Astro-страниц.
 
+Разделы каталога собираются динамическим роутом `src/pages/catalog/[...slug].astro`, поэтому вложенность задается полем `path` в объекте раздела.
+
+Актуальная структура каталога:
+
+- `catalog/stretch-plenka`;
+- `catalog/kleikaya-lenta`;
+- `catalog/kleikaya-lenta/s-logotipom`;
+- `catalog/kleikaya-lenta/s-logotipom/poverhnostnaya-pechat`;
+- `catalog/kleikaya-lenta/s-logotipom/mezhsloynaya-pechat`;
+- `catalog/kleikaya-lenta/malyarnaya-lenta`;
+- `catalog/kleikaya-lenta/termostoykaya-malyarnaya`;
+- `catalog/kleikaya-lenta/tpl`;
+- `catalog/kleikaya-lenta/lenty-s-naneseniem`;
+- `catalog/kleikaya-lenta/izolyatsionnaya-lenta`;
+- `catalog/signalnye-lenty`.
+
 Порядок блоков:
 
 - хлебные крошки;
@@ -52,6 +68,7 @@
 - определить название раздела;
 - выделить описание раздела;
 - определить список подразделов;
+- определить `path` раздела и `parentPath` по текущей структуре каталога;
 - собрать товары из всех подразделов в единый список;
 - для каждого товара запросить недостающие данные: название, ссылку, изображение, характеристики в формате `label/value`, цену;
 - если изображение отсутствует, оставить карточку с заглушкой;

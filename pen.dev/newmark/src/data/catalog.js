@@ -1,185 +1,158 @@
-export const catalogSections = [
+const createHref = (path) => `/catalog/${path}/`;
+
+const catalogSectionDrafts = [
   {
-    slug: "kleikaya-lenta-s-logotipom",
+    path: "stretch-plenka",
+    title: "Стрейч-пленка",
+    description: "Раздел каталога со стрейч-пленкой для фиксации грузов, паллетирования, хранения и перевозки продукции.",
+    parentPath: null,
+    childPaths: [],
+  },
+  {
+    path: "kleikaya-lenta",
+    title: "Клейкая лента",
+    description: "Раздел каталога с упаковочными, малярными, брендированными, изоляционными и специальными клейкими лентами.",
+    parentPath: null,
+    childPaths: [
+      "kleikaya-lenta/s-logotipom",
+      "kleikaya-lenta/malyarnaya-lenta",
+      "kleikaya-lenta/termostoykaya-malyarnaya",
+      "kleikaya-lenta/tpl",
+      "kleikaya-lenta/lenty-s-naneseniem",
+      "kleikaya-lenta/izolyatsionnaya-lenta",
+    ],
+  },
+  {
+    path: "kleikaya-lenta/s-logotipom",
     title: "Клейкая лента с логотипом",
-    description: "Производим клейкую ленту с логотипом для брендированной упаковки, маркировки отправлений и ежедневных складских задач. Подберем тип печати, основу, цветность и тираж под задачи компании.",
-    seo: {
-      title: "Клейкая лента с логотипом Newmark",
-      description: "Раздел каталога клейкой ленты с логотипом: поверхностная и межслойная печать, карточки товаров и параметры для заказа.",
-    },
-    subsections: [
-      {
-        label: "Поверхностная печать",
-        href: "/catalog/poverhnostnaya-pechat/",
-      },
-      {
-        label: "Межслойная печать",
-        href: "/catalog/mezhsloynaya-pechat/",
-      },
+    description: "Раздел каталога с клейкой лентой с логотипом для брендированной упаковки, маркировки отправлений и ежедневных складских задач.",
+    parentPath: "kleikaya-lenta",
+    childPaths: [
+      "kleikaya-lenta/s-logotipom/poverhnostnaya-pechat",
+      "kleikaya-lenta/s-logotipom/mezhsloynaya-pechat",
     ],
-    products: [
-      {
-        slug: "kleikaya-lenta-s-logotipom-48-mm",
-        title: "Клейкая лента с логотипом 48 мм",
-        categorySlug: "kleikaya-lenta-s-logotipom",
-        subsectionSlug: "poverhnostnaya-pechat",
-        href: "/catalog/kleikaya-lenta-s-logotipom/kleikaya-lenta-s-logotipom-48-mm/",
-        card: {
-          image: null,
-          imageAlt: "Клейкая лента с логотипом 48 мм",
-          price: "От р/шт",
-          characteristics: [
-            { label: "Тип печати", value: "поверхностная" },
-            { label: "Ширина", value: "48 мм" },
-            { label: "Длина намотки", value: "по запросу" },
-            { label: "Цвет основы", value: "прозрачный или цветной" },
-            { label: "Минимальная партия", value: "по согласованию" },
-          ],
-        },
-        detail: {
-          lead: "",
-          description: "",
-          gallery: [],
-          specifications: [
-            { label: "Тип печати", value: "поверхностная" },
-            { label: "Ширина", value: "48 мм" },
-            { label: "Длина намотки", value: "по запросу" },
-            { label: "Цвет основы", value: "прозрачный или цветной" },
-            { label: "Минимальная партия", value: "по согласованию" },
-          ],
-          advantages: [],
-          order: {
-            buttonLabel: "Заказать",
-            target: "#request",
-          },
-          seo: {
-            title: "Клейкая лента с логотипом 48 мм Newmark",
-            description: "",
-          },
-        },
-      },
-      {
-        slug: "kleikaya-lenta-s-logotipom-72-mm",
-        title: "Клейкая лента с логотипом 72 мм",
-        categorySlug: "kleikaya-lenta-s-logotipom",
-        subsectionSlug: "poverhnostnaya-pechat",
-        href: "/catalog/kleikaya-lenta-s-logotipom/kleikaya-lenta-s-logotipom-72-mm/",
-        card: {
-          image: null,
-          imageAlt: "Клейкая лента с логотипом 72 мм",
-          price: "От р/шт",
-          characteristics: [
-            { label: "Тип печати", value: "поверхностная" },
-            { label: "Ширина", value: "72 мм" },
-            { label: "Длина намотки", value: "по запросу" },
-            { label: "Цвет печати", value: "до 3 цветов" },
-            { label: "Срок производства", value: "по согласованию" },
-          ],
-        },
-        detail: {
-          lead: "",
-          description: "",
-          gallery: [],
-          specifications: [
-            { label: "Тип печати", value: "поверхностная" },
-            { label: "Ширина", value: "72 мм" },
-            { label: "Длина намотки", value: "по запросу" },
-            { label: "Цвет печати", value: "до 3 цветов" },
-            { label: "Срок производства", value: "по согласованию" },
-          ],
-          advantages: [],
-          order: {
-            buttonLabel: "Заказать",
-            target: "#request",
-          },
-          seo: {
-            title: "Клейкая лента с логотипом 72 мм Newmark",
-            description: "",
-          },
-        },
-      },
-      {
-        slug: "mezhsloynaya-kleikaya-lenta-s-logotipom",
-        title: "Межслойная клейкая лента с логотипом",
-        categorySlug: "kleikaya-lenta-s-logotipom",
-        subsectionSlug: "mezhsloynaya-pechat",
-        href: "/catalog/kleikaya-lenta-s-logotipom/mezhsloynaya-kleikaya-lenta-s-logotipom/",
-        card: {
-          image: null,
-          imageAlt: "Межслойная клейкая лента с логотипом",
-          price: "От р/шт",
-          characteristics: [
-            { label: "Тип печати", value: "межслойная" },
-            { label: "Защита логотипа", value: "слой пленки" },
-            { label: "Ширина", value: "по запросу" },
-            { label: "Цвет основы", value: "прозрачный или цветной" },
-            { label: "Минимальная партия", value: "по согласованию" },
-          ],
-        },
-        detail: {
-          lead: "",
-          description: "",
-          gallery: [],
-          specifications: [
-            { label: "Тип печати", value: "межслойная" },
-            { label: "Защита логотипа", value: "слой пленки" },
-            { label: "Ширина", value: "по запросу" },
-            { label: "Цвет основы", value: "прозрачный или цветной" },
-            { label: "Минимальная партия", value: "по согласованию" },
-          ],
-          advantages: [],
-          order: {
-            buttonLabel: "Заказать",
-            target: "#request",
-          },
-          seo: {
-            title: "Межслойная клейкая лента с логотипом Newmark",
-            description: "",
-          },
-        },
-      },
-      {
-        slug: "brendirovannaya-upakovochnaya-lenta",
-        title: "Брендированная упаковочная лента",
-        categorySlug: "kleikaya-lenta-s-logotipom",
-        subsectionSlug: "poverhnostnaya-pechat",
-        href: "/catalog/kleikaya-lenta-s-logotipom/brendirovannaya-upakovochnaya-lenta/",
-        card: {
-          image: null,
-          imageAlt: "Брендированная упаковочная лента",
-          price: "От р/шт",
-          characteristics: [
-            { label: "Назначение", value: "упаковка коробов" },
-            { label: "Печать", value: "поверхностная или межслойная" },
-            { label: "Основа", value: "BOPP" },
-            { label: "Клей", value: "акриловый" },
-            { label: "Дизайн", value: "подготовка макета" },
-          ],
-        },
-        detail: {
-          lead: "",
-          description: "",
-          gallery: [],
-          specifications: [
-            { label: "Назначение", value: "упаковка коробов" },
-            { label: "Печать", value: "поверхностная или межслойная" },
-            { label: "Основа", value: "BOPP" },
-            { label: "Клей", value: "акриловый" },
-            { label: "Дизайн", value: "подготовка макета" },
-          ],
-          advantages: [],
-          order: {
-            buttonLabel: "Заказать",
-            target: "#request",
-          },
-          seo: {
-            title: "Брендированная упаковочная лента Newmark",
-            description: "",
-          },
-        },
-      },
-    ],
+  },
+  {
+    path: "kleikaya-lenta/s-logotipom/poverhnostnaya-pechat",
+    title: "Поверхностная печать",
+    description: "Подраздел клейкой ленты с логотипом с поверхностной печатью для быстрых тиражей и брендированной упаковки.",
+    parentPath: "kleikaya-lenta/s-logotipom",
+    childPaths: [],
+  },
+  {
+    path: "kleikaya-lenta/s-logotipom/mezhsloynaya-pechat",
+    title: "Межслойная печать",
+    description: "Подраздел клейкой ленты с логотипом с межслойной печатью, где изображение защищено слоем пленки.",
+    parentPath: "kleikaya-lenta/s-logotipom",
+    childPaths: [],
+  },
+  {
+    path: "kleikaya-lenta/malyarnaya-lenta",
+    title: "Малярная лента",
+    description: "Подраздел клейкой ленты для защиты поверхностей при отделочных, покрасочных и монтажных работах.",
+    parentPath: "kleikaya-lenta",
+    childPaths: [],
+  },
+  {
+    path: "kleikaya-lenta/termostoykaya-malyarnaya",
+    title: "Термостойкая малярная лента",
+    description: "Подраздел термостойкой малярной ленты для задач, где материал должен выдерживать повышенные температуры.",
+    parentPath: "kleikaya-lenta",
+    childPaths: [],
+  },
+  {
+    path: "kleikaya-lenta/tpl",
+    title: "ТПЛ",
+    description: "Подраздел тканевой полиэтиленовой ленты для ремонта, фиксации, упаковки и производственных задач.",
+    parentPath: "kleikaya-lenta",
+    childPaths: [],
+  },
+  {
+    path: "kleikaya-lenta/lenty-s-naneseniem",
+    title: "Ленты с нанесением",
+    description: "Подраздел клейких лент с нанесением служебных, рекламных и информационных сообщений.",
+    parentPath: "kleikaya-lenta",
+    childPaths: [],
+  },
+  {
+    path: "kleikaya-lenta/izolyatsionnaya-lenta",
+    title: "Изоляционная лента",
+    description: "Подраздел изоляционной ленты для электромонтажных работ, маркировки и защиты соединений.",
+    parentPath: "kleikaya-lenta",
+    childPaths: [],
+  },
+  {
+    path: "signalnye-lenty",
+    title: "Сигнальные ленты",
+    description: "Раздел сигнальных лент для ограждения зон, маркировки опасных участков и организации пространства.",
+    parentPath: null,
+    childPaths: [],
   },
 ];
 
-export const getCatalogSectionBySlug = (slug) => catalogSections.find((section) => section.slug === slug);
+const draftByPath = new Map(catalogSectionDrafts.map((section) => [section.path, section]));
+
+const createSubsections = (childPaths) => childPaths.map((path) => {
+  const section = draftByPath.get(path);
+
+  return {
+    label: section.title,
+    href: createHref(section.path),
+  };
+});
+
+export const catalogSections = catalogSectionDrafts.map((section) => ({
+  ...section,
+  slug: section.path.split("/").at(-1),
+  href: createHref(section.path),
+  seo: {
+    title: `${section.title} Newmark`,
+    description: section.description,
+  },
+  subsections: createSubsections(section.childPaths),
+  products: [],
+}));
+
+export const catalogSectionByPath = new Map(catalogSections.map((section) => [section.path, section]));
+
+export const getCatalogSectionByPath = (path) => catalogSectionByPath.get(path);
+
+export const getCatalogSectionBreadcrumbs = (section) => {
+  const breadcrumbs = [
+    {
+      label: "Главная",
+      href: "/",
+    },
+    {
+      label: "Каталог",
+      href: "/catalog/",
+    },
+  ];
+
+  const parents = [];
+  let currentParentPath = section.parentPath;
+
+  while (currentParentPath) {
+    const parent = getCatalogSectionByPath(currentParentPath);
+
+    if (!parent) {
+      break;
+    }
+
+    parents.unshift(parent);
+    currentParentPath = parent.parentPath;
+  }
+
+  parents.forEach((parent) => {
+    breadcrumbs.push({
+      label: parent.title,
+      href: parent.href,
+    });
+  });
+
+  breadcrumbs.push({
+    label: section.title,
+  });
+
+  return breadcrumbs;
+};

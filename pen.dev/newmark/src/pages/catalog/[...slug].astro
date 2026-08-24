@@ -1,0 +1,20 @@
+---
+import CatalogSectionPage from "../../components/CatalogSectionPage.astro";
+import { catalogSections, getCatalogSectionBreadcrumbs } from "../../data/catalog.js";
+
+export function getStaticPaths() {
+  return catalogSections.map((section) => ({
+    params: {
+      slug: section.path,
+    },
+    props: {
+      breadcrumbs: getCatalogSectionBreadcrumbs(section),
+      section,
+    },
+  }));
+}
+
+const { breadcrumbs, section } = Astro.props;
+---
+
+<CatalogSectionPage breadcrumbs={breadcrumbs} section={section} />

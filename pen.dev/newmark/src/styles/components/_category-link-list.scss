@@ -4,7 +4,7 @@
 	&__items {
 		display: flex;
 		flex-wrap: wrap;
-		gap: var(--space-md);
+		gap: var(--space-xs);
 		padding: 0;
 		list-style: none;
 	}
@@ -12,8 +12,7 @@
 	&__link {
 		display: flex;
 		align-items: center;
-		min-height: 56px;
-		padding: 14px 18px;
+		padding: 6px 8px;
 		color: var(--color-white);
 		font-size: 16px;
 		font-weight: 600;
