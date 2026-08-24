@@ -1,6 +1,6 @@
 ---
 import CatalogSectionPage from "../../components/CatalogSectionPage.astro";
-import { catalogSections, getCatalogSectionBreadcrumbs } from "../../data/catalog.js";
+import { catalogSections, getCatalogSectionBreadcrumbs } from "../../data/catalog/index.js";
 
 export function getStaticPaths() {
   return catalogSections.map((section) => ({
