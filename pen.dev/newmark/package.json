@@ -7,7 +7,9 @@
     "dev": "astro dev",
     "build": "npm run images:webp && astro build",
     "preview": "astro preview",
-    "images:webp": "node scripts/convert-images.mjs"
+    "images:webp": "node scripts/convert-images.mjs",
+    "catalog:import": "node scripts/import-catalog-source.mjs",
+    "catalog:normalize": "node scripts/normalize-catalog-draft.mjs"
   },
   "dependencies": {
     "@fancyapps/ui": "^5.0.36",

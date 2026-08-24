@@ -41,7 +41,15 @@ export const getCatalogHref = (category) => `/catalog/${getCategoryPath(category
 
 export const getCategoryChildren = (categoryId) => categories.filter((category) => category.parentId === categoryId);
 
-export const getCategoryProducts = (categoryId) => productsByParentId.get(categoryId) ?? [];
+export const getCategoryDescendantIds = (categoryId) => getCategoryChildren(categoryId).flatMap((child) => [
+  child.id,
+  ...getCategoryDescendantIds(child.id),
+]);
+
+export const getCategoryProducts = (categoryId) => [
+  categoryId,
+  ...getCategoryDescendantIds(categoryId),
+].flatMap((id) => productsByParentId.get(id) ?? []);
 
 export const getCatalogSectionBreadcrumbs = (category) => {
   const breadcrumbs = [
