@@ -1,4 +1,5 @@
 ---
+import Breadcrumbs from "../components/Breadcrumbs.astro";
 import LinkList from "../components/LinkList.astro";
 import SocialList from "../components/SocialList.astro";
 import Slider from "../components/Slider.astro";
@@ -75,23 +76,7 @@ if (lastIndex < compiledContent.length) {
 }
 ---
 
-{breadcrumbs.length > 0 && (
-  <div class="breadcrumbs" aria-label="Хлебные крошки">
-    <div class="container">
-      <ol class="breadcrumbs__list">
-        {breadcrumbs.map((item, index) => (
-          <li class="breadcrumbs__item">
-            {item.href && index !== breadcrumbs.length - 1 ? (
-              <a class="breadcrumbs__link" href={item.href}>{item.label}</a>
-            ) : (
-              <span class="breadcrumbs__current">{item.label}</span>
-            )}
-          </li>
-        ))}
-      </ol>
-    </div>
-  </div>
-)}
+<Breadcrumbs items={breadcrumbs} />
 
 <section class="section">
   <div class="container">

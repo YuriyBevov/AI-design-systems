@@ -1,0 +1,23 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import CatalogShowcase from "../components/CatalogShowcase.astro";
+
+const breadcrumbs = [
+  {
+    label: "Главная",
+    href: "/",
+  },
+  {
+    label: "Каталог",
+  },
+];
+---
+
+<BaseLayout
+  title="Каталог продукции Newmark"
+  description="Каталог клейких лент, стрейч-пленки, специальных лент и упаковочных аксессуаров Newmark."
+>
+  <Breadcrumbs items={breadcrumbs} />
+  <CatalogShowcase title="Каталог нашей продукции" titleTag="h1" />
+</BaseLayout>
