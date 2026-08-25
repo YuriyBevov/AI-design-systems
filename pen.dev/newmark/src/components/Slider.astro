@@ -1,4 +1,6 @@
 ---
+import { Image } from "astro:assets";
+
 const { images = [] } = Astro.props;
 ---
 
@@ -7,13 +9,14 @@ const { images = [] } = Astro.props;
     <div class="slider__wrapper swiper-wrapper">
       {images.map((image) => (
         <figure class="slider__slide swiper-slide">
-          <img
+          <Image
             class="slider__image"
             src={image.src}
             alt={image.alt}
-            width="400"
-            height="300"
-            loading="lazy"
+            width={image.width ?? 400}
+            height={image.height ?? 300}
+            loading={image.loading ?? "lazy"}
+            fetchpriority={image.fetchpriority ?? "auto"}
           />
           {image.caption && <figcaption class="slider__caption">{image.caption}</figcaption>}
         </figure>

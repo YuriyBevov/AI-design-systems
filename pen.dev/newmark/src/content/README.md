@@ -1,4 +1,6 @@
-# Работа с контентом Newmark
+# Работа с Markdown-страницами Newmark
+
+Этот README описывает только редакционный контент статичных страниц. Структурированный каталог хранится отдельно в `src/content/catalog/`, общие контакты и юридические данные - в `src/content/site/`.
 
 Контент статичных страниц хранится в Markdown-файлах:
 
@@ -184,6 +186,13 @@ linkLists:
 {{ link-list: contacts }}
 ```
 
+Для общих контактов сайта доступны системные списки:
+
+```md
+{{ link-list: site-contacts }}
+{{ link-list: site-addresses }}
+```
+
 ### Социальные ссылки
 
 Во frontmatter:
@@ -203,6 +212,12 @@ socialLists:
 
 ```md
 {{ social-list: contacts }}
+```
+
+Для общих соцсетей сайта доступен системный список:
+
+```md
+{{ social-list: site-socials }}
 ```
 
 `icon` должен совпадать с id символа в SVG-спрайте.

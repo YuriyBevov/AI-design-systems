@@ -1,8 +1,8 @@
 import { readdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-const inputDir = "src/data/catalog/imports";
-const outputPath = "src/data/catalog/products.js";
+const inputDir = "src/content/catalog/imports";
+const outputPath = "src/content/catalog/products.js";
 
 const categoryPaths = {
   "stretch-plenka": "stretch-plenka",

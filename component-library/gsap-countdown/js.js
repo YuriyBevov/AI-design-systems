@@ -3,6 +3,7 @@ import { gsap } from "gsap";
 const internalSettings = {
 	initializedDataKey: "countdownInitialized",
 	initializedValue: "true",
+	scheduleAttribute: "countdownSchedule",
 	durationAttribute: "countdownDuration",
 	deadlineAttribute: "countdownDeadline",
 	unitAttribute: "countdownUnit",
@@ -19,6 +20,12 @@ const internalSettings = {
 	dayDuration: 24,
 	emptyValue: 0,
 	minCountdownValue: 0,
+	moscowOffsetHours: 3,
+	workweekScheduleValue: "workweek-msk",
+	workweekStartDay: 1,
+	workweekStartHour: 8,
+	workweekEndDay: 5,
+	workweekEndHour: 20,
 	twoDigitLength: 2,
 	padCharacter: "0",
 	initialYPercent: 100,
@@ -76,6 +83,59 @@ const getPluralForm = (value, forms) => {
 	return forms[2];
 };
 
+const getMoscowOffsetMilliseconds = () => {
+	return (
+		internalSettings.moscowOffsetHours *
+		internalSettings.hourDuration *
+		internalSettings.minuteDuration *
+		internalSettings.secondDuration
+	);
+};
+
+const getMoscowShiftedDate = (timestamp) => {
+	return new Date(timestamp + getMoscowOffsetMilliseconds());
+};
+
+const getMoscowWeekStartTimestamp = (timestamp) => {
+	const shiftedDate = getMoscowShiftedDate(timestamp);
+	const day = shiftedDate.getUTCDay();
+	const daysFromMonday = (day + 6) % 7;
+
+	shiftedDate.setUTCHours(internalSettings.workweekStartHour, 0, 0, 0);
+	shiftedDate.setUTCDate(shiftedDate.getUTCDate() - daysFromMonday);
+
+	return shiftedDate.getTime() - getMoscowOffsetMilliseconds();
+};
+
+const getWorkweekRemainingMilliseconds = (timestamp = Date.now()) => {
+	const weekStart = getMoscowWeekStartTimestamp(timestamp);
+	const workweekEnd =
+		weekStart +
+		(internalSettings.workweekEndDay - internalSettings.workweekStartDay) *
+			internalSettings.dayDuration *
+			internalSettings.hourDuration *
+			internalSettings.minuteDuration *
+			internalSettings.secondDuration +
+		(internalSettings.workweekEndHour -
+			internalSettings.workweekStartHour) *
+			internalSettings.hourDuration *
+			internalSettings.minuteDuration *
+			internalSettings.secondDuration;
+
+	if (timestamp < weekStart || timestamp >= workweekEnd) {
+		return internalSettings.emptyValue;
+	}
+
+	return workweekEnd - timestamp;
+};
+
+const isWorkweekSchedule = (root) => {
+	return (
+		root.dataset[internalSettings.scheduleAttribute] ===
+		internalSettings.workweekScheduleValue
+	);
+};
+
 const getDeadline = (root) => {
 	const deadlineValue = root.dataset[internalSettings.deadlineAttribute];
 
@@ -99,7 +159,11 @@ const getDeadline = (root) => {
 	return Date.now() + durationValue * internalSettings.secondDuration;
 };
 
-const getRemainingMilliseconds = (deadline) => {
+const getRemainingMilliseconds = (root, deadline) => {
+	if (isWorkweekSchedule(root)) {
+		return getWorkweekRemainingMilliseconds();
+	}
+
 	return Math.max(
 		internalSettings.minCountdownValue,
 		deadline - Date.now(),
@@ -278,7 +342,7 @@ export const initGsapCountdown = (options = {}) => {
 		let timer = null;
 
 		const getNextDelay = () => {
-			const remainingMilliseconds = getRemainingMilliseconds(deadline);
+			const remainingMilliseconds = getRemainingMilliseconds(root, deadline);
 			const millisecondsToNextSecond =
 				remainingMilliseconds % internalSettings.secondDuration ||
 				internalSettings.secondDuration;
@@ -292,7 +356,7 @@ export const initGsapCountdown = (options = {}) => {
 		};
 
 		const render = (shouldAnimate = true) => {
-			const remainingMilliseconds = getRemainingMilliseconds(deadline);
+			const remainingMilliseconds = getRemainingMilliseconds(root, deadline);
 			const timeParts = getTimeParts(remainingMilliseconds);
 
 			items.forEach((item) => {
@@ -310,7 +374,10 @@ export const initGsapCountdown = (options = {}) => {
 				}
 			});
 
-			if (timeParts.totalSeconds <= internalSettings.minCountdownValue) {
+			if (
+				!isWorkweekSchedule(root) &&
+				timeParts.totalSeconds <= internalSettings.minCountdownValue
+			) {
 				clearTimeout(timer);
 				return;
 			}

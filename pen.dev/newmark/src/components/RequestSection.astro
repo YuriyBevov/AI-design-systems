@@ -7,7 +7,7 @@
           <span class="cta__title">Готовы оформить заказ?</span>
           <p class="cta__description">Свяжитесь с&nbsp;нами для&nbsp;консультации и&nbsp;подбора ленты под&nbsp;вашу задачу</p>
         </div>
-        <div class="countdown cta__countdown" data-countdown-duration="225368">
+        <div class="countdown cta__countdown" data-countdown-schedule="workweek-msk">
           <span class="countdown__title">Успейте отправить заявку и&nbsp;получить выгодное предложение</span>
           <div class="countdown__row">
             <div class="countdown__item" data-countdown-unit="days">
@@ -40,7 +40,7 @@
           </label>
           <label class="field">
             <span class="field__label">Название компании</span>
-            <input class="field__control" type="text" name="company" placeholder="Ооо компания" required />
+            <input class="field__control" type="text" name="company" placeholder="Ооо компания" />
           </label>
         </div>
 
@@ -57,14 +57,13 @@
 
         <label class="field">
           <span class="field__label">Комментарий к&nbsp;заявке</span>
-          <textarea class="field__control field__control--textarea" name="comment" placeholder="Опишите тип ленты, объём, город доставки или&nbsp;задачу упаковки" required></textarea>
+          <textarea class="field__control field__control--textarea" name="comment" placeholder="Опишите тип ленты, объём, город доставки или&nbsp;задачу упаковки"></textarea>
         </label>
 
         <div class="request-form__actions">
           <label class="file-button">
-            <input class="file-button__input" type="file" name="attachment" accept=".pdf,.jpg,.png" />
-            <span class="file-button__label">Прикрепить файл</span>
-            <span class="file-button__hint">Pdf, jpg, png до&nbsp;10&nbsp;мб</span>
+            <input class="file-button__input" type="file" name="attachment" accept=".pdf,.jpeg,.jpg,.png" multiple />
+            <span class="file-button__label" data-file-button-label>Прикрепить Файлы(pdf,jpeg,jpg,png)</span>
           </label>
           <label class="consent-field">
             <input class="consent-field__input" type="checkbox" name="agreement" required />

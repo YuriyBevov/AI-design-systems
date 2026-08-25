@@ -3,6 +3,7 @@ import nodemailer from "nodemailer";
 const recipientEmail = "yuriybevov@gmail.com";
 const maxFieldLength = 2000;
 const maxAttachmentSize = 10 * 1024 * 1024;
+const maxAttachmentCount = 10;
 
 const fieldLabels = {
 	formType: "Тип формы",
@@ -17,7 +18,7 @@ const fieldLabels = {
 
 const requiredFieldsByFormType = {
 	modal: ["name", "phone", "agreement"],
-	request: ["name", "company", "phone", "comment", "agreement"],
+	request: ["name", "phone", "agreement"],
 };
 
 const sanitizeValue = (value) => String(value ?? "").replace(/\s+/g, " ").trim().slice(0, maxFieldLength);
@@ -81,22 +82,29 @@ const getPayloadFromFormData = (formData) => {
 	return payload;
 };
 
-const getAttachment = async (formData) => {
-	const file = formData.get("attachment");
+const getAttachments = async (formData) => {
+	const files = formData
+		.getAll("attachment")
+		.filter((file) => file && typeof file === "object" && typeof file.arrayBuffer === "function" && file.size > 0)
+		.slice(0, maxAttachmentCount);
 
-	if (!file || typeof file !== "object" || typeof file.arrayBuffer !== "function" || file.size === 0) {
-		return null;
+	if (files.length === 0) {
+		return [];
 	}
 
-	if (file.size > maxAttachmentSize) {
-		throw new Error("attachment_too_large");
-	}
+	return Promise.all(
+		files.map(async (file) => {
+			if (file.size > maxAttachmentSize) {
+				throw new Error("attachment_too_large");
+			}
 
-	return {
-		filename: sanitizeValue(file.name) || "attachment",
-		content: Buffer.from(await file.arrayBuffer()),
-		contentType: file.type || undefined,
-	};
+			return {
+				filename: sanitizeValue(file.name) || "attachment",
+				content: Buffer.from(await file.arrayBuffer()),
+				contentType: file.type || undefined,
+			};
+		}),
+	);
 };
 
 export const POST = async ({ request }) => {
@@ -114,7 +122,7 @@ export const POST = async ({ request }) => {
 			});
 		}
 
-		const attachment = await getAttachment(formData);
+		const attachments = await getAttachments(formData);
 
 		const transportConfig = getTransportConfig();
 
@@ -134,7 +142,7 @@ export const POST = async ({ request }) => {
 			to: recipientEmail,
 			replyTo: sanitizeValue(payload.email) || undefined,
 			subject,
-			attachments: attachment ? [attachment] : undefined,
+			attachments: attachments.length > 0 ? attachments : undefined,
 			text: Object.entries(fieldLabels)
 				.map(([field, label]) => {
 					const value = sanitizeValue(payload[field]);

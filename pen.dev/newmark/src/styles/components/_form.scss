@@ -47,6 +47,7 @@
 	border: 1px solid var(--color-border);
 
 	&__label {
+		min-width: 0;
 		color: var(--color-accent);
 		font-size: 12px;
 		font-weight: 700;
@@ -124,5 +125,11 @@
 		color: var(--color-text-muted);
 		font-size: 12px;
 		line-height: 1.3;
+	}
+
+	&.is-has-file {
+		.file-button__label {
+			text-transform: none;
+		}
 	}
 }

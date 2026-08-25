@@ -9,6 +9,8 @@ const gallery = detail.gallery?.length > 0 ? detail.gallery : [product.card?.ima
 const sliderImages = gallery.map((image, index) => ({
   src: image.src ?? image,
   alt: index === 0 ? product.card?.imageAlt ?? product.title : `${product.title} - изображение ${index + 1}`,
+  loading: index === 0 ? "eager" : "lazy",
+  fetchpriority: index === 0 ? "high" : "auto",
 }));
 const specifications = detail.specifications ?? product.card?.characteristics ?? [];
 const price = product.card?.price ?? "От рублей/штука";

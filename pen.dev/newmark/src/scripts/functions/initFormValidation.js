@@ -37,11 +37,43 @@ const setSubmitState = (form, isSubmitting) => {
 	submitButton.textContent = isSubmitting ? "Отправляем..." : submitButton.dataset.defaultText;
 };
 
+const updateFileLabel = (input) => {
+	const label = input.closest(".file-button")?.querySelector("[data-file-button-label]");
+
+	if (!label) {
+		return;
+	}
+
+	if (!label.dataset.defaultText) {
+		label.dataset.defaultText = label.textContent;
+	}
+
+	const fileNames = Array.from(input.files ?? []).map((file) => file.name);
+	label.textContent = fileNames.length > 0 ? fileNames.join(", ") : label.dataset.defaultText;
+	input.closest(".file-button")?.classList.toggle("is-has-file", fileNames.length > 0);
+};
+
+const initFileInputs = (form) => {
+	const fileInputs = form.querySelectorAll(".file-button__input");
+
+	fileInputs.forEach((input) => {
+		updateFileLabel(input);
+		input.addEventListener("change", () => updateFileLabel(input));
+	});
+
+	form.addEventListener("reset", () => {
+		requestAnimationFrame(() => {
+			fileInputs.forEach((input) => updateFileLabel(input));
+		});
+	});
+};
+
 export const initFormValidation = () => {
 	const forms = document.querySelectorAll("[data-request-form]");
 
 	forms.forEach((form) => {
 		const submitButton = form.querySelector("[type='submit']");
+		initFileInputs(form);
 
 		if (submitButton) {
 			submitButton.dataset.defaultText = submitButton.textContent;

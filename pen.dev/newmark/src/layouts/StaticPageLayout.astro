@@ -3,12 +3,22 @@ import Breadcrumbs from "../components/Breadcrumbs.astro";
 import LinkList from "../components/LinkList.astro";
 import SocialList from "../components/SocialList.astro";
 import Slider from "../components/Slider.astro";
+import { addresses, contactLinks, socialLinks } from "../content/site/index.js";
 
 const { page } = Astro.props;
 const breadcrumbs = page.breadcrumbs ?? [];
-const linkListData = page.linkLists ?? {};
+const linkListData = {
+  "site-contacts": contactLinks,
+  "site-addresses": addresses.map((address) => ({
+    label: `${address.label}: ${address.value}`,
+  })),
+  ...(page.linkLists ?? {}),
+};
 const sliderData = page.sliders ?? {};
-const socialListData = page.socialLists ?? {};
+const socialListData = {
+  "site-socials": socialLinks,
+  ...(page.socialLists ?? {}),
+};
 const compiledContent = page.compiledContent ? await page.compiledContent() : "";
 const imageModules = import.meta.glob("../images/webp/*", { eager: true });
 
