@@ -4,6 +4,27 @@
 	gap: var(--space-md);
 	max-width: 860px;
 	margin-bottom: var(--space-2xl);
+
+	&--page {
+		gap: 0;
+		max-width: none;
+
+		.section-title {
+			margin-bottom: var(--space-xl);
+			padding-bottom: var(--space-lg);
+			font-size: clamp(36px, 7vw, 64px);
+
+			&::after {
+				content: "";
+				position: relative;
+				top: 16px;
+				display: block;
+				width: 92px;
+				height: 2px;
+				background-color: var(--color-accent);
+			}
+		}
+	}
 }
 
 .section-title {

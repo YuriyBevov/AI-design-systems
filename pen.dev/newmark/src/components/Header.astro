@@ -1,11 +1,12 @@
 ---
+import { Image } from "astro:assets";
 import logoImage from "../images/webp/logo.webp";
 ---
 
 <header class="header">
   <div class="container">
     <a class="logo logo--header" href="/" aria-label="НьюМарк">
-      <img class="logo__image" src={logoImage.src} alt="НьюМарк" width="160" height="60" />
+      <Image class="logo__image" src={logoImage} alt="НьюМарк" width={160} height={60} loading="eager" />
     </a>
 
     <nav class="nav" aria-label="Основная навигация">
@@ -61,7 +62,7 @@ import logoImage from "../images/webp/logo.webp";
   <div class="mobile-menu__panel" role="dialog" aria-modal="true" aria-label="Мобильное меню">
     <div class="mobile-menu__header">
       <a class="logo logo--mobile-menu" href="/" aria-label="НьюМарк">
-        <img class="logo__image" src={logoImage.src} alt="НьюМарк" width="160" height="60" />
+        <Image class="logo__image" src={logoImage} alt="НьюМарк" width={160} height={60} loading="lazy" />
       </a>
       <button class="mobile-menu__close" type="button" aria-label="Закрыть меню">
         <svg class="mobile-menu__close-icon" width="24" height="24" viewBox="0 0 17 17" aria-hidden="true">

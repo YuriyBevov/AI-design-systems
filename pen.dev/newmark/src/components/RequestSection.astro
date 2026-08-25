@@ -30,7 +30,9 @@
         </div>
       </div>
 
-      <form class="request-form" novalidate>
+      <form class="request-form" action="/api/send-request" method="post" novalidate data-request-form>
+        <input type="hidden" name="formType" value="request" />
+
         <div class="form-row">
           <label class="field">
             <span class="field__label">Ваше имя</span>
@@ -60,7 +62,7 @@
 
         <div class="request-form__actions">
           <label class="file-button">
-            <input class="file-button__input" type="file" accept=".pdf,.jpg,.png" />
+            <input class="file-button__input" type="file" name="attachment" accept=".pdf,.jpg,.png" />
             <span class="file-button__label">Прикрепить файл</span>
             <span class="file-button__hint">Pdf, jpg, png до&nbsp;10&nbsp;мб</span>
           </label>

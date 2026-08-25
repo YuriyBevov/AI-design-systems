@@ -8,6 +8,8 @@ import {
   products,
 } from "../../data/catalog/index.js";
 
+export const prerender = true;
+
 export function getStaticPaths() {
   const sectionPaths = catalogSections.map((section) => ({
     params: {

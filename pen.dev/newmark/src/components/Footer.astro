@@ -1,4 +1,5 @@
 ---
+import { Image } from "astro:assets";
 import logoImage from "../images/webp/logo.webp";
 ---
 
@@ -6,7 +7,7 @@ import logoImage from "../images/webp/logo.webp";
   <div class="container">
     <div class="footer__top">
       <a class="logo logo--footer" href="/" aria-label="НьюМарк">
-        <img class="logo__image" src={logoImage.src} alt="НьюМарк" width="160" height="60" />
+        <Image class="logo__image" src={logoImage} alt="НьюМарк" width={160} height={60} loading="lazy" />
       </a>
 
       <div class="footer__column">

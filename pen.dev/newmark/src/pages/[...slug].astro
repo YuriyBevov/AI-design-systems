@@ -2,6 +2,8 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import StaticPageLayout from "../layouts/StaticPageLayout.astro";
 
+export const prerender = true;
+
 export function getStaticPaths() {
   const pageModules = import.meta.glob("../content/pages/*.md", { eager: true });
   const pages = Object.entries(pageModules)

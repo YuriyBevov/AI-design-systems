@@ -12,9 +12,6 @@ const internalSettings = {
 	valueCharClass: "countdown__value-char",
 	valuePreviousClass: "countdown__value-inner--previous",
 	valueCurrentClass: "countdown__value-inner--current",
-	ariaLiveAttribute: "aria-live",
-	ariaLiveValue: "polite",
-	ariaLabelAttribute: "aria-label",
 	secondDuration: 1000,
 	secondBoundaryDelay: 20,
 	minuteDuration: 60,
@@ -140,6 +137,21 @@ const formatValue = (value) => {
 	);
 };
 
+const setElementText = (element, text) => {
+	const nextText = String(text);
+	const textNode = element.firstChild;
+
+	if (textNode?.nodeType === Node.TEXT_NODE) {
+		if (textNode.nodeValue !== nextText) {
+			textNode.nodeValue = nextText;
+		}
+
+		return;
+	}
+
+	element.append(document.createTextNode(nextText));
+};
+
 const createValueInner = (value) => {
 	const inner = document.createElement("span");
 	inner.classList.add(
@@ -152,11 +164,39 @@ const createValueInner = (value) => {
 		.forEach((char) => {
 			const charElement = document.createElement("span");
 			charElement.classList.add(internalSettings.valueCharClass);
-			charElement.textContent = char;
+			setElementText(charElement, char);
 			inner.append(charElement);
 		});
 
 	return inner;
+};
+
+const getFormattedChars = (value) => formatValue(value).split("");
+
+const getValueChars = (valueElement) => {
+	return Array.from(
+		valueElement.querySelectorAll(`.${internalSettings.valueCharClass}`),
+	);
+};
+
+const updateCharsText = (chars, formattedChars) => {
+	chars.forEach((charElement, index) => {
+		setElementText(charElement, formattedChars[index]);
+	});
+};
+
+const prepareValueInner = (valueElement, nextValue) => {
+	const formattedChars = getFormattedChars(nextValue);
+	const chars = getValueChars(valueElement);
+
+	if (chars.length === formattedChars.length) {
+		return chars;
+	}
+
+	const nextInner = createValueInner(nextValue);
+	valueElement.replaceChildren(nextInner);
+
+	return getValueChars(valueElement);
 };
 
 const setValue = (valueElement, nextValue, settings, shouldAnimate) => {
@@ -166,49 +206,43 @@ const setValue = (valueElement, nextValue, settings, shouldAnimate) => {
 		return;
 	}
 
-	const previousInner = valueElement.querySelector(
-		`.${internalSettings.valueInnerClass}`,
-	);
-	const nextInner = createValueInner(nextValue);
-
+	const nextFormattedChars = getFormattedChars(nextValue);
+	const chars = prepareValueInner(valueElement, nextValue);
 	valueElement.dataset.currentValue = nextFormattedValue;
-	valueElement.textContent = "";
 
-	if (!previousInner || !shouldAnimate) {
-		valueElement.append(nextInner);
+	if (!shouldAnimate) {
+		updateCharsText(chars, nextFormattedChars);
 		return;
 	}
 
-	previousInner.classList.remove(internalSettings.valueCurrentClass);
-	previousInner.classList.add(internalSettings.valuePreviousClass);
-	valueElement.append(previousInner, nextInner);
-
-	gsap.fromTo(
-		nextInner.children,
-		{
-			yPercent: internalSettings.initialYPercent,
-			autoAlpha: internalSettings.hiddenAutoAlpha,
-		},
-		{
-			yPercent: internalSettings.visibleYPercent,
-			autoAlpha: internalSettings.visibleAutoAlpha,
-			duration: settings.duration,
-			ease: settings.ease,
-			stagger: settings.duration / internalSettings.dayDuration,
-		},
-	);
-
-	gsap.to(previousInner.children, {
+	gsap.killTweensOf(chars);
+	gsap.to(chars, {
 		yPercent: internalSettings.exitYPercent,
 		autoAlpha: internalSettings.hiddenAutoAlpha,
 		duration: settings.duration,
 		ease: settings.ease,
 		stagger: settings.duration / internalSettings.dayDuration,
 		onComplete: () => {
-			previousInner.remove();
-			gsap.set(nextInner.children, {
-				clearProps: internalSettings.clearPropsValue,
-			});
+			updateCharsText(chars, nextFormattedChars);
+			gsap.fromTo(
+				chars,
+				{
+					yPercent: internalSettings.initialYPercent,
+					autoAlpha: internalSettings.hiddenAutoAlpha,
+				},
+				{
+					yPercent: internalSettings.visibleYPercent,
+					autoAlpha: internalSettings.visibleAutoAlpha,
+					duration: settings.duration,
+					ease: settings.ease,
+					stagger: settings.duration / internalSettings.dayDuration,
+					onComplete: () => {
+						gsap.set(chars, {
+							clearProps: internalSettings.clearPropsValue,
+						});
+					},
+				},
+			);
 		},
 	});
 };
@@ -230,10 +264,6 @@ export const initGsapCountdown = (options = {}) => {
 
 		root.dataset[internalSettings.initializedDataKey] =
 			internalSettings.initializedValue;
-		root.setAttribute(
-			internalSettings.ariaLiveAttribute,
-			internalSettings.ariaLiveValue,
-		);
 
 		const deadline = getDeadline(root);
 		const items = Array.from(root.querySelectorAll(settings.itemSelector)).map(
@@ -276,14 +306,9 @@ export const initGsapCountdown = (options = {}) => {
 				setValue(item.value, value, settings, shouldAnimate);
 
 				if (forms) {
-					item.label.textContent = getPluralForm(value, forms);
+					setElementText(item.label, getPluralForm(value, forms));
 				}
 			});
-
-			root.setAttribute(
-				internalSettings.ariaLabelAttribute,
-				`${timeParts.days} ${getPluralForm(timeParts.days, unitForms.days)}, ${timeParts.hours} ${getPluralForm(timeParts.hours, unitForms.hours)}, ${timeParts.minutes} ${getPluralForm(timeParts.minutes, unitForms.minutes)}, ${timeParts.seconds} ${getPluralForm(timeParts.seconds, unitForms.seconds)}`,
-			);
 
 			if (timeParts.totalSeconds <= internalSettings.minCountdownValue) {
 				clearTimeout(timer);

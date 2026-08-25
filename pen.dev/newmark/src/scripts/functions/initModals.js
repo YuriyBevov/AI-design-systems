@@ -69,7 +69,7 @@ const resetProductFieldAfterClose = (modal) => {
 	}, 320);
 };
 
-const closeModal = () => {
+const closeModal = ({ shouldRestoreFocus = true } = {}) => {
 	if (!activeModal || !activeDialog) {
 		return;
 	}
@@ -81,7 +81,7 @@ const closeModal = () => {
 	activeModal.setAttribute("aria-hidden", "true");
 	bodyLocker(false);
 
-	if (trigger instanceof HTMLElement) {
+	if (shouldRestoreFocus && trigger instanceof HTMLElement) {
 		trigger.focus();
 	}
 
@@ -91,9 +91,9 @@ const closeModal = () => {
 	resetProductFieldAfterClose(modal);
 };
 
-const openModal = (modal, trigger) => {
+const openModal = (modal, trigger = document.activeElement) => {
 	if (activeModal) {
-		closeModal();
+		closeModal({ shouldRestoreFocus: false });
 	}
 
 	if (closeCleanupTimer) {
@@ -109,11 +109,27 @@ const openModal = (modal, trigger) => {
 		return;
 	}
 
-	setProductField(modal, trigger.dataset.modalProduct);
+	setProductField(modal, trigger?.dataset?.modalProduct);
 	modal.classList.add("is-open");
 	modal.setAttribute("aria-hidden", "false");
 	bodyLocker(true);
 	focusFirstElement();
+};
+
+const setStatusModalContent = (modal, status) => {
+	const statusTitle = modal.querySelector("[data-modal-status-title]");
+	const statusText = modal.querySelector("[data-modal-status-text]");
+	const isSuccess = status === "success";
+
+	if (statusTitle) {
+		statusTitle.textContent = isSuccess ? "Заявка отправлена" : "Ошибка отправки";
+	}
+
+	if (statusText) {
+		statusText.textContent = isSuccess
+			? "Спасибо! Ваша заявка успешно отправлена!"
+			: "Упс! Вероятно, что-то пошло не так... Попробуйте снова!";
+	}
 };
 
 const handleKeydown = (event) => {
@@ -186,4 +202,20 @@ export const initModals = () => {
 
 	document.addEventListener("keydown", handleKeydown);
 	document.addEventListener("focusin", handleFocusin);
+	document.addEventListener("modal:open", (event) => {
+		const modal = modals.get(event.detail?.id);
+
+		if (!modal) {
+			return;
+		}
+
+		if (event.detail?.status) {
+			setStatusModalContent(modal, event.detail.status);
+		}
+
+		openModal(modal, event.detail?.trigger);
+	});
+	document.addEventListener("modal:close", () => {
+		closeModal({ shouldRestoreFocus: false });
+	});
 };

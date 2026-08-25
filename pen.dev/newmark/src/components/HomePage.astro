@@ -1,5 +1,6 @@
 ---
 import CatalogShowcase from "./CatalogShowcase.astro";
+import { Image } from "astro:assets";
 import benefitImage1 from "../images/webp/benefits-image-1.webp";
 import benefitImage2 from "../images/webp/benefits-image-2.webp";
 import benefitImage3 from "../images/webp/benefits-image-3.webp";
@@ -15,7 +16,7 @@ import heroImage from "../images/webp/hero-img.webp";
       <h1 class="hero__title">Клейкая лента и&nbsp;аксессуары <span>для&nbsp;упаковки вашего бизнеса</span></h1>
       <p class="hero__description">Подберём ленту под&nbsp;коробки, паллеты, маркировку и&nbsp;ежедневную упаковку. В&nbsp;каталоге&nbsp;—&nbsp;брендированная клейкая лента, стрейч-плёнка, малярные и&nbsp;специальные ленты, диспенсеры и&nbsp;сопутствующие товары.</p>
       <div class="button-row">
-        <button class="button button--primary" type="button">Оставить заявку</button>
+        <button class="button button--primary" type="button" aria-haspopup="dialog" data-modal-open="request">Оставить заявку</button>
         <a class="button button--secondary" href="/catalog/">Перейти в&nbsp;каталог
           <svg class="button__icon button__icon--arrow" width="36" height="19"  aria-hidden="true">
             <use href="/sprite.svg?v=2#long-arrow"></use>
@@ -25,7 +26,7 @@ import heroImage from "../images/webp/hero-img.webp";
     </div>
 
     <div class="hero__image-wrapper">
-      <img class="hero__image" src={heroImage.src} alt="Рулоны клейкой ленты" width="640" height="620" />
+      <Image class="hero__image" src={heroImage} alt="Рулоны клейкой ленты" width={640} height={620} loading="eager" fetchpriority="high" />
     </div>
   </div>
 </section>
@@ -57,7 +58,7 @@ import heroImage from "../images/webp/hero-img.webp";
     <div class="grid-layout">
       <article class="benefit-card">
         <div class="benefit-card__image-wrapper">
-          <img class="benefit-card__image" src={benefitImage1.src} alt="Собственное производство" width="400" height="300" />
+          <Image class="benefit-card__image" src={benefitImage1} alt="Собственное производство" width={400} height={300} />
         </div>
         <div class="benefit-card__body">
           <span class="benefit-card__title">Собственное производство</span>
@@ -67,7 +68,7 @@ import heroImage from "../images/webp/hero-img.webp";
 
       <article class="benefit-card">
         <div class="benefit-card__image-wrapper">
-          <img class="benefit-card__image" src={benefitImage2.src} alt="Прямые поставки" width="400" height="300" />
+          <Image class="benefit-card__image" src={benefitImage2} alt="Прямые поставки" width={400} height={300} />
         </div>
         <div class="benefit-card__body">
           <span class="benefit-card__title">Прямые поставки</span>
@@ -77,7 +78,7 @@ import heroImage from "../images/webp/hero-img.webp";
 
       <article class="benefit-card">
         <div class="benefit-card__image-wrapper">
-          <img class="benefit-card__image" src={benefitImage3.src} alt="Заявленные параметры" width="400" height="300" />
+          <Image class="benefit-card__image" src={benefitImage3} alt="Заявленные параметры" width={400} height={300} />
         </div>
         <div class="benefit-card__body">
           <span class="benefit-card__title">Заявленные параметры</span>
@@ -87,7 +88,7 @@ import heroImage from "../images/webp/hero-img.webp";
 
       <article class="benefit-card">
         <div class="benefit-card__image-wrapper">
-          <img class="benefit-card__image" src={benefitImage4.src} alt="Гарантия возврата" width="400" height="300" />
+          <Image class="benefit-card__image" src={benefitImage4} alt="Гарантия возврата" width={400} height={300} />
         </div>
         <div class="benefit-card__body">
           <span class="benefit-card__title">Гарантия возврата</span>
@@ -97,7 +98,7 @@ import heroImage from "../images/webp/hero-img.webp";
 
       <article class="benefit-card">
         <div class="benefit-card__image-wrapper">
-          <img class="benefit-card__image" src={benefitImage5.src} alt="Ниже цены" width="400" height="300" />
+          <Image class="benefit-card__image" src={benefitImage5} alt="Ниже цены" width={400} height={300} />
         </div>
         <div class="benefit-card__body">
           <span class="benefit-card__title">Ниже цены</span>

@@ -7,7 +7,7 @@ const { items = [] } = Astro.props;
     <ul class="category-link-list__items">
       {items.map((item) => (
         <li class="category-link-list__item">
-          <a class="category-link-list__link" href={item.href}>{item.label}</a>
+          <a class="category-link-list__link" href={item.href}>{item.label?.trim() || "Раздел каталога"}</a>
         </li>
       ))}
     </ul>

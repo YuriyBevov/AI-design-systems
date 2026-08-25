@@ -5,7 +5,7 @@ const { items = [] } = Astro.props;
 <ul class="social-list">
   {items.map((item) => (
     <li class="social-list__item">
-      <a class="social-list__link" href={item.href} aria-label={item.label}>
+      <a class="social-list__link" href={item.href} aria-label={item.label?.trim() || "Социальная сеть"}>
         <svg
           class:list={["social-list__icon", item.icon === "icon-vk" && "social-list__icon--vk"]}
           width={item.width ?? 24}

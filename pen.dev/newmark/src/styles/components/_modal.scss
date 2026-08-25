@@ -36,6 +36,10 @@
 		border: 1px solid var(--color-border-strong);
 		overflow-y: auto;
 		outline: 0;
+
+		&--status {
+			width: min(100%, 480px);
+		}
 	}
 
 	&__header {
@@ -47,6 +51,7 @@
 	}
 
 	&__title {
+		margin: 0;
 		color: var(--color-accent);
 		font-family: var(--font-accent);
 		font-size: clamp(22px, 3vw, 32px);
@@ -106,6 +111,17 @@
 
 	&__submit {
 		margin-top: var(--space-xs);
+	}
+
+	&__status-text {
+		margin: 0;
+		color: var(--color-white);
+		font-size: 18px;
+		line-height: 1.45;
+	}
+
+	&__status-button {
+		margin-top: var(--space-lg);
 	}
 }
 

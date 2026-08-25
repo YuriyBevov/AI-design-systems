@@ -1,10 +1,13 @@
 ---
+import { Image } from "astro:assets";
 import stretchFilmImage from "../images/webp/product-image-3.webp";
 import adhesiveTapeImage from "../images/webp/product-image-1.webp";
 import signalTapeImage from "../images/webp/product-image-10.webp";
 
 const { title = "Что мы предлагаем", titleTag = "h2" } = Astro.props;
 const TitleTag = titleTag;
+const headerClass = titleTag === "h1" ? "section-header section-header--page" : "section-header";
+const imageLoading = titleTag === "h1" ? "eager" : "lazy";
 
 const catalogItems = [
   {
@@ -30,16 +33,24 @@ const catalogItems = [
 
 <section class="section">
   <div class="container">
-    <div class="section-header">
+    <div class={headerClass}>
       <TitleTag class="section-title">{title}</TitleTag>
       <p class="section-description">Три направления каталога закрывают основные задачи упаковки, фиксации, маркировки и организации рабочих зон.</p>
     </div>
 
     <div class="grid-layout">
-      {catalogItems.map((item) => (
+      {catalogItems.map((item, index) => (
         <article class="product-card">
           <div class="product-card__image-wrapper">
-            <img class="product-card__image" src={item.image.src} alt={item.title} width="400" height="300" />
+            <Image
+              class="product-card__image"
+              src={item.image}
+              alt={item.title}
+              width={400}
+              height={300}
+              loading={imageLoading}
+              fetchpriority={titleTag === "h1" && index === 0 ? "high" : "auto"}
+            />
           </div>
           <div class="product-card__body">
             <div class="product-card__content">

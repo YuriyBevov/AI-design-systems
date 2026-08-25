@@ -9,6 +9,7 @@ const {
   characteristics = card.characteristics ?? [],
   price = card.price ?? "От рублей/штука",
 } = product;
+const accessibleTitle = title?.trim() || "Подробнее о товаре";
 
 const normalizeCharacteristic = (characteristic) => {
   if (typeof characteristic === "string") {
@@ -28,7 +29,7 @@ const visibleCharacteristics = characteristics.slice(0, 5).map(normalizeCharacte
 
 <article class="product-item-card">
   <div class="product-item-card__header">
-    <a class="product-item-card__media" href={href} aria-label={title}>
+    <a class="product-item-card__media" href={href} aria-label={accessibleTitle}>
       {image ? (
         <img class="product-item-card__image" src={image.src ?? image} alt={imageAlt} width="320" height="240" />
       ) : (
@@ -38,7 +39,7 @@ const visibleCharacteristics = characteristics.slice(0, 5).map(normalizeCharacte
   </div>
 
   <div class="product-item-card__body">
-    <a class="product-item-card__title" href={href}>{title}</a>
+    <a class="product-item-card__title" href={href}>{accessibleTitle}</a>
 
     {visibleCharacteristics.length > 0 && (
       <ul class="product-item-card__features">

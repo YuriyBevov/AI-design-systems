@@ -12,9 +12,11 @@
     "catalog:normalize": "node scripts/normalize-catalog-draft.mjs"
   },
   "dependencies": {
+    "@astrojs/node": "^11.1.4",
     "@fancyapps/ui": "^5.0.36",
     "gsap": "^3.12.5",
     "imask": "^7.6.1",
+    "nodemailer": "^9.0.5",
     "swiper": "^11.1.15"
   },
   "devDependencies": {
