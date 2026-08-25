@@ -3,3 +3,4 @@ dist/
 .astro/
 .env
 .env.local
+src/content/catalog/imports/
