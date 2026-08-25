@@ -1,8 +1,8 @@
 ---
 slug: contacts
 title: Контакты
-seoTitle: Контакты Newmark
-seoDescription: Контакты Newmark для связи по вопросам заказа упаковочных материалов.
+seoTitle: Контакты ООО «НЬЮМАРК»
+seoDescription: Контакты ООО «НЬЮМАРК» для связи по вопросам заказа упаковочных материалов.
 breadcrumbs:
   - label: Главная
     href: /

@@ -135,7 +135,7 @@ export const POST = async ({ request }) => {
 
 		const transporter = nodemailer.createTransport(transportConfig);
 		const product = sanitizeValue(payload.product);
-		const subject = product ? `Заявка с сайта Newmark: ${product}` : "Заявка с сайта Newmark";
+		const subject = product ? `Заявка с сайта ООО «НЬЮМАРК»: ${product}` : "Заявка с сайта ООО «НЬЮМАРК»";
 
 		await transporter.sendMail({
 			from: process.env.SMTP_FROM || transportConfig.auth.user,

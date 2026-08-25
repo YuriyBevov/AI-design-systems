@@ -140,4 +140,17 @@
 		margin-top: 1px;
 		accent-color: var(--color-accent);
 	}
+
+	&__text a {
+		color: inherit;
+		text-decoration-line: underline;
+		text-decoration-thickness: 1px;
+		text-underline-offset: 3px;
+		transition: opacity var(--transition-base);
+
+		&:hover,
+		&:focus-visible {
+			opacity: 0.6;
+		}
+	}
 }

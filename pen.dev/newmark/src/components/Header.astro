@@ -3,19 +3,34 @@ import { Image } from "astro:assets";
 import LinkList from "./LinkList.astro";
 import SocialList from "./SocialList.astro";
 import { contactLinks, socialLinks } from "../content/site/index.js";
+import { getCatalogHref, getCategoryChildren, ROOT_CATEGORY_ID } from "../content/catalog/index.js";
 import logoImage from "../images/webp/logo.webp";
+
+const topCatalogSections = getCategoryChildren(ROOT_CATEGORY_ID).map((category) => ({
+  label: category.title,
+  href: getCatalogHref(category),
+}));
 ---
 
 <header class="header">
   <div class="container">
-    <a class="logo logo--header" href="/" aria-label="НьюМарк">
-      <Image class="logo__image" src={logoImage} alt="НьюМарк" width={160} height={60} loading="eager" />
+    <a class="logo logo--header" href="/" aria-label="ООО «НЬЮМАРК»">
+      <Image class="logo__image" src={logoImage} alt="ООО «НЬЮМАРК»" width={160} height={60} loading="eager" />
     </a>
 
     <nav class="nav" aria-label="Основная навигация">
       <ul class="nav__list">
         <li class="nav__item"><a class="nav__link" href="/about/">О&nbsp;компании</a></li>
-        <li class="nav__item"><a class="nav__link nav__link--featured" href="/catalog/">Каталог</a></li>
+        <li class="nav__item nav__item--has-dropdown">
+          <a class="nav__link nav__link--featured" href="/catalog/" aria-haspopup="true">Каталог</a>
+          <ul class="nav__dropdown" aria-label="Разделы каталога">
+            {topCatalogSections.map((item) => (
+              <li class="nav__dropdown-item">
+                <a class="nav__dropdown-link" href={item.href}>{item.label}</a>
+              </li>
+            ))}
+          </ul>
+        </li>
         <li class="nav__item"><a class="nav__link" href="/delivery/">Оплата и&nbsp;доставка</a></li>
         <li class="nav__item"><a class="nav__link" href="/contacts/">Контакты</a></li>
       </ul>
@@ -42,8 +57,8 @@ import logoImage from "../images/webp/logo.webp";
   <div class="mobile-menu__overlay"></div>
   <div class="mobile-menu__panel" role="dialog" aria-modal="true" aria-label="Мобильное меню">
     <div class="mobile-menu__header">
-      <a class="logo logo--mobile-menu" href="/" aria-label="НьюМарк">
-        <Image class="logo__image" src={logoImage} alt="НьюМарк" width={160} height={60} loading="lazy" />
+      <a class="logo logo--mobile-menu" href="/" aria-label="ООО «НЬЮМАРК»">
+        <Image class="logo__image" src={logoImage} alt="ООО «НЬЮМАРК»" width={160} height={60} loading="lazy" />
       </a>
       <button class="mobile-menu__close" type="button" aria-label="Закрыть меню">
         <svg class="mobile-menu__close-icon" width="24" height="24" viewBox="0 0 17 17" aria-hidden="true">
@@ -55,7 +70,16 @@ import logoImage from "../images/webp/logo.webp";
     <nav class="mobile-menu__nav" aria-label="Мобильная навигация">
       <ul class="mobile-menu__nav-list">
         <li class="mobile-menu__nav-item"><a class="mobile-menu__nav-link" href="/about/">О&nbsp;компании</a></li>
-        <li class="mobile-menu__nav-item"><a class="mobile-menu__nav-link" href="/catalog/">Каталог</a></li>
+        <li class="mobile-menu__nav-item mobile-menu__nav-item--catalog">
+          <a class="mobile-menu__nav-link" href="/catalog/">Каталог</a>
+          <ul class="mobile-menu__subnav" aria-label="Разделы каталога">
+            {topCatalogSections.map((item) => (
+              <li class="mobile-menu__subnav-item">
+                <a class="mobile-menu__subnav-link" href={item.href}>{item.label}</a>
+              </li>
+            ))}
+          </ul>
+        </li>
         <li class="mobile-menu__nav-item"><a class="mobile-menu__nav-link" href="/delivery/">Оплата и&nbsp;доставка</a></li>
         <li class="mobile-menu__nav-item"><a class="mobile-menu__nav-link" href="/contacts/">Контакты</a></li>
       </ul>
