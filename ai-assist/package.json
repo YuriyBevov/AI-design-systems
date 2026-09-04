@@ -1,0 +1,53 @@
+{
+  "name": "ai-assist",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.33.2",
+  "engines": {
+    "node": ">=24.0.0 <27",
+    "pnpm": ">=10.0.0 <11"
+  },
+  "scripts": {
+    "dev": "pnpm packages:build && pnpm --filter @ai-assist/widget build && pnpm --parallel --filter @ai-assist/control-panel --filter @ai-assist/worker dev",
+    "dev:setup": "pnpm infra:up && pnpm db:migrate && pnpm db:seed",
+    "dev:panel": "pnpm packages:build && pnpm --filter @ai-assist/control-panel dev",
+    "dev:worker": "pnpm packages:build && pnpm --filter @ai-assist/worker dev",
+    "dev:widget": "pnpm --filter @ai-assist/widget dev",
+    "dev:widget-preview": "pnpm --filter @ai-assist/widget preview:host",
+    "build": "pnpm packages:build && pnpm --filter @ai-assist/widget build && pnpm --parallel --filter @ai-assist/control-panel --filter @ai-assist/worker build",
+    "lint": "eslint scripts && pnpm -r --if-present lint",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "test": "pnpm packages:build && pnpm -r --if-present test",
+    "smoke:admin": "node scripts/smoke-admin.mjs",
+    "smoke:assistant": "node scripts/smoke-assistant.mjs",
+    "smoke:provider": "node scripts/smoke-provider.mjs",
+    "smoke:provider-credential": "node scripts/smoke-provider-credential.mjs",
+    "smoke:provider-encryption-guard": "node scripts/smoke-provider-encryption-guard.mjs",
+    "smoke:prompts": "node scripts/smoke-prompts.mjs",
+    "smoke:prompt-preview": "node scripts/smoke-prompt-preview.mjs",
+    "smoke:knowledge": "node scripts/smoke-knowledge.mjs",
+    "smoke:knowledge-index": "node scripts/smoke-knowledge-index.mjs",
+    "smoke:crawler": "node scripts/smoke-crawler.mjs",
+    "smoke:widget-chat": "node scripts/smoke-widget-chat.mjs",
+    "mock:aitunnel": "node scripts/mock-aitunnel.mjs",
+    "packages:build": "pnpm --filter './packages/*' build",
+    "db:generate": "pnpm --filter @ai-assist/database db:generate",
+    "db:migrate": "pnpm --filter @ai-assist/database db:migrate",
+    "db:seed": "pnpm --filter @ai-assist/database db:seed",
+    "infra:config": "docker compose config",
+    "infra:up": "docker compose up -d",
+    "infra:down": "docker compose down"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^26.4.0",
+    "eslint": "^10.9.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-vue": "^10.10.0",
+    "prettier": "^3.9.6",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.69.0",
+    "vitest": "^4.1.11"
+  }
+}

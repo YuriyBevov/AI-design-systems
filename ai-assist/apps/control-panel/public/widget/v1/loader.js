@@ -1,0 +1,1 @@
+(function(){var e=e=>new URL(`widget.js`,e).toString(),t=async t=>{await import(e(t))},n=document.currentScript;if(!(n instanceof HTMLScriptElement)||!n.src)throw Error(`AI Assist loader must be loaded from a script URL`);t(n.src).catch(()=>{window.dispatchEvent(new CustomEvent(`ai-assist:error`,{detail:{code:`widget_load`}}))})})();

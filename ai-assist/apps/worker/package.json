@@ -1,0 +1,29 @@
+{
+  "name": "@ai-assist/worker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --env-file-if-exists=../../.env --env-file-if-exists=../control-panel/.env --watch --import tsx src/index.ts",
+    "start": "node --env-file-if-exists=../../.env --env-file-if-exists=../control-panel/.env dist/src/index.js",
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint src test",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@ai-assist/config": "workspace:*",
+    "@ai-assist/contracts": "workspace:*",
+    "@ai-assist/crawler": "workspace:*",
+    "@ai-assist/database": "workspace:*",
+    "@ai-assist/domain": "workspace:*",
+    "@ai-assist/provider-aitunnel": "workspace:*",
+    "bullmq": "^6.3.4",
+    "drizzle-orm": "^0.45.2",
+    "ioredis": "^5.11.1",
+    "pino": "^10.3.1"
+  },
+  "devDependencies": {
+    "tsx": "^4.23.13"
+  }
+}

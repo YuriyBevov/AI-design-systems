@@ -1,0 +1,28 @@
+{
+  "name": "@ai-assist/control-panel",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "lint": "eslint .",
+    "typecheck": "nuxt typecheck",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@ai-assist/config": "workspace:*",
+    "@ai-assist/contracts": "workspace:*",
+    "@ai-assist/crawler": "workspace:*",
+    "@ai-assist/database": "workspace:*",
+    "@ai-assist/domain": "workspace:*",
+    "@ai-assist/provider-aitunnel": "workspace:*",
+    "bullmq": "^6.3.4",
+    "drizzle-orm": "^0.45.2",
+    "ioredis": "^5.11.1",
+    "nuxt": "^4.5.2"
+  },
+  "devDependencies": {
+    "vue-tsc": "^3.3.11"
+  }
+}

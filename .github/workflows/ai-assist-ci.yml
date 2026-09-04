@@ -1,0 +1,36 @@
+name: AI Assist CI
+
+on:
+  pull_request:
+    paths:
+      - "ai-assist/**"
+      - ".github/workflows/ai-assist-ci.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "ai-assist/**"
+      - ".github/workflows/ai-assist-ci.yml"
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ai-assist
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.20.0
+          cache: pnpm
+          cache-dependency-path: ai-assist/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm build

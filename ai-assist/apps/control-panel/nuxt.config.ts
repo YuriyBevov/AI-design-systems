@@ -1,0 +1,34 @@
+export default defineNuxtConfig({
+  compatibilityDate: "2026-09-01",
+  css: ["~/assets/css/main.css"],
+  devtools: { enabled: true },
+  modules: [],
+  nitro: {
+    preset: "node-server",
+    routeRules: {
+      "/widget/v1/**": {
+        headers: {
+          "access-control-allow-origin": "*",
+          "cross-origin-resource-policy": "cross-origin",
+          "cache-control": "public, max-age=300",
+        },
+      },
+    },
+  },
+  runtimeConfig: {
+    public: {
+      appName: "AI Assist",
+    },
+  },
+  typescript: {
+    strict: true,
+    typeCheck: true,
+  },
+  vite: {
+    server: {
+      fs: {
+        allow: ["../.."],
+      },
+    },
+  },
+});

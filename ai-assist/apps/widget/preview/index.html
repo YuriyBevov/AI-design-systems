@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Локальная проверка AI Assist</title>
+    <style>
+      :root {
+        color: #17211a;
+        background: #edf1ed;
+        font-family: Arial, sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        min-width: 320px;
+        min-height: 100vh;
+        margin: 0;
+      }
+
+      button,
+      input {
+        border: 4px dashed #e04646 !important;
+        background: #fff4bd !important;
+        color: #6b1212 !important;
+        font:
+          20px Georgia,
+          serif !important;
+      }
+
+      .preview-page {
+        width: min(960px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 48px 0 96px;
+      }
+
+      .preview-page__card {
+        padding: 32px;
+        border: 1px solid #c7d0c8;
+        border-radius: 20px;
+        background: #ffffff;
+        box-shadow: 0 16px 48px rgb(24 36 27 / 10%);
+      }
+
+      .preview-page__eyebrow,
+      .preview-page__title,
+      .preview-page__description {
+        margin: 0;
+      }
+
+      .preview-page__eyebrow {
+        color: #526159;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .preview-page__title {
+        margin-top: 8px;
+        font-size: clamp(32px, 6vw, 56px);
+        line-height: 1.05;
+      }
+
+      .preview-page__description {
+        max-width: 720px;
+        margin-top: 20px;
+        color: #526159;
+        font-size: 18px;
+      }
+
+      .preview-checklist {
+        display: grid;
+        gap: 12px;
+        margin: 32px 0 0;
+        padding-left: 24px;
+      }
+
+      .preview-page__note {
+        margin: 32px 0 0;
+        padding: 16px;
+        border-radius: 12px;
+        background: #edf7ef;
+      }
+
+      @media (max-width: 640px) {
+        .preview-page {
+          width: min(100% - 24px, 960px);
+          padding-top: 24px;
+        }
+
+        .preview-page__card {
+          padding: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="preview-page">
+      <section class="preview-page__card" aria-labelledby="preview-title">
+        <p class="preview-page__eyebrow">Preview host · localhost:4173</p>
+        <h1 id="preview-title" class="preview-page__title">Проверка AI Assist без установки</h1>
+        <p class="preview-page__description">
+          Эта страница имитирует сайт клиента. Намеренно агрессивные глобальные стили кнопок и полей
+          помогают проверить изоляцию виджета через Shadow DOM.
+        </p>
+        <ol class="preview-checklist">
+          <li>Откройте ассистента кнопкой в нижнем углу.</li>
+          <li>Отправьте несколько сообщений с параметрами коробки.</li>
+          <li>Обновите страницу — диалог должен восстановиться.</li>
+          <li>Нажмите «Новый чат» — история должна очиститься.</li>
+        </ol>
+        <p class="preview-page__note">
+          Ответы используют опубликованный prompt, реальные модели AITUNNEL и опубликованную базу
+          знаний проекта «Гофропродпак».
+        </p>
+      </section>
+    </main>
+
+    <script
+      async
+      src="http://localhost:3000/widget/v1/loader.js"
+      data-assistant-id="asst_Ja5FCjzFNi58puSQllsQ_nMWkA8qnylnoV4XYOjvTJ4"
+    ></script>
+    <ai-assist assistant-id="asst_Ja5FCjzFNi58puSQllsQ_nMWkA8qnylnoV4XYOjvTJ4"></ai-assist>
+  </body>
+</html>
