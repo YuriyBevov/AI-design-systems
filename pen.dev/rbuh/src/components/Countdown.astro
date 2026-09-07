@@ -1,0 +1,24 @@
+---
+import { countdownConfig } from "../content/site/countdown.js";
+
+const units = [
+  { id: "days", label: "дней", enabled: countdownConfig.showDays },
+  { id: "hours", label: "часов", enabled: true },
+  { id: "minutes", label: "минут", enabled: true },
+  { id: "seconds", label: "секунд", enabled: true },
+];
+
+const visibleUnits = units.filter((unit) => unit.enabled);
+---
+
+<div class="countdown" data-countdown role="timer" aria-label={countdownConfig.ariaLabel}>
+  <span class="countdown__title">{countdownConfig.title}</span>
+  <div class="countdown__row" style={`--countdown-columns: ${visibleUnits.length}`}>
+    {visibleUnits.map((unit) => (
+      <div class="countdown__item" data-countdown-unit={unit.id}>
+        <span class="countdown__value" data-countdown-value>00</span>
+        <span class="countdown__label" data-countdown-label>{unit.label}</span>
+      </div>
+    ))}
+  </div>
+</div>

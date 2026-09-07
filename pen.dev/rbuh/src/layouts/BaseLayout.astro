@@ -1,0 +1,46 @@
+---
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+import Modal from "../components/Modal.astro";
+import RequestSection from "../components/RequestSection.astro";
+import YandexMap from "../components/YandexMap.astro";
+import "../styles/main.scss";
+
+const {
+  title = "РБУ «Хаджох» — производство и доставка бетона",
+  description = "Производство и доставка бетона, лабораторное сопровождение, автобетононасос и инертные материалы.",
+  canonical,
+  showRequestSection = true,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0d1720" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:site_name" content="РБУ «Хаджох»" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {canonical && <link rel="canonical" href={canonical} />}
+  </head>
+  <body>
+    <Header />
+    <main>
+      <slot />
+      {showRequestSection && <RequestSection />}
+      <YandexMap />
+    </main>
+    <Footer />
+    <Modal />
+    <script>
+      import "../scripts/main.js";
+    </script>
+  </body>
+</html>

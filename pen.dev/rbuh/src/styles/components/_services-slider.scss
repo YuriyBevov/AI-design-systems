@@ -1,0 +1,35 @@
+.services-slider {
+	min-height: 0;
+
+	.services-slider__slide {
+		display: flex;
+		height: auto;
+		box-sizing: border-box;
+	}
+
+	.service-card {
+		display: flex;
+		width: 100%;
+		min-height: clamp(260px, 24vw, 320px);
+		aspect-ratio: auto;
+	}
+
+	.service-card__link {
+		position: relative;
+		inset: auto;
+		display: flex;
+		flex: 1;
+		min-width: 0;
+	}
+
+	.service-card__body {
+		width: 100%;
+		min-height: 0;
+		gap: var(--space-sm);
+		padding: 20px 24px;
+	}
+
+	.service-card__title {
+		font-size: clamp(20px, 2.2vw, 26px);
+	}
+}

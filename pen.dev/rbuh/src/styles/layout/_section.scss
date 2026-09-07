@@ -1,0 +1,20 @@
+// Shared spacing, background and a real top border for top-level content sections.
+// The compact service ticker has its own spacing and shadow separator.
+// Nested sections such as price groups retain their existing layout.
+main > section:not(.service-ticker),
+.section,
+.footer {
+	padding-block: var(--space-section);
+	background-color: var(--color-background);
+	border-top: 1px solid var(--color-border);
+}
+
+// Internal pages start with an unbordered section; keep the homepage hero intact.
+main > section:first-of-type:not(.hero) {
+	border-top: 0;
+}
+
+// Alternate content sections without counting the compact ticker or nested groups.
+main > section:nth-child(even of section:not(.service-ticker)) {
+	background-color: var(--color-background-alt);
+}

@@ -1,0 +1,70 @@
+.service-ticker {
+	position: relative;
+	z-index: 1;
+	overflow: hidden;
+	color: var(--color-white);
+	background-color: var(--color-ticker);
+	box-shadow: 0 -6px 18px rgb(0 0 0 / 12%), 0 8px 20px rgb(0 0 0 / 24%);
+
+	// Separate this strip with its shadow, not the following section's border.
+	main > & + section {
+		border-top: 0;
+	}
+
+	&__track {
+		display: flex;
+		width: max-content;
+		animation: service-ticker-move 30s linear infinite;
+		will-change: transform;
+	}
+
+	&__list {
+		display: flex;
+		flex: 0 0 auto;
+		align-items: center;
+		gap: var(--space-xl);
+		padding: 16px var(--space-xl) 16px 0;
+		white-space: nowrap;
+	}
+
+	&__item {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-xl);
+		font-family: var(--font-accent);
+		font-size: clamp(16px, 2vw, 21px);
+		font-weight: 700;
+		line-height: 1;
+		text-transform: uppercase;
+
+		&::after {
+			content: "";
+			width: 7px;
+			height: 7px;
+			background-color: currentColor;
+			transform: rotate(45deg);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		&__track {
+			width: 100%;
+			animation: none;
+		}
+
+		&__list {
+			flex-wrap: wrap;
+			white-space: normal;
+		}
+
+		&__list[aria-hidden="true"] {
+			display: none;
+		}
+	}
+}
+
+@keyframes service-ticker-move {
+	to {
+		transform: translateX(-50%);
+	}
+}

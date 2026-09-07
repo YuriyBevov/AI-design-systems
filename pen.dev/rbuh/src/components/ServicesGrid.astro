@@ -1,0 +1,18 @@
+---
+import ServicesCards from "./ServicesCards.astro";
+
+const {
+  title = "Наши услуги",
+  description = "Производство бетона и услуги, необходимые для организации работ на объекте.",
+} = Astro.props;
+---
+
+<section class="section services-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">{title}</h2>
+      <p class="section-description">{description}</p>
+    </div>
+    <ServicesCards />
+  </div>
+</section>

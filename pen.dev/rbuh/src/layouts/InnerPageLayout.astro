@@ -1,0 +1,41 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import FaqList from "../components/FaqList.astro";
+import { getFaqItems } from "../content/services/index.js";
+
+const {
+  title,
+  intro = "",
+  seoTitle = title,
+  description,
+  canonical,
+  breadcrumbs = [],
+  sectionClass = "",
+  faqItems = getFaqItems(["order-data", "price", "delivery", "payment"]),
+} = Astro.props;
+---
+
+<BaseLayout title={seoTitle} description={description} canonical={canonical} showRequestSection={true}>
+  <Breadcrumbs items={breadcrumbs} />
+  <section class:list={["section", "inner-section", sectionClass]}>
+    <div class="container">
+      <div class="content">
+        <header class="inner-section__header">
+          <h1>{title}</h1>
+          {intro && <p>{intro}</p>}
+        </header>
+        <slot />
+      </div>
+    </div>
+  </section>
+  <section class="section faq-section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Вопросы и&nbsp;ответы</h2>
+      </div>
+      <FaqList items={faqItems} />
+    </div>
+  </section>
+  <slot name="after-content" />
+</BaseLayout>

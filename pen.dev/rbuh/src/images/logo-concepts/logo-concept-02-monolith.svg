@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 140" role="img" aria-labelledby="title">
+  <title id="title">РБУ «Хаджох» — монолит</title>
+  <defs>
+    <mask id="column-mask">
+      <rect width="74" height="140" fill="#fff"/>
+      <g fill="none" stroke="#000" stroke-width="6" stroke-linecap="square" stroke-linejoin="miter">
+        <path d="M16 39V10h18c11 0 17 5 17 14s-6 14-17 14H16M16 24h18"/>
+        <path d="M16 53h34M16 53v31h19c11 0 17-5 17-13s-6-12-17-12H16"/>
+        <path d="M14 98l19 21 19-21M33 119l-7 12"/>
+      </g>
+    </mask>
+  </defs>
+  <rect width="74" height="140" fill="#fff" mask="url(#column-mask)"/>
+  <g fill="#fff">
+    <path d="M104 43L86 70l18 27 10-7-13-20 13-20zM128 43l-18 27 18 27 10-7-13-20 13-20z"/>
+    <path d="M155 20h18l22 36 22-36h18l-31 50 33 50h-19l-23-37-23 37h-19l33-50z"/>
+    <path fill-rule="evenodd" d="M245 120l29-100h28l29 100h-18l-6-23h-38l-6 23zm29-39h28l-14-48z"/>
+    <path fill-rule="evenodd" d="M343 104h8l18-84h55l18 84h9v30h-17v-14h-74v14h-17zm27 0h53l-14-68h-25z"/>
+    <path d="M493 20h16v38l27-38h20l-34 49 36 51h-21l-28-40v40h-16V80l-28 40h-21l36-51-34-49h20l27 38z"/>
+    <path fill-rule="evenodd" d="M568 20h68v100h-68zm17 16v68h34V36z"/>
+    <path d="M648 20h18l22 36 22-36h18l-31 50 33 50h-19l-23-37-23 37h-19l33-50z"/>
+    <path d="M746 43l18 27-18 27-10-7 13-20-13-20zM770 43l18 27-18 27-10-7 13-20-13-20z"/>
+  </g>
+</svg>

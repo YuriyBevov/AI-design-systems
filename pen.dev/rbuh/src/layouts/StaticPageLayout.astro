@@ -1,0 +1,18 @@
+---
+import InnerPageLayout from "./InnerPageLayout.astro";
+
+const { page } = Astro.props;
+const breadcrumbs = page.breadcrumbs ?? [];
+const compiledContent = page.compiledContent ? await page.compiledContent() : "";
+---
+
+<InnerPageLayout
+  title={page.title}
+  intro={page.intro}
+  seoTitle={page.seoTitle ?? page.title}
+  description={page.seoDescription}
+  breadcrumbs={breadcrumbs}
+  sectionClass="static-page"
+>
+  <Fragment set:html={compiledContent} />
+</InnerPageLayout>

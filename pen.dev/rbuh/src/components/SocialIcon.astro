@@ -1,0 +1,13 @@
+---
+import Mail from "@lucide/astro/icons/mail";
+
+const { item } = Astro.props;
+---
+
+{item.icon === "icon-mail" ? (
+  <Mail class="social-list__icon" size={24} stroke-width={1.8} aria-hidden="true" />
+) : (
+  <svg class="social-list__icon" width={item.width ?? 24} height={item.height ?? 24} viewBox={item.viewBox} aria-hidden="true">
+    <use href={`/sprite.svg?v=4#${item.icon}`}></use>
+  </svg>
+)}

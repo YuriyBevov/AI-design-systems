@@ -1,0 +1,25 @@
+---
+import StaticPageLayout from "../layouts/StaticPageLayout.astro";
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  const pageModules = import.meta.glob("../content/pages/*.md", { eager: true });
+  const pages = Object.entries(pageModules)
+    .filter(([path]) => !path.split("/").pop()?.startsWith("_"))
+    .map(([path, module]) => {
+      const fileName = path.split("/").pop()?.replace(".md", "") ?? "";
+      return {
+        ...module.frontmatter,
+        slug: module.frontmatter.slug ?? fileName,
+        compiledContent: module.compiledContent,
+      };
+    });
+
+  return pages.map((page) => ({ params: { slug: page.slug }, props: { page } }));
+}
+
+const { page } = Astro.props;
+---
+
+<StaticPageLayout page={page} />

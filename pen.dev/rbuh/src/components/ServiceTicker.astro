@@ -1,0 +1,14 @@
+---
+import { services } from "../content/services/index.js";
+---
+
+<section class="service-ticker" aria-label="Услуги РБУ «Хаджох»">
+  <div class="service-ticker__track">
+    <ul class="service-ticker__list">
+      {services.map((service) => <li class="service-ticker__item">{service.title}</li>)}
+    </ul>
+    <ul class="service-ticker__list" aria-hidden="true">
+      {services.map((service) => <li class="service-ticker__item">{service.title}</li>)}
+    </ul>
+  </div>
+</section>

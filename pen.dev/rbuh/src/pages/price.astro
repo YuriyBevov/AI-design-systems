@@ -1,0 +1,24 @@
+---
+import InnerPageLayout from "../layouts/InnerPageLayout.astro";
+import PriceTable from "../components/PriceTable.astro";
+import { priceGroups, priceUpdatedAt } from "../content/prices/index.js";
+
+const breadcrumbs = [
+  { label: "Главная", href: "/" },
+  { label: "Прайс-лист" },
+];
+---
+
+<InnerPageLayout
+  title="Прайс-лист"
+  intro="Полный перечень цен будет добавлен после утверждения. Сейчас каждое направление рассчитывается индивидуально."
+  seoTitle="Прайс-лист РБУ «Хаджох»"
+  description="Цены на бетон, лабораторное сопровождение, автобетононасос и доставку инертных материалов."
+  breadcrumbs={breadcrumbs}
+  sectionClass="price-page"
+>
+  <span class="inner-section__meta">{priceUpdatedAt}</span>
+  <div class="inner-section__prices">
+    {priceGroups.map((group) => <PriceTable group={group} />)}
+  </div>
+</InnerPageLayout>

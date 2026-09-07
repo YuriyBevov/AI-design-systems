@@ -1,0 +1,34 @@
+---
+import InnerPageLayout from "../layouts/InnerPageLayout.astro";
+import PriceTable from "./PriceTable.astro";
+import ServicesSlider from "./ServicesSlider.astro";
+import { getFaqItems } from "../content/services/index.js";
+import { getPriceGroupsByServiceId } from "../content/prices/index.js";
+
+const { service } = Astro.props;
+const faqItems = getFaqItems(service.detail.faqIds);
+const priceGroups = getPriceGroupsByServiceId(service.id);
+const breadcrumbs = [
+  { label: "Главная", href: "/" },
+  { label: "Услуги", href: "/services/" },
+  { label: service.title },
+];
+---
+
+<InnerPageLayout
+  title={service.title}
+  intro={service.detail.lead}
+  seoTitle={service.seo.title}
+  description={service.seo.description}
+  breadcrumbs={breadcrumbs}
+  faqItems={faqItems}
+>
+  {service.detail.description.map((paragraph) => <p>{paragraph}</p>)}
+
+  <h2>Прайс-лист</h2>
+  <div class="inner-section__prices">
+    {priceGroups.map((group) => <PriceTable group={group} />)}
+  </div>
+
+  <ServicesSlider slot="after-content" currentServiceId={service.id} />
+</InnerPageLayout>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 1000 154" role="img" aria-labelledby="title description">
+  <title id="title">РБУ «Хаджох»</title>
+  <desc id="description">Геометрический логотип с вертикальной аббревиатурой РБУ</desc>
+  <g fill="#fff">
+    <path fill-rule="evenodd" d="M0 2h27l7 7v23l-7 7H13v9H0Zm13 11v15h10V13Z"/>
+    <path fill-rule="evenodd" d="M0 54h34v11H13v5h14l7 7v14l-7 7H0Zm13 27v7h9v-7Z"/>
+    <path d="M0 105h14l6 17 7-17h14l-15 32v11H11v-11Z"/>
+
+    <path d="M70 5h38l32 44 32-44h38l-48 70 48 70h-38l-32-45-32 45H70l48-70Z"/>
+    <path fill-rule="evenodd" d="M255 5h62l48 140h-39l-10-31h-66l-10 31h-38Zm28 36-23 43h46Z"/>
+    <path fill-rule="evenodd" d="M399 5h113v105h22v35h-42v-12h-82v12h-42v-35h22V17Zm28 34v71h48V39Z"/>
+    <path d="M606 5h24v51l35-51h38l-49 70 49 70h-38l-35-51v51h-24V94l-35 51h-38l49-70-49-70h38l35 51Z"/>
+    <path fill-rule="evenodd" d="M728 5h96l14 13v114l-14 13h-96l-14-13V18Zm26 35v70h44V40Z"/>
+    <path d="M852 5h38l32 44 32-44h38l-48 70 48 70h-38l-32-45-32 45h-38l48-70Z"/>
+  </g>
+</svg>

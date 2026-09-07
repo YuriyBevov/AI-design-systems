@@ -1,0 +1,22 @@
+.price-group {
+	display: flex;
+	min-width: 0;
+	flex-direction: column;
+	gap: var(--space-lg);
+
+	& + & {
+		padding-top: var(--space-2xl);
+		border-top: 2px solid var(--color-accent);
+	}
+
+	&__description {
+		max-width: 860px;
+		color: var(--color-text-muted);
+	}
+}
+
+.price-page .container,
+.price-section .container {
+	display: grid;
+	gap: var(--space-2xl);
+}

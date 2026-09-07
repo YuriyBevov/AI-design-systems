@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 140" role="img" aria-labelledby="title">
+  <title id="title">РБУ «Хаджох» — вертикальная архитектура</title>
+  <g fill="none" stroke="#fff" stroke-width="8" stroke-linecap="square" stroke-linejoin="miter">
+    <path d="M10 40V8h20c12 0 18 6 18 16s-6 16-18 16H10M10 24h20"/>
+    <path d="M10 52h36M10 52v32h21c12 0 18-5 18-13s-6-13-18-13H10"/>
+    <path d="M8 96l19 23 19-23M27 119l-8 13"/>
+    <path d="M82 43L64 70l18 27M102 43L84 70l18 27"/>
+    <path d="M122 25l48 90M170 25l-48 90"/>
+    <path d="M185 115l28-90 28 90M194 84h38"/>
+    <path d="M275 25h38M275 25l-16 78M313 25l16 78M251 103h86M255 103v20M333 103v20"/>
+    <path d="M382 25v90M346 25l36 45 36-45M346 115l36-45 36 45"/>
+    <rect x="438" y="25" width="58" height="90" rx="29"/>
+    <path d="M516 25l48 90M564 25l-48 90"/>
+    <path d="M584 43l18 27-18 27M604 43l18 27-18 27" transform="translate(-10)"/>
+  </g>
+</svg>

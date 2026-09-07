@@ -1,0 +1,54 @@
+main > .inner-section:first-of-type {
+	padding-top: var(--space-lg);
+}
+
+.inner-section {
+	> .container {
+		min-width: 0;
+	}
+
+	.content > .inner-section__header {
+		display: grid;
+		gap: var(--space-md);
+		margin-bottom: var(--space-2xl);
+
+		> p {
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: 16px;
+			line-height: 1.6;
+		}
+	}
+
+	.content > .services-section__grid {
+		margin-top: var(--space-xl);
+	}
+
+	.content > .inner-section__prices {
+		margin-block: var(--space-xl) var(--space-2xl);
+	}
+
+	.content > p + h2 {
+		margin-top: var(--space-2xl);
+	}
+
+	.content > :last-child {
+		margin-bottom: 0;
+	}
+
+	&__meta {
+		display: block;
+		color: var(--color-white);
+		font-size: 12px;
+		font-weight: 700;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+	}
+
+	&__prices {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		gap: var(--space-2xl);
+		min-width: 0;
+	}
+}

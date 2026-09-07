@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 140" role="img" aria-labelledby="title">
+  <title id="title">РБУ «Хаджох» — маршрут</title>
+  <g fill="none" stroke="#fff" stroke-width="3">
+    <rect x="1.5" y="1.5" width="45" height="41"/>
+    <rect x="1.5" y="49.5" width="45" height="41"/>
+    <rect x="1.5" y="97.5" width="45" height="41"/>
+  </g>
+  <g fill="none" stroke="#fff" stroke-width="5" stroke-linecap="square" stroke-linejoin="miter">
+    <path d="M11 33V11h14c8 0 12 4 12 11s-4 11-12 11H11M11 22h14"/>
+    <path d="M11 59h25M11 59v22h14c8 0 12-4 12-9s-4-9-12-9H11"/>
+    <path d="M10 108l14 15 14-15M24 123l-5 7"/>
+  </g>
+  <g fill="none" stroke="#fff" stroke-width="11" stroke-linecap="butt" stroke-linejoin="miter">
+    <path d="M84 42L66 70l18 28M102 42L84 70l18 28"/>
+    <path d="M132 20l48 100M180 20l-48 100"/>
+    <path d="M198 120l30-100 30 100M209 83h38"/>
+    <path d="M294 20h42M294 20l-17 86M336 20l17 86M268 106h94M273 106v20M357 106v20"/>
+    <path d="M411 20v100M374 20l37 50 37-50M374 120l37-50 37 50"/>
+    <rect x="472" y="20" width="64" height="100" rx="2"/>
+    <path d="M564 20l50 100M614 20l-50 100"/>
+    <path d="M646 42l18 28-18 28M664 42l18 28-18 28"/>
+  </g>
+</svg>

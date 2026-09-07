@@ -1,0 +1,21 @@
+---
+import { Image } from "astro:assets";
+
+const { service } = Astro.props;
+---
+
+<article class="service-card">
+  <a class="service-card__link" href={`/services/${service.slug}/`} aria-label={`Подробнее: ${service.title}`}>
+    <span class="service-card__image-wrapper">
+      <Image class="service-card__image" src={service.image.src} alt={service.image.alt} width={800} height={600} />
+    </span>
+    <span class="service-card__scrim" aria-hidden="true"></span>
+    <span class="service-card__body">
+      <span class="service-card__title">{service.title}</span>
+      <span class="card-description">{service.shortDescription}</span>
+      <span class="service-card__more">Подробнее
+        <svg class="button__icon button__icon--arrow" width="72" height="20" viewBox="0 0 72 19" aria-hidden="true"><use href="/sprite.svg?v=4#long-arrow"></use></svg>
+      </span>
+    </span>
+  </a>
+</article>

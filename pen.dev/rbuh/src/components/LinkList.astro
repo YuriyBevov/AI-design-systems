@@ -1,0 +1,19 @@
+---
+const { items = [] } = Astro.props;
+---
+
+<ul class="link-list">
+  {items.map((item) => (
+    <li class="link-list__item">
+      {item.href ? (
+        <a class:list={["link-list__link", item.accent && "link-list__link--accent"]} href={item.href}>
+          {item.label}
+        </a>
+      ) : (
+        <span class="link-list__text">
+          {item.label}{item.noBreakText && <> {" "}<span class="link-list__no-break">{item.noBreakText}</span></>}
+        </span>
+      )}
+    </li>
+  ))}
+</ul>

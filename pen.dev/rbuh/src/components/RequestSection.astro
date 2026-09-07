@@ -1,0 +1,41 @@
+---
+import Countdown from "./Countdown.astro";
+---
+
+<section class="section cta" id="request">
+  <div class="container">
+    <div class="cta__content">
+      <h2 class="cta__title">Нужен бетон или доставка материалов?</h2>
+      <p class="cta__description">Оставьте заявку и&nbsp;мы свяжемся с&nbsp;Вами в&nbsp;ближайшее время!</p>
+      <Countdown />
+    </div>
+
+    <form class="request-form" action="/api/send-request" method="post" novalidate data-request-form>
+      <input type="hidden" name="formType" value="request" />
+
+      <div class="form-row">
+        <label class="field">
+          <span class="field__label">Ваше имя</span>
+          <input class="field__control" type="text" name="name" placeholder="Иван" required />
+        </label>
+        <label class="field">
+          <span class="field__label">Телефон</span>
+          <input class="field__control" type="tel" name="phone" placeholder="+7 (900) 000-00-00" data-phone-mask required />
+        </label>
+      </div>
+
+      <label class="field">
+        <span class="field__label">Комментарий</span>
+        <textarea class="field__control field__control--textarea" name="comment" placeholder="Добавьте описание при желании"></textarea>
+      </label>
+
+      <div class="request-form__actions">
+        <label class="form-consent">
+          <input class="form-consent__control" type="checkbox" name="consent" value="yes" required />
+          <span class="form-consent__text">Соглашаюсь с&nbsp;<a href="/policy-privacy/" target="_blank" rel="noopener">политикой конфиденциальности</a> и&nbsp;обработкой персональных данных</span>
+        </label>
+        <button class="button button--primary" type="submit">Отправить заявку</button>
+      </div>
+    </form>
+  </div>
+</section>

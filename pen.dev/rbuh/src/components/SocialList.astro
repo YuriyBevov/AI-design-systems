@@ -1,0 +1,21 @@
+---
+import SocialIcon from "./SocialIcon.astro";
+
+const { items = [] } = Astro.props;
+---
+
+<ul class="social-list">
+  {items.map((item) => (
+    <li class="social-list__item">
+      {item.href ? (
+        <a class="social-list__link" href={item.href} aria-label={item.label?.trim() || "Социальная сеть"} title={item.label}>
+          <SocialIcon item={item} />
+        </a>
+      ) : (
+        <span class="social-list__link social-list__link--pending" role="img" aria-label={item.label?.trim() || "Контакт уточняется"} title={item.label}>
+          <SocialIcon item={item} />
+        </span>
+      )}
+    </li>
+  ))}
+</ul>
