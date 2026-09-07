@@ -1,12 +1,12 @@
 export const contactLinks = [
   {
-    label: "+7 (000) 000-00-00",
-    href: "tel:+70000000000",
+    label: "+7 (812) 982-12-24",
+    href: "tel:+78129821224",
     accent: true,
   },
   {
-    label: "sales@lenta.pro",
-    href: "mailto:sales@lenta.pro",
+    label: "zakaz@tape-nm.ru",
+    href: "mailto:zakaz@tape-nm.ru",
     accent: true,
   },
   {
@@ -16,7 +16,7 @@ export const contactLinks = [
 
 export const addresses = [
   {
-    label: "Склад и офис",
-    value: "Адрес уточняется",
+    label: "Офис",
+    value: "196084, г. Санкт-Петербург, ул. Заозерная, д.8, лит. К, офис 304",
   },
 ];

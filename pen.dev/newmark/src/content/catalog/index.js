@@ -53,7 +53,8 @@ export const getCategoryDescendantIds = (categoryId) => getCategoryChildren(cate
 export const getCategoryProducts = (categoryId) => [
   categoryId,
   ...getCategoryDescendantIds(categoryId),
-].flatMap((id) => productsByParentId.get(id) ?? []);
+].flatMap((id) => productsByParentId.get(id) ?? [])
+  .filter((product) => !product.hidden);
 
 export const getCatalogSectionBreadcrumbs = (category) => {
   const breadcrumbs = [

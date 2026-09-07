@@ -1,6 +1,7 @@
 export const products = [
   {
     "id": "vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-17-mkm-1-kg",
+    "hidden": true,
     "parentId": "stretch-plenka",
     "slug": "vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-17-mkm-1-kg",
     "href": "/catalog/stretch-plenka/vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-17-mkm-1-kg/",
@@ -74,6 +75,7 @@ export const products = [
   },
   {
     "id": "vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-17-mkm-1-5-kg",
+    "hidden": true,
     "parentId": "stretch-plenka",
     "slug": "vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-17-mkm-1-5-kg",
     "href": "/catalog/stretch-plenka/vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-17-mkm-1-5-kg/",
@@ -147,6 +149,7 @@ export const products = [
   },
   {
     "id": "vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-17-mkm-2-kg",
+    "hidden": true,
     "parentId": "stretch-plenka",
     "slug": "vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-17-mkm-2-kg",
     "href": "/catalog/stretch-plenka/vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-17-mkm-2-kg/",
@@ -220,6 +223,7 @@ export const products = [
   },
   {
     "id": "vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-20-mkm-1-kg",
+    "hidden": true,
     "parentId": "stretch-plenka",
     "slug": "vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-20-mkm-1-kg",
     "href": "/catalog/stretch-plenka/vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-20-mkm-1-kg/",
@@ -277,6 +281,7 @@ export const products = [
   },
   {
     "id": "vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-20-mkm-1-5-kg",
+    "hidden": true,
     "parentId": "stretch-plenka",
     "slug": "vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-20-mkm-1-5-kg",
     "href": "/catalog/stretch-plenka/vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-20-mkm-1-5-kg/",
@@ -334,6 +339,7 @@ export const products = [
   },
   {
     "id": "vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-20-mkm-2-kg",
+    "hidden": true,
     "parentId": "stretch-plenka",
     "slug": "vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-20-mkm-2-kg",
     "href": "/catalog/stretch-plenka/vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-20-mkm-2-kg/",
@@ -391,6 +397,7 @@ export const products = [
   },
   {
     "id": "vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-23-mkm-1-kg",
+    "hidden": true,
     "parentId": "stretch-plenka",
     "slug": "vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-23-mkm-1-kg",
     "href": "/catalog/stretch-plenka/vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-23-mkm-1-kg/",
@@ -448,6 +455,7 @@ export const products = [
   },
   {
     "id": "vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-23-mkm-1-5-kg",
+    "hidden": true,
     "parentId": "stretch-plenka",
     "slug": "vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-23-mkm-1-5-kg",
     "href": "/catalog/stretch-plenka/vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-23-mkm-1-5-kg/",
@@ -505,6 +513,7 @@ export const products = [
   },
   {
     "id": "vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-23-mkm-2-kg",
+    "hidden": true,
     "parentId": "stretch-plenka",
     "slug": "vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-23-mkm-2-kg",
     "href": "/catalog/stretch-plenka/vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-chernaya-500-mm-23-mkm-2-kg/",
@@ -562,6 +571,7 @@ export const products = [
   },
   {
     "id": "vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-17-mkm-1-kg",
+    "hidden": true,
     "parentId": "stretch-plenka",
     "slug": "vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-17-mkm-1-kg",
     "href": "/catalog/stretch-plenka/vtorichnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-17-mkm-1-kg/",
@@ -1202,6 +1212,7 @@ export const products = [
   },
   {
     "id": "streich-plenka-dlya-ruchnoi-upakovki-0-7-kg-125-mm-17-mkm-1-sort",
+    "hidden": true,
     "parentId": "stretch-plenka",
     "slug": "streich-plenka-dlya-ruchnoi-upakovki-0-7-kg-125-mm-17-mkm-1-sort",
     "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-0-7-kg-125-mm-17-mkm-1-sort/",
@@ -1283,6 +1294,7 @@ export const products = [
   },
   {
     "id": "streich-plenka-dlya-ruchnoi-upakovki-0-7-kg-125-mm-20-mkm-1-sort",
+    "hidden": true,
     "parentId": "stretch-plenka",
     "slug": "streich-plenka-dlya-ruchnoi-upakovki-0-7-kg-125-mm-20-mkm-1-sort",
     "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-0-7-kg-125-mm-20-mkm-1-sort/",
@@ -1364,6 +1376,7 @@ export const products = [
   },
   {
     "id": "streich-plenka-dlya-ruchnoi-upakovki-0-7-kg-125-mm-23-mkm-1-sort",
+    "hidden": true,
     "parentId": "stretch-plenka",
     "slug": "streich-plenka-dlya-ruchnoi-upakovki-0-7-kg-125-mm-23-mkm-1-sort",
     "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-0-7-kg-125-mm-23-mkm-1-sort/",
@@ -1445,6 +1458,7 @@ export const products = [
   },
   {
     "id": "streich-plenka-dlya-ruchnoi-upakovki-1-kg-250-mm-17-mkm-1-sort",
+    "hidden": true,
     "parentId": "stretch-plenka",
     "slug": "streich-plenka-dlya-ruchnoi-upakovki-1-kg-250-mm-17-mkm-1-sort",
     "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-1-kg-250-mm-17-mkm-1-sort/",
@@ -1526,6 +1540,7 @@ export const products = [
   },
   {
     "id": "streich-plenka-dlya-ruchnoi-upakovki-1-kg-250-mm-20-mkm-1-sort",
+    "hidden": true,
     "parentId": "stretch-plenka",
     "slug": "streich-plenka-dlya-ruchnoi-upakovki-1-kg-250-mm-20-mkm-1-sort",
     "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-1-kg-250-mm-20-mkm-1-sort/",
@@ -1607,6 +1622,7 @@ export const products = [
   },
   {
     "id": "streich-plenka-dlya-ruchnoi-upakovki-1-kg-250-mm-23-mkm-1-sort",
+    "hidden": true,
     "parentId": "stretch-plenka",
     "slug": "streich-plenka-dlya-ruchnoi-upakovki-1-kg-250-mm-23-mkm-1-sort",
     "href": "/catalog/stretch-plenka/streich-plenka-dlya-ruchnoi-upakovki-1-kg-250-mm-23-mkm-1-sort/",
@@ -4021,6 +4037,7 @@ export const products = [
   },
   {
     "id": "upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-17-mkm-2-sort-12-5-kg",
+    "hidden": true,
     "parentId": "stretch-plenka",
     "slug": "upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-17-mkm-2-sort-12-5-kg",
     "href": "/catalog/stretch-plenka/upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-17-mkm-2-sort-12-5-kg/",
@@ -4094,6 +4111,7 @@ export const products = [
   },
   {
     "id": "upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-17-mkm-2-sort-15-kg",
+    "hidden": true,
     "parentId": "stretch-plenka",
     "slug": "upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-17-mkm-2-sort-15-kg",
     "href": "/catalog/stretch-plenka/upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-17-mkm-2-sort-15-kg/",
@@ -4167,6 +4185,7 @@ export const products = [
   },
   {
     "id": "upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-20-mkm-2-sort-12-5-kg",
+    "hidden": true,
     "parentId": "stretch-plenka",
     "slug": "upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-20-mkm-2-sort-12-5-kg",
     "href": "/catalog/stretch-plenka/upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-20-mkm-2-sort-12-5-kg/",
@@ -4224,6 +4243,7 @@ export const products = [
   },
   {
     "id": "upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-20-mkm-2-sort-15-kg",
+    "hidden": true,
     "parentId": "stretch-plenka",
     "slug": "upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-20-mkm-2-sort-15-kg",
     "href": "/catalog/stretch-plenka/upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-20-mkm-2-sort-15-kg/",
@@ -4297,6 +4317,7 @@ export const products = [
   },
   {
     "id": "upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-23-mkm-2-sort-12-5-kg",
+    "hidden": true,
     "parentId": "stretch-plenka",
     "slug": "upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-23-mkm-2-sort-12-5-kg",
     "href": "/catalog/stretch-plenka/upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-23-mkm-2-sort-12-5-kg/",
@@ -4354,6 +4375,7 @@ export const products = [
   },
   {
     "id": "upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-23-mkm-2-sort-15-kg",
+    "hidden": true,
     "parentId": "stretch-plenka",
     "slug": "upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-23-mkm-2-sort-15-kg",
     "href": "/catalog/stretch-plenka/upakovochnaya-streich-plenka-dlya-mashinnoi-upakovki-500-mm-23-mkm-2-sort-15-kg/",
@@ -4427,6 +4449,7 @@ export const products = [
   },
   {
     "id": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-17-mkm-1-5-kg-2-sort",
+    "hidden": true,
     "parentId": "stretch-plenka",
     "slug": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-17-mkm-1-5-kg-2-sort",
     "href": "/catalog/stretch-plenka/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-17-mkm-1-5-kg-2-sort/",
@@ -4500,6 +4523,7 @@ export const products = [
   },
   {
     "id": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-17-mkm-2-kg-2-sort",
+    "hidden": true,
     "parentId": "stretch-plenka",
     "slug": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-17-mkm-2-kg-2-sort",
     "href": "/catalog/stretch-plenka/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-17-mkm-2-kg-2-sort/",
@@ -4573,6 +4597,7 @@ export const products = [
   },
   {
     "id": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-20-mkm-1-kg-2-sort",
+    "hidden": true,
     "parentId": "stretch-plenka",
     "slug": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-20-mkm-1-kg-2-sort",
     "href": "/catalog/stretch-plenka/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-20-mkm-1-kg-2-sort/",
@@ -4630,6 +4655,7 @@ export const products = [
   },
   {
     "id": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-20-mkm-1-5-kg-2-sort",
+    "hidden": true,
     "parentId": "stretch-plenka",
     "slug": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-20-mkm-1-5-kg-2-sort",
     "href": "/catalog/stretch-plenka/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-20-mkm-1-5-kg-2-sort/",
@@ -4687,6 +4713,7 @@ export const products = [
   },
   {
     "id": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-20-mkm-2-kg-2-sort",
+    "hidden": true,
     "parentId": "stretch-plenka",
     "slug": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-20-mkm-2-kg-2-sort",
     "href": "/catalog/stretch-plenka/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-20-mkm-2-kg-2-sort/",
@@ -4744,6 +4771,7 @@ export const products = [
   },
   {
     "id": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-23-mkm-1-kg-2-sort",
+    "hidden": true,
     "parentId": "stretch-plenka",
     "slug": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-23-mkm-1-kg-2-sort",
     "href": "/catalog/stretch-plenka/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-23-mkm-1-kg-2-sort/",
@@ -4801,6 +4829,7 @@ export const products = [
   },
   {
     "id": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-23-mkm-1-5-kg-2-sort",
+    "hidden": true,
     "parentId": "stretch-plenka",
     "slug": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-23-mkm-1-5-kg-2-sort",
     "href": "/catalog/stretch-plenka/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-23-mkm-1-5-kg-2-sort/",
@@ -4858,6 +4887,7 @@ export const products = [
   },
   {
     "id": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-23-mkm-2-kg-2-sort",
+    "hidden": true,
     "parentId": "stretch-plenka",
     "slug": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-23-mkm-2-kg-2-sort",
     "href": "/catalog/stretch-plenka/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-500-mm-23-mkm-2-kg-2-sort/",
@@ -4915,6 +4945,7 @@ export const products = [
   },
   {
     "id": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-biznes-500-mm-17-mkm-2-kg-2-sort",
+    "hidden": true,
     "parentId": "stretch-plenka",
     "slug": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-biznes-500-mm-17-mkm-2-kg-2-sort",
     "href": "/catalog/stretch-plenka/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-biznes-500-mm-17-mkm-2-kg-2-sort/",
@@ -4988,6 +5019,7 @@ export const products = [
   },
   {
     "id": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-biznes-500-mm-20-mkm-2-kg-2-sort",
+    "hidden": true,
     "parentId": "stretch-plenka",
     "slug": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-biznes-500-mm-20-mkm-2-kg-2-sort",
     "href": "/catalog/stretch-plenka/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-biznes-500-mm-20-mkm-2-kg-2-sort/",
@@ -5045,6 +5077,7 @@ export const products = [
   },
   {
     "id": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-biznes-500-mm-23-mkm-2-kg-2-sort",
+    "hidden": true,
     "parentId": "stretch-plenka",
     "slug": "upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-biznes-500-mm-23-mkm-2-kg-2-sort",
     "href": "/catalog/stretch-plenka/upakovochnaya-streich-plenka-dlya-ruchnoi-upakovki-biznes-500-mm-23-mkm-2-kg-2-sort/",
@@ -5102,9 +5135,9 @@ export const products = [
   },
   {
     "id": "alyuminievaya-kleikaya-lenta-48mm-40m",
-    "parentId": "kleikaya-lenta",
+    "parentId": "spets-lenty",
     "slug": "alyuminievaya-kleikaya-lenta-48mm-40m",
-    "href": "/catalog/kleikaya-lenta/alyuminievaya-kleikaya-lenta-48mm-40m/",
+    "href": "/catalog/spets-lenty/alyuminievaya-kleikaya-lenta-48mm-40m/",
     "title": "Алюминиевая клейкая лента 48мм/40м",
     "card": {
       "image": "/catalog/products/arli-adhesive/alyuminievaya-kleikaya-lenta-48mm-40m.webp",
@@ -5175,9 +5208,9 @@ export const products = [
   },
   {
     "id": "alyuminievaya-kleikaya-lenta-48mm-50m",
-    "parentId": "kleikaya-lenta",
+    "parentId": "spets-lenty",
     "slug": "alyuminievaya-kleikaya-lenta-48mm-50m",
-    "href": "/catalog/kleikaya-lenta/alyuminievaya-kleikaya-lenta-48mm-50m/",
+    "href": "/catalog/spets-lenty/alyuminievaya-kleikaya-lenta-48mm-50m/",
     "title": "Алюминиевая клейкая лента 48мм/50м",
     "card": {
       "image": "/catalog/products/arli-adhesive/alyuminievaya-kleikaya-lenta-48mm-50m.webp",
@@ -5248,9 +5281,9 @@ export const products = [
   },
   {
     "id": "alyuminievaya-kleikaya-lenta-75mm-40m",
-    "parentId": "kleikaya-lenta",
+    "parentId": "spets-lenty",
     "slug": "alyuminievaya-kleikaya-lenta-75mm-40m",
-    "href": "/catalog/kleikaya-lenta/alyuminievaya-kleikaya-lenta-75mm-40m/",
+    "href": "/catalog/spets-lenty/alyuminievaya-kleikaya-lenta-75mm-40m/",
     "title": "Алюминиевая клейкая лента 75мм/40м",
     "card": {
       "image": "/catalog/products/arli-adhesive/alyuminievaya-kleikaya-lenta-75mm-40m.webp",
@@ -5321,9 +5354,9 @@ export const products = [
   },
   {
     "id": "alyuminievaya-kleikaya-lenta-75mm-50m",
-    "parentId": "kleikaya-lenta",
+    "parentId": "spets-lenty",
     "slug": "alyuminievaya-kleikaya-lenta-75mm-50m",
-    "href": "/catalog/kleikaya-lenta/alyuminievaya-kleikaya-lenta-75mm-50m/",
+    "href": "/catalog/spets-lenty/alyuminievaya-kleikaya-lenta-75mm-50m/",
     "title": "Алюминиевая клейкая лента 75мм/50м",
     "card": {
       "image": "/catalog/products/arli-adhesive/alyuminievaya-kleikaya-lenta-75mm-50m.webp",
@@ -5978,9 +6011,9 @@ export const products = [
   },
   {
     "id": "dvuhstoronnyaya-kleikaya-lenta-19mm-30m-bumazhnaya-osnova",
-    "parentId": "kleikaya-lenta",
+    "parentId": "spets-lenty",
     "slug": "dvuhstoronnyaya-kleikaya-lenta-19mm-30m-bumazhnaya-osnova",
-    "href": "/catalog/kleikaya-lenta/dvuhstoronnyaya-kleikaya-lenta-19mm-30m-bumazhnaya-osnova/",
+    "href": "/catalog/spets-lenty/dvuhstoronnyaya-kleikaya-lenta-19mm-30m-bumazhnaya-osnova/",
     "title": "Двухсторонняя клейкая лента 19мм x 30м, бумажная основа",
     "card": {
       "image": "/catalog/products/arli-adhesive/dvuhstoronnyaya-kleikaya-lenta-19mm-30m-bumazhnaya-osnova.webp",
@@ -6051,9 +6084,9 @@ export const products = [
   },
   {
     "id": "dvuhstoronnyaya-kleikaya-lenta-25mm-25m-polipropilenovaya-osnova",
-    "parentId": "kleikaya-lenta",
+    "parentId": "spets-lenty",
     "slug": "dvuhstoronnyaya-kleikaya-lenta-25mm-25m-polipropilenovaya-osnova",
-    "href": "/catalog/kleikaya-lenta/dvuhstoronnyaya-kleikaya-lenta-25mm-25m-polipropilenovaya-osnova/",
+    "href": "/catalog/spets-lenty/dvuhstoronnyaya-kleikaya-lenta-25mm-25m-polipropilenovaya-osnova/",
     "title": "Двухсторонняя клейкая лента 25мм x 25м, полипропиленовая основа",
     "card": {
       "image": "/catalog/products/arli-adhesive/dvuhstoronnyaya-kleikaya-lenta-25mm-25m-polipropilenovaya-osnova.webp",
@@ -6124,9 +6157,9 @@ export const products = [
   },
   {
     "id": "dvuhstoronnyaya-kleikaya-lenta-38mm-40m-tkanevaya-osnova",
-    "parentId": "kleikaya-lenta",
+    "parentId": "spets-lenty",
     "slug": "dvuhstoronnyaya-kleikaya-lenta-38mm-40m-tkanevaya-osnova",
-    "href": "/catalog/kleikaya-lenta/dvuhstoronnyaya-kleikaya-lenta-38mm-40m-tkanevaya-osnova/",
+    "href": "/catalog/spets-lenty/dvuhstoronnyaya-kleikaya-lenta-38mm-40m-tkanevaya-osnova/",
     "title": "Двухсторонняя клейкая лента 38мм x 40м, тканевая основа",
     "card": {
       "image": "/catalog/products/arli-adhesive/dvuhstoronnyaya-kleikaya-lenta-38mm-40m-tkanevaya-osnova.webp",
@@ -6197,9 +6230,9 @@ export const products = [
   },
   {
     "id": "dvuhstoronnyaya-kleikaya-lenta-48mm-25m-bumazhnaya-osnova",
-    "parentId": "kleikaya-lenta",
+    "parentId": "spets-lenty",
     "slug": "dvuhstoronnyaya-kleikaya-lenta-48mm-25m-bumazhnaya-osnova",
-    "href": "/catalog/kleikaya-lenta/dvuhstoronnyaya-kleikaya-lenta-48mm-25m-bumazhnaya-osnova/",
+    "href": "/catalog/spets-lenty/dvuhstoronnyaya-kleikaya-lenta-48mm-25m-bumazhnaya-osnova/",
     "title": "Двухсторонняя клейкая лента 48мм x 25м, бумажная основа",
     "card": {
       "image": "/catalog/products/arli-adhesive/dvuhstoronnyaya-kleikaya-lenta-48mm-25m-bumazhnaya-osnova.webp",
@@ -6270,9 +6303,9 @@ export const products = [
   },
   {
     "id": "dvuhstoronnyaya-kleikaya-lenta-48mm-25m-polipropilenovaya-osnova",
-    "parentId": "kleikaya-lenta",
+    "parentId": "spets-lenty",
     "slug": "dvuhstoronnyaya-kleikaya-lenta-48mm-25m-polipropilenovaya-osnova",
-    "href": "/catalog/kleikaya-lenta/dvuhstoronnyaya-kleikaya-lenta-48mm-25m-polipropilenovaya-osnova/",
+    "href": "/catalog/spets-lenty/dvuhstoronnyaya-kleikaya-lenta-48mm-25m-polipropilenovaya-osnova/",
     "title": "Двухсторонняя клейкая лента 48мм x 25м, полипропиленовая основа",
     "card": {
       "image": "/catalog/products/arli-adhesive/dvuhstoronnyaya-kleikaya-lenta-48mm-25m-polipropilenovaya-osnova.webp",
@@ -6343,9 +6376,9 @@ export const products = [
   },
   {
     "id": "dvuhstoronnyaya-kleikaya-lenta-48mm-25m-tkanevaya-osnova",
-    "parentId": "kleikaya-lenta",
+    "parentId": "spets-lenty",
     "slug": "dvuhstoronnyaya-kleikaya-lenta-48mm-25m-tkanevaya-osnova",
-    "href": "/catalog/kleikaya-lenta/dvuhstoronnyaya-kleikaya-lenta-48mm-25m-tkanevaya-osnova/",
+    "href": "/catalog/spets-lenty/dvuhstoronnyaya-kleikaya-lenta-48mm-25m-tkanevaya-osnova/",
     "title": "Двухсторонняя клейкая лента 48мм x 25м, тканевая основа",
     "card": {
       "image": "/catalog/products/arli-adhesive/dvuhstoronnyaya-kleikaya-lenta-48mm-25m-tkanevaya-osnova.webp",
@@ -6416,9 +6449,9 @@ export const products = [
   },
   {
     "id": "dvuhstoronnyaya-kleikaya-lenta-48mm-40m-bumazhnaya-osnova",
-    "parentId": "kleikaya-lenta",
+    "parentId": "spets-lenty",
     "slug": "dvuhstoronnyaya-kleikaya-lenta-48mm-40m-bumazhnaya-osnova",
-    "href": "/catalog/kleikaya-lenta/dvuhstoronnyaya-kleikaya-lenta-48mm-40m-bumazhnaya-osnova/",
+    "href": "/catalog/spets-lenty/dvuhstoronnyaya-kleikaya-lenta-48mm-40m-bumazhnaya-osnova/",
     "title": "Двухсторонняя клейкая лента 48мм x 40м, бумажная основа",
     "card": {
       "image": "/catalog/products/arli-adhesive/dvuhstoronnyaya-kleikaya-lenta-48mm-40m-bumazhnaya-osnova.webp",
@@ -6489,9 +6522,9 @@ export const products = [
   },
   {
     "id": "dvuhstoronnyaya-kleikaya-lenta-48mm-40m-polipropilenovaya-osnova",
-    "parentId": "kleikaya-lenta",
+    "parentId": "spets-lenty",
     "slug": "dvuhstoronnyaya-kleikaya-lenta-48mm-40m-polipropilenovaya-osnova",
-    "href": "/catalog/kleikaya-lenta/dvuhstoronnyaya-kleikaya-lenta-48mm-40m-polipropilenovaya-osnova/",
+    "href": "/catalog/spets-lenty/dvuhstoronnyaya-kleikaya-lenta-48mm-40m-polipropilenovaya-osnova/",
     "title": "Двухсторонняя клейкая лента 48мм x 40м, полипропиленовая основа",
     "card": {
       "image": "/catalog/products/arli-adhesive/dvuhstoronnyaya-kleikaya-lenta-48mm-40m-polipropilenovaya-osnova.webp",
@@ -6562,9 +6595,9 @@ export const products = [
   },
   {
     "id": "dvuhstoronnyaya-kleikaya-lenta-48mm-40m-tkanevaya-osnova",
-    "parentId": "kleikaya-lenta",
+    "parentId": "spets-lenty",
     "slug": "dvuhstoronnyaya-kleikaya-lenta-48mm-40m-tkanevaya-osnova",
-    "href": "/catalog/kleikaya-lenta/dvuhstoronnyaya-kleikaya-lenta-48mm-40m-tkanevaya-osnova/",
+    "href": "/catalog/spets-lenty/dvuhstoronnyaya-kleikaya-lenta-48mm-40m-tkanevaya-osnova/",
     "title": "Двухсторонняя клейкая лента 48мм x 40м, тканевая основа",
     "card": {
       "image": "/catalog/products/arli-adhesive/dvuhstoronnyaya-kleikaya-lenta-48mm-40m-tkanevaya-osnova.webp",
@@ -6635,9 +6668,9 @@ export const products = [
   },
   {
     "id": "dvuhstoronnyaya-kleikaya-lenta-na-vspenennoi-osnove-12mm-10m",
-    "parentId": "kleikaya-lenta",
+    "parentId": "spets-lenty",
     "slug": "dvuhstoronnyaya-kleikaya-lenta-na-vspenennoi-osnove-12mm-10m",
-    "href": "/catalog/kleikaya-lenta/dvuhstoronnyaya-kleikaya-lenta-na-vspenennoi-osnove-12mm-10m/",
+    "href": "/catalog/spets-lenty/dvuhstoronnyaya-kleikaya-lenta-na-vspenennoi-osnove-12mm-10m/",
     "title": "Двухсторонняя клейкая лента на вспененной основе 12мм x 10м",
     "card": {
       "image": "/catalog/products/arli-adhesive/dvuhstoronnyaya-kleikaya-lenta-na-vspenennoi-osnove-12mm-10m.webp",
@@ -6708,9 +6741,9 @@ export const products = [
   },
   {
     "id": "dvuhstoronnyaya-kleikaya-lenta-na-vspenennoi-osnove-19mm-15m",
-    "parentId": "kleikaya-lenta",
+    "parentId": "spets-lenty",
     "slug": "dvuhstoronnyaya-kleikaya-lenta-na-vspenennoi-osnove-19mm-15m",
-    "href": "/catalog/kleikaya-lenta/dvuhstoronnyaya-kleikaya-lenta-na-vspenennoi-osnove-19mm-15m/",
+    "href": "/catalog/spets-lenty/dvuhstoronnyaya-kleikaya-lenta-na-vspenennoi-osnove-19mm-15m/",
     "title": "Двухсторонняя клейкая лента на вспененной основе 19мм x 15м",
     "card": {
       "image": "/catalog/products/arli-adhesive/dvuhstoronnyaya-kleikaya-lenta-na-vspenennoi-osnove-19mm-15m.webp",
@@ -6781,9 +6814,9 @@ export const products = [
   },
   {
     "id": "dvuhstoronnyaya-kleikaya-lenta-na-vspenennoi-osnove-25mm-25m",
-    "parentId": "kleikaya-lenta",
+    "parentId": "spets-lenty",
     "slug": "dvuhstoronnyaya-kleikaya-lenta-na-vspenennoi-osnove-25mm-25m",
-    "href": "/catalog/kleikaya-lenta/dvuhstoronnyaya-kleikaya-lenta-na-vspenennoi-osnove-25mm-25m/",
+    "href": "/catalog/spets-lenty/dvuhstoronnyaya-kleikaya-lenta-na-vspenennoi-osnove-25mm-25m/",
     "title": "Двухсторонняя клейкая лента на вспененной основе 25мм x 25м",
     "card": {
       "image": "/catalog/products/arli-adhesive/dvuhstoronnyaya-kleikaya-lenta-na-vspenennoi-osnove-25mm-25m.webp",
@@ -6854,6 +6887,7 @@ export const products = [
   },
   {
     "id": "dispenser-dlya-kleikoi-lenty-50-mm",
+    "hidden": true,
     "parentId": "kleikaya-lenta",
     "slug": "dispenser-dlya-kleikoi-lenty-50-mm",
     "href": "/catalog/kleikaya-lenta/dispenser-dlya-kleikoi-lenty-50-mm/",
@@ -6903,6 +6937,7 @@ export const products = [
   },
   {
     "id": "dispenser-dlya-kleikoi-lenty-75-mm",
+    "hidden": true,
     "parentId": "kleikaya-lenta",
     "slug": "dispenser-dlya-kleikoi-lenty-75-mm",
     "href": "/catalog/kleikaya-lenta/dispenser-dlya-kleikoi-lenty-75-mm/",
@@ -8120,9 +8155,9 @@ export const products = [
   },
   {
     "id": "kleikaya-armirovannaya-alyuminievaya-lenta-48mm-40m",
-    "parentId": "kleikaya-lenta",
+    "parentId": "spets-lenty",
     "slug": "kleikaya-armirovannaya-alyuminievaya-lenta-48mm-40m",
-    "href": "/catalog/kleikaya-lenta/kleikaya-armirovannaya-alyuminievaya-lenta-48mm-40m/",
+    "href": "/catalog/spets-lenty/kleikaya-armirovannaya-alyuminievaya-lenta-48mm-40m/",
     "title": "Клейкая армированная алюминиевая лента 48мм x 40м",
     "card": {
       "image": "/catalog/products/arli-adhesive/kleikaya-armirovannaya-alyuminievaya-lenta-48mm-40m.webp",
@@ -8185,9 +8220,9 @@ export const products = [
   },
   {
     "id": "kleikaya-armirovannaya-alyuminievaya-lenta-48mm-50m",
-    "parentId": "kleikaya-lenta",
+    "parentId": "spets-lenty",
     "slug": "kleikaya-armirovannaya-alyuminievaya-lenta-48mm-50m",
-    "href": "/catalog/kleikaya-lenta/kleikaya-armirovannaya-alyuminievaya-lenta-48mm-50m/",
+    "href": "/catalog/spets-lenty/kleikaya-armirovannaya-alyuminievaya-lenta-48mm-50m/",
     "title": "Клейкая армированная алюминиевая лента 48мм x 50м",
     "card": {
       "image": "/catalog/products/arli-adhesive/kleikaya-armirovannaya-alyuminievaya-lenta-48mm-50m.webp",
@@ -8250,9 +8285,9 @@ export const products = [
   },
   {
     "id": "kleikaya-armirovannaya-alyuminievaya-lenta-75mm-40m",
-    "parentId": "kleikaya-lenta",
+    "parentId": "spets-lenty",
     "slug": "kleikaya-armirovannaya-alyuminievaya-lenta-75mm-40m",
-    "href": "/catalog/kleikaya-lenta/kleikaya-armirovannaya-alyuminievaya-lenta-75mm-40m/",
+    "href": "/catalog/spets-lenty/kleikaya-armirovannaya-alyuminievaya-lenta-75mm-40m/",
     "title": "Клейкая армированная алюминиевая лента 75мм x 40м",
     "card": {
       "image": "/catalog/products/arli-adhesive/kleikaya-armirovannaya-alyuminievaya-lenta-75mm-40m.webp",
@@ -8315,9 +8350,9 @@ export const products = [
   },
   {
     "id": "kleikaya-armirovannaya-alyuminievaya-lenta-75mm-50m",
-    "parentId": "kleikaya-lenta",
+    "parentId": "spets-lenty",
     "slug": "kleikaya-armirovannaya-alyuminievaya-lenta-75mm-50m",
-    "href": "/catalog/kleikaya-lenta/kleikaya-armirovannaya-alyuminievaya-lenta-75mm-50m/",
+    "href": "/catalog/spets-lenty/kleikaya-armirovannaya-alyuminievaya-lenta-75mm-50m/",
     "title": "Клейкая армированная алюминиевая лента 75мм x 50м",
     "card": {
       "image": "/catalog/products/arli-adhesive/kleikaya-armirovannaya-alyuminievaya-lenta-75mm-50m.webp",
@@ -8380,9 +8415,9 @@ export const products = [
   },
   {
     "id": "kleikaya-lenta-armirovannaya-steklovoloknom-48mm-50m",
-    "parentId": "kleikaya-lenta",
+    "parentId": "spets-lenty",
     "slug": "kleikaya-lenta-armirovannaya-steklovoloknom-48mm-50m",
-    "href": "/catalog/kleikaya-lenta/kleikaya-lenta-armirovannaya-steklovoloknom-48mm-50m/",
+    "href": "/catalog/spets-lenty/kleikaya-lenta-armirovannaya-steklovoloknom-48mm-50m/",
     "title": "Клейкая лента армированная стекловолокном 48мм x 50м",
     "card": {
       "image": "/catalog/products/arli-adhesive/kleikaya-lenta-armirovannaya-steklovoloknom-48mm-50m.webp",
@@ -8445,9 +8480,9 @@ export const products = [
   },
   {
     "id": "kleikaya-lenta-armirovannaya-steklovoloknom-72mm-50m",
-    "parentId": "kleikaya-lenta",
+    "parentId": "spets-lenty",
     "slug": "kleikaya-lenta-armirovannaya-steklovoloknom-72mm-50m",
-    "href": "/catalog/kleikaya-lenta/kleikaya-lenta-armirovannaya-steklovoloknom-72mm-50m/",
+    "href": "/catalog/spets-lenty/kleikaya-lenta-armirovannaya-steklovoloknom-72mm-50m/",
     "title": "Клейкая лента армированная стекловолокном 72мм x 50м",
     "card": {
       "image": "/catalog/products/arli-adhesive/kleikaya-lenta-armirovannaya-steklovoloknom-72mm-50m.webp",
@@ -12388,7 +12423,7 @@ export const products = [
     "id": "kleikaya-malyarnaya-lenta-19mm-40m",
     "parentId": "malyarnaya-lenta",
     "slug": "kleikaya-malyarnaya-lenta-19mm-40m",
-    "href": "/catalog/kleikaya-lenta/malyarnaya-lenta/kleikaya-malyarnaya-lenta-19mm-40m/",
+    "href": "/catalog/spets-lenty/malyarnaya-lenta/kleikaya-malyarnaya-lenta-19mm-40m/",
     "title": "Клейкая малярная лента 19мм x 40м",
     "card": {
       "image": "/catalog/products/arli-adhesive/kleikaya-malyarnaya-lenta-19mm-40m.webp",
@@ -12453,7 +12488,7 @@ export const products = [
     "id": "kleikaya-malyarnaya-lenta-48mm-40m",
     "parentId": "malyarnaya-lenta",
     "slug": "kleikaya-malyarnaya-lenta-48mm-40m",
-    "href": "/catalog/kleikaya-lenta/malyarnaya-lenta/kleikaya-malyarnaya-lenta-48mm-40m/",
+    "href": "/catalog/spets-lenty/malyarnaya-lenta/kleikaya-malyarnaya-lenta-48mm-40m/",
     "title": "Клейкая малярная лента 48мм x 40м",
     "card": {
       "image": "/catalog/products/arli-adhesive/kleikaya-malyarnaya-lenta-48mm-40m.webp",
@@ -12518,7 +12553,7 @@ export const products = [
     "id": "kleikaya-malyarnaya-lenta-48mm-50m",
     "parentId": "malyarnaya-lenta",
     "slug": "kleikaya-malyarnaya-lenta-48mm-50m",
-    "href": "/catalog/kleikaya-lenta/malyarnaya-lenta/kleikaya-malyarnaya-lenta-48mm-50m/",
+    "href": "/catalog/spets-lenty/malyarnaya-lenta/kleikaya-malyarnaya-lenta-48mm-50m/",
     "title": "Клейкая малярная лента 48мм x 50м",
     "card": {
       "image": "/catalog/products/arli-adhesive/kleikaya-malyarnaya-lenta-48mm-50m.webp",
@@ -12583,7 +12618,7 @@ export const products = [
     "id": "kleikaya-malyarnaya-lenta-48mm-60m",
     "parentId": "malyarnaya-lenta",
     "slug": "kleikaya-malyarnaya-lenta-48mm-60m",
-    "href": "/catalog/kleikaya-lenta/malyarnaya-lenta/kleikaya-malyarnaya-lenta-48mm-60m/",
+    "href": "/catalog/spets-lenty/malyarnaya-lenta/kleikaya-malyarnaya-lenta-48mm-60m/",
     "title": "Клейкая малярная лента 48мм x 60м",
     "card": {
       "image": "/catalog/products/arli-adhesive/kleikaya-malyarnaya-lenta-48mm-60m.webp",
@@ -12648,7 +12683,7 @@ export const products = [
     "id": "kleikaya-malyarnaya-lenta-72mm-40m",
     "parentId": "malyarnaya-lenta",
     "slug": "kleikaya-malyarnaya-lenta-72mm-40m",
-    "href": "/catalog/kleikaya-lenta/malyarnaya-lenta/kleikaya-malyarnaya-lenta-72mm-40m/",
+    "href": "/catalog/spets-lenty/malyarnaya-lenta/kleikaya-malyarnaya-lenta-72mm-40m/",
     "title": "Клейкая малярная лента 72мм x 40м",
     "card": {
       "image": "/catalog/products/arli-adhesive/kleikaya-malyarnaya-lenta-72mm-40m.webp",
@@ -12713,7 +12748,7 @@ export const products = [
     "id": "kleikaya-malyarnaya-lenta-72mm-50m",
     "parentId": "malyarnaya-lenta",
     "slug": "kleikaya-malyarnaya-lenta-72mm-50m",
-    "href": "/catalog/kleikaya-lenta/malyarnaya-lenta/kleikaya-malyarnaya-lenta-72mm-50m/",
+    "href": "/catalog/spets-lenty/malyarnaya-lenta/kleikaya-malyarnaya-lenta-72mm-50m/",
     "title": "Клейкая малярная лента 72мм x 50м",
     "card": {
       "image": "/catalog/products/arli-adhesive/kleikaya-malyarnaya-lenta-72mm-50m.webp",
@@ -12778,7 +12813,7 @@ export const products = [
     "id": "kleikaya-malyarnaya-lenta-72mm-60m",
     "parentId": "malyarnaya-lenta",
     "slug": "kleikaya-malyarnaya-lenta-72mm-60m",
-    "href": "/catalog/kleikaya-lenta/malyarnaya-lenta/kleikaya-malyarnaya-lenta-72mm-60m/",
+    "href": "/catalog/spets-lenty/malyarnaya-lenta/kleikaya-malyarnaya-lenta-72mm-60m/",
     "title": "Клейкая малярная лента 72мм x 60м",
     "card": {
       "image": "/catalog/products/arli-adhesive/kleikaya-malyarnaya-lenta-72mm-60m.webp",
@@ -12843,7 +12878,7 @@ export const products = [
     "id": "santehnicheskaya-kleikaya-lenta-tpl-montazhnaya-48mm",
     "parentId": "tpl",
     "slug": "santehnicheskaya-kleikaya-lenta-tpl-montazhnaya-48mm",
-    "href": "/catalog/kleikaya-lenta/tpl/santehnicheskaya-kleikaya-lenta-tpl-montazhnaya-48mm/",
+    "href": "/catalog/spets-lenty/tpl/santehnicheskaya-kleikaya-lenta-tpl-montazhnaya-48mm/",
     "title": "Сантехническая клейкая лента ТПЛ (монтажная) 48мм",
     "card": {
       "image": "/catalog/products/arli-adhesive/santehnicheskaya-kleikaya-lenta-tpl-montazhnaya-48mm.webp",
@@ -12916,7 +12951,7 @@ export const products = [
     "id": "santehnicheskaya-kleikaya-lenta-tpl-montazhnaya-75mm",
     "parentId": "tpl",
     "slug": "santehnicheskaya-kleikaya-lenta-tpl-montazhnaya-75mm",
-    "href": "/catalog/kleikaya-lenta/tpl/santehnicheskaya-kleikaya-lenta-tpl-montazhnaya-75mm/",
+    "href": "/catalog/spets-lenty/tpl/santehnicheskaya-kleikaya-lenta-tpl-montazhnaya-75mm/",
     "title": "Сантехническая клейкая лента ТПЛ (монтажная) 75мм",
     "card": {
       "image": "/catalog/products/arli-adhesive/santehnicheskaya-kleikaya-lenta-tpl-montazhnaya-75mm.webp",

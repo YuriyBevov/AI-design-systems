@@ -15,7 +15,8 @@
 	}
 
 	&__title {
-		font-size: clamp(40px, 8vw, 76px);
+		font-size: clamp(32px, 5.5vw, 64px);
+		word-break: break-word;
 
 		span {
 			display: block;

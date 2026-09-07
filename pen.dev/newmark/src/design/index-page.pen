@@ -2763,7 +2763,7 @@
                             {
                               "type": "frame",
                               "id": "mE590",
-                              "name": "Category Card Сигнальные ленты",
+                              "name": "Category Card Спец. ленты",
                               "width": "fill_container",
                               "height": "fill_container",
                               "stroke": "#FF840055",
@@ -2773,7 +2773,7 @@
                                 {
                                   "type": "rectangle",
                                   "id": "u8oB7y",
-                                  "name": "Сигнальные ленты Photo",
+                                  "name": "Спец. ленты Photo",
                                   "fill": {
                                     "type": "image",
                                     "enabled": true,
@@ -2786,7 +2786,7 @@
                                 {
                                   "type": "frame",
                                   "id": "V1G4wu",
-                                  "name": "Сигнальные ленты Content",
+                                  "name": "Спец. ленты Content",
                                   "width": "fill_container",
                                   "height": "fill_container",
                                   "layout": "vertical",
@@ -2803,7 +2803,7 @@
                                           "id": "yUymG",
                                           "x": 0,
                                           "y": 49,
-                                          "name": "Сигнальные ленты Description",
+                                          "name": "Спец. ленты Description",
                                           "fill": "#C8C8C8",
                                           "textGrowth": "fixed-width",
                                           "width": "fill_container(580)",
@@ -2818,11 +2818,11 @@
                                           "id": "LZxUV",
                                           "x": 0,
                                           "y": 0,
-                                          "name": "Сигнальные ленты Title",
+                                          "name": "Спец. ленты Title",
                                           "fill": "#FFFFFF",
                                           "textGrowth": "fixed-width",
                                           "width": "fill_container(580)",
-                                          "content": "Сигнальные ленты",
+                                          "content": "Спец. ленты",
                                           "lineHeight": 1.25,
                                           "fontFamily": "Manrope",
                                           "fontSize": 26,
@@ -2833,7 +2833,7 @@
                                     {
                                       "type": "frame",
                                       "id": "G0bDKa",
-                                      "name": "Сигнальные ленты CTA",
+                                      "name": "Спец. ленты CTA",
                                       "fill": "#FF8400",
                                       "stroke": "#FF8400",
                                       "strokeWidth": 1,

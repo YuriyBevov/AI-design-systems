@@ -22,7 +22,9 @@ export function getStaticPaths() {
     },
   }));
 
-  const productPaths = products.map((product) => ({
+  const productPaths = products
+    .filter((product) => !product.hidden)
+    .map((product) => ({
     params: {
       slug: product.href.replace(/^\/catalog\/|\/$/g, ""),
     },
