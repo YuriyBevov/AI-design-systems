@@ -1,0 +1,46 @@
+<div class="modal" data-modal="request" aria-hidden="true">
+  <div class="modal__overlay" data-modal-close></div>
+  <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="request-modal-title" tabindex="-1">
+    <div class="modal__header">
+      <h2 class="modal__title" id="request-modal-title">Заказать звонок</h2>
+      <button class="modal__close" type="button" aria-label="Закрыть окно" data-modal-close>
+        <svg class="modal__close-icon" width="20" height="20" viewBox="0 0 17 17" aria-hidden="true"><use href="/sprite.svg?v=1#icon-cross"></use></svg>
+      </button>
+    </div>
+
+    <form class="request-form modal__form" action="/api/send-request" method="post" novalidate data-request-form>
+      <input type="hidden" name="formType" value="modal" />
+      <label class="field">
+        <span class="field__label">Ваше имя</span>
+        <input class="field__control" type="text" name="name" placeholder="Иван" required />
+      </label>
+      <label class="field">
+        <span class="field__label">Телефон</span>
+        <input class="field__control" type="tel" name="phone" placeholder="+7 (900) 000-00-00" data-phone-mask required />
+      </label>
+      <label class="field">
+        <span class="field__label">Комментарий</span>
+        <textarea class="field__control field__control--textarea" name="comment" placeholder="Добавьте описание при желании"></textarea>
+      </label>
+      <label class="form-consent">
+        <input class="form-consent__control" type="checkbox" name="consent" value="yes" required />
+        <span class="form-consent__text">Соглашаюсь с&nbsp;<a href="/policy-privacy/" target="_blank" rel="noopener">политикой конфиденциальности</a> и&nbsp;обработкой персональных данных</span>
+      </label>
+      <button class="button button--primary modal__submit" type="submit">Отправить заявку</button>
+    </form>
+  </div>
+</div>
+
+<div class="modal" data-modal="status" aria-hidden="true">
+  <div class="modal__overlay" data-modal-close></div>
+  <div class="modal__dialog modal__dialog--status" role="dialog" aria-modal="true" aria-labelledby="status-modal-title" tabindex="-1">
+    <div class="modal__header">
+      <h2 class="modal__title" id="status-modal-title" data-modal-status-title>Статус отправки</h2>
+      <button class="modal__close" type="button" aria-label="Закрыть окно" data-modal-close>
+        <svg class="modal__close-icon" width="20" height="20" viewBox="0 0 17 17" aria-hidden="true"><use href="/sprite.svg?v=1#icon-cross"></use></svg>
+      </button>
+    </div>
+    <p class="modal__status-text" data-modal-status-text></p>
+    <button class="button button--primary modal__status-button" type="button" data-modal-close>Понятно</button>
+  </div>
+</div>

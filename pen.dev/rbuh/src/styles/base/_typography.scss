@@ -1,0 +1,23 @@
+.section-title,
+.cta__title,
+.page-title,
+.service-detail__title,
+.hero__title {
+	font-family: var(--font-accent);
+	font-weight: 700;
+	line-height: 1.08;
+	text-transform: uppercase;
+}
+
+.cta__title,
+.page-title {
+	font-size: clamp(32px, 5vw, 48px);
+}
+
+.section-title {
+	font-size: clamp(24px, 5vw, 48px);
+}
+
+.page-title {
+	max-width: 860px;
+}

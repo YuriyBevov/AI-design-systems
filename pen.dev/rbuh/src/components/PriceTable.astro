@@ -1,0 +1,29 @@
+---
+const { group } = Astro.props;
+---
+
+<div class="price-group">
+  {group.description && <p class="price-group__description">{group.description}</p>}
+  <div class="data-table" tabindex="0" role="region" aria-label={`Цены: ${group.title}`}>
+    <table class="data-table__table">
+      <thead class="data-table__head">
+        <tr class="data-table__row">
+          <th class="data-table__cell" scope="col">Наименование</th>
+          <th class="data-table__cell" scope="col">Единица</th>
+          <th class="data-table__cell" scope="col">Цена</th>
+          <th class="data-table__cell" scope="col">Примечание</th>
+        </tr>
+      </thead>
+      <tbody class="data-table__body">
+        {group.rows.map((row) => (
+          <tr class="data-table__row">
+            <td class="data-table__cell" data-label="Наименование">{row.name}</td>
+            <td class="data-table__cell" data-label="Единица">{row.unit}</td>
+            <td class="data-table__cell data-table__cell--accent" data-label="Цена">{row.priceLabel}</td>
+            <td class="data-table__cell" data-label="Примечание">{row.note}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</div>

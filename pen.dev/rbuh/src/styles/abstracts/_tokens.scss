@@ -1,0 +1,75 @@
+:root {
+	--color-primary: #252a2e;
+	--color-secondary: #fff;
+	--color-muted: #fff;
+	--color-black: #101214;
+	--color-white: #fff;
+	--color-dark: #1b1e21;
+	--color-dark-deep: #15181b;
+	--color-dark-soft: #252a2e;
+	--color-dark-warm: #30383e;
+	--color-light: #e7ecef;
+	--color-accent: #9eb8c9;
+	--color-accent-strong: #bed0db;
+	--color-accent-muted: rgb(158 184 201 / 18%);
+	--color-accent-border: rgb(158 184 201 / 38%);
+	--color-danger: #e45a4f;
+	--color-warning: #9eb8c9;
+	--color-success: #6fa777;
+	--color-error: var(--color-danger);
+	--color-text: var(--color-white);
+	--color-text-muted: #fff;
+	--color-text-soft: #fff;
+	--color-text-dark: #fff;
+	--color-background: var(--color-dark);
+	--color-background-alt: #24292d;
+	--color-ticker: #4a7189;
+	--color-surface: var(--color-dark-soft);
+	--color-surface-feature: #35434d;
+	--color-surface-muted: #30383e;
+	--color-surface-accent: var(--color-accent);
+	--color-surface-strong: rgb(37 42 46 / 92%);
+	--color-border: #3b444b;
+	--color-border-muted: rgb(255 255 255 / 12%);
+	--color-border-strong: rgb(158 184 201 / 62%);
+	--color-border-inverse: rgb(255 255 255 / 32%);
+	--color-focus: var(--color-accent);
+	--color-overlay: rgb(16 18 20 / 78%);
+	--color-link: #fff;
+	--color-action: #3c6178;
+	--color-action-hover: #4a7189;
+	--font-primary: "Exo 2", system-ui, -apple-system, "Segoe UI", sans-serif;
+	--font-accent: var(--font-primary);
+	--font-size-menu: 14px;
+	--container-width: 1280px;
+	--container-padding: 16px;
+	--radius-xs: 2px;
+	--radius-sm: 4px;
+	--radius-md: 8px;
+	--radius-lg: 16px;
+	--radius-round: 999px;
+	--space-2xs: 4px;
+	--space-xs: 8px;
+	--space-sm: 10px;
+	--space-md: 16px;
+	--space-lg: 24px;
+	--space-xl: 32px;
+	--space-2xl: 48px;
+	--space-section: clamp(48px, 7vw, 96px);
+	--space-card: 24px;
+	--duration-fast: 0.15s;
+	--duration-base: 0.2s;
+	--duration-slow: 0.35s;
+	--ease-base: ease;
+	--transition-delay: 0.04s;
+	--transition-base: var(--duration-base) var(--ease-base) var(--transition-delay);
+	--z-header: 100;
+	--z-dropdown: 200;
+	--z-modal: 500;
+}
+
+@media (min-width: 768px) {
+	:root {
+		--container-padding: 32px;
+	}
+}

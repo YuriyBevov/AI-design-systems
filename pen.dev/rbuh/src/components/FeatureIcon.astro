@@ -1,0 +1,21 @@
+---
+import Factory from "@lucide/astro/icons/factory";
+import FlaskConical from "@lucide/astro/icons/flask-conical";
+import MapPinned from "@lucide/astro/icons/map-pinned";
+import PackageCheck from "@lucide/astro/icons/package-check";
+import PhoneCall from "@lucide/astro/icons/phone-call";
+import Truck from "@lucide/astro/icons/truck";
+
+const { name } = Astro.props;
+const icons = {
+  location: MapPinned,
+  production: Factory,
+  "complete-order": PackageCheck,
+  laboratory: FlaskConical,
+  pump: Truck,
+  contact: PhoneCall,
+};
+const Icon = icons[name] ?? PackageCheck;
+---
+
+<Icon class="feature-card__icon-svg" size={28} stroke-width={1.25} aria-hidden="true" />

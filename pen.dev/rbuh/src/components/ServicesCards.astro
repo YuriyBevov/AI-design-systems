@@ -1,0 +1,8 @@
+---
+import ServiceCard from "./ServiceCard.astro";
+import { services } from "../content/services/index.js";
+---
+
+<div class="grid-layout services-section__grid">
+  {services.map((service) => <ServiceCard service={service} />)}
+</div>

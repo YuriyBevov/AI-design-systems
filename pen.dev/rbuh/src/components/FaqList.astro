@@ -1,0 +1,17 @@
+---
+const { items = [] } = Astro.props;
+---
+
+<div class="faq-list" data-faq-list>
+  {items.map((item) => (
+    <div class="faq-list__item">
+      <button class="faq-list__button" type="button" aria-expanded="false" aria-controls={`faq-panel-${item.id}`} data-faq-button>
+        <span class="faq-list__question">{item.question}</span>
+        <span class="faq-list__toggle" aria-hidden="true"></span>
+      </button>
+      <div class="faq-list__content" id={`faq-panel-${item.id}`} hidden data-faq-content>
+        <p>{item.answer}</p>
+      </div>
+    </div>
+  ))}
+</div>

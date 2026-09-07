@@ -1,0 +1,20 @@
+---
+import InnerPageLayout from "../layouts/InnerPageLayout.astro";
+import ServicesCards from "../components/ServicesCards.astro";
+
+const breadcrumbs = [
+  { label: "Главная", href: "/" },
+  { label: "Услуги" },
+];
+---
+
+<InnerPageLayout
+  title="Наши услуги"
+  intro="Четыре направления для производства, подачи и доставки материалов на строительный объект."
+  seoTitle="Услуги РБУ «Хаджох»"
+  description="Производство и доставка бетона, лабораторное сопровождение, автобетононасос и доставка инертных материалов."
+  breadcrumbs={breadcrumbs}
+  sectionClass="services-section"
+>
+  <ServicesCards />
+</InnerPageLayout>

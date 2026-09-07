@@ -1,0 +1,33 @@
+---
+import ServiceCard from "./ServiceCard.astro";
+import { services } from "../content/services/index.js";
+
+const { currentServiceId } = Astro.props;
+const otherServices = services.filter((service) => service.id !== currentServiceId);
+---
+
+{otherServices.length > 0 && (
+  <section class="section services-section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Другие услуги</h2>
+      </div>
+      <div class="swiper reviews-slider services-slider" data-services-slider>
+        <div class="swiper-wrapper reviews-slider__wrapper">
+          {otherServices.map((service) => (
+            <div class="swiper-slide services-slider__slide">
+              <ServiceCard service={service} />
+            </div>
+          ))}
+        </div>
+        <div class="reviews-slider__controls">
+          <div class="reviews-slider__pagination" data-services-pagination></div>
+          <div class="reviews-slider__navigation" role="group" aria-label="Управление другими услугами">
+            <button class="reviews-slider__button" type="button" aria-label="Предыдущая услуга" data-services-prev>←</button>
+            <button class="reviews-slider__button" type="button" aria-label="Следующая услуга" data-services-next>→</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+)}

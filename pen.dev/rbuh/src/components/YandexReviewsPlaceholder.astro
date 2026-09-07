@@ -1,0 +1,39 @@
+---
+import { Image } from "astro:assets";
+import { textReviews } from "../content/site/index.js";
+---
+
+<section class="section reviews-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Отзывы о&nbsp;нас</h2>
+      <p class="section-description">Отзывы клиентов о&nbsp;бетоне, материалах и&nbsp;доставке.</p>
+    </div>
+    <div class="swiper reviews-slider" data-reviews-slider>
+      <div class="swiper-wrapper reviews-slider__wrapper">
+        {textReviews.map((review) => (
+          <article class="swiper-slide reviews-slider__slide">
+            <header class="reviews-slider__header">
+              <Image class="reviews-slider__avatar" src={review.avatar} alt="" width={64} height={64} loading="lazy" />
+              <div class="reviews-slider__identity">
+                <strong class="reviews-slider__author">{review.author}</strong>
+                <div class="reviews-slider__meta">
+                  <span class="reviews-slider__rating" aria-label={`Оценка ${review.rating} из 5`}>{"★".repeat(review.rating)}</span>
+                  <time datetime={review.dateTime}>{review.date}</time>
+                </div>
+              </div>
+            </header>
+            <p class="reviews-slider__text">{review.text}</p>
+          </article>
+        ))}
+      </div>
+      <div class="reviews-slider__controls">
+        <div class="reviews-slider__pagination" data-reviews-pagination></div>
+        <div class="reviews-slider__navigation" role="group" aria-label="Управление отзывами">
+          <button class="reviews-slider__button" type="button" aria-label="Предыдущий отзыв" data-reviews-prev>←</button>
+          <button class="reviews-slider__button" type="button" aria-label="Следующий отзыв" data-reviews-next>→</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

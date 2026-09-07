@@ -1,0 +1,94 @@
+---
+import logoUrl from "../images/logo-rbuh-geometric-stacked.svg?url";
+import LinkList from "./LinkList.astro";
+import SocialList from "./SocialList.astro";
+import { contactLinks, phone, socialLinks } from "../content/site/index.js";
+import { services } from "../content/services/index.js";
+---
+
+<header class="header">
+  <div class="container">
+    <a class="logo logo--header" href="/" aria-label="РБУ «Хаджох» — на главную">
+      <img class="logo__image" src={logoUrl} alt="РБУ «Хаджох»" width="220" height="60" loading="eager" />
+    </a>
+
+    <nav class="nav" aria-label="Основная навигация">
+      <ul class="nav__list">
+        <li class="nav__item"><a class="nav__link" href="/about/">О&nbsp;компании</a></li>
+        <li class="nav__item nav__item--has-dropdown">
+          <a class="nav__link nav__link--featured" href="/services/" aria-haspopup="true">
+            <span>Услуги</span>
+            <svg class="nav__dropdown-icon" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
+              <path d="m3.5 5.25 3.5 3.5 3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </a>
+          <ul class="nav__dropdown" aria-label="Все услуги">
+            {services.map((service) => (
+              <li class="nav__dropdown-item">
+                <a class="nav__dropdown-link" href={`/services/${service.slug}/`}>{service.title}</a>
+              </li>
+            ))}
+          </ul>
+        </li>
+        <li class="nav__item"><a class="nav__link" href="/delivery-payment/">Доставка и&nbsp;оплата</a></li>
+        <li class="nav__item"><a class="nav__link" href="/price/">Прайс-лист</a></li>
+      </ul>
+    </nav>
+
+    <div class="header__actions">
+      <a class="header__phone" href={phone.href}>{phone.label}</a>
+      <SocialList items={socialLinks} />
+      <button class="button button--primary header__callback" type="button" aria-label="Заказать обратный звонок" aria-haspopup="dialog" data-modal-open="request">
+        <svg class="button__icon button__icon--phone" width="28" height="28" viewBox="0 0 24 24" aria-hidden="true">
+          <use href="/sprite.svg?v=1#icon-phone"></use>
+        </svg>
+        <span class="button__text">Заказать звонок</span>
+      </button>
+      <button class="burger-button" type="button" aria-label="Открыть меню" aria-controls="mobile-menu" aria-expanded="false">
+        <svg class="burger-button__icon" width="24" height="24" viewBox="0 0 17 12" aria-hidden="true">
+          <use href="/sprite.svg?v=1#icon-burger"></use>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+  <div class="mobile-menu__overlay"></div>
+  <div class="mobile-menu__panel" role="dialog" aria-modal="true" aria-label="Мобильное меню">
+    <div class="mobile-menu__header">
+      <a class="logo logo--mobile-menu" href="/" aria-label="РБУ «Хаджох» — на главную">
+        <img class="logo__image" src={logoUrl} alt="РБУ «Хаджох»" width="220" height="60" loading="lazy" />
+      </a>
+      <button class="mobile-menu__close" type="button" aria-label="Закрыть меню">
+        <svg class="mobile-menu__close-icon" width="24" height="24" viewBox="0 0 17 17" aria-hidden="true">
+          <use href="/sprite.svg?v=1#icon-cross"></use>
+        </svg>
+      </button>
+    </div>
+
+    <nav class="mobile-menu__nav" aria-label="Мобильная навигация">
+      <ul class="mobile-menu__nav-list">
+        <li class="mobile-menu__nav-item"><a class="mobile-menu__nav-link" href="/about/">О&nbsp;компании</a></li>
+        <li class="mobile-menu__nav-item mobile-menu__nav-item--catalog">
+          <a class="mobile-menu__nav-link" href="/services/">Услуги</a>
+          <ul class="mobile-menu__subnav" aria-label="Все услуги">
+            {services.map((service) => (
+              <li class="mobile-menu__subnav-item">
+                <a class="mobile-menu__subnav-link" href={`/services/${service.slug}/`}>{service.title}</a>
+              </li>
+            ))}
+          </ul>
+        </li>
+        <li class="mobile-menu__nav-item"><a class="mobile-menu__nav-link" href="/delivery-payment/">Доставка и&nbsp;оплата</a></li>
+        <li class="mobile-menu__nav-item"><a class="mobile-menu__nav-link" href="/price/">Прайс-лист</a></li>
+      </ul>
+    </nav>
+
+    <div class="mobile-menu__footer">
+      <LinkList items={contactLinks} />
+      <SocialList items={socialLinks} />
+      <button class="button button--primary mobile-menu__callback" type="button" aria-haspopup="dialog" data-modal-open="request">Заказать звонок</button>
+    </div>
+  </div>
+</div>

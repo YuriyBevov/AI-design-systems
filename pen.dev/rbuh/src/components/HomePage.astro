@@ -1,0 +1,88 @@
+---
+import { Image } from "astro:assets";
+import ServicesGrid from "./ServicesGrid.astro";
+import ServiceTicker from "./ServiceTicker.astro";
+import FeatureIcon from "./FeatureIcon.astro";
+import FaqList from "./FaqList.astro";
+import YandexReviewsPlaceholder from "./YandexReviewsPlaceholder.astro";
+import { advantages } from "../content/site/index.js";
+import { getFaqItems } from "../content/services/index.js";
+import heroImage from "../images/hero.jpeg";
+import aboutImage from "../images/webp/production-materials.webp";
+
+const homeFaq = getFaqItems(["order-data", "price", "delivery", "concrete-selection", "aggregates"]);
+---
+
+<section class="hero">
+  <div class="container">
+    <div class="hero__content">
+      <h1 class="hero__title">
+        <span class="hero__brand">РБУ «Хаджох»</span>
+        <span class="hero__offer">Производство и&nbsp;доставка бетона от&nbsp;производителя</span>
+      </h1>
+      <p class="hero__description">Рассчитаем бетон, сопутствующие услуги и&nbsp;доставку до&nbsp;вашего объекта.</p>
+      <div class="button-row hero__actions">
+        <button class="button button--primary" type="button" aria-haspopup="dialog" data-modal-open="request">Рассчитать стоимость</button>
+        <a class="button button--secondary" href="/services/">Смотреть услуги
+          <svg class="button__icon button__icon--arrow" width="72" height="20" viewBox="0 0 72 19" aria-hidden="true"><use href="/sprite.svg?v=1#long-arrow"></use></svg>
+        </a>
+      </div>
+    </div>
+    <div class="hero__image-wrapper">
+      <Image class="hero__image" src={heroImage} alt="Автобетоносмесители РБУ «Хаджох»" width={1920} height={1438} loading="eager" fetchpriority="high" />
+    </div>
+  </div>
+</section>
+
+<ServiceTicker />
+
+<section class="section benefits-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Логистика, которая работает на&nbsp;объект</h2>
+      <p class="section-description">Главное преимущество РБУ «Хаджох» — расположение в&nbsp;центре различных направлений.</p>
+    </div>
+    <div class="grid-layout benefits-section__grid">
+      {advantages.map((item) => (
+        <article class="feature-card">
+          <div class="feature-card__body">
+            <div class="feature-card__heading">
+              <span class="feature-card__icon" aria-hidden="true"><FeatureIcon name={item.icon} /></span>
+              <h3 class="feature-card__title">{item.title}</h3>
+            </div>
+            <p class="card-description">{item.description}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<ServicesGrid />
+
+<section class="section about-preview">
+  <div class="container">
+    <div class="about-preview__image-wrapper">
+      <Image class="about-preview__image" src={aboutImage} alt="Производство бетона и инертные материалы РБУ «Хаджох»" width={1920} height={1438} />
+    </div>
+    <div class="about-preview__content">
+      <h2 class="section-title">Производство, техника и&nbsp;материалы в&nbsp;одном месте</h2>
+      <p class="section-description">РБУ «Хаджох» производит бетон и&nbsp;организует услуги, необходимые для работы с&nbsp;бетонной смесью и&nbsp;инертными материалами.</p>
+      <a class="button button--secondary" href="/about/">Подробнее о&nbsp;компании
+        <svg class="button__icon button__icon--arrow" width="72" height="20" viewBox="0 0 72 19" aria-hidden="true"><use href="/sprite.svg?v=1#long-arrow"></use></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="section faq-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Вопросы и&nbsp;ответы</h2>
+      <p class="section-description">Коротко о&nbsp;расчёте заказа, доставке и&nbsp;подборе услуги.</p>
+    </div>
+    <FaqList items={homeFaq} />
+  </div>
+</section>
+
+<YandexReviewsPlaceholder />
