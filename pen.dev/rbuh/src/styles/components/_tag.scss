@@ -1,0 +1,32 @@
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  min-height: 40px;
+  max-width: 100%;
+  padding: var(--space-xs) var(--space-md);
+  font-size: 14px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+
+  &:hover { border-color: var(--color-border-strong); }
+  &--filter { cursor: pointer; }
+  &--filter:has(:checked) {
+    background: var(--color-action);
+    border-color: var(--color-accent);
+  }
+  &--filter:focus-within { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+  input { flex: 0 0 auto; width: 16px; height: 16px; accent-color: var(--color-action); }
+}

@@ -33,7 +33,7 @@
 		padding: clamp(18px, 3vw, 32px);
 		color: var(--color-white);
 		background-color: var(--color-dark);
-		border: 0;
+		border: 1px solid var(--color-accent);
 		overflow-y: auto;
 		outline: 0;
 

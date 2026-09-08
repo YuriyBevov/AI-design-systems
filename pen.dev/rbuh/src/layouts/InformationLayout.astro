@@ -1,0 +1,16 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+const { title, description, seoTitle = `${title} — РБУ «Хаджох»`, breadcrumbs } = Astro.props;
+---
+<BaseLayout title={seoTitle} description={description}>
+  <Breadcrumbs items={breadcrumbs} />
+  <section class="section inner-section">
+    <div class="container">
+      <div class="content">
+        <header class="inner-section__header"><h1 class="information-title">{title}</h1></header>
+        <slot />
+      </div>
+    </div>
+  </section>
+</BaseLayout>

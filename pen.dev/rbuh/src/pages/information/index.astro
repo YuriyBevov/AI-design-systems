@@ -1,0 +1,13 @@
+---
+import InformationLayout from "../../layouts/InformationLayout.astro";
+import InformationList from "../../components/InformationList.astro";
+import { getArticles } from "../../content/information/index.js";
+
+export const prerender = false;
+const articles = await getArticles();
+const query = Astro.url.searchParams.get("q") ?? "";
+const selectedTags = Astro.url.searchParams.getAll("tag");
+---
+<InformationLayout title="Информация" description="Информационные материалы о бетоне, марках бетонной смеси и лабораторных исследованиях." breadcrumbs={[{ label: "Главная", href: "/" }, { label: "Информация" }]}>
+  <InformationList articles={articles} query={query} selectedTags={selectedTags} />
+</InformationLayout>

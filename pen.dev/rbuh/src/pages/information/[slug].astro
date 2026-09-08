@@ -1,0 +1,23 @@
+---
+import InformationLayout from "../../layouts/InformationLayout.astro";
+import ArticleTags from "../../components/ArticleTags.astro";
+import { getArticles } from "../../content/information/index.js";
+
+export const prerender = true;
+export async function getStaticPaths() {
+  return (await getArticles()).map((article) => ({ params: { slug: article.slug }, props: { article } }));
+}
+const { article } = Astro.props;
+---
+<InformationLayout title={article.title} description={article.description} seoTitle={article.seoTitle} breadcrumbs={[{ label: "Главная", href: "/" }, { label: "Информация", href: "/information/" }, { label: article.title }]}>
+  <article class="information-article">
+    <ArticleTags tags={article.tags} />
+    <div class="content information-article__body"><Fragment set:html={article.html} /></div>
+    <a class="information-article__more-link" href="/information/">
+      <svg class="information-article__more-link-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M19 12H5m6-6-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+      <span>Другие материалы</span>
+    </a>
+  </article>
+</InformationLayout>

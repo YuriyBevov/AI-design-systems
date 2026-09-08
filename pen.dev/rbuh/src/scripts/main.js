@@ -1,4 +1,5 @@
 import { initFaq } from "./functions/initFaq";
+import { initInformationSearch } from "./functions/initInformationSearch";
 import { initFormValidation } from "./functions/initFormValidation";
 import { initModals } from "./functions/initModals";
 import { initPhoneMasks } from "./functions/initPhoneMasks";
@@ -15,6 +16,7 @@ import { initGsapScrollUpButton } from "./gsap/gsap-scroll-up-button";
   initReviewsSlider,
   initServicesSlider,
   initFaq,
+  initInformationSearch,
   initFormValidation,
   initModals,
   initPhoneMasks,
