@@ -1,0 +1,71 @@
+@use "../abstracts/mixins" as *;
+
+.information-list {
+  --information-control-height: 44px;
+
+  display: grid;
+  gap: var(--space-lg);
+  min-width: 0;
+
+  &__form { display: grid; gap: var(--space-lg); }
+  &__search { display: grid; gap: var(--space-md); }
+  &__field {
+    justify-content: center;
+    min-width: 0;
+    height: var(--information-control-height);
+    padding: 0 var(--space-md);
+  }
+  &__submit {
+    height: var(--information-control-height);
+    padding-block: 0;
+  }
+  &__field:focus-within { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+  &__filters { min-width: 0; padding: 0; margin: 0; border: 0; }
+  &__legend { padding: 0 0 var(--space-md); font-size: 16px; }
+  &__reset { justify-self: start; text-decoration: underline; text-underline-offset: 4px; }
+  &__status, &__empty { margin: 0; }
+  &__items { padding: 0; margin: 0; list-style: none; }
+  &__item[hidden], &__empty[hidden] { display: none; }
+
+  @include media(768px) {
+    &__search { grid-template-columns: minmax(0, 1fr) auto; align-items: stretch; }
+  }
+}
+.information-article {
+  display: grid;
+  gap: var(--space-xl);
+  max-width: 960px;
+  overflow-wrap: anywhere;
+
+  &__body { display: grid; gap: var(--space-md); }
+
+  &__more-link {
+    display: inline-flex;
+    gap: var(--space-sm);
+    align-items: center;
+    justify-self: start;
+    padding: 14px 20px;
+    color: var(--color-white);
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+    text-transform: uppercase;
+    background-color: var(--color-action);
+    transition: background-color var(--transition-base);
+
+    &:hover,
+    &:focus-visible {
+      background-color: var(--color-action-hover);
+    }
+  }
+
+  &__more-link-icon {
+    flex: 0 0 auto;
+    transition: transform var(--transition-base);
+  }
+
+  &__more-link:hover &__more-link-icon {
+    transform: translateX(-3px);
+  }
+}

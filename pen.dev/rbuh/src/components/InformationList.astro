@@ -1,0 +1,51 @@
+---
+import ArticleTags from "./ArticleTags.astro";
+import { matchesArticle, normalizeSearch } from "../content/information/search.js";
+const { articles, query = "", selectedTags = [] } = Astro.props;
+const tagLabels = new Map(articles.flatMap((article) => article.tags).map((tag) => [normalizeSearch(tag), tag]));
+for (const tag of selectedTags) {
+  if (!tagLabels.has(normalizeSearch(tag))) tagLabels.set(normalizeSearch(tag), tag);
+}
+const tags = [...tagLabels.values()].sort((a, b) => a.localeCompare(b, "ru"));
+const visibleCount = articles.filter((article) => matchesArticle(article, query, selectedTags)).length;
+const isSelected = (tag) => selectedTags.some((selected) => normalizeSearch(selected) === normalizeSearch(tag));
+---
+<div class="information-list" data-information-list>
+  <form class="information-list__form" action="/information/" method="get" role="search" aria-label="Поиск информационных материалов" data-information-form>
+    <div class="information-list__search">
+      <label class="field information-list__field">
+        <input class="field__control" type="search" name="q" value={query} aria-label="Поиск по материалам" placeholder="Название, тема или слово из текста" data-information-query />
+      </label>
+      <button class="button button--primary information-list__submit" type="submit">Найти</button>
+    </div>
+    {tags.length > 0 && (
+      <fieldset class="information-list__filters">
+        <legend class="information-list__legend">Быстрый поиск по тегам</legend>
+        <div class="tag-list">
+          {tags.map((tag) => (
+            <label class="tag tag--filter">
+              <input type="checkbox" name="tag" value={tag} checked={isSelected(tag)} data-information-tag />
+              <span>{tag}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+    )}
+    <a class="information-list__reset" href="/information/" data-information-reset>Сбросить поиск и теги</a>
+  </form>
+  <p class="information-list__status" role="status" aria-live="polite" aria-atomic="true" data-information-status>Найдено материалов: {visibleCount}</p>
+  <ul class="information-list__items" aria-label="Информационные материалы">
+    {articles.map((article) => (
+      <li class="information-list__item" hidden={!matchesArticle(article, query, selectedTags)} data-information-item data-search-text={article.searchText} data-tags={JSON.stringify(article.tags)}>
+        <article class="article-card">
+          <a class="article-card__link" href={`/information/${article.slug}/`}><span class="article-card__title">{article.title}</span></a>
+          <p class="card-description">{article.description}</p>
+          <ArticleTags tags={article.tags} />
+        </article>
+      </li>
+    ))}
+  </ul>
+  <p class="information-list__empty" hidden={visibleCount > 0} data-information-empty>
+    {articles.length ? "Материалы не найдены. Измените запрос или сбросьте теги." : "Информационные материалы скоро появятся."}
+  </p>
+</div>
