@@ -11,12 +11,16 @@
 		gap: var(--space-md);
 		min-width: 0;
 		max-width: 660px;
+		container-name: hero-content;
 		container-type: inline-size;
 	}
 
 	&__title {
-		font-size: clamp(32px, 5.5vw, 54px);
-		word-break: break-word;
+		// The longest unbreakable phrase in Exo 2 700 is 10.04em wide.
+		font-size: clamp(24px, 9.5cqi, 54px);
+		word-break: normal;
+		overflow-wrap: normal;
+		hyphens: none;
 
 		span {
 			display: block;
@@ -47,6 +51,15 @@
 
 	&__actions {
 		margin-top: var(--space-lg);
+
+		@container hero-content (width < 460px) {
+			flex-direction: column;
+			align-items: stretch;
+
+			.button {
+				width: 100%;
+			}
+		}
 	}
 
 	&__image-wrapper {
