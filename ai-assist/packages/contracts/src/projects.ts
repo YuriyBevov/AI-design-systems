@@ -31,6 +31,11 @@ export const createProjectRequestSchema = z
     name: z.string().trim().min(1).max(160),
     timezone: z.string().trim().min(1).max(80).default("Europe/Moscow"),
     templateProjectId: z.string().uuid().nullable().default(null),
+    userIds: z
+      .array(z.string().uuid())
+      .max(500)
+      .default([])
+      .transform((userIds) => [...new Set(userIds)]),
   })
   .strict();
 

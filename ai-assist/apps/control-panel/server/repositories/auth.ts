@@ -6,26 +6,32 @@ import { getInfrastructure } from "../utils/infrastructure";
 
 export type AuthUserRecord = {
   id: string;
+  name: string;
   email: string;
   passwordHash: string | null;
+  role: "admin" | "user";
   status: "invited" | "active" | "disabled";
 };
 
 export type AuthSessionRecord = {
   id: string;
   userId: string;
+  name: string;
   email: string;
+  role: "admin" | "user";
   csrfTokenHash: string;
   expiresAt: Date;
   createdAt: Date;
 };
 
 export const findUserByEmail = async (email: string): Promise<AuthUserRecord | null> => {
-  const result = await getInfrastructure().database.db
-    .select({
+  const result = await getInfrastructure()
+    .database.db.select({
       id: users.id,
+      name: users.displayName,
       email: users.emailNormalized,
       passwordHash: users.passwordHash,
+      role: users.role,
       status: users.status,
     })
     .from(users)
@@ -45,11 +51,13 @@ export const createAdminSession = async (input: {
 };
 
 export const findActiveSession = async (tokenHash: string): Promise<AuthSessionRecord | null> => {
-  const result = await getInfrastructure().database.db
-    .select({
+  const result = await getInfrastructure()
+    .database.db.select({
       id: sessions.id,
       userId: sessions.userId,
+      name: users.displayName,
       email: users.emailNormalized,
+      role: users.role,
       csrfTokenHash: sessions.csrfTokenHash,
       expiresAt: sessions.expiresAt,
       createdAt: sessions.createdAt,
@@ -70,8 +78,8 @@ export const findActiveSession = async (tokenHash: string): Promise<AuthSessionR
 };
 
 export const listSessionProjects = async (userId: string) =>
-  getInfrastructure().database.db
-    .select({
+  getInfrastructure()
+    .database.db.select({
       id: projects.id,
       name: projects.name,
       slug: projects.slug,
@@ -83,22 +91,22 @@ export const listSessionProjects = async (userId: string) =>
     .orderBy(projects.name);
 
 export const markLoginSuccessful = async (userId: string): Promise<void> => {
-  await getInfrastructure().database.db
-    .update(users)
+  await getInfrastructure()
+    .database.db.update(users)
     .set({ lastLoginAt: new Date(), updatedAt: new Date() })
     .where(eq(users.id, userId));
 };
 
 export const touchSession = async (sessionId: string): Promise<void> => {
-  await getInfrastructure().database.db
-    .update(sessions)
+  await getInfrastructure()
+    .database.db.update(sessions)
     .set({ lastSeenAt: new Date() })
     .where(eq(sessions.id, sessionId));
 };
 
 export const revokeSession = async (sessionId: string): Promise<void> => {
-  await getInfrastructure().database.db
-    .update(sessions)
+  await getInfrastructure()
+    .database.db.update(sessions)
     .set({ revokedAt: new Date() })
     .where(and(eq(sessions.id, sessionId), isNull(sessions.revokedAt)));
 };

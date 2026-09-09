@@ -1,15 +1,17 @@
 <script setup lang="ts">
-import type { AdminSessionResponse, ProjectResponse } from "@ai-assist/contracts";
+import type { AdminSessionResponse, ProjectResponse, UserResponse } from "@ai-assist/contracts";
 
 import { russianTimezoneOptions } from "~/utils/project-options";
 
 const requestFetch = useRequestFetch();
 const session = useAdminSessionState();
+const isAdmin = computed(() => session.value?.user.role === "admin");
 const { selectProject } = useActiveProject();
 const form = reactive({
   name: "",
   timezone: "Europe/Moscow",
   templateProjectId: null as string | null,
+  userIds: [] as string[],
 });
 const isCreating = ref(false);
 const pendingProjectId = ref<string | null>(null);
@@ -22,6 +24,12 @@ const {
   refresh,
 } = await useAsyncData("projects-management", () =>
   requestFetch<ProjectResponse[]>("/api/v1/projects"),
+);
+const { data: users } = await useAsyncData("project-user-options", () =>
+  isAdmin.value ? requestFetch<UserResponse[]>("/api/v1/users") : Promise.resolve([]),
+);
+const assignableUsers = computed(() =>
+  (users.value ?? []).filter((user) => user.role === "user" && user.status === "active"),
 );
 
 const templateOptions = computed(() => [
@@ -60,6 +68,7 @@ const createProject = async (): Promise<void> => {
     name: form.name,
     timezone: form.timezone,
     templateProjectId: form.templateProjectId,
+    userIds: form.userIds,
   };
 
   try {
@@ -72,6 +81,7 @@ const createProject = async (): Promise<void> => {
     await selectProject(created.id);
     form.name = "";
     form.templateProjectId = null;
+    form.userIds = [];
     message.value = { type: "success", text: `Проект «${created.name}» создан.` };
   } catch (requestError) {
     message.value = {
@@ -146,7 +156,7 @@ const deleteProject = async (project: ProjectResponse): Promise<void> => {
       </div>
     </header>
 
-    <section class="panel" aria-labelledby="create-project-title">
+    <section v-if="isAdmin" class="panel" aria-labelledby="create-project-title">
       <header class="section-header">
         <div>
           <p class="eyebrow">Новый проект</p>
@@ -186,6 +196,22 @@ const deleteProject = async (project: ProjectResponse): Promise<void> => {
             />
           </div>
         </div>
+
+        <fieldset class="choice-group">
+          <legend class="form-field__label">Пользователи проекта</legend>
+          <p v-if="!assignableUsers.length" class="form-field__hint">
+            Активных пользователей пока нет. Их можно создать в разделе «Пользователи».
+          </p>
+          <div v-else class="choice-list">
+            <BaseCheckbox
+              v-for="user in assignableUsers"
+              :key="user.id"
+              v-model="form.userIds"
+              :value="user.id"
+              :label="`${user.name} — ${user.email}`"
+            />
+          </div>
+        </fieldset>
 
         <div class="copy-policy">
           <p>
@@ -239,8 +265,8 @@ const deleteProject = async (project: ProjectResponse): Promise<void> => {
 
           <dl class="project-card__meta">
             <div>
-              <dt>Роль</dt>
-              <dd>{{ project.role }}</dd>
+              <dt>Доступ</dt>
+              <dd>{{ isAdmin ? "Администратор" : "Пользователь" }}</dd>
             </div>
             <div>
               <dt>Часовой пояс</dt>
@@ -257,7 +283,7 @@ const deleteProject = async (project: ProjectResponse): Promise<void> => {
               Открыть
             </NuxtLink>
             <button
-              v-if="project.role === 'owner' && project.status === 'active'"
+              v-if="isAdmin && project.status === 'active'"
               class="button button--compact"
               type="button"
               :disabled="pendingProjectId === project.id"
@@ -266,7 +292,7 @@ const deleteProject = async (project: ProjectResponse): Promise<void> => {
               Приостановить
             </button>
             <button
-              v-if="project.role === 'owner' && project.status === 'suspended'"
+              v-if="isAdmin && project.status === 'suspended'"
               class="button button--compact button--primary"
               type="button"
               :disabled="pendingProjectId === project.id"
@@ -275,7 +301,7 @@ const deleteProject = async (project: ProjectResponse): Promise<void> => {
               Возобновить
             </button>
             <button
-              v-if="project.role === 'owner'"
+              v-if="isAdmin"
               class="button button--compact button--text button--danger"
               type="button"
               :disabled="pendingProjectId === project.id"

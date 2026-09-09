@@ -17,7 +17,8 @@ type UiIconName =
   | "prompt"
   | "provider"
   | "settings"
-  | "sun";
+  | "sun"
+  | "users";
 
 defineProps<{
   name: UiIconName;

@@ -1,11 +1,57 @@
 <script setup lang="ts">
+import type { KnowledgeIndexStateResponse } from "@ai-assist/contracts";
+
 type ReadinessState = {
   status: "idle" | "checking" | "ok" | "degraded";
   checks?: Record<string, "ok" | "error">;
 };
 
 const { activeProject: project } = useActiveProject();
+const session = useAdminSessionState();
+const requestFetch = useRequestFetch();
 const readiness = ref<ReadinessState>({ status: "idle" });
+const { data: knowledgeState, refresh: refreshKnowledgeState } = await useAsyncData(
+  "overview-knowledge-state",
+  () =>
+    project.value
+      ? requestFetch<KnowledgeIndexStateResponse>(`/api/v1/projects/${project.value.id}/knowledge`)
+      : Promise.resolve(null),
+);
+
+watch(
+  () => project.value?.id,
+  () => void refreshKnowledgeState(),
+);
+
+const roleLabel = computed(() =>
+  session.value?.user.role === "admin" ? "Администратор" : "Пользователь",
+);
+
+const documentCountLabel = computed(() => {
+  const count = knowledgeState.value?.publishedDocumentCount ?? 0;
+  const lastTwo = count % 100;
+  const last = count % 10;
+  const noun =
+    lastTwo >= 11 && lastTwo <= 14
+      ? "документов"
+      : last === 1
+        ? "документ"
+        : last >= 2 && last <= 4
+          ? "документа"
+          : "документов";
+  return `${count} ${noun}`;
+});
+
+const knowledgeStatusLabel = computed(() => {
+  const state = knowledgeState.value;
+  if (!state || state.publishedDocumentCount === 0) return "Нет опубликованных материалов";
+  if (state.latest?.status === "queued") return "Обновление индекса поставлено в очередь";
+  if (state.latest?.status === "building") return "Индекс обновляется";
+  if (state.latest?.status === "failed") return "Последнее обновление индекса завершилось ошибкой";
+  if (state.stale) return "Индекс требует обновления";
+  if (state.active) return "Индекс актуален и готов к поиску";
+  return "Индекс ещё не создан";
+});
 
 const checkReadiness = async (): Promise<void> => {
   readiness.value = { status: "checking" };
@@ -38,18 +84,13 @@ const checkReadiness = async (): Promise<void> => {
     <section class="metric-grid" aria-label="Краткий статус">
       <article class="metric-card">
         <span class="metric-card__label">Роль</span>
-        <strong class="metric-card__value">{{ project?.role ?? "—" }}</strong>
+        <strong class="metric-card__value">{{ roleLabel }}</strong>
         <span class="metric-card__hint">Права в текущем проекте</span>
       </article>
       <article class="metric-card">
-        <span class="metric-card__label">Стратегия знаний</span>
-        <strong class="metric-card__value">Гибридная</strong>
-        <span class="metric-card__hint">Индекс + точечные live-проверки</span>
-      </article>
-      <article class="metric-card">
-        <span class="metric-card__label">Контур</span>
-        <strong class="metric-card__value">Локальный</strong>
-        <span class="metric-card__hint">Этап 4 · Prompts и публикация</span>
+        <span class="metric-card__label">База знаний</span>
+        <strong class="metric-card__value">{{ documentCountLabel }}</strong>
+        <span class="metric-card__hint">{{ knowledgeStatusLabel }}</span>
       </article>
     </section>
 
@@ -85,7 +126,7 @@ const checkReadiness = async (): Promise<void> => {
           <span>Создать инструкцию, проверить версии и опубликовать production-конфигурацию.</span>
         </NuxtLink>
         <NuxtLink
-          v-if="project.role === 'owner'"
+          v-if="session?.user.role === 'admin'"
           class="action-card"
           :to="`/projects/${project.id}/provider`"
         >

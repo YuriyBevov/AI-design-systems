@@ -20,6 +20,7 @@ import {
 } from "drizzle-orm/pg-core";
 
 export const userStatus = pgEnum("user_status", ["invited", "active", "disabled"]);
+export const accountRole = pgEnum("account_role", ["admin", "user"]);
 export const projectStatus = pgEnum("project_status", ["active", "suspended", "archived"]);
 export const projectRole = pgEnum("project_role", ["owner", "editor", "viewer"]);
 export const providerCredentialStatus = pgEnum("provider_credential_status", [
@@ -112,8 +113,10 @@ export const users = pgTable(
   "users",
   {
     id: uuid("id").defaultRandom().primaryKey(),
+    displayName: varchar("display_name", { length: 160 }).notNull(),
     emailNormalized: varchar("email_normalized", { length: 320 }).notNull(),
     passwordHash: text("password_hash"),
+    role: accountRole("role").default("user").notNull(),
     status: userStatus("status").default("invited").notNull(),
     lastLoginAt: timestamp("last_login_at", { withTimezone: true }),
     ...timestamps,

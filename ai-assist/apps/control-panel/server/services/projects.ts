@@ -20,10 +20,12 @@ import {
   updateProject,
   updateProjectStatus as updateProjectStatusRecord,
 } from "../repositories/projects";
+import { findActiveAssignableUsers } from "../repositories/users";
 import { getRequestId } from "../utils/request";
 import {
   assertCsrf,
   assertRecentAdminAuthentication,
+  requireAccountAdmin,
   requireAdminSession,
   requireProjectScope,
 } from "./auth";
@@ -122,7 +124,7 @@ const requireManageableOwner = async (
   session: Awaited<ReturnType<typeof requireAdminSession>>;
   project: ProjectRecordWithRole;
 }> => {
-  const session = await requireAdminSession(event);
+  const session = await requireAccountAdmin(event);
   assertCsrf(event, session);
   if (requireRecentAuthentication) assertRecentAdminAuthentication(session);
   const project = await findManageableProjectForUser(session.userId, projectId);
@@ -142,8 +144,17 @@ export const createProject = async (
   event: H3Event,
   input: CreateProjectRequest,
 ): Promise<ProjectResponse> => {
-  const session = await requireAdminSession(event);
+  const session = await requireAccountAdmin(event);
   assertCsrf(event, session);
+
+  const selectedUsers = await findActiveAssignableUsers(input.userIds);
+  if (selectedUsers.length !== input.userIds.length) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: "Один или несколько пользователей недоступны",
+      data: { code: "PROJECT_USERS_NOT_FOUND" },
+    });
+  }
 
   let templateProject: ProjectRecordWithRole | null = null;
   let templateAssistant: Awaited<ReturnType<typeof findAssistantSettingsRecord>> = null;
@@ -179,6 +190,7 @@ export const createProject = async (
     try {
       project = await createProjectRecord({
         userId: session.userId,
+        userIds: input.userIds,
         name: input.name,
         slug,
         timezone: input.timezone,
@@ -215,6 +227,7 @@ export const createProject = async (
       templateProjectId: templateProject?.id ?? null,
       copiedAssistantDraft: Boolean(templateProject),
       copiedPromptCount: templatePrompts.length,
+      assignedUserCount: input.userIds.length,
       excluded: [
         "origins",
         "contactFallback",

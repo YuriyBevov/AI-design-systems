@@ -89,7 +89,7 @@ const toSessionResponse = async (
   session: AuthSessionRecord,
   csrfToken?: string,
 ): Promise<AdminSessionResponse> => ({
-  user: { id: session.userId, email: session.email },
+  user: { id: session.userId, name: session.name, email: session.email, role: session.role },
   projects: await listSessionProjects(session.userId),
   expiresAt: session.expiresAt.toISOString(),
   ...(csrfToken ? { csrfToken } : {}),
@@ -169,6 +169,14 @@ export const requireAdminSession = async (event: H3Event): Promise<AuthSessionRe
   return session;
 };
 
+export const requireAccountAdmin = async (event: H3Event): Promise<AuthSessionRecord> => {
+  const session = await requireAdminSession(event);
+  if (session.role !== "admin") {
+    throw createError({ statusCode: 403, statusMessage: "Administrator role required" });
+  }
+  return session;
+};
+
 export const assertRecentAdminAuthentication = (
   session: AuthSessionRecord,
   maxAgeMinutes = 30,
@@ -222,7 +230,11 @@ export const requireProjectScope = async (
   event: H3Event,
   projectId: string,
   requiredRole: ProjectRole = "viewer",
-): Promise<{ session: AuthSessionRecord; scope: ProjectScope; project: NonNullable<Awaited<ReturnType<typeof findProjectForUser>>> }> => {
+): Promise<{
+  session: AuthSessionRecord;
+  scope: ProjectScope;
+  project: NonNullable<Awaited<ReturnType<typeof findProjectForUser>>>;
+}> => {
   const session = await requireAdminSession(event);
   const project = await findProjectForUser(session.userId, projectId);
 
@@ -236,7 +248,11 @@ export const requireProjectScope = async (
 
   return {
     session,
-    scope: createProjectScope({ projectId: project.id, userId: session.userId, role: project.role }),
+    scope: createProjectScope({
+      projectId: project.id,
+      userId: session.userId,
+      role: project.role,
+    }),
     project,
   };
 };

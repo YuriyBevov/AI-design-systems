@@ -42,6 +42,18 @@ Login/reset endpoints имеют отдельные rate limits и не раск
 
 Статус реализации этапа 2: `login`, `logout` и `session` работают; password reset будет подключён вместе с выбранным каналом доставки. Login принимает только строгий DTO, выдаёт новую opaque session и отдельный CSRF token; logout отзывает запись на сервере.
 
+`GET /auth/session` возвращает пользователя с `name`, `email` и продуктовой ролью `admin|user`. Роли `owner|editor|viewer` не являются внешними ролями аккаунта и в интерфейсе не показываются.
+
+### Пользователи
+
+```text
+GET    /users
+POST   /users
+PATCH  /users/{userId}
+```
+
+Все три endpoint доступны только `admin`. `POST` принимает `name`, нормализуемый `email`, временный пароль длиной 12–128 символов, роль `admin|user` и массив `projectIds`. `PATCH` изменяет профиль, роль, статус `active|disabled`, необязательный пароль и назначения. Для администратора `projectIds` вычисляется сервером как все неархивированные проекты; обычный пользователь получает только выбранные проекты. State-changing методы требуют CSRF. Пароль сохраняется только как Argon2id hash, отключение отзывает сессии, а отключение или понижение последнего активного администратора возвращает `409 LAST_ACTIVE_ADMIN`.
+
 ## 3. Projects и assistant
 
 ```text
@@ -63,11 +75,11 @@ POST   /projects/{projectId}/assistant/rotate-public-id
 GET    /projects/{projectId}/assistant/embed
 ```
 
-Реализованные project endpoints позволяют получить управляемый список, создать, изменить, приостановить/возобновить и безопасно удалить проект. `POST /projects` принимает только имя, IANA timezone и nullable `templateProjectId`. Уникальный slug всегда генерируется сервером и не является пользовательской настройкой. В текущей версии locale фиксирована как `ru` и также не выводится в интерфейс. Панель предлагает все региональные IANA identifiers России, покрывающие 11 UTC-смещений. Новый проект получает Owner membership, новый assistant/public id и пустые индивидуальные настройки.
+Реализованные project endpoints позволяют получить управляемый список, создать, изменить, приостановить/возобновить и безопасно удалить проект. `POST /projects` принимает имя, IANA timezone, nullable `templateProjectId` и массив `userIds` активных обычных пользователей. Уникальный slug всегда генерируется сервером и не является пользовательской настройкой. В текущей версии locale фиксирована как `ru` и также не выводится в интерфейс. Панель предлагает все региональные IANA identifiers России, покрывающие 11 UTC-смещений. Новый проект получает новый assistant/public id, пустые индивидуальные настройки, всех активных администраторов и выбранных пользователей.
 
-Если передан `templateProjectId`, инициатор должен быть Owner активного проекта-шаблона. Копируются только draft-настройки поведения/оформления assistant, политика срока хранения диалогов и последние revision неархивированных prompts. Origins/домены, contact fallback, provider credentials, model settings, knowledge, publications, conversations и audit всегда исключены. Без шаблона срок хранения по умолчанию равен 30 дням. В интерфейсе эта политика находится в разделе «Ассистент» и сохраняется сразу через `PATCH /projects/{projectId}`, независимо от публикации черновика. Один внешний provider key допускается вручную сохранить в нескольких проектах, но каждый credential остаётся отдельной project-scoped записью и автоматически не копируется.
+Если передан `templateProjectId`, инициатор должен быть администратором активного проекта-шаблона. Копируются только draft-настройки поведения/оформления assistant, политика срока хранения диалогов и последние revision неархивированных prompts. Origins/домены, contact fallback, provider credentials, model settings, knowledge, publications, conversations, memberships и audit всегда исключены. Без шаблона срок хранения по умолчанию равен 30 дням. В интерфейсе эта политика находится в разделе «Ассистент» и сохраняется сразу через `PATCH /projects/{projectId}`, независимо от публикации черновика. Один внешний provider key допускается вручную сохранить в нескольких проектах, но каждый credential остаётся отдельной project-scoped записью и автоматически не копируется.
 
-`PATCH /projects/{projectId}/status` принимает только `{ "status": "active" | "suspended" }` и доступен Owner с CSRF. Suspended-проект остаётся в управляемом списке, но исключается из обычного project scope, public widget и worker runtime до возобновления. `DELETE /projects/{projectId}` требует Owner, CSRF и recent authentication и выполняет soft-delete в `archived`; tenant history и audit физически не удаляются. Archived-проекты не возвращаются в `GET /projects`.
+`POST /projects`, `PATCH /projects/{projectId}/status` и `DELETE /projects/{projectId}` доступны только администратору. Status endpoint принимает только `{ "status": "active" | "suspended" }` и требует CSRF. Suspended-проект остаётся в управляемом списке, но исключается из обычного project scope, public widget и worker runtime до возобновления. Удаление дополнительно требует recent authentication и выполняет soft-delete в `archived`; tenant history и audit физически не удаляются. Archived-проекты не возвращаются в `GET /projects`.
 
 Чтение, сохранение черновика и публикация настроек assistant доступны в активном проекте. Изменение и публикация assistant доступны Owner, требуют session cookie, точный same-origin request, CSRF header и актуальный `expectedVersion`. Origins нормализуются до exact scheme/host/port; wildcard, credentials, path, query и fragment отклоняются. HTTP разрешён только для локального preview, production Origin требует HTTPS. Неизвестный, недоступный или неактивный tenant resource возвращает одинаковый `404`.
 

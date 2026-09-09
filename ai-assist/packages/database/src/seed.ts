@@ -43,14 +43,18 @@ try {
   const [owner] = await connection.db
     .insert(users)
     .values({
+      displayName: "Администратор",
       emailNormalized: "owner@gofroprodpak.local",
       passwordHash: developmentPasswordHash,
+      role: "admin",
       status: "active",
     })
     .onConflictDoUpdate({
       target: users.emailNormalized,
       set: {
+        displayName: "Администратор",
         passwordHash: developmentPasswordHash,
+        role: "admin",
         status: "active",
         updatedAt: new Date(),
       },

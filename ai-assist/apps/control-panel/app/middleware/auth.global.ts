@@ -22,4 +22,11 @@ export default defineNuxtRouteMiddleware(async (to) => {
   if (!session.value) {
     return navigateTo("/login");
   }
+
+  if (
+    session.value.user.role !== "admin" &&
+    (to.path === "/users" || to.path.endsWith("/components"))
+  ) {
+    return navigateTo("/");
+  }
 });

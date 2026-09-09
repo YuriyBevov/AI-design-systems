@@ -547,7 +547,7 @@ const publish = async (): Promise<void> => {
         </div>
 
         <p v-if="!canEdit" class="form-message">
-          Только владелец проекта может изменять и&nbsp;публиковать настройки.
+          Только администратор может изменять и&nbsp;публиковать настройки.
         </p>
 
         <div class="form-actions form-actions--split">

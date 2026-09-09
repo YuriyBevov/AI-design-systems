@@ -5,7 +5,9 @@ export const getProjectSelectionPath = (
   projectId: string,
   role: ProjectNavigationRole,
 ): string => {
-  if (currentPath === "/" || currentPath === "/projects") return currentPath;
+  if (currentPath === "/" || currentPath === "/projects" || currentPath === "/users") {
+    return currentPath;
+  }
 
   const projectPath = `/projects/${projectId}`;
   const scopedPath = currentPath.match(/^\/projects\/[^/]+\/(.+)$/)?.[1];

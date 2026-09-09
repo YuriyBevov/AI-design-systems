@@ -9,6 +9,7 @@ const iconSamples = [
   { name: "moon", label: "Тёмная тема" },
   { name: "components", label: "Компоненты" },
   { name: "projects", label: "Проекты" },
+  { name: "users", label: "Пользователи" },
   { name: "provider", label: "Провайдер" },
   { name: "audit", label: "Аудит" },
   { name: "arrow-left", label: "Назад" },
@@ -20,6 +21,7 @@ const iconSamples = [
   { name: "sun", label: "Светлая тема" },
 ] as const;
 const selectValue = ref("balanced");
+const checkboxValue = ref(false);
 const selectOptions = [
   { value: "fast", label: "Быстрый" },
   { value: "balanced", label: "Сбалансированный" },
@@ -125,6 +127,23 @@ const selectOptions = [
             disabled
           />
         </div>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="checkbox-components-title">
+      <header class="section-header">
+        <div>
+          <p class="eyebrow">Поля формы</p>
+          <h2 id="checkbox-components-title" class="section-title">Флажки</h2>
+        </div>
+        <p class="section-description">
+          Множественный выбор использует общий компонент <code>BaseCheckbox</code>.
+        </p>
+      </header>
+
+      <div class="component-preview" aria-label="Варианты флажка">
+        <BaseCheckbox v-model="checkboxValue" label="Доступный вариант" />
+        <BaseCheckbox v-model="checkboxValue" label="Недоступный вариант" disabled />
       </div>
     </section>
 

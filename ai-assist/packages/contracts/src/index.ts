@@ -8,4 +8,5 @@ export * from "./projects.js";
 export * from "./prompts.js";
 export * from "./provider.js";
 export * from "./system-jobs.js";
+export * from "./users.js";
 export * from "./widget.js";

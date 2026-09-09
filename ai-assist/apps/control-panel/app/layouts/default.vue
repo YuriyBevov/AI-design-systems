@@ -7,6 +7,7 @@ const route = useRoute();
 const pageTitle = computed(() => {
   if (route.path === "/") return "Обзор";
   if (route.path === "/projects") return "Проекты";
+  if (route.path === "/users") return "Пользователи";
   if (route.path.includes("/knowledge/documents/")) return "Документ";
   if (route.path.endsWith("/knowledge/documents")) return "Документы";
   if (route.path.endsWith("/knowledge/sources")) return "Источники";
@@ -19,7 +20,9 @@ const pageTitle = computed(() => {
   if (route.path.endsWith("/settings")) return "Настройки проекта";
   return "AI Assist";
 });
-const userInitial = computed(() => session.value?.user.email.slice(0, 1).toUpperCase() ?? "A");
+const isAdmin = computed(() => session.value?.user.role === "admin");
+const userInitial = computed(() => session.value?.user.name.slice(0, 1).toUpperCase() ?? "A");
+const roleLabel = computed(() => (isAdmin.value ? "Администратор" : "Пользователь"));
 
 const logout = async (): Promise<void> => {
   isLoggingOut.value = true;
@@ -79,6 +82,16 @@ const logout = async (): Promise<void> => {
                 <span>Проекты</span>
               </NuxtLink>
             </li>
+            <li v-if="isAdmin">
+              <NuxtLink
+                class="sidebar__link"
+                to="/users"
+                exact-active-class="sidebar__link--active"
+              >
+                <UiIcon class="ui-icon--medium" name="users" />
+                <span>Пользователи</span>
+              </NuxtLink>
+            </li>
             <template v-if="activeProject">
               <li>
                 <NuxtLink class="sidebar__link" :to="`/projects/${activeProject.id}/settings`">
@@ -113,13 +126,13 @@ const logout = async (): Promise<void> => {
                   <span>База знаний</span>
                 </NuxtLink>
               </li>
-              <li>
+              <li v-if="isAdmin">
                 <NuxtLink class="sidebar__link" :to="`/projects/${activeProject.id}/components`">
                   <UiIcon class="ui-icon--medium" name="components" />
                   <span>Компоненты</span>
                 </NuxtLink>
               </li>
-              <li v-if="activeProject.role === 'owner'">
+              <li v-if="isAdmin">
                 <NuxtLink class="sidebar__link" :to="`/projects/${activeProject.id}/provider`">
                   <UiIcon class="ui-icon--medium" name="provider" />
                   <span>Провайдер и модели</span>
@@ -140,8 +153,8 @@ const logout = async (): Promise<void> => {
         <div class="user-menu" :title="session?.user.email">
           <span class="user-menu__avatar" aria-hidden="true">{{ userInitial }}</span>
           <span class="user-menu__copy">
-            <strong class="user-menu__email">{{ session?.user.email }}</strong>
-            <small class="user-menu__role">{{ activeProject?.role ?? "Без проекта" }}</small>
+            <strong class="user-menu__email">{{ session?.user.name }}</strong>
+            <small class="user-menu__role">{{ roleLabel }}</small>
           </span>
         </div>
         <ThemeToggle />

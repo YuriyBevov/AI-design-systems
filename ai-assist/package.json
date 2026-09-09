@@ -21,6 +21,7 @@
     "test": "pnpm packages:build && pnpm -r --if-present test",
     "smoke:admin": "node scripts/smoke-admin.mjs",
     "smoke:projects": "node scripts/smoke-projects.mjs",
+    "smoke:users": "node scripts/smoke-users.mjs",
     "smoke:assistant": "node scripts/smoke-assistant.mjs",
     "smoke:provider": "node scripts/smoke-provider.mjs",
     "smoke:provider-credential": "node scripts/smoke-provider-credential.mjs",

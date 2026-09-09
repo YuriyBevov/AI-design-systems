@@ -7,6 +7,7 @@ import {
   projects,
   promptRevisions,
   prompts,
+  users,
 } from "@ai-assist/database";
 import type {
   AssistantConfigSnapshot,
@@ -106,6 +107,7 @@ export const listManageableProjectsForUser = async (
 
 export const createProjectRecord = async (input: {
   userId: string;
+  userIds: string[];
   name: string;
   slug: string;
   timezone: string;
@@ -130,11 +132,20 @@ export const createProjectRecord = async (input: {
       .returning();
     if (!project) throw new Error("Project insert failed");
 
-    await transaction.insert(projectMemberships).values({
-      projectId: project.id,
-      userId: input.userId,
-      role: "owner",
-    });
+    const administrators = await transaction
+      .select({ id: users.id })
+      .from(users)
+      .where(and(eq(users.role, "admin"), eq(users.status, "active")));
+    const membershipRoles = new Map<string, "owner" | "viewer">(
+      input.userIds.map((userId) => [userId, "viewer"]),
+    );
+    for (const administrator of administrators) membershipRoles.set(administrator.id, "owner");
+    membershipRoles.set(input.userId, "owner");
+    await transaction
+      .insert(projectMemberships)
+      .values(
+        [...membershipRoles].map(([userId, role]) => ({ projectId: project.id, userId, role })),
+      );
 
     const [assistant] = await transaction
       .insert(assistants)

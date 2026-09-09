@@ -16,13 +16,13 @@ Security требования являются частью Definition of Done, 
 - загруженные администратором файлы и всё извлечённое из них содержимое;
 - identifiers из path/body до authorization.
 
-Администратор также не получает автоматического доверия вне своей роли/project membership.
+Даже Администратор не получает автоматического доверия вне проверенной сессии и project scope.
 
 ## 2. Provider key
 
 ### При записи
 
-1. Принять только по admin HTTPS endpoint после Owner authorization + CSRF.
+1. Принять только по admin HTTPS endpoint после проверки роли Администратора + CSRF.
 2. Ограничить размер и проверить ожидаемый формат без помещения значения в error/log.
 3. Проверить ключ server-side минимальным безопасным запросом или отдельной командой `test`.
 4. Зашифровать authenticated encryption с уникальным nonce и associated data (`project_id`, credential id, provider).
@@ -95,6 +95,7 @@ Headless browser не является обходом этих правил. Е�
 - Пароли хэшируются Argon2id с параметрами, выбранными по server benchmark.
 - Login/reset имеют enumeration-safe response и rate limits.
 - RBAC проверяется server-side на каждом resource, не только скрытием кнопки.
+- Внешние роли ограничены `admin|user`: Администратор получает все проекты, Пользователь — только назначенные read-only memberships. Изменение роли и назначений требует admin session и CSRF; отключение отзывает сессии, последнего активного администратора отключить нельзя.
 - Content Security Policy, HSTS, frame-ancestors, nosniff и безопасный Referrer-Policy задаются reverse proxy/app.
 - Prompt/document preview экранирует untrusted content и не исполняет HTML.
 - Destructive/secret operations требуют recent authentication при повышенной модели риска.

@@ -29,7 +29,12 @@ watch(
   { immediate: true },
 );
 
-const canEdit = computed(() => project.value?.role === "owner");
+const canEdit = computed(
+  () => session.value?.user.role === "admin" && project.value?.role === "owner",
+);
+const roleLabel = computed(() =>
+  session.value?.user.role === "admin" ? "Администратор" : "Пользователь",
+);
 
 const save = async (): Promise<void> => {
   if (!canEdit.value) return;
@@ -68,7 +73,7 @@ const save = async (): Promise<void> => {
         <h1 class="page-title page-title--compact">Настройки</h1>
         <p class="page-description">Общие параметры рабочего пространства ассистента.</p>
       </div>
-      <span v-if="project" class="role-badge role-badge--large">{{ project.role }}</span>
+      <span v-if="project" class="role-badge role-badge--large">{{ roleLabel }}</span>
     </header>
 
     <div v-if="error" class="empty-state" role="alert">Проект не найден или недоступен.</div>
@@ -109,7 +114,7 @@ const save = async (): Promise<void> => {
         </div>
       </div>
 
-      <p v-if="!canEdit" class="form-message">Только владелец может изменять эти настройки.</p>
+      <p v-if="!canEdit" class="form-message">Только администратор может изменять эти настройки.</p>
       <p v-if="message" class="form-message" :class="`form-message--${message.type}`" role="status">
         {{ message.text }}
       </p>

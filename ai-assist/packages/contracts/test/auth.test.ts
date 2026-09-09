@@ -1,13 +1,30 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  adminSessionResponseSchema,
   createProjectRequestSchema,
+  createUserRequestSchema,
   loginRequestSchema,
+  updateUserRequestSchema,
   updateProjectRequestSchema,
   updateProjectStatusRequestSchema,
 } from "../src/index.js";
 
 describe("admin contracts", () => {
+  it("exposes a product account role in the session", () => {
+    const session = adminSessionResponseSchema.parse({
+      user: {
+        id: "a868d3cc-c71b-4ae4-9706-930ddb2bfa67",
+        name: "Администратор",
+        email: "admin@example.test",
+        role: "admin",
+      },
+      projects: [],
+      expiresAt: "2026-09-09T12:00:00.000Z",
+    });
+    expect(session.user.role).toBe("admin");
+  });
+
   it("normalizes an email without echoing password", () => {
     expect(
       loginRequestSchema.parse({ email: " Owner@Example.COM ", password: "password" }),
@@ -45,7 +62,31 @@ describe("admin contracts", () => {
       name: "Новый проект",
       timezone: "Europe/Moscow",
       templateProjectId: "a868d3cc-c71b-4ae4-9706-930ddb2bfa67",
+      userIds: [],
     });
+  });
+
+  it("accepts only the two product roles for users", () => {
+    const user = {
+      name: "Анна",
+      email: " ANNA@EXAMPLE.TEST ",
+      password: "Temporary-Password-2026",
+      role: "user",
+      projectIds: ["a868d3cc-c71b-4ae4-9706-930ddb2bfa67"],
+    };
+    expect(createUserRequestSchema.parse(user)).toMatchObject({
+      name: "Анна",
+      email: "anna@example.test",
+      role: "user",
+    });
+    expect(createUserRequestSchema.safeParse({ ...user, role: "owner" }).success).toBe(false);
+    expect(updateUserRequestSchema.safeParse({ role: "admin" }).success).toBe(true);
+    expect(updateUserRequestSchema.safeParse({ role: "viewer" }).success).toBe(false);
+  });
+
+  it("does not allow an empty user update or an invited status assignment", () => {
+    expect(updateUserRequestSchema.safeParse({}).success).toBe(false);
+    expect(updateUserRequestSchema.safeParse({ status: "invited" }).success).toBe(false);
   });
 
   it("keeps generated and single-locale project fields out of creation input", () => {

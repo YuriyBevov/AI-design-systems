@@ -6,6 +6,7 @@ describe("getProjectSelectionPath", () => {
   it("keeps global pages in place", () => {
     expect(getProjectSelectionPath("/", "project-new", "owner")).toBe("/");
     expect(getProjectSelectionPath("/projects", "project-new", "owner")).toBe("/projects");
+    expect(getProjectSelectionPath("/users", "project-new", "owner")).toBe("/users");
   });
 
   it("opens the matching section for the selected project", () => {
