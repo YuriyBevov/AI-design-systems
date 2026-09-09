@@ -27,11 +27,13 @@ const props = withDefaults(
     disabled?: boolean;
     label: string;
     id?: string;
+    variant?: "default" | "compact";
   }>(),
   {
     placeholder: "Выберите значение",
     disabled: false,
     id: undefined,
+    variant: "default",
   },
 );
 
@@ -63,6 +65,7 @@ const normalizedOptions = computed(() =>
     <SelectTrigger
       :id="id"
       class="base-select form-field__control"
+      :class="{ 'base-select--compact': variant === 'compact' }"
       :disabled="disabled"
       :aria-label="label"
     >

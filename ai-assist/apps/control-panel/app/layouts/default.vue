@@ -1,15 +1,25 @@
 <script setup lang="ts">
 const session = useAdminSessionState();
+const { activeProject } = useActiveProject();
 const isLoggingOut = ref(false);
 const route = useRoute();
 
-const activeProject = computed(() => {
-  const routeProjectId = typeof route.params.projectId === "string" ? route.params.projectId : null;
-  return (
-    session.value?.projects.find((project) => project.id === routeProjectId) ??
-    session.value?.projects[0]
-  );
+const pageTitle = computed(() => {
+  if (route.path === "/") return "Обзор";
+  if (route.path === "/projects") return "Проекты";
+  if (route.path.includes("/knowledge/documents/")) return "Документ";
+  if (route.path.endsWith("/knowledge/documents")) return "Документы";
+  if (route.path.endsWith("/knowledge/sources")) return "Источники";
+  if (route.path.includes("/prompts/")) return "Prompt";
+  if (route.path.endsWith("/prompts")) return "Prompts";
+  if (route.path.endsWith("/assistant")) return "Ассистент";
+  if (route.path.endsWith("/components")) return "Компоненты";
+  if (route.path.endsWith("/provider")) return "Провайдер и модели";
+  if (route.path.endsWith("/audit")) return "Журнал аудита";
+  if (route.path.endsWith("/settings")) return "Настройки проекта";
+  return "AI Assist";
 });
+const userInitial = computed(() => session.value?.user.email.slice(0, 1).toUpperCase() ?? "A");
 
 const logout = async (): Promise<void> => {
   isLoggingOut.value = true;
@@ -28,83 +38,136 @@ const logout = async (): Promise<void> => {
 </script>
 
 <template>
-  <div class="admin-shell">
-    <aside class="admin-sidebar">
-      <div>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="sidebar__top">
         <NuxtLink class="brand" to="/" aria-label="AI Assist — главная">
           <span class="brand__mark" aria-hidden="true">AI</span>
-          <span>
+          <span class="brand__copy">
             <strong class="brand__name">AI Assist</strong>
             <small class="brand__caption">Control panel</small>
           </span>
         </NuxtLink>
+      </div>
 
-        <div v-if="activeProject" class="project-switcher">
-          <span class="project-switcher__label">Проект</span>
-          <strong>{{ activeProject.name }}</strong>
-          <span class="role-badge">{{ activeProject.role }}</span>
+      <div class="sidebar__content">
+        <div class="sidebar__project">
+          <ProjectSwitcher />
         </div>
 
-        <nav class="admin-nav" aria-label="Основная навигация">
-          <NuxtLink class="admin-nav__link" to="/">
-            <UiIcon class="ui-icon--medium" name="home" />
-            Обзор
-          </NuxtLink>
-          <NuxtLink class="admin-nav__link" to="/projects">
-            <UiIcon class="ui-icon--medium" name="projects" />
-            Проекты
-          </NuxtLink>
-          <template v-if="activeProject">
-            <NuxtLink class="admin-nav__link" :to="`/projects/${activeProject.id}/settings`">
-              <UiIcon class="ui-icon--medium" name="settings" />
-              Настройки
-            </NuxtLink>
-            <NuxtLink class="admin-nav__link" :to="`/projects/${activeProject.id}/assistant`">
-              <UiIcon class="ui-icon--medium" name="assistant" />
-              Ассистент
-            </NuxtLink>
-            <NuxtLink class="admin-nav__link" :to="`/projects/${activeProject.id}/prompts`">
-              <UiIcon class="ui-icon--medium" name="prompt" />
-              Prompts
-            </NuxtLink>
-            <NuxtLink
-              class="admin-nav__link"
-              :to="`/projects/${activeProject.id}/knowledge/documents`"
-            >
-              <UiIcon class="ui-icon--medium" name="knowledge" />
-              База знаний
-            </NuxtLink>
-            <NuxtLink class="admin-nav__link" :to="`/projects/${activeProject.id}/components`">
-              <UiIcon class="ui-icon--medium" name="components" />
-              Компоненты
-            </NuxtLink>
-            <NuxtLink
-              v-if="activeProject.role === 'owner'"
-              class="admin-nav__link"
-              :to="`/projects/${activeProject.id}/provider`"
-            >
-              <UiIcon class="ui-icon--medium" name="provider" />
-              Провайдер и модели
-            </NuxtLink>
-            <NuxtLink class="admin-nav__link" :to="`/projects/${activeProject.id}/audit`">
-              <UiIcon class="ui-icon--medium" name="audit" />
-              Журнал аудита
-            </NuxtLink>
-          </template>
+        <nav class="sidebar__nav" aria-label="Основная навигация">
+          <ul class="sidebar__list">
+            <li>
+              <NuxtLink
+                class="sidebar__link"
+                to="/"
+                active-class="sidebar__link--ancestor"
+                exact-active-class="sidebar__link--active"
+              >
+                <UiIcon class="ui-icon--medium" name="home" />
+                <span>Обзор</span>
+              </NuxtLink>
+            </li>
+            <li>
+              <NuxtLink
+                class="sidebar__link"
+                to="/projects"
+                active-class="sidebar__link--ancestor"
+                exact-active-class="sidebar__link--active"
+              >
+                <UiIcon class="ui-icon--medium" name="projects" />
+                <span>Проекты</span>
+              </NuxtLink>
+            </li>
+            <template v-if="activeProject">
+              <li>
+                <NuxtLink class="sidebar__link" :to="`/projects/${activeProject.id}/settings`">
+                  <UiIcon class="ui-icon--medium" name="settings" />
+                  <span>Настройки</span>
+                </NuxtLink>
+              </li>
+              <li>
+                <NuxtLink class="sidebar__link" :to="`/projects/${activeProject.id}/assistant`">
+                  <UiIcon class="ui-icon--medium" name="assistant" />
+                  <span>Ассистент</span>
+                </NuxtLink>
+              </li>
+              <li>
+                <NuxtLink class="sidebar__link" :to="`/projects/${activeProject.id}/prompts`">
+                  <UiIcon class="ui-icon--medium" name="prompt" />
+                  <span>Prompts</span>
+                </NuxtLink>
+              </li>
+              <li>
+                <NuxtLink
+                  class="sidebar__link"
+                  :class="{
+                    'sidebar__link--active': route.path.includes(
+                      `/projects/${activeProject.id}/knowledge/`,
+                    ),
+                  }"
+                  :to="`/projects/${activeProject.id}/knowledge/documents`"
+                  active-class="sidebar__link--ancestor"
+                >
+                  <UiIcon class="ui-icon--medium" name="knowledge" />
+                  <span>База знаний</span>
+                </NuxtLink>
+              </li>
+              <li>
+                <NuxtLink class="sidebar__link" :to="`/projects/${activeProject.id}/components`">
+                  <UiIcon class="ui-icon--medium" name="components" />
+                  <span>Компоненты</span>
+                </NuxtLink>
+              </li>
+              <li v-if="activeProject.role === 'owner'">
+                <NuxtLink class="sidebar__link" :to="`/projects/${activeProject.id}/provider`">
+                  <UiIcon class="ui-icon--medium" name="provider" />
+                  <span>Провайдер и модели</span>
+                </NuxtLink>
+              </li>
+              <li>
+                <NuxtLink class="sidebar__link" :to="`/projects/${activeProject.id}/audit`">
+                  <UiIcon class="ui-icon--medium" name="audit" />
+                  <span>Журнал аудита</span>
+                </NuxtLink>
+              </li>
+            </template>
+          </ul>
         </nav>
       </div>
 
-      <div class="account-panel">
-        <span class="account-panel__label">Вы вошли как</span>
-        <strong class="account-panel__email">{{ session?.user.email }}</strong>
-        <button class="button button--text" type="button" :disabled="isLoggingOut" @click="logout">
-          {{ isLoggingOut ? "Выходим…" : "Выйти" }}
+      <div class="sidebar__footer">
+        <div class="user-menu" :title="session?.user.email">
+          <span class="user-menu__avatar" aria-hidden="true">{{ userInitial }}</span>
+          <span class="user-menu__copy">
+            <strong class="user-menu__email">{{ session?.user.email }}</strong>
+            <small class="user-menu__role">{{ activeProject?.role ?? "Без проекта" }}</small>
+          </span>
+        </div>
+        <ThemeToggle />
+        <button
+          class="icon-button icon-button--compact icon-button--ghost"
+          type="button"
+          :disabled="isLoggingOut"
+          aria-label="Выйти"
+          title="Выйти"
+          @click="logout"
+        >
+          <UiIcon name="logout" />
         </button>
       </div>
     </aside>
 
-    <div class="admin-content">
-      <slot />
+    <div class="app-shell__main">
+      <header class="topbar">
+        <p class="topbar__title" aria-hidden="true">{{ pageTitle }}</p>
+        <p v-if="activeProject" class="topbar__project">{{ activeProject.name }}</p>
+      </header>
+      <div class="app-shell__content">
+        <div class="app-shell__workspace">
+          <slot />
+        </div>
+      </div>
     </div>
   </div>
 </template>

@@ -392,7 +392,7 @@ const deletePrompt = async (): Promise<void> => {
           <ol class="prompt-revision-list">
             <li v-for="revision in detail.revisions" :key="revision.id">
               <button
-                class="prompt-revision"
+                class="button button--list-option"
                 type="button"
                 :aria-pressed="selectedRevisionId === revision.id"
                 @click="selectedRevisionId = revision.id"

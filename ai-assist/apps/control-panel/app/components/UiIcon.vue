@@ -10,11 +10,14 @@ type UiIconName =
   | "help"
   | "home"
   | "knowledge"
+  | "logout"
+  | "moon"
   | "plus"
   | "projects"
   | "prompt"
   | "provider"
-  | "settings";
+  | "settings"
+  | "sun";
 
 defineProps<{
   name: UiIconName;

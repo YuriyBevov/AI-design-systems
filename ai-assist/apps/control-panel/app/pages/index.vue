@@ -4,8 +4,7 @@ type ReadinessState = {
   checks?: Record<string, "ok" | "error">;
 };
 
-const session = useAdminSessionState();
-const project = computed(() => session.value?.projects[0]);
+const { activeProject: project } = useActiveProject();
 const readiness = ref<ReadinessState>({ status: "idle" });
 
 const checkReadiness = async (): Promise<void> => {
@@ -27,9 +26,11 @@ const checkReadiness = async (): Promise<void> => {
   <main class="page-frame">
     <header class="page-header">
       <div>
-        <p class="eyebrow">Первый агент</p>
+        <p class="eyebrow">Текущий проект</p>
         <h1 class="page-title">{{ project?.name ?? "AI Assist" }}</h1>
-        <p class="page-description">Рабочее пространство ассистента для gofroprodpak.ru</p>
+        <p class="page-description">
+          Данные, навигация и настройки синхронизированы с выбранным проектом.
+        </p>
       </div>
       <span class="status-badge" data-status="active">Активен</span>
     </header>
@@ -67,7 +68,7 @@ const checkReadiness = async (): Promise<void> => {
             <UiIcon class="ui-icon--large" name="settings" />
           </span>
           <strong>Настройки проекта</strong>
-          <span>Название, локаль, часовой пояс и срок хранения диалогов.</span>
+          <span>Название и часовой пояс текущего проекта.</span>
         </NuxtLink>
         <NuxtLink class="action-card" :to="`/projects/${project.id}/audit`">
           <span class="action-card__icon" aria-hidden="true">

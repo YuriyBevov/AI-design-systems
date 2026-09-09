@@ -5,6 +5,7 @@ import { russianTimezoneOptions } from "~/utils/project-options";
 
 const requestFetch = useRequestFetch();
 const session = useAdminSessionState();
+const { selectProject } = useActiveProject();
 const form = reactive({
   name: "",
   timezone: "Europe/Moscow",
@@ -68,6 +69,7 @@ const createProject = async (): Promise<void> => {
       body,
     });
     await Promise.all([refresh(), refreshSession()]);
+    await selectProject(created.id);
     form.name = "";
     form.templateProjectId = null;
     message.value = { type: "success", text: `Проект «${created.name}» создан.` };

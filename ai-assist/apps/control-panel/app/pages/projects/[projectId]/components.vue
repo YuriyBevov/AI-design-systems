@@ -5,6 +5,8 @@ const iconSamples = [
   { name: "assistant", label: "Ассистент" },
   { name: "prompt", label: "Prompts" },
   { name: "knowledge", label: "База знаний" },
+  { name: "logout", label: "Выход" },
+  { name: "moon", label: "Тёмная тема" },
   { name: "components", label: "Компоненты" },
   { name: "projects", label: "Проекты" },
   { name: "provider", label: "Провайдер" },
@@ -15,6 +17,7 @@ const iconSamples = [
   { name: "help", label: "Подсказка" },
   { name: "chevron-down", label: "Раскрыть" },
   { name: "check", label: "Выбрано" },
+  { name: "sun", label: "Светлая тема" },
 ] as const;
 const selectValue = ref("balanced");
 const selectOptions = [
