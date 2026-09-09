@@ -21,6 +21,7 @@ const form = reactive({
   projectIds: [] as string[],
 });
 const isSaving = ref(false);
+const isUserModalOpen = ref(false);
 const pendingUserId = ref<string | null>(null);
 const message = ref<{ type: "success" | "error"; text: string } | null>(null);
 
@@ -33,6 +34,10 @@ const [{ data: users, error: usersError, refresh: refreshUsers }, { data: projec
   ]);
 
 const isEditing = computed(() => Boolean(form.id));
+const activeAdministratorCount = computed(
+  () =>
+    (users.value ?? []).filter((user) => user.role === "admin" && user.status === "active").length,
+);
 const projectOptions = computed(() =>
   (projects.value ?? []).filter((project) => project.status !== "archived"),
 );
@@ -50,7 +55,7 @@ watch(
 const roleLabel = (role: AccountRole): string =>
   role === "admin" ? "Администратор" : "Пользователь";
 const statusLabel = (status: UserResponse["status"]): string =>
-  ({ invited: "Приглашён", active: "Активен", disabled: "Отключён" })[status];
+  ({ invited: "Приглашён", active: "Активен", disabled: "Деактивирован" })[status];
 const userProjectNames = (user: UserResponse): string => {
   if (user.role === "admin") return "Все проекты";
   return (
@@ -72,6 +77,19 @@ const resetForm = (): void => {
   });
 };
 
+const openCreateModal = (): void => {
+  resetForm();
+  message.value = null;
+  isUserModalOpen.value = true;
+};
+
+const closeUserModal = (): void => {
+  if (isSaving.value) return;
+  isUserModalOpen.value = false;
+  resetForm();
+  message.value = null;
+};
+
 const startEditing = (user: UserResponse): void => {
   Object.assign(form, {
     id: user.id,
@@ -82,7 +100,11 @@ const startEditing = (user: UserResponse): void => {
     projectIds: [...user.projectIds],
   });
   message.value = null;
+  isUserModalOpen.value = true;
 };
+
+const isOnlyActiveAdministrator = (user: UserResponse): boolean =>
+  user.role === "admin" && user.status === "active" && activeAdministratorCount.value === 1;
 
 const requestErrorMessage = (requestError: unknown): string => {
   const fetchError = requestError as {
@@ -130,6 +152,7 @@ const saveUser = async (): Promise<void> => {
         return;
       }
     }
+    isUserModalOpen.value = false;
     resetForm();
     message.value = { type: "success", text: successText };
   } catch (requestError) {
@@ -140,7 +163,7 @@ const saveUser = async (): Promise<void> => {
 };
 
 const changeStatus = async (user: UserResponse): Promise<void> => {
-  if (pendingUserId.value) return;
+  if (pendingUserId.value || isOnlyActiveAdministrator(user)) return;
   pendingUserId.value = user.id;
   message.value = null;
   try {
@@ -157,7 +180,8 @@ const changeStatus = async (user: UserResponse): Promise<void> => {
     }
     message.value = {
       type: "success",
-      text: user.status === "active" ? "Пользователь отключён." : "Пользователь активирован.",
+      text:
+        user.status === "active" ? "Пользователь деактивирован." : "Пользователь активирован.",
     };
   } catch (requestError) {
     message.value = { type: "error", text: requestErrorMessage(requestError) };
@@ -178,100 +202,10 @@ const changeStatus = async (user: UserResponse): Promise<void> => {
           проекты без технического раздела «Компоненты».
         </p>
       </div>
+      <button class="button button--primary" type="button" @click="openCreateModal">
+        Создать пользователя
+      </button>
     </header>
-
-    <section class="panel" aria-labelledby="user-form-title">
-      <header class="section-header">
-        <div>
-          <p class="eyebrow">{{ isEditing ? "Редактирование" : "Новый пользователь" }}</p>
-          <h2 id="user-form-title" class="section-title">
-            {{ isEditing ? "Изменить пользователя" : "Создать пользователя" }}
-          </h2>
-        </div>
-        <button v-if="isEditing" class="button button--compact" type="button" @click="resetForm">
-          Отмена
-        </button>
-      </header>
-
-      <form class="form-stack" @submit.prevent="saveUser">
-        <div class="form-grid">
-          <label class="form-field">
-            <span class="form-field__label">Имя</span>
-            <input
-              v-model.trim="form.name"
-              class="form-field__control"
-              type="text"
-              maxlength="160"
-              required
-            />
-          </label>
-          <label class="form-field">
-            <span class="form-field__label">Email</span>
-            <input
-              v-model.trim="form.email"
-              class="form-field__control"
-              type="email"
-              maxlength="320"
-              autocomplete="off"
-              required
-            />
-          </label>
-          <label class="form-field">
-            <span class="form-field__label">
-              {{ isEditing ? "Новый пароль" : "Временный пароль" }}
-            </span>
-            <input
-              v-model="form.password"
-              class="form-field__control"
-              type="password"
-              minlength="12"
-              maxlength="128"
-              autocomplete="new-password"
-              :required="!isEditing"
-            />
-            <span v-if="isEditing" class="form-field__hint">
-              Оставьте пустым, чтобы сохранить текущий пароль.
-            </span>
-          </label>
-          <div class="form-field">
-            <span class="form-field__label">Роль</span>
-            <BaseSelect v-model="form.role" :options="roleOptions" label="Роль пользователя" />
-          </div>
-        </div>
-
-        <fieldset class="choice-group">
-          <legend class="form-field__label">Доступ к проектам</legend>
-          <p v-if="form.role === 'admin'" class="form-field__hint">
-            Администратор автоматически получает полный доступ ко всем проектам.
-          </p>
-          <p v-else-if="!projectOptions.length" class="form-field__hint">Проектов пока нет.</p>
-          <div v-else class="choice-list">
-            <BaseCheckbox
-              v-for="project in projectOptions"
-              :key="project.id"
-              v-model="form.projectIds"
-              :value="project.id"
-              :label="project.name"
-            />
-          </div>
-        </fieldset>
-
-        <p
-          v-if="message"
-          class="form-message"
-          :class="`form-message--${message.type}`"
-          role="status"
-        >
-          {{ message.text }}
-        </p>
-
-        <div class="form-actions">
-          <button class="button button--primary" type="submit" :disabled="isSaving">
-            {{ isSaving ? "Сохраняем…" : isEditing ? "Сохранить" : "Создать пользователя" }}
-          </button>
-        </div>
-      </form>
-    </section>
 
     <section class="panel panel--flush" aria-labelledby="user-list-title">
       <header class="prompt-list__header section-header">
@@ -281,12 +215,21 @@ const changeStatus = async (user: UserResponse): Promise<void> => {
         </div>
       </header>
 
+      <p
+        v-if="message && !isUserModalOpen"
+        class="form-message panel__message"
+        :class="`form-message--${message.type}`"
+        role="status"
+      >
+        {{ message.text }}
+      </p>
+
       <div v-if="usersError" class="empty-state" role="alert">
         Не удалось загрузить пользователей.
       </div>
       <div v-else-if="!users?.length" class="empty-state">Пользователей пока нет.</div>
       <div v-else class="table-scroll">
-        <table class="data-table">
+        <table class="data-table data-table--centered">
           <thead>
             <tr>
               <th scope="col">Пользователь</th>
@@ -323,10 +266,15 @@ const changeStatus = async (user: UserResponse): Promise<void> => {
                     class="button button--compact"
                     :class="user.status === 'active' ? 'button--danger' : 'button--primary'"
                     type="button"
-                    :disabled="pendingUserId === user.id"
+                    :disabled="pendingUserId === user.id || isOnlyActiveAdministrator(user)"
+                    :title="
+                      isOnlyActiveAdministrator(user)
+                        ? 'Нельзя деактивировать единственного администратора'
+                        : undefined
+                    "
                     @click="changeStatus(user)"
                   >
-                    {{ user.status === "active" ? "Отключить" : "Активировать" }}
+                    {{ user.status === "active" ? "Деактивировать" : "Активировать" }}
                   </button>
                 </div>
               </td>
@@ -335,5 +283,89 @@ const changeStatus = async (user: UserResponse): Promise<void> => {
         </table>
       </div>
     </section>
+
+    <BaseModal
+      v-if="isUserModalOpen"
+      :title="isEditing ? 'Изменить пользователя' : 'Создать пользователя'"
+      @close="closeUserModal"
+    >
+      <form id="user-form" class="modal-form" @submit.prevent="saveUser">
+        <label class="form-field">
+          <span class="form-field__label">Имя</span>
+          <input
+            v-model.trim="form.name"
+            class="form-field__control"
+            type="text"
+            maxlength="160"
+            required
+          />
+        </label>
+        <label class="form-field">
+          <span class="form-field__label">Email</span>
+          <input
+            v-model.trim="form.email"
+            class="form-field__control"
+            type="email"
+            maxlength="320"
+            autocomplete="off"
+            required
+          />
+        </label>
+        <label class="form-field">
+          <span class="form-field__label">{{ isEditing ? "Новый пароль" : "Пароль" }}</span>
+          <input
+            v-model="form.password"
+            class="form-field__control"
+            type="password"
+            minlength="12"
+            maxlength="128"
+            autocomplete="new-password"
+            :required="!isEditing"
+          />
+          <span v-if="isEditing" class="form-field__hint">
+            Оставьте пустым, чтобы сохранить текущий пароль.
+          </span>
+        </label>
+        <div class="form-field">
+          <span class="form-field__label">Роль</span>
+          <BaseSelect v-model="form.role" :options="roleOptions" label="Роль пользователя" />
+        </div>
+
+        <fieldset class="choice-group">
+          <legend class="form-field__label">Доступ к проектам</legend>
+          <p v-if="form.role === 'admin'" class="form-field__hint">
+            Администратор автоматически получает полный доступ ко всем проектам.
+          </p>
+          <p v-else-if="!projectOptions.length" class="form-field__hint">Проектов пока нет.</p>
+          <div v-else class="choice-list">
+            <BaseCheckbox
+              v-for="project in projectOptions"
+              :key="project.id"
+              v-model="form.projectIds"
+              :value="project.id"
+              :label="project.name"
+            />
+          </div>
+        </fieldset>
+
+        <p
+          v-if="message"
+          class="form-message"
+          :class="`form-message--${message.type}`"
+          role="status"
+        >
+          {{ message.text }}
+        </p>
+      </form>
+
+      <template #footer>
+        <button class="button button--primary" type="submit" form="user-form" :disabled="isSaving">
+          {{ isSaving ? "Сохраняем…" : isEditing ? "Сохранить" : "Создать пользователя" }}
+        </button>
+        <button class="button" type="button" :disabled="isSaving" @click="closeUserModal">
+          Отмена
+        </button>
+      </template>
+    </BaseModal>
   </main>
 </template>

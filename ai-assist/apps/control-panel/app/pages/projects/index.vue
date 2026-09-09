@@ -168,7 +168,7 @@ const deleteProject = async (project: ProjectResponse): Promise<void> => {
       </header>
 
       <form class="form-stack" @submit.prevent="createProject">
-        <div class="form-grid">
+        <div class="form-grid form-grid--three-column-compact">
           <label class="form-field">
             <span class="form-field__label">Название</span>
             <input
@@ -185,6 +185,7 @@ const deleteProject = async (project: ProjectResponse): Promise<void> => {
               v-model="form.timezone"
               :options="russianTimezoneOptions"
               label="Часовой пояс проекта"
+              width="content"
             />
           </div>
           <div class="form-field">
@@ -193,6 +194,7 @@ const deleteProject = async (project: ProjectResponse): Promise<void> => {
               v-model="form.templateProjectId"
               :options="templateOptions"
               label="Создать на основе проекта"
+              width="content"
             />
           </div>
         </div>

@@ -22,6 +22,7 @@ const iconSamples = [
 ] as const;
 const selectValue = ref("balanced");
 const checkboxValue = ref(false);
+const isModalPreviewOpen = ref(false);
 const selectOptions = [
   { value: "fast", label: "Быстрый" },
   { value: "balanced", label: "Сбалансированный" },
@@ -127,6 +128,15 @@ const selectOptions = [
             disabled
           />
         </div>
+        <div class="form-field component-preview__control">
+          <span class="form-field__label">По максимальному содержимому</span>
+          <BaseSelect
+            v-model="selectValue"
+            :options="selectOptions"
+            label="Список по максимальному содержимому"
+            width="content"
+          />
+        </div>
       </div>
     </section>
 
@@ -144,6 +154,24 @@ const selectOptions = [
       <div class="component-preview" aria-label="Варианты флажка">
         <BaseCheckbox v-model="checkboxValue" label="Доступный вариант" />
         <BaseCheckbox v-model="checkboxValue" label="Недоступный вариант" disabled />
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="modal-components-title">
+      <header class="section-header">
+        <div>
+          <p class="eyebrow">Поверх страницы</p>
+          <h2 id="modal-components-title" class="section-title">Модальные окна</h2>
+        </div>
+        <p class="section-description">
+          Формы и подтверждения используют общий доступный компонент <code>BaseModal</code>.
+        </p>
+      </header>
+
+      <div class="component-preview">
+        <button class="button" type="button" @click="isModalPreviewOpen = true">
+          Открыть пример
+        </button>
       </div>
     </section>
 
@@ -169,5 +197,21 @@ const selectOptions = [
         </li>
       </ul>
     </section>
+
+    <BaseModal
+      v-if="isModalPreviewOpen"
+      title="Пример модального окна"
+      @close="isModalPreviewOpen = false"
+    >
+      <p class="section-description">
+        Модальное окно удерживает фокус, закрывается клавишей Escape и по нажатию на фон.
+      </p>
+      <template #footer>
+        <button class="button button--primary" type="button" @click="isModalPreviewOpen = false">
+          Готово
+        </button>
+        <button class="button" type="button" @click="isModalPreviewOpen = false">Отмена</button>
+      </template>
+    </BaseModal>
   </main>
 </template>

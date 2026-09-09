@@ -28,12 +28,14 @@ const props = withDefaults(
     label: string;
     id?: string;
     variant?: "default" | "compact";
+    width?: "fill" | "content";
   }>(),
   {
     placeholder: "Выберите значение",
     disabled: false,
     id: undefined,
     variant: "default",
+    width: "fill",
   },
 );
 
@@ -65,7 +67,10 @@ const normalizedOptions = computed(() =>
     <SelectTrigger
       :id="id"
       class="base-select form-field__control"
-      :class="{ 'base-select--compact': variant === 'compact' }"
+      :class="{
+        'base-select--compact': variant === 'compact',
+        'base-select--content-width': width === 'content',
+      }"
       :disabled="disabled"
       :aria-label="label"
     >
@@ -73,7 +78,13 @@ const normalizedOptions = computed(() =>
         class="base-select__value"
         :class="{ 'base-select__value--placeholder': !selectedLabel }"
       >
-        {{ selectedLabel || placeholder }}
+        <span class="base-select__text">{{ selectedLabel || placeholder }}</span>
+        <span v-if="width === 'content'" class="base-select__sizer" aria-hidden="true">
+          <span>{{ placeholder }}</span>
+          <span v-for="option in normalizedOptions" :key="option.key">
+            {{ option.label }}
+          </span>
+        </span>
       </span>
       <SelectIcon class="base-select__icon">
         <UiIcon name="chevron-down" />
