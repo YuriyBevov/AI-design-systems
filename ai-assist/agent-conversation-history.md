@@ -376,3 +376,47 @@ Assistant config revisions и Origins, полноценный visual diff, draft
 ### Остаётся
 
 Расширить versioned qualification profile и facet narrowing, добавить summary старой истории, retrieval threshold/diversity, latency dashboard/eval/prompt-injection набор, retention purge job и browser/Bitrix fixture matrix. Подтверждённая личность пользователя и перенос между устройствами остаются отдельным signed server-side handoff; HTML-атрибуты не считаются identity.
+
+## 2026-09-08 — Раздел компонентов дизайна
+
+### Изменения
+
+- в основную project-scoped навигацию административной панели добавлен отдельный пункт «Компоненты»;
+- создан каркас страницы библиотеки компонентов; он не выдаёт ещё не описанные паттерны за готовые компоненты.
+
+### Проверки
+
+- lint, typecheck, 123 unit/contract теста и production build прошли;
+- авторизованный SSR-запрос подтвердил route, заголовки, project-scoped href и active navigation state; визуальная browser-проверка не выполнена, поскольку в сессии нет подключённого браузера.
+
+## 2026-09-08 — Унификация кнопок и SVG-иконок
+
+### Изменения
+
+- по аналогии с `icat-test` обычные действия сведены к базовому классу `button`, icon-only действия — к `icon-button`; нейтральный вариант больше не требует избыточного `button--secondary`, а размеры, цвет, фон и форма задаются абстрактными модификаторами;
+- прежний `text-button` удалён из панели и виджета, а contextual-классы оформления submit/launcher в виджете заменены общими модификаторами кнопки;
+- символьные иконки навигации, быстрых действий, ссылки назад, tooltip и закрытия виджета заменены контролируемыми SVG; для панели добавлены локальный sprite и типизированный `UiIcon`;
+- `SettingTooltip` переведён с `span[tabindex]` на нативную icon-only кнопку с `aria-label`;
+- раздел `Компоненты` наполнен рабочими образцами обычных и icon-only кнопок и каталогом текущих SVG-иконок;
+- правила DRY, базовых классов, модификаторов, contextual-классов и запрета Unicode/emoji вместо иконок закреплены в `AGENTS.md`, `guides/markup.md` и `guides/class-names.md`.
+
+### Проверки
+
+- formatter, lint, typecheck и production build прошли; widget bundle после изменения — 35.97 kB gzip;
+- headless Chrome проверил авторизованный каталог на desktop и 390 px: SVG разрешены, горизонтального overflow нет; отдельно проверен открытый widget внутри hostile-style fixture, устаревших `text-button` в Shadow DOM нет;
+- 122 теста проходят штатно; единственный crawler test для `http://[::1]/` упирается в общий timeout 5000 мс из-за системного DNS-вызова и проходит без изменения кода при `--testTimeout=15000`. Это существующая проблема URL policy вне UI-задачи, поэтому crawler-код не менялся.
+
+## 2026-09-08 — Единый кастомный выпадающий список
+
+### Изменения
+
+- по референсу `briefing-app/app/components/base/BaseSelect.vue` в панель добавлен единый generic-компонент `BaseSelect` на `reka-ui`, поддерживающий строковые union-типы, nullable значения, disabled options и доступное имя trigger;
+- все 9 нативных `<select>` на шести рабочих экранах заменены на `BaseSelect`; страницы передают только значение, options и функциональные props, а dropdown-разметка и визуальные стили больше не дублируются;
+- в локальный SVG-спрайт добавлены `chevron-down` и `check`, а рабочие варианты dropdown и новые иконки представлены в разделе `Компоненты`;
+- обязательное использование `BaseSelect` и запрет route-specific/native dropdown закреплены в `AGENTS.md`, `guides/markup.md` и `guides/class-names.md`.
+
+### Проверки
+
+- formatter, lint, typecheck, production build и полный набор из 123 тестов прошли;
+- browser-проверка подтвердила mouse/keyboard selection, portal listbox с option roles, disabled-состояние, SVG-индикаторы и отсутствие overflow на 390 px;
+- runtime-аудит assistant, provider, knowledge documents/detail/sources и prompts подтвердил 10 отрендеренных экземпляров `BaseSelect`, отсутствие нативных `<select>`, unresolved components и error pages.

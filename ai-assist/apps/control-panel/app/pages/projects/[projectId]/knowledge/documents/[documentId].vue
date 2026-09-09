@@ -58,6 +58,13 @@ const isArchived = computed(() => detail.value?.document.status === "archived");
 const selectedVersion = computed<KnowledgeDocumentVersionResponse | undefined>(() =>
   detail.value?.versions.find((version) => version.id === selectedVersionId.value),
 );
+const versionOptions = computed(
+  () =>
+    detail.value?.versions.map((version) => ({
+      value: version.id,
+      label: `Версия ${version.versionNo} · ${formatDate(version.createdAt)}`,
+    })) ?? [],
+);
 
 const productCharacteristicsText = (product: KnowledgeProductInput | null): string =>
   Object.entries(product?.characteristics ?? {})
@@ -310,7 +317,8 @@ const remove = async (): Promise<void> => {
     <header class="page-header">
       <div>
         <NuxtLink class="back-link" :to="`/projects/${projectId}/knowledge/documents`">
-          ← База знаний
+          <UiIcon name="arrow-left" />
+          <span>База знаний</span>
         </NuxtLink>
         <p class="eyebrow">Версионируемая запись</p>
         <h1 class="page-title page-title--compact">
@@ -482,14 +490,14 @@ const remove = async (): Promise<void> => {
           </p>
         </header>
 
-        <label class="form-field">
+        <div class="form-field">
           <span class="form-field__label">Версия для просмотра</span>
-          <select v-model="selectedVersionId" class="form-field__control">
-            <option v-for="version in detail.versions" :key="version.id" :value="version.id">
-              Версия {{ version.versionNo }} · {{ formatDate(version.createdAt) }}
-            </option>
-          </select>
-        </label>
+          <BaseSelect
+            v-model="selectedVersionId"
+            :options="versionOptions"
+            label="Версия для просмотра"
+          />
+        </div>
 
         <article v-if="selectedVersion" class="knowledge-preview">
           <header class="knowledge-preview__header">
@@ -546,7 +554,7 @@ const remove = async (): Promise<void> => {
         <div class="button-group">
           <button
             v-if="detail.document.status === 'published'"
-            class="button button--secondary"
+            class="button"
             type="button"
             @click="unpublishConfirmationVisible = true"
           >
@@ -554,7 +562,7 @@ const remove = async (): Promise<void> => {
           </button>
           <button
             v-if="detail.document.status === 'draft'"
-            class="button button--secondary"
+            class="button"
             type="button"
             @click="archiveConfirmationVisible = true"
           >

@@ -6,13 +6,13 @@ defineProps<{
 </script>
 
 <template>
-  <span
-    class="setting-tooltip"
-    tabindex="0"
+  <button
+    class="icon-button icon-button--tiny setting-tooltip"
+    type="button"
     :aria-describedby="tooltipId"
     aria-label="Показать подсказку"
   >
-    <span class="setting-tooltip__marker" aria-hidden="true">?</span>
+    <UiIcon name="help" />
     <span :id="tooltipId" class="setting-tooltip__bubble" role="tooltip">{{ text }}</span>
-  </span>
+  </button>
 </template>

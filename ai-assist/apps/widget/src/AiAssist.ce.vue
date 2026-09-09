@@ -289,7 +289,7 @@ onBeforeUnmount(() => {
         <div class="chat-widget__header-actions">
           <button
             v-if="sessionToken"
-            class="text-button"
+            class="button button--text"
             type="button"
             :disabled="isLoading || isSending"
             aria-label="Начать новый диалог"
@@ -300,12 +300,14 @@ onBeforeUnmount(() => {
           </button>
           <button
             ref="closeButton"
-            class="icon-button"
+            class="icon-button icon-button--small icon-button--soft"
             type="button"
             aria-label="Закрыть ассистента"
             @click="close"
           >
-            <span aria-hidden="true">×</span>
+            <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="m18 6-12 12M6 6l12 12" />
+            </svg>
           </button>
         </div>
       </header>
@@ -364,7 +366,7 @@ onBeforeUnmount(() => {
           :aria-describedby="statusId"
         />
         <button
-          class="chat-composer__submit"
+          class="button button--primary"
           type="submit"
           :disabled="!draft.trim() || isLoading || isSending || !isAvailable"
         >
@@ -383,7 +385,7 @@ onBeforeUnmount(() => {
 
     <button
       ref="launcher"
-      class="chat-widget__launcher"
+      class="button button--primary button--large button--pill button--shadow"
       type="button"
       :aria-expanded="isOpen"
       :aria-controls="dialogId"
@@ -491,33 +493,103 @@ input {
   margin-top: 2px;
 }
 
-.icon-button,
-.text-button,
-.chat-widget__launcher,
-.chat-composer__submit {
-  border: 0;
-  cursor: pointer;
-}
-
-.icon-button {
-  display: grid;
-  width: 36px;
-  height: 36px;
+.ui-icon {
+  display: block;
+  width: 18px;
+  height: 18px;
   flex: 0 0 auto;
-  place-items: center;
-  border-radius: 50%;
-  background: #edf1ee;
-  color: var(--ai-assist-text);
-  font-size: 24px;
-  line-height: 1;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-width: 2;
+  pointer-events: none;
 }
 
-.text-button {
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  transition:
+    background 140ms ease,
+    border-color 140ms ease,
+    color 140ms ease,
+    transform 140ms ease;
+}
+
+.button--primary {
+  background: var(--ai-assist-accent);
+  color: var(--ai-assist-accent-contrast);
+}
+
+.button--primary:hover {
+  filter: brightness(0.92);
+}
+
+.button--text {
+  min-height: 0;
   padding: 6px 8px;
+  border: 0;
   background: transparent;
   color: var(--ai-assist-accent);
   font-size: 14px;
   font-weight: 700;
+}
+
+.button--large {
+  min-height: 48px;
+}
+
+.button--pill {
+  border-radius: 999px;
+}
+
+.button--shadow {
+  box-shadow: 0 12px 34px rgb(12 25 16 / 20%);
+}
+
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 auto;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ai-assist-text);
+  cursor: pointer;
+  line-height: 0;
+  transition:
+    background 140ms ease,
+    border-color 140ms ease,
+    color 140ms ease,
+    transform 140ms ease;
+}
+
+.icon-button--small {
+  width: 36px;
+  height: 36px;
+}
+
+.icon-button--soft {
+  background: #edf1ee;
+}
+
+.button:active,
+.icon-button:active {
+  transform: translateY(1px);
 }
 
 .message-list {
@@ -587,8 +659,7 @@ input {
   border-top: 1px solid rgb(22 32 25 / 10%);
 }
 
-.chat-composer__control,
-.chat-composer__submit {
+.chat-composer__control {
   min-height: 44px;
   border-radius: 12px;
 }
@@ -600,30 +671,14 @@ input {
   color: var(--ai-assist-text);
 }
 
-.chat-composer__submit,
-.chat-widget__launcher {
-  padding: 10px 16px;
-  background: var(--ai-assist-accent);
-  color: var(--ai-assist-accent-contrast);
-  font-weight: 700;
-}
-
 .chat-widget__note {
   min-height: 28px;
   padding: 0 14px 10px;
 }
 
-.chat-widget__launcher {
-  min-height: 48px;
-  border-radius: 999px;
-  box-shadow: 0 12px 34px rgb(12 25 16 / 20%);
-}
-
+.button:focus-visible,
 .icon-button:focus-visible,
-.text-button:focus-visible,
-.chat-widget__launcher:focus-visible,
-.chat-composer__control:focus-visible,
-.chat-composer__submit:focus-visible {
+.chat-composer__control:focus-visible {
   outline: 2px solid #8bb89a;
   outline-offset: 2px;
 }

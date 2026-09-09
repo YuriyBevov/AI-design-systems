@@ -47,38 +47,42 @@ const logout = async (): Promise<void> => {
 
         <nav v-if="activeProject" class="admin-nav" aria-label="Основная навигация">
           <NuxtLink class="admin-nav__link" to="/">
-            <span aria-hidden="true">⌂</span>
+            <UiIcon class="ui-icon--medium" name="home" />
             Обзор
           </NuxtLink>
           <NuxtLink class="admin-nav__link" :to="`/projects/${activeProject.id}/settings`">
-            <span aria-hidden="true">⚙</span>
+            <UiIcon class="ui-icon--medium" name="settings" />
             Настройки
           </NuxtLink>
           <NuxtLink class="admin-nav__link" :to="`/projects/${activeProject.id}/assistant`">
-            <span aria-hidden="true">◇</span>
+            <UiIcon class="ui-icon--medium" name="assistant" />
             Ассистент
           </NuxtLink>
           <NuxtLink class="admin-nav__link" :to="`/projects/${activeProject.id}/prompts`">
-            <span aria-hidden="true">¶</span>
+            <UiIcon class="ui-icon--medium" name="prompt" />
             Prompts
           </NuxtLink>
           <NuxtLink
             class="admin-nav__link"
             :to="`/projects/${activeProject.id}/knowledge/documents`"
           >
-            <span aria-hidden="true">▤</span>
+            <UiIcon class="ui-icon--medium" name="knowledge" />
             База знаний
+          </NuxtLink>
+          <NuxtLink class="admin-nav__link" :to="`/projects/${activeProject.id}/components`">
+            <UiIcon class="ui-icon--medium" name="components" />
+            Компоненты
           </NuxtLink>
           <NuxtLink
             v-if="activeProject.role === 'owner'"
             class="admin-nav__link"
             :to="`/projects/${activeProject.id}/provider`"
           >
-            <span aria-hidden="true">∿</span>
+            <UiIcon class="ui-icon--medium" name="provider" />
             Провайдер и модели
           </NuxtLink>
           <NuxtLink class="admin-nav__link" :to="`/projects/${activeProject.id}/audit`">
-            <span aria-hidden="true">≡</span>
+            <UiIcon class="ui-icon--medium" name="audit" />
             Журнал аудита
           </NuxtLink>
         </nav>
@@ -87,7 +91,7 @@ const logout = async (): Promise<void> => {
       <div class="account-panel">
         <span class="account-panel__label">Вы вошли как</span>
         <strong class="account-panel__email">{{ session?.user.email }}</strong>
-        <button class="text-button" type="button" :disabled="isLoggingOut" @click="logout">
+        <button class="button button--text" type="button" :disabled="isLoggingOut" @click="logout">
           {{ isLoggingOut ? "Выходим…" : "Выйти" }}
         </button>
       </div>

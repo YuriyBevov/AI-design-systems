@@ -55,12 +55,7 @@ const actionLabel = (action: string): string =>
         <h1 class="page-title page-title--compact">Журнал аудита</h1>
         <p class="page-description">Значимые действия в проекте {{ data?.project.name }}.</p>
       </div>
-      <button
-        class="button button--secondary"
-        type="button"
-        :disabled="status === 'pending'"
-        @click="refresh"
-      >
+      <button class="button" type="button" :disabled="status === 'pending'" @click="refresh">
         {{ status === "pending" ? "Обновляем…" : "Обновить" }}
       </button>
     </header>

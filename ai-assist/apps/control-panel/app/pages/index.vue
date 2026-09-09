@@ -63,17 +63,23 @@ const checkReadiness = async (): Promise<void> => {
 
       <div v-if="project" class="action-grid">
         <NuxtLink class="action-card" :to="`/projects/${project.id}/settings`">
-          <span class="action-card__icon" aria-hidden="true">⚙</span>
+          <span class="action-card__icon" aria-hidden="true">
+            <UiIcon class="ui-icon--large" name="settings" />
+          </span>
           <strong>Настройки проекта</strong>
           <span>Название, локаль, часовой пояс и срок хранения диалогов.</span>
         </NuxtLink>
         <NuxtLink class="action-card" :to="`/projects/${project.id}/audit`">
-          <span class="action-card__icon" aria-hidden="true">≡</span>
+          <span class="action-card__icon" aria-hidden="true">
+            <UiIcon class="ui-icon--large" name="audit" />
+          </span>
           <strong>Журнал аудита</strong>
           <span>Проверить входы и изменения критичных настроек.</span>
         </NuxtLink>
         <NuxtLink class="action-card" :to="`/projects/${project.id}/prompts`">
-          <span class="action-card__icon" aria-hidden="true">¶</span>
+          <span class="action-card__icon" aria-hidden="true">
+            <UiIcon class="ui-icon--large" name="prompt" />
+          </span>
           <strong>Prompts</strong>
           <span>Создать инструкцию, проверить версии и опубликовать production-конфигурацию.</span>
         </NuxtLink>
@@ -82,7 +88,9 @@ const checkReadiness = async (): Promise<void> => {
           class="action-card"
           :to="`/projects/${project.id}/provider`"
         >
-          <span class="action-card__icon" aria-hidden="true">∿</span>
+          <span class="action-card__icon" aria-hidden="true">
+            <UiIcon class="ui-icon--large" name="provider" />
+          </span>
           <strong>AITUNNEL и модели</strong>
           <span>Безопасно подключить ключ и выбрать chat/embedding модели.</span>
         </NuxtLink>
@@ -96,7 +104,7 @@ const checkReadiness = async (): Promise<void> => {
           <h2 id="health-title" class="section-title">Состояние сервисов</h2>
         </div>
         <button
-          class="button button--secondary"
+          class="button"
           type="button"
           :disabled="readiness.status === 'checking'"
           @click="checkReadiness"

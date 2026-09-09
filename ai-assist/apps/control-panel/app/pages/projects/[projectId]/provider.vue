@@ -122,6 +122,18 @@ const formatModel = (model: ProviderModelResponse): string => {
   const price = promptCost !== undefined ? ` · ${promptCost.toFixed(2)} ₽/1M` : "";
   return `${model.id}${providerName}${price}`;
 };
+const chatModelOptions = computed(() => [
+  { value: null, label: "Не выбрана" },
+  ...chatModels.value.map((model) => ({ value: model.id, label: formatModel(model) })),
+]);
+const embeddingModelOptions = computed(() => [
+  { value: null, label: "Не выбрана" },
+  ...embeddingModels.value.map((model) => ({ value: model.id, label: formatModel(model) })),
+]);
+const rerankModelOptions = computed(() => [
+  { value: null, label: "Не используется" },
+  ...rerankModels.value.map((model) => ({ value: model.id, label: formatModel(model) })),
+]);
 
 const saveKey = async (): Promise<void> => {
   const normalizedApiKey = apiKey.value.trim();
@@ -347,7 +359,7 @@ const saveModels = async (): Promise<void> => {
               </button>
               <button
                 v-if="credential"
-                class="button button--secondary"
+                class="button"
                 type="button"
                 :disabled="isTestingKey"
                 @click="testKey"
@@ -357,7 +369,7 @@ const saveModels = async (): Promise<void> => {
             </div>
             <button
               v-if="credential && !deleteConfirmationVisible"
-              class="text-button text-button--danger"
+              class="button button--text button--danger"
               type="button"
               @click="deleteConfirmationVisible = true"
             >
@@ -371,11 +383,7 @@ const saveModels = async (): Promise<void> => {
               <button class="button button--danger" type="button" @click="deleteKey">
                 Удалить окончательно
               </button>
-              <button
-                class="button button--secondary"
-                type="button"
-                @click="deleteConfirmationVisible = false"
-              >
+              <button class="button" type="button" @click="deleteConfirmationVisible = false">
                 Отмена
               </button>
             </div>
@@ -389,12 +397,7 @@ const saveModels = async (): Promise<void> => {
             <p class="eyebrow">Шаг 2</p>
             <h2 id="models-title" class="section-title">Каталог и выбор моделей</h2>
           </div>
-          <button
-            class="button button--secondary"
-            type="button"
-            :disabled="isSyncingModels"
-            @click="syncModels"
-          >
+          <button class="button" type="button" :disabled="isSyncingModels" @click="syncModels">
             {{ isSyncingModels ? "Синхронизируем…" : "Обновить каталог" }}
           </button>
         </header>
@@ -412,41 +415,38 @@ const saveModels = async (): Promise<void> => {
         </div>
 
         <form v-else class="form-stack" @submit.prevent="saveModels">
-          <label class="form-field">
+          <div class="form-field">
             <span class="form-field__label">Chat model</span>
-            <select v-model="modelForm.chatModelId" class="form-field__control">
-              <option :value="null">Не выбрана</option>
-              <option v-for="model in chatModels" :key="model.id" :value="model.id">
-                {{ formatModel(model) }}
-              </option>
-            </select>
+            <BaseSelect
+              v-model="modelForm.chatModelId"
+              :options="chatModelOptions"
+              label="Chat model"
+            />
             <span class="form-field__hint"
               >`auto` допустим, но фактическая модель и стоимость могут меняться.</span
             >
-          </label>
+          </div>
 
-          <label class="form-field">
+          <div class="form-field">
             <span class="form-field__label">Embedding model</span>
-            <select v-model="modelForm.embeddingModelId" class="form-field__control">
-              <option :value="null">Не выбрана</option>
-              <option v-for="model in embeddingModels" :key="model.id" :value="model.id">
-                {{ formatModel(model) }}
-              </option>
-            </select>
+            <BaseSelect
+              v-model="modelForm.embeddingModelId"
+              :options="embeddingModelOptions"
+              label="Embedding model"
+            />
             <span class="form-field__hint"
               >Модель фиксируется: смена потребует полной переиндексации знаний.</span
             >
-          </label>
+          </div>
 
-          <label class="form-field">
+          <div class="form-field">
             <span class="form-field__label">Rerank model — опционально</span>
-            <select v-model="modelForm.rerankModelId" class="form-field__control">
-              <option :value="null">Не используется</option>
-              <option v-for="model in rerankModels" :key="model.id" :value="model.id">
-                {{ formatModel(model) }}
-              </option>
-            </select>
-          </label>
+            <BaseSelect
+              v-model="modelForm.rerankModelId"
+              :options="rerankModelOptions"
+              label="Rerank model"
+            />
+          </div>
 
           <div class="form-grid">
             <label class="form-field">

@@ -290,9 +290,7 @@ const deletePrompt = async (): Promise<void> => {
           публикацией.
         </p>
       </div>
-      <NuxtLink class="button button--secondary" :to="`/projects/${projectId}/prompts`">
-        К списку
-      </NuxtLink>
+      <NuxtLink class="button" :to="`/projects/${projectId}/prompts`"> К списку </NuxtLink>
     </header>
 
     <p
@@ -343,7 +341,7 @@ const deletePrompt = async (): Promise<void> => {
             </label>
           </div>
           <div v-if="canEdit && !isArchived" class="form-actions">
-            <button class="button button--secondary" type="submit" :disabled="isSavingMetadata">
+            <button class="button" type="submit" :disabled="isSavingMetadata">
               {{ isSavingMetadata ? "Сохраняем…" : "Сохранить метаданные" }}
             </button>
           </div>
@@ -373,7 +371,7 @@ const deletePrompt = async (): Promise<void> => {
 
           <div v-if="canEdit && !isArchived" class="form-actions">
             <button
-              class="button button--secondary"
+              class="button"
               type="button"
               :disabled="isSavingRevision || !editorChanged || !draftContent.trim()"
               @click="saveRevision"
@@ -608,7 +606,7 @@ const deletePrompt = async (): Promise<void> => {
         <div class="button-group">
           <button
             v-if="!isArchived"
-            class="button button--secondary"
+            class="button"
             type="button"
             @click="archiveConfirmationVisible = true"
           >
@@ -626,11 +624,7 @@ const deletePrompt = async (): Promise<void> => {
         <div v-if="archiveConfirmationVisible" class="danger-confirmation">
           <p>Архивный prompt нельзя редактировать или публиковать.</p>
           <div class="button-group">
-            <button
-              class="button button--secondary"
-              type="button"
-              @click="archiveConfirmationVisible = false"
-            >
+            <button class="button" type="button" @click="archiveConfirmationVisible = false">
               Отмена
             </button>
             <button
@@ -647,11 +641,7 @@ const deletePrompt = async (): Promise<void> => {
         <div v-if="deleteConfirmationVisible" class="danger-confirmation">
           <p>Удалить можно только prompt, который никогда не публиковался. Операция необратима.</p>
           <div class="button-group">
-            <button
-              class="button button--secondary"
-              type="button"
-              @click="deleteConfirmationVisible = false"
-            >
+            <button class="button" type="button" @click="deleteConfirmationVisible = false">
               Отмена
             </button>
             <button

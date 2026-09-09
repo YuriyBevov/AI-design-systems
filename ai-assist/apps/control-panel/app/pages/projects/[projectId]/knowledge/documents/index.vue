@@ -75,6 +75,10 @@ const statusLabel = (status: KnowledgeDocumentStatus): string =>
 
 const typeLabel = (type: KnowledgeDocumentType): string =>
   ({ page: "Страница", manual: "Документ", product: "Товар" })[type];
+const documentTypeOptions = [
+  { value: "manual", label: "Документ" },
+  { value: "product", label: "Товар" },
+] as const;
 
 const formatDate = (value: string): string =>
   new Intl.DateTimeFormat("ru-RU", {
@@ -176,7 +180,7 @@ const create = async (): Promise<void> => {
         </p>
       </div>
       <div class="button-row page-actions">
-        <NuxtLink class="button button--secondary" :to="`/projects/${projectId}/knowledge/sources`">
+        <NuxtLink class="button" :to="`/projects/${projectId}/knowledge/sources`">
           Источники сайта
         </NuxtLink>
       </div>
@@ -202,7 +206,7 @@ const create = async (): Promise<void> => {
           </div>
           <button
             v-if="canEdit"
-            class="button button--secondary"
+            class="button"
             type="button"
             :disabled="
               isRequestingIndex ||
@@ -272,13 +276,14 @@ const create = async (): Promise<void> => {
 
         <form class="form-stack" @submit.prevent="create">
           <div class="form-grid">
-            <label class="form-field">
+            <div class="form-field">
               <span class="form-field__label">Тип</span>
-              <select v-model="createForm.type" class="form-field__control">
-                <option value="manual">Документ</option>
-                <option value="product">Товар</option>
-              </select>
-            </label>
+              <BaseSelect
+                v-model="createForm.type"
+                :options="documentTypeOptions"
+                label="Тип документа"
+              />
+            </div>
 
             <label class="form-field">
               <span class="form-field__label">Локаль</span>

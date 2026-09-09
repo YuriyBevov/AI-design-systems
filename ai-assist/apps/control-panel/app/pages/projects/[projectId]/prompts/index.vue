@@ -19,6 +19,7 @@ const createForm = reactive<CreatePromptRequest>({
   description: null,
   content: "",
 });
+const promptTypeOptions = [{ value: "system", label: "System prompt" }] as const;
 
 const { data, error, refresh } = await useAsyncData(
   () => `project-prompts-${projectId.value}`,
@@ -135,12 +136,15 @@ const create = async (): Promise<void> => {
               />
             </label>
 
-            <label class="form-field">
+            <div class="form-field">
               <span class="form-field__label">Тип</span>
-              <select v-model="createForm.type" class="form-field__control" disabled>
-                <option value="system">System prompt</option>
-              </select>
-            </label>
+              <BaseSelect
+                v-model="createForm.type"
+                :options="promptTypeOptions"
+                label="Тип prompt"
+                disabled
+              />
+            </div>
 
             <label class="form-field form-field--wide">
               <span class="form-field__label">Описание</span>

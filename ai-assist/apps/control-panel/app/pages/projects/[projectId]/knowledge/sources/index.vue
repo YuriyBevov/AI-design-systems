@@ -44,6 +44,10 @@ const form = reactive({
   maxDepth: 5,
   requestDelayMs: 500,
 });
+const crawlModeOptions = [
+  { value: "limited", label: "Быстрая проверка" },
+  { value: "full", label: "Полный сайт" },
+] as const;
 
 const { data, error, refresh } = await useAsyncData(
   () => `project-knowledge-sources-${projectId.value}`,
@@ -439,10 +443,7 @@ const publishRun = async (): Promise<void> => {
         </p>
       </div>
       <div class="button-row page-actions">
-        <NuxtLink
-          class="button button--secondary"
-          :to="`/projects/${projectId}/knowledge/documents`"
-        >
+        <NuxtLink class="button" :to="`/projects/${projectId}/knowledge/documents`">
           База знаний
         </NuxtLink>
       </div>
@@ -519,10 +520,12 @@ const publishRun = async (): Promise<void> => {
                     text="Быстрый режим ограничен 100 страницами для проверки. Полный режим обходит все найденные URL до общего лимита 5000 страниц."
                   />
                 </div>
-                <select id="crawl-mode" v-model="form.crawlMode" class="form-field__control">
-                  <option value="limited">Быстрая проверка</option>
-                  <option value="full">Полный сайт</option>
-                </select>
+                <BaseSelect
+                  id="crawl-mode"
+                  v-model="form.crawlMode"
+                  :options="crawlModeOptions"
+                  label="Режим обхода"
+                />
               </div>
               <section class="site-structure" aria-labelledby="site-structure-title">
                 <header class="site-structure__header">
@@ -542,7 +545,7 @@ const publishRun = async (): Promise<void> => {
                     </p>
                   </div>
                   <button
-                    class="button button--secondary button--compact"
+                    class="button button--compact"
                     type="button"
                     :disabled="isDiscovering || !form.startUrl"
                     @click="discoverStructure"
@@ -560,10 +563,18 @@ const publishRun = async (): Promise<void> => {
                       >
                     </div>
                     <div v-if="sectionSelections.length" class="button-row">
-                      <button class="text-button" type="button" @click="setAllSections(true)">
+                      <button
+                        class="button button--text"
+                        type="button"
+                        @click="setAllSections(true)"
+                      >
                         Выбрать все
                       </button>
-                      <button class="text-button" type="button" @click="setAllSections(false)">
+                      <button
+                        class="button button--text"
+                        type="button"
+                        @click="setAllSections(false)"
+                      >
                         Снять выбор
                       </button>
                     </div>
@@ -760,7 +771,7 @@ const publishRun = async (): Promise<void> => {
                 <td>
                   <button
                     v-if="source.latestRun"
-                    class="text-button"
+                    class="button button--text"
                     type="button"
                     @click="loadRun(source.latestRun.id)"
                   >
@@ -773,7 +784,7 @@ const publishRun = async (): Promise<void> => {
                   <div class="button-row">
                     <button
                       v-if="canEdit && source.status === 'active'"
-                      class="button button--secondary button--compact"
+                      class="button button--compact"
                       type="button"
                       :disabled="Boolean(runningSourceId) || source.latestRun?.status === 'running'"
                       @click="startCrawl(source)"
@@ -782,7 +793,7 @@ const publishRun = async (): Promise<void> => {
                     </button>
                     <button
                       v-if="canEdit"
-                      class="text-button"
+                      class="button button--text"
                       type="button"
                       @click="toggleSource(source)"
                     >
@@ -893,7 +904,7 @@ const publishRun = async (): Promise<void> => {
               <span>Все доступные на этой странице</span>
             </label>
             <button
-              class="text-button"
+              class="button button--text"
               type="button"
               @click="setAllRunPagesSelected(!selectAllRunPages)"
             >
@@ -980,7 +991,7 @@ const publishRun = async (): Promise<void> => {
           aria-label="Страницы результатов обхода"
         >
           <button
-            class="button button--secondary button--compact"
+            class="button button--compact"
             type="button"
             :disabled="crawlPage <= 1"
             @click="changeCrawlPage(crawlPage - 1)"
@@ -992,7 +1003,7 @@ const publishRun = async (): Promise<void> => {
             записей: {{ selectedRun.pagination.totalItems }}
           </span>
           <button
-            class="button button--secondary button--compact"
+            class="button button--compact"
             type="button"
             :disabled="crawlPage >= selectedRun.pagination.totalPages"
             @click="changeCrawlPage(crawlPage + 1)"

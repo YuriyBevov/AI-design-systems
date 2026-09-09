@@ -267,7 +267,47 @@ is-active is-open is-hidden is-loading is-disabled has-error
 </section>
 ```
 
-## 10. Рекомендуемый словарь AI Assist
+## 10. Кнопки и иконки
+
+Обычная кнопка или ссылка с внешним видом кнопки использует один базовый блок:
+
+```html
+<button class="button" type="button">Отмена</button>
+<button class="button button--primary" type="submit">Сохранить</button>
+<button class="button button--compact" type="button">Проверить</button>
+```
+
+Базовый `button` уже описывает нейтральный вариант. Модификатор добавляется только для реального визуального отличия: `button--primary`, `button--danger`, `button--ghost`, `button--text`, `button--compact`, `button--wide`, `button--with-icon`.
+
+Кнопка только с иконкой всегда использует отдельный базовый блок `icon-button`:
+
+```html
+<button class="icon-button icon-button--compact" type="button" aria-label="Добавить">
+  <svg class="ui-icon" aria-hidden="true">...</svg>
+</button>
+```
+
+Размер, цвет, фон, рамка и форма icon-only кнопки задаются только абстрактными модификаторами `icon-button--*`. Контекстный класс вроде `document-tabs__add` допустим для поведения или размещения, но не содержит визуальные свойства самой кнопки. Если отдельной контекстной задачи нет, такой класс избыточен.
+
+Если кнопка содержит иконку и видимый текст, базовым блоком остаётся `button`, а раскладка задаётся `button--with-icon`. Любая интерфейсная иконка выполняется контролируемым SVG с базовым классом `ui-icon`; Unicode-символы, emoji и icon-font не используются.
+
+Специализированный составной контрол может иметь собственный блок, например `prompt-revision`, если его структура и поведение не являются вариантом обычной кнопки. Внешнее сходство само по себе не является основанием смешивать компоненты.
+
+Согласованные варианты фиксируются в разделе панели `Компоненты` и используют там рабочие классы, а не отдельные демонстрационные копии.
+
+## 11. Выпадающие списки
+
+Одиночный dropdown — самостоятельный компонент `BaseSelect.vue` с корневым блоком `base-select`. Его trigger, список, option states и SVG-иконки реализуются внутри компонента и не переопределяются классами конкретной страницы.
+
+```vue
+<BaseSelect v-model="selectedValue" :options="options" label="Модель ответа" />
+```
+
+Внутренняя структура использует `base-select__value`, `base-select__icon`, `base-select__content`, `base-select__viewport`, `base-select__item`, `base-select__indicator`. Состояния оформляются через `data-state`, `data-highlighted`, `data-disabled` и нативный `disabled`, без параллельных контекстных state-классов.
+
+Route page передаёт только значение, options, доступное имя и функциональные props. Нативный `<select>`, блоки вида `provider-model-select` и дублирующие реализации dropdown запрещены. Согласованные варианты показываются в разделе `Компоненты`.
+
+## 12. Рекомендуемый словарь AI Assist
 
 ### Каркас панели
 
@@ -282,7 +322,10 @@ section-header section-title section-description
 
 ```text
 form-section form-row field field__label field__control field__hint field__error
-button button--primary button--secondary button--danger button--ghost button-row
+base-select base-select__value base-select__icon base-select__content base-select__item
+button button--primary button--danger button--ghost button--text button--compact button--wide
+button--with-icon icon-button icon-button--compact icon-button--tiny icon-button--ghost ui-icon
+button-row
 ```
 
 ### Данные и статусы
@@ -305,7 +348,7 @@ chat-widget message-list chat-message chat-composer citation-list
 
 Словарь не является требованием заранее назначить все эти классы. Класс создается только вместе с реальным компонентом/ролью.
 
-## 11. Чеклист
+## 13. Чеклист
 
 - [ ] Lowercase kebab-case и БЭМ-логика соблюдены.
 - [ ] В имени не больше одного `__`.
@@ -313,6 +356,10 @@ chat-widget message-list chat-message chat-composer citation-list
 - [ ] Имя описывает роль, а не цвет, размер, позицию, порядок или имя слоя.
 - [ ] Компонент можно перенести без переименования.
 - [ ] Повторяемые структуры используют общий класс.
+- [ ] Обычные кнопки используют `button`, icon-only кнопки — `icon-button`, а визуальные различия выражены абстрактными модификаторами.
+- [ ] Контекстный класс кнопки отвечает только за размещение/поведение и отсутствует, если отдельная задача не нужна.
+- [ ] Иконки используют контролируемый SVG и базовый класс `ui-icon`, без текстовых символов и emoji.
+- [ ] Все одиночные dropdown используют `BaseSelect`/`base-select`; нативных `<select>` и страничных копий компонента нет.
 - [ ] Нет классов/оберток «на будущее».
 - [ ] Состояние не дублируется несогласованно в class и ARIA/data.
 - [ ] Styling-классы не используются как Vue/test hooks.

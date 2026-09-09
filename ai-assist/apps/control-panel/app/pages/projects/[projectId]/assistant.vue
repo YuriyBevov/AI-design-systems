@@ -38,6 +38,14 @@ const form = reactive({
     environment: AssistantOriginEnvironment;
   }>,
 });
+const launcherPositionOptions = [
+  { value: "right", label: "Справа" },
+  { value: "left", label: "Слева" },
+] as const;
+const originEnvironmentOptions = [
+  { value: "production", label: "Production" },
+  { value: "preview", label: "Preview" },
+] as const;
 
 const { data, error } = await useAsyncData(
   () => `project-assistant-${projectId.value}`,
@@ -293,17 +301,15 @@ const publish = async (): Promise<void> => {
             />
           </label>
 
-          <label class="form-field">
+          <div class="form-field">
             <span class="form-field__label">Положение кнопки</span>
-            <select
+            <BaseSelect
               v-model="form.launcherPosition"
-              class="form-field__control"
+              :options="launcherPositionOptions"
+              label="Положение кнопки"
               :disabled="!canEdit"
-            >
-              <option value="right">Справа</option>
-              <option value="left">Слева</option>
-            </select>
-          </label>
+            />
+          </div>
 
           <label class="form-field">
             <span class="form-field__label">Акцентный цвет</span>
@@ -366,7 +372,7 @@ const publish = async (): Promise<void> => {
             <h2 class="section-title">Разрешённые Origins</h2>
           </div>
           <button
-            class="button button--secondary"
+            class="button"
             type="button"
             :disabled="!canEdit || form.allowedOrigins.length >= 20"
             @click="addOrigin"
@@ -396,15 +402,17 @@ const publish = async (): Promise<void> => {
                 :disabled="!canEdit"
               />
             </label>
-            <label class="form-field">
+            <div class="form-field">
               <span class="form-field__label">Среда</span>
-              <select v-model="origin.environment" class="form-field__control" :disabled="!canEdit">
-                <option value="production">Production</option>
-                <option value="preview">Preview</option>
-              </select>
-            </label>
+              <BaseSelect
+                v-model="origin.environment"
+                :options="originEnvironmentOptions"
+                label="Среда"
+                :disabled="!canEdit"
+              />
+            </div>
             <button
-              class="text-button text-button--danger assistant-origin__remove"
+              class="button button--text button--danger assistant-origin__remove"
               type="button"
               :disabled="!canEdit || form.allowedOrigins.length <= 1"
               @click="removeOrigin(index)"
@@ -466,7 +474,7 @@ const publish = async (): Promise<void> => {
 
         <div class="form-actions form-actions--split">
           <button
-            class="button button--secondary"
+            class="button"
             type="button"
             :disabled="!canEdit || isPublishing || !data.hasUnpublishedChanges"
             @click="publish"
