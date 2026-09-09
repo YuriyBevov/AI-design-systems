@@ -16,6 +16,7 @@ const projectId = computed(() => String(route.params.projectId));
 const isCreating = ref(false);
 const isRequestingIndex = ref(false);
 const message = ref<{ type: "success" | "error"; text: string } | null>(null);
+useToastMessage(message);
 const createForm = reactive({
   type: "manual" as KnowledgeDocumentType,
   title: "",
@@ -176,15 +177,6 @@ const create = async (): Promise<void> => {
         </NuxtLink>
       </div>
     </header>
-
-    <p
-      v-if="message"
-      class="prompt-message"
-      :class="`prompt-message--${message.type}`"
-      role="status"
-    >
-      {{ message.text }}
-    </p>
 
     <div v-if="error" class="empty-state" role="alert">База знаний недоступна.</div>
 

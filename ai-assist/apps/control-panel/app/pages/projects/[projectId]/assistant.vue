@@ -15,6 +15,8 @@ const isPublishing = ref(false);
 const isSavingRetention = ref(false);
 const message = ref<{ type: "success" | "error"; text: string } | null>(null);
 const retentionMessage = ref<{ type: "success" | "error"; text: string } | null>(null);
+useToastMessage(message);
+useToastMessage(retentionMessage);
 const retentionDays = ref(30);
 let nextOriginKey = 0;
 const createOriginRow = (origin: string, environment: AssistantOriginEnvironment) => ({
@@ -246,15 +248,6 @@ const publish = async (): Promise<void> => {
     </div>
 
     <template v-else-if="data">
-      <p
-        v-if="message"
-        class="form-message assistant-message"
-        :class="`form-message--${message.type}`"
-        role="status"
-      >
-        {{ message.text }}
-      </p>
-
       <section class="panel assistant-summary" aria-labelledby="assistant-identity-title">
         <header class="section-header">
           <div>
@@ -293,7 +286,7 @@ const publish = async (): Promise<void> => {
           </p>
         </header>
 
-        <div v-if="projectSettingsError" class="form-message form-message--error" role="alert">
+        <div v-if="projectSettingsError" class="form-note form-note--error" role="alert">
           Настройка срока хранения недоступна.
         </div>
 
@@ -313,15 +306,6 @@ const publish = async (): Promise<void> => {
               0 — хранить только до&nbsp;окончания текущей сессии. Максимум — 3650 дней.
             </span>
           </label>
-
-          <p
-            v-if="retentionMessage"
-            class="form-message"
-            :class="`form-message--${retentionMessage.type}`"
-            role="status"
-          >
-            {{ retentionMessage.text }}
-          </p>
 
           <div class="form-actions">
             <button
@@ -546,7 +530,7 @@ const publish = async (): Promise<void> => {
           </label>
         </div>
 
-        <p v-if="!canEdit" class="form-message">
+        <p v-if="!canEdit" class="form-note">
           Только администратор может изменять и&nbsp;публиковать настройки.
         </p>
 

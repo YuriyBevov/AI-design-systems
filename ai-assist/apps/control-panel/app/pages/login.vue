@@ -7,6 +7,7 @@ const session = useAdminSessionState();
 const credentials = reactive({ email: "", password: "" });
 const errorMessage = ref("");
 const isSubmitting = ref(false);
+useToastMessage(errorMessage);
 
 const submit = async (): Promise<void> => {
   errorMessage.value = "";
@@ -50,7 +51,7 @@ const submit = async (): Promise<void> => {
             autocomplete="username"
             maxlength="320"
             required
-          >
+          />
         </label>
 
         <label class="form-field">
@@ -63,12 +64,8 @@ const submit = async (): Promise<void> => {
             autocomplete="current-password"
             maxlength="128"
             required
-          >
+          />
         </label>
-
-        <p v-if="errorMessage" class="form-message form-message--error" role="alert">
-          {{ errorMessage }}
-        </p>
 
         <button class="button button--primary button--wide" type="submit" :disabled="isSubmitting">
           {{ isSubmitting ? "Входим…" : "Войти" }}

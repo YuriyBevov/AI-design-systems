@@ -21,6 +21,7 @@ const unpublishConfirmationVisible = ref(false);
 const archiveConfirmationVisible = ref(false);
 const deleteConfirmationVisible = ref(false);
 const message = ref<{ type: "success" | "error"; text: string } | null>(null);
+useToastMessage(message);
 const form = reactive({
   title: "",
   content: "",
@@ -331,15 +332,6 @@ const remove = async (): Promise<void> => {
         {{ statusLabel }}
       </span>
     </header>
-
-    <p
-      v-if="message"
-      class="prompt-message"
-      :class="`prompt-message--${message.type}`"
-      role="status"
-    >
-      {{ message.text }}
-    </p>
 
     <div v-if="error" class="empty-state" role="alert">Документ недоступен.</div>
 

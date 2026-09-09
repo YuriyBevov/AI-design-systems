@@ -35,6 +35,7 @@ type SectionSelection = SiteStructureSection & {
 };
 const sectionSelections = ref<SectionSelection[]>([]);
 const message = ref<{ type: "success" | "error"; text: string } | null>(null);
+useToastMessage(message);
 const form = reactive({
   name: "Сайт магазина",
   startUrl: "",
@@ -449,14 +450,6 @@ const publishRun = async (): Promise<void> => {
       </div>
     </header>
 
-    <p
-      v-if="message"
-      class="prompt-message"
-      :class="`prompt-message--${message.type}`"
-      role="status"
-    >
-      {{ message.text }}
-    </p>
     <div v-if="error" class="empty-state" role="alert">Источники недоступны.</div>
 
     <template v-else-if="data">

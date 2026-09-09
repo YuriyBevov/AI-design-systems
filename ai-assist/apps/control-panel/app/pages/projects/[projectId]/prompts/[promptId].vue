@@ -23,6 +23,7 @@ const isDeleting = ref(false);
 const archiveConfirmationVisible = ref(false);
 const deleteConfirmationVisible = ref(false);
 const message = ref<{ type: "success" | "error"; text: string } | null>(null);
+useToastMessage(message);
 const previewQuestion = ref("");
 const previewResult = ref<PromptPreviewResponse | null>(null);
 
@@ -292,15 +293,6 @@ const deletePrompt = async (): Promise<void> => {
       </div>
       <NuxtLink class="button" :to="`/projects/${projectId}/prompts`"> К списку </NuxtLink>
     </header>
-
-    <p
-      v-if="message"
-      class="prompt-message"
-      :class="`prompt-message--${message.type}`"
-      role="status"
-    >
-      {{ message.text }}
-    </p>
 
     <div v-if="error" class="empty-state" role="alert">Prompt не найден или недоступен.</div>
 

@@ -17,6 +17,7 @@ const isSyncingModels = ref(false);
 const isSavingModels = ref(false);
 const deleteConfirmationVisible = ref(false);
 const message = ref<{ type: "success" | "error"; text: string } | null>(null);
+useToastMessage(message);
 const modelForm = reactive({
   chatModelId: null as string | null,
   embeddingModelId: null as string | null,
@@ -272,15 +273,6 @@ const saveModels = async (): Promise<void> => {
     </div>
 
     <template v-else-if="data">
-      <p
-        v-if="message"
-        class="form-message provider-message"
-        :class="`form-message--${message.type}`"
-        role="status"
-      >
-        {{ message.text }}
-      </p>
-
       <section class="panel" aria-labelledby="credential-title">
         <header class="section-header">
           <div>

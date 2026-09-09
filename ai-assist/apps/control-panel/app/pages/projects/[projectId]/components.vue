@@ -23,6 +23,7 @@ const iconSamples = [
 const selectValue = ref("balanced");
 const checkboxValue = ref(false);
 const isModalPreviewOpen = ref(false);
+const toast = useToast();
 const selectOptions = [
   { value: "fast", label: "Быстрый" },
   { value: "balanced", label: "Сбалансированный" },
@@ -171,6 +172,35 @@ const selectOptions = [
       <div class="component-preview">
         <button class="button" type="button" @click="isModalPreviewOpen = true">
           Открыть пример
+        </button>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="toast-components-title">
+      <header class="section-header">
+        <div>
+          <p class="eyebrow">Обратная связь</p>
+          <h2 id="toast-components-title" class="section-title">Уведомления</h2>
+        </div>
+        <p class="section-description">
+          Результаты действий показываются единым стеком тостов справа внизу экрана.
+        </p>
+      </header>
+
+      <div class="component-preview">
+        <button
+          class="button button--primary"
+          type="button"
+          @click="toast.success('Изменения сохранены')"
+        >
+          Показать успешное
+        </button>
+        <button
+          class="button button--danger"
+          type="button"
+          @click="toast.error('Не удалось выполнить действие')"
+        >
+          Показать ошибку
         </button>
       </div>
     </section>

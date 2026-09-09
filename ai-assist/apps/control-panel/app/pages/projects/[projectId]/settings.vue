@@ -13,6 +13,7 @@ const form = reactive({
 });
 const isSaving = ref(false);
 const message = ref<{ type: "success" | "error"; text: string } | null>(null);
+useToastMessage(message);
 
 const { data: project, error } = await useAsyncData(
   () => `project-settings-${projectId.value}`,
@@ -114,10 +115,7 @@ const save = async (): Promise<void> => {
         </div>
       </div>
 
-      <p v-if="!canEdit" class="form-message">Только администратор может изменять эти настройки.</p>
-      <p v-if="message" class="form-message" :class="`form-message--${message.type}`" role="status">
-        {{ message.text }}
-      </p>
+      <p v-if="!canEdit" class="form-note">Только администратор может изменять эти настройки.</p>
 
       <div class="form-actions">
         <button class="button button--primary" type="submit" :disabled="!canEdit || isSaving">

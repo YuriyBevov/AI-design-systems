@@ -24,6 +24,7 @@ const isSaving = ref(false);
 const isUserModalOpen = ref(false);
 const pendingUserId = ref<string | null>(null);
 const message = ref<{ type: "success" | "error"; text: string } | null>(null);
+useToastMessage(message);
 
 const [{ data: users, error: usersError, refresh: refreshUsers }, { data: projects }] =
   await Promise.all([
@@ -180,8 +181,7 @@ const changeStatus = async (user: UserResponse): Promise<void> => {
     }
     message.value = {
       type: "success",
-      text:
-        user.status === "active" ? "Пользователь деактивирован." : "Пользователь активирован.",
+      text: user.status === "active" ? "Пользователь деактивирован." : "Пользователь активирован.",
     };
   } catch (requestError) {
     message.value = { type: "error", text: requestErrorMessage(requestError) };
@@ -214,15 +214,6 @@ const changeStatus = async (user: UserResponse): Promise<void> => {
           <h2 id="user-list-title" class="section-title">Все пользователи</h2>
         </div>
       </header>
-
-      <p
-        v-if="message && !isUserModalOpen"
-        class="form-message panel__message"
-        :class="`form-message--${message.type}`"
-        role="status"
-      >
-        {{ message.text }}
-      </p>
 
       <div v-if="usersError" class="empty-state" role="alert">
         Не удалось загрузить пользователей.
@@ -347,15 +338,6 @@ const changeStatus = async (user: UserResponse): Promise<void> => {
             />
           </div>
         </fieldset>
-
-        <p
-          v-if="message"
-          class="form-message"
-          :class="`form-message--${message.type}`"
-          role="status"
-        >
-          {{ message.text }}
-        </p>
       </form>
 
       <template #footer>

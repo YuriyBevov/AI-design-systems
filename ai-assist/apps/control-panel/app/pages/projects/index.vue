@@ -17,6 +17,7 @@ const isCreating = ref(false);
 const pendingProjectId = ref<string | null>(null);
 const deleteConfirmationId = ref<string | null>(null);
 const message = ref<{ type: "success" | "error"; text: string } | null>(null);
+useToastMessage(message);
 
 const {
   data: projects,
@@ -225,15 +226,6 @@ const deleteProject = async (project: ProjectResponse): Promise<void> => {
             и audit. Один ключ можно затем вручную указать в нескольких проектах.
           </p>
         </div>
-
-        <p
-          v-if="message"
-          class="form-message"
-          :class="`form-message--${message.type}`"
-          role="status"
-        >
-          {{ message.text }}
-        </p>
 
         <div class="form-actions">
           <button class="button button--primary" type="submit" :disabled="isCreating">

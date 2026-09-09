@@ -13,6 +13,7 @@ const requestFetch = useRequestFetch();
 const projectId = computed(() => String(route.params.projectId));
 const isCreating = ref(false);
 const message = ref<{ type: "success" | "error"; text: string } | null>(null);
+useToastMessage(message);
 const createForm = reactive<CreatePromptRequest>({
   type: "system",
   name: "",
@@ -99,15 +100,6 @@ const create = async (): Promise<void> => {
         Версия {{ data.promptList.activePublication.revisionNo }} активна
       </span>
     </header>
-
-    <p
-      v-if="message"
-      class="prompt-message"
-      :class="`prompt-message--${message.type}`"
-      role="status"
-    >
-      {{ message.text }}
-    </p>
 
     <div v-if="error" class="empty-state" role="alert">Раздел prompts недоступен.</div>
 
