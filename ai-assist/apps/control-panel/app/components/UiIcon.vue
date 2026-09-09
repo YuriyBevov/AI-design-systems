@@ -11,6 +11,7 @@ type UiIconName =
   | "home"
   | "knowledge"
   | "plus"
+  | "projects"
   | "prompt"
   | "provider"
   | "settings";

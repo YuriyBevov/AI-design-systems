@@ -20,7 +20,7 @@ import {
 } from "drizzle-orm/pg-core";
 
 export const userStatus = pgEnum("user_status", ["invited", "active", "disabled"]);
-export const projectStatus = pgEnum("project_status", ["active", "archived"]);
+export const projectStatus = pgEnum("project_status", ["active", "suspended", "archived"]);
 export const projectRole = pgEnum("project_role", ["owner", "editor", "viewer"]);
 export const providerCredentialStatus = pgEnum("provider_credential_status", [
   "verified",

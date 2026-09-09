@@ -49,6 +49,8 @@ GET    /projects
 POST   /projects
 GET    /projects/{projectId}
 PATCH  /projects/{projectId}
+PATCH  /projects/{projectId}/status
+DELETE /projects/{projectId}
 GET    /projects/{projectId}/members
 POST   /projects/{projectId}/members
 PATCH  /projects/{projectId}/members/{userId}
@@ -61,7 +63,13 @@ POST   /projects/{projectId}/assistant/rotate-public-id
 GET    /projects/{projectId}/assistant/embed
 ```
 
-На текущем вертикальном срезе реализованы `GET /projects`, `GET/PATCH /projects/{projectId}`, а также чтение, сохранение черновика и публикация настроек assistant. Изменение и публикация assistant доступны Owner, требуют session cookie, точный same-origin request, CSRF header и актуальный `expectedVersion`. Origins нормализуются до exact scheme/host/port; wildcard, credentials, path, query и fragment отклоняются. HTTP разрешён только для локального preview, production Origin требует HTTPS. Неизвестный или недоступный tenant resource возвращает одинаковый `404`.
+Реализованные project endpoints позволяют получить управляемый список, создать, изменить, приостановить/возобновить и безопасно удалить проект. `POST /projects` принимает только имя, IANA timezone и nullable `templateProjectId`. Уникальный slug всегда генерируется сервером и не является пользовательской настройкой. В текущей версии locale фиксирована как `ru` и также не выводится в интерфейс. Панель предлагает все региональные IANA identifiers России, покрывающие 11 UTC-смещений. Новый проект получает Owner membership, новый assistant/public id и пустые индивидуальные настройки.
+
+Если передан `templateProjectId`, инициатор должен быть Owner активного проекта-шаблона. Копируются только draft-настройки поведения/оформления assistant, политика срока хранения диалогов и последние revision неархивированных prompts. Origins/домены, contact fallback, provider credentials, model settings, knowledge, publications, conversations и audit всегда исключены. Без шаблона срок хранения по умолчанию равен 30 дням. В интерфейсе эта политика находится в разделе «Ассистент» и сохраняется сразу через `PATCH /projects/{projectId}`, независимо от публикации черновика. Один внешний provider key допускается вручную сохранить в нескольких проектах, но каждый credential остаётся отдельной project-scoped записью и автоматически не копируется.
+
+`PATCH /projects/{projectId}/status` принимает только `{ "status": "active" | "suspended" }` и доступен Owner с CSRF. Suspended-проект остаётся в управляемом списке, но исключается из обычного project scope, public widget и worker runtime до возобновления. `DELETE /projects/{projectId}` требует Owner, CSRF и recent authentication и выполняет soft-delete в `archived`; tenant history и audit физически не удаляются. Archived-проекты не возвращаются в `GET /projects`.
+
+Чтение, сохранение черновика и публикация настроек assistant доступны в активном проекте. Изменение и публикация assistant доступны Owner, требуют session cookie, точный same-origin request, CSRF header и актуальный `expectedVersion`. Origins нормализуются до exact scheme/host/port; wildcard, credentials, path, query и fragment отклоняются. HTTP разрешён только для локального preview, production Origin требует HTTPS. Неизвестный, недоступный или неактивный tenant resource возвращает одинаковый `404`.
 
 Черновик настроек создаёт новую immutable config revision. Публикация настроек создаёт новую `assistant_publication`, повторно используя активную prompt revision и её model snapshot, поэтому production меняется атомарно. Первая публикация требует уже опубликованный основной system prompt, выбранную chat-модель и хотя бы один Origin. `rotate-public-id` и `embed` пока остаются проектным контрактом следующего среза.
 

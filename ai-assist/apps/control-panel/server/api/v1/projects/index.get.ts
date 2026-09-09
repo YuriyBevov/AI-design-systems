@@ -1,8 +1,7 @@
-import { adminSessionResponseSchema } from "@ai-assist/contracts";
+import { projectListResponseSchema } from "@ai-assist/contracts";
 
-import { getAdminSessionResponse } from "../../../services/auth";
+import { listProjects } from "../../../services/projects";
 
-export default defineEventHandler(async (event) => {
-  const session = adminSessionResponseSchema.parse(await getAdminSessionResponse(event));
-  return session.projects;
-});
+export default defineEventHandler(async (event) =>
+  projectListResponseSchema.parse(await listProjects(event)),
+);

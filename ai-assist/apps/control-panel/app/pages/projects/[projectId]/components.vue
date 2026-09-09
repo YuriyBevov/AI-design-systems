@@ -6,6 +6,7 @@ const iconSamples = [
   { name: "prompt", label: "Prompts" },
   { name: "knowledge", label: "База знаний" },
   { name: "components", label: "Компоненты" },
+  { name: "projects", label: "Проекты" },
   { name: "provider", label: "Провайдер" },
   { name: "audit", label: "Аудит" },
   { name: "arrow-left", label: "Назад" },

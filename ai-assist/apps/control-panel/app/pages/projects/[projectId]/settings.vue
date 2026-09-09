@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { ProjectResponse, UpdateProjectRequest } from "@ai-assist/contracts";
 
+import { russianTimezoneOptions } from "~/utils/project-options";
+
 const route = useRoute();
 const session = useAdminSessionState();
 const projectId = computed(() => String(route.params.projectId));
@@ -8,8 +10,6 @@ const requestFetch = useRequestFetch();
 const form = reactive({
   name: "",
   timezone: "",
-  defaultLocale: "",
-  conversationRetentionDays: 30,
 });
 const isSaving = ref(false);
 const message = ref<{ type: "success" | "error"; text: string } | null>(null);
@@ -25,8 +25,6 @@ watch(
     if (!value) return;
     form.name = value.name;
     form.timezone = value.timezone;
-    form.defaultLocale = value.defaultLocale;
-    form.conversationRetentionDays = value.conversationRetentionDays;
   },
   { immediate: true },
 );
@@ -41,8 +39,6 @@ const save = async (): Promise<void> => {
   const update: UpdateProjectRequest = {
     name: form.name,
     timezone: form.timezone,
-    defaultLocale: form.defaultLocale,
-    conversationRetentionDays: form.conversationRetentionDays,
   };
 
   try {
@@ -88,48 +84,18 @@ const save = async (): Promise<void> => {
             maxlength="160"
             required
             :disabled="!canEdit"
-          >
+          />
         </label>
 
-        <label class="form-field">
+        <div class="form-field">
           <span class="form-field__label">Часовой пояс</span>
-          <input
-            v-model.trim="form.timezone"
-            class="form-field__control"
-            type="text"
-            maxlength="80"
-            placeholder="Europe/Moscow"
-            required
+          <BaseSelect
+            v-model="form.timezone"
+            :options="russianTimezoneOptions"
+            label="Часовой пояс проекта"
             :disabled="!canEdit"
-          >
-        </label>
-
-        <label class="form-field">
-          <span class="form-field__label">Локаль</span>
-          <input
-            v-model.trim="form.defaultLocale"
-            class="form-field__control"
-            type="text"
-            maxlength="16"
-            placeholder="ru"
-            required
-            :disabled="!canEdit"
-          >
-        </label>
-
-        <label class="form-field form-field--wide">
-          <span class="form-field__label">Хранение диалогов, дней</span>
-          <input
-            v-model.number="form.conversationRetentionDays"
-            class="form-field__control"
-            type="number"
-            min="0"
-            max="3650"
-            required
-            :disabled="!canEdit"
-          >
-          <span class="form-field__hint">0 отключает хранение. Максимум — 3650 дней.</span>
-        </label>
+          />
+        </div>
       </div>
 
       <div class="readonly-summary">
@@ -144,12 +110,7 @@ const save = async (): Promise<void> => {
       </div>
 
       <p v-if="!canEdit" class="form-message">Только владелец может изменять эти настройки.</p>
-      <p
-        v-if="message"
-        class="form-message"
-        :class="`form-message--${message.type}`"
-        role="status"
-      >
+      <p v-if="message" class="form-message" :class="`form-message--${message.type}`" role="status">
         {{ message.text }}
       </p>
 

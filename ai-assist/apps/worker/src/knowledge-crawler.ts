@@ -336,7 +336,7 @@ export const createKnowledgeCrawlProcessor =
           )
           .limit(1),
         input.database.db
-          .select({ defaultLocale: projects.defaultLocale })
+          .select({ defaultLocale: projects.defaultLocale, status: projects.status })
           .from(projects)
           .where(eq(projects.id, data.projectId))
           .limit(1),
@@ -345,6 +345,9 @@ export const createKnowledgeCrawlProcessor =
         throw new KnowledgeCrawlError("CRAWL_SOURCE_NOT_ACTIVE");
       }
       if (!project) throw new KnowledgeCrawlError("CRAWL_PROJECT_NOT_FOUND");
+      if (project.status !== "active") {
+        throw new KnowledgeCrawlError("CRAWL_PROJECT_NOT_ACTIVE");
+      }
       const settings = urlKnowledgeSourceSettingsSchema.parse(source.settings);
       await input.database.db
         .delete(knowledgeCrawlPages)

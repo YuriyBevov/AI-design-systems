@@ -28,7 +28,13 @@
 
 ### `projects`
 
-`id`, `name`, `slug`, `status`, `timezone`, `default_locale`, `conversation_retention_days`, timestamps.
+`id`, `name`, `slug`, `status(active|suspended|archived)`, `timezone`, `default_locale`, `conversation_retention_days`, timestamps.
+
+`slug` — уникальный человекочитаемый технический код проекта, который всегда формируется сервером из названия с автоматическим разрешением коллизий и не редактируется пользователем. `timezone` хранит IANA identifier для расписаний и отображения локального времени. Панель предлагает все региональные IANA-зоны России, покрывающие 11 действующих UTC-смещений. `default_locale` пока фиксирован как `ru`: поле остаётся в модели для совместимости, но не является пользовательской настройкой. `conversation_retention_days` физически хранится вместе с проектом, однако относится к эксплуатационной конфигурации assistant и редактируется в его разделе.
+
+`active` разрешает административные операции, public widget и фоновые задания. `suspended` сохраняет данные проекта, но немедленно исключает его из runtime, обычного project scope и новых worker-заданий; Owner может вернуть проект в `active`. Пользовательское удаление переводит проект в терминальное состояние `archived`: он исчезает из списка управления, но история, audit и tenant-owned данные сохраняются до отдельной retention/purge-процедуры.
+
+Создание проекта всегда создаёт нового assistant с новым непредсказуемым `public_id`, собственным черновиком конфигурации и Owner membership. При выборе проекта-шаблона копируется только allowlist повторно используемых настроек: визуальная/поведенческая конфигурация assistant, его политика срока хранения диалогов и последние revision неархивированных prompts. Origins/домены, contact fallback, provider credentials, model settings, knowledge, publications, conversations и audit не копируются. Ключ провайдера остаётся project-scoped записью; один и тот же внешний ключ можно вручную сохранить в нескольких проектах, но у каждого будут собственные envelope, lifecycle и audit.
 
 ### `project_memberships`
 

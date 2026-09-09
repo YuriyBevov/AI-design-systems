@@ -420,3 +420,25 @@ Assistant config revisions и Origins, полноценный visual diff, draft
 - formatter, lint, typecheck, production build и полный набор из 123 тестов прошли;
 - browser-проверка подтвердила mouse/keyboard selection, portal listbox с option roles, disabled-состояние, SVG-индикаторы и отсутствие overflow на 390 px;
 - runtime-аудит assistant, provider, knowledge documents/detail/sources и prompts подтвердил 10 отрендеренных экземпляров `BaseSelect`, отсутствие нативных `<select>`, unresolved components и error pages.
+
+## 2026-09-09 — Управление проектами и безопасное копирование
+
+### Изменения
+
+- перед началом работы чистое состояние ветки сохранено коммитом `625e20b` и отправлено в `origin/YuriyBevov/ai-assist`;
+- в глобальную навигацию добавлен раздел «Проекты» со страницей создания, списка, приостановки, возобновления и удаления проектов; раздел остаётся доступен, даже если активных проектов нет;
+- жизненный цикл расширен состояниями `active|suspended|archived`: приостановленный проект остаётся в управляемом списке, но исключается из обычного project scope, public widget и worker runtime; удаление реализовано как терминальный soft-delete с сохранением истории и audit;
+- создание проекта транзакционно создаёт Owner membership, новый assistant/public id и первый immutable config draft; уникальный slug всегда генерируется сервером, а коллизии разрешаются автоматически;
+- создание из активного проекта-шаблона копирует только draft-конфигурацию поведения/оформления, политику срока хранения диалогов и последние revision неархивированных prompts; домены, contact fallback, provider credentials, model settings, знания, публикации, диалоги и audit не копируются;
+- одинаковый внешний provider key разрешено вручную сохранить в нескольких проектах, но каждая запись остаётся независимо зашифрованной и project-scoped;
+- технический slug и фиксированная locale `ru` убраны из интерфейса создания и настроек; срок хранения диалогов убран из проекта и перенесён в отдельную операционную настройку раздела «Ассистент»;
+- свободный ввод timezone на экранах создания и настроек заменён единым `BaseSelect` с 27 региональными IANA-зонами России, покрывающими все 11 действующих UTC-смещений;
+- решение и контракты закреплены в ADR-005, `data-model.md` и `api-contract.md`; добавлена миграция `0009_fixed_rawhide_kid.sql` и сквозной сценарий `smoke:projects`.
+
+### Проверки
+
+- миграция `0009` применена к локальной PostgreSQL;
+- `smoke:projects` прошёл создание и автоматическое разрешение коллизии slug, чужой template, allowlist-копирование, изоляцию ключа/моделей/БЗ, новый public id, suspend/resume, недоступность suspended scope и soft-delete; `smoke:admin` и `smoke:assistant` также прошли;
+- formatter, XML validation, lint, typecheck, 129 тестов и production build прошли; известный системный DNS-вызов crawler-теста для `http://[::1]/` потребовал прежний лимит 15 секунд вместо штатных 5;
+- headless Chrome проверил `/projects`, настройки, «Ассистент» и формы БЗ на 1440 px и ключевые экраны на 390 px: технический slug и locale отсутствуют, срок хранения доступен только в «Ассистенте», подпись под timezone удалена, нативных select и горизонтального overflow нет.
+- отдельные UI-тесты проверяют полноту и уникальность 27 IANA identifiers, покрытие 11 UTC-смещений и поддержку каждой зоны текущим runtime; браузер подтвердил scrollable listbox из 27 options на desktop/mobile и отсутствие overflow.

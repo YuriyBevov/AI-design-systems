@@ -64,6 +64,13 @@
       "when": 1788376079661,
       "tag": "0008_breezy_manta",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1788945625910,
+      "tag": "0009_fixed_rawhide_kid",
+      "breakpoints": true
     }
   ]
 }

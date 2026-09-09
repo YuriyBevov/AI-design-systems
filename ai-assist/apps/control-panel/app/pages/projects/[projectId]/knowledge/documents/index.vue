@@ -21,7 +21,6 @@ const createForm = reactive({
   title: "",
   content: "",
   canonicalUrl: "",
-  locale: "",
   tags: "",
 });
 
@@ -54,14 +53,6 @@ watch(
 onBeforeUnmount(() => {
   if (indexPollTimer) clearTimeout(indexPollTimer);
 });
-
-watch(
-  () => data.value?.project.defaultLocale,
-  (locale) => {
-    if (locale && !createForm.locale) createForm.locale = locale;
-  },
-  { immediate: true },
-);
 
 const role = computed(
   () =>
@@ -126,7 +117,7 @@ const create = async (): Promise<void> => {
     title: createForm.title,
     content: createForm.content,
     canonicalUrl: createForm.canonicalUrl.trim() || null,
-    locale: createForm.locale,
+    locale: "ru",
     tags: createForm.tags
       .split(",")
       .map((tag) => tag.trim())
@@ -284,17 +275,6 @@ const create = async (): Promise<void> => {
                 label="Тип документа"
               />
             </div>
-
-            <label class="form-field">
-              <span class="form-field__label">Локаль</span>
-              <input
-                v-model.trim="createForm.locale"
-                class="form-field__control"
-                type="text"
-                maxlength="16"
-                required
-              />
-            </label>
 
             <label class="form-field form-field--wide">
               <span class="form-field__label">Название</span>

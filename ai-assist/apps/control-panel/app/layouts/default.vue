@@ -45,46 +45,52 @@ const logout = async (): Promise<void> => {
           <span class="role-badge">{{ activeProject.role }}</span>
         </div>
 
-        <nav v-if="activeProject" class="admin-nav" aria-label="Основная навигация">
+        <nav class="admin-nav" aria-label="Основная навигация">
           <NuxtLink class="admin-nav__link" to="/">
             <UiIcon class="ui-icon--medium" name="home" />
             Обзор
           </NuxtLink>
-          <NuxtLink class="admin-nav__link" :to="`/projects/${activeProject.id}/settings`">
-            <UiIcon class="ui-icon--medium" name="settings" />
-            Настройки
+          <NuxtLink class="admin-nav__link" to="/projects">
+            <UiIcon class="ui-icon--medium" name="projects" />
+            Проекты
           </NuxtLink>
-          <NuxtLink class="admin-nav__link" :to="`/projects/${activeProject.id}/assistant`">
-            <UiIcon class="ui-icon--medium" name="assistant" />
-            Ассистент
-          </NuxtLink>
-          <NuxtLink class="admin-nav__link" :to="`/projects/${activeProject.id}/prompts`">
-            <UiIcon class="ui-icon--medium" name="prompt" />
-            Prompts
-          </NuxtLink>
-          <NuxtLink
-            class="admin-nav__link"
-            :to="`/projects/${activeProject.id}/knowledge/documents`"
-          >
-            <UiIcon class="ui-icon--medium" name="knowledge" />
-            База знаний
-          </NuxtLink>
-          <NuxtLink class="admin-nav__link" :to="`/projects/${activeProject.id}/components`">
-            <UiIcon class="ui-icon--medium" name="components" />
-            Компоненты
-          </NuxtLink>
-          <NuxtLink
-            v-if="activeProject.role === 'owner'"
-            class="admin-nav__link"
-            :to="`/projects/${activeProject.id}/provider`"
-          >
-            <UiIcon class="ui-icon--medium" name="provider" />
-            Провайдер и модели
-          </NuxtLink>
-          <NuxtLink class="admin-nav__link" :to="`/projects/${activeProject.id}/audit`">
-            <UiIcon class="ui-icon--medium" name="audit" />
-            Журнал аудита
-          </NuxtLink>
+          <template v-if="activeProject">
+            <NuxtLink class="admin-nav__link" :to="`/projects/${activeProject.id}/settings`">
+              <UiIcon class="ui-icon--medium" name="settings" />
+              Настройки
+            </NuxtLink>
+            <NuxtLink class="admin-nav__link" :to="`/projects/${activeProject.id}/assistant`">
+              <UiIcon class="ui-icon--medium" name="assistant" />
+              Ассистент
+            </NuxtLink>
+            <NuxtLink class="admin-nav__link" :to="`/projects/${activeProject.id}/prompts`">
+              <UiIcon class="ui-icon--medium" name="prompt" />
+              Prompts
+            </NuxtLink>
+            <NuxtLink
+              class="admin-nav__link"
+              :to="`/projects/${activeProject.id}/knowledge/documents`"
+            >
+              <UiIcon class="ui-icon--medium" name="knowledge" />
+              База знаний
+            </NuxtLink>
+            <NuxtLink class="admin-nav__link" :to="`/projects/${activeProject.id}/components`">
+              <UiIcon class="ui-icon--medium" name="components" />
+              Компоненты
+            </NuxtLink>
+            <NuxtLink
+              v-if="activeProject.role === 'owner'"
+              class="admin-nav__link"
+              :to="`/projects/${activeProject.id}/provider`"
+            >
+              <UiIcon class="ui-icon--medium" name="provider" />
+              Провайдер и модели
+            </NuxtLink>
+            <NuxtLink class="admin-nav__link" :to="`/projects/${activeProject.id}/audit`">
+              <UiIcon class="ui-icon--medium" name="audit" />
+              Журнал аудита
+            </NuxtLink>
+          </template>
         </nav>
       </div>
 

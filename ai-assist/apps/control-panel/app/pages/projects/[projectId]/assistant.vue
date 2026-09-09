@@ -2,6 +2,7 @@
 import type {
   AssistantOriginEnvironment,
   AssistantSettingsResponse,
+  ProjectResponse,
   UpdateAssistantDraftRequest,
 } from "@ai-assist/contracts";
 
@@ -11,7 +12,10 @@ const projectId = computed(() => String(route.params.projectId));
 const requestFetch = useRequestFetch();
 const isSaving = ref(false);
 const isPublishing = ref(false);
+const isSavingRetention = ref(false);
 const message = ref<{ type: "success" | "error"; text: string } | null>(null);
+const retentionMessage = ref<{ type: "success" | "error"; text: string } | null>(null);
+const retentionDays = ref(30);
 let nextOriginKey = 0;
 const createOriginRow = (origin: string, environment: AssistantOriginEnvironment) => ({
   key: (nextOriginKey += 1),
@@ -25,7 +29,6 @@ const form = reactive({
   accentColor: "#315EFB",
   launcherPosition: "right" as "left" | "right",
   contactFallback: "",
-  locale: "ru",
   enabled: true,
   maintenanceMessage: "",
   maxConversationTurns: 20,
@@ -52,6 +55,11 @@ const { data, error } = await useAsyncData(
   () => requestFetch<AssistantSettingsResponse>(`/api/v1/projects/${projectId.value}/assistant`),
 );
 
+const { data: projectSettings, error: projectSettingsError } = await useAsyncData(
+  () => `assistant-project-settings-${projectId.value}`,
+  () => requestFetch<ProjectResponse>(`/api/v1/projects/${projectId.value}`),
+);
+
 const applyDraft = (settings: AssistantSettingsResponse): void => {
   form.name = settings.draft.name;
   form.greeting = settings.draft.greeting;
@@ -59,7 +67,6 @@ const applyDraft = (settings: AssistantSettingsResponse): void => {
   form.accentColor = settings.draft.accentColor;
   form.launcherPosition = settings.draft.launcherPosition;
   form.contactFallback = settings.draft.contactFallback ?? "";
-  form.locale = settings.draft.locale;
   form.enabled = settings.draft.enabled;
   form.maintenanceMessage = settings.draft.maintenanceMessage ?? "";
   form.maxConversationTurns = settings.draft.maxConversationTurns;
@@ -79,6 +86,14 @@ watch(
   data,
   (settings) => {
     if (settings) applyDraft(settings);
+  },
+  { immediate: true },
+);
+
+watch(
+  projectSettings,
+  (project) => {
+    if (project) retentionDays.value = project.conversationRetentionDays;
   },
   { immediate: true },
 );
@@ -128,7 +143,7 @@ const requestBody = (): UpdateAssistantDraftRequest => ({
   accentColor: form.accentColor,
   launcherPosition: form.launcherPosition,
   contactFallback: form.contactFallback.trim() || null,
-  locale: form.locale,
+  locale: "ru",
   enabled: form.enabled,
   maintenanceMessage: form.maintenanceMessage.trim() || null,
   maxConversationTurns: form.maxConversationTurns,
@@ -137,6 +152,28 @@ const requestBody = (): UpdateAssistantDraftRequest => ({
   citationsEnabled: form.citationsEnabled,
   allowedOrigins: form.allowedOrigins.map(({ origin, environment }) => ({ origin, environment })),
 });
+
+const saveRetention = async (): Promise<void> => {
+  if (!canEdit.value || !projectSettings.value || isSavingRetention.value) return;
+  isSavingRetention.value = true;
+  retentionMessage.value = null;
+  try {
+    projectSettings.value = await $fetch<ProjectResponse>(`/api/v1/projects/${projectId.value}`, {
+      method: "PATCH",
+      headers: getCsrfHeaders(),
+      body: { conversationRetentionDays: retentionDays.value },
+    });
+    retentionMessage.value = { type: "success", text: "Срок хранения диалогов сохранён." };
+  } catch (requestError) {
+    const fetchError = requestError as { data?: { statusMessage?: string } };
+    retentionMessage.value = {
+      type: "error",
+      text: fetchError.data?.statusMessage ?? "Не удалось сохранить срок хранения диалогов.",
+    };
+  } finally {
+    isSavingRetention.value = false;
+  }
+};
 
 const saveDraft = async (): Promise<void> => {
   if (!canEdit.value || !data.value) return;
@@ -245,6 +282,59 @@ const publish = async (): Promise<void> => {
         </div>
       </section>
 
+      <form class="panel form-stack" @submit.prevent="saveRetention">
+        <header class="section-header">
+          <div>
+            <p class="eyebrow">История</p>
+            <h2 class="section-title">Хранение диалогов</h2>
+          </div>
+          <p class="section-description">
+            Применяется сразу и&nbsp;не&nbsp;требует публикации черновика.
+          </p>
+        </header>
+
+        <div v-if="projectSettingsError" class="form-message form-message--error" role="alert">
+          Настройка срока хранения недоступна.
+        </div>
+
+        <template v-else-if="projectSettings">
+          <label class="form-field">
+            <span class="form-field__label">Хранение диалогов, дней</span>
+            <input
+              v-model.number="retentionDays"
+              class="form-field__control"
+              type="number"
+              min="0"
+              max="3650"
+              required
+              :disabled="!canEdit"
+            />
+            <span class="form-field__hint">
+              0 — хранить только до&nbsp;окончания текущей сессии. Максимум — 3650 дней.
+            </span>
+          </label>
+
+          <p
+            v-if="retentionMessage"
+            class="form-message"
+            :class="`form-message--${retentionMessage.type}`"
+            role="status"
+          >
+            {{ retentionMessage.text }}
+          </p>
+
+          <div class="form-actions">
+            <button
+              class="button button--primary"
+              type="submit"
+              :disabled="!canEdit || isSavingRetention"
+            >
+              {{ isSavingRetention ? "Сохраняем…" : "Сохранить срок хранения" }}
+            </button>
+          </div>
+        </template>
+      </form>
+
       <form class="panel form-stack" @submit.prevent="saveDraft">
         <header class="section-header">
           <div>
@@ -261,18 +351,6 @@ const publish = async (): Promise<void> => {
               class="form-field__control"
               type="text"
               maxlength="160"
-              required
-              :disabled="!canEdit"
-            />
-          </label>
-
-          <label class="form-field">
-            <span class="form-field__label">Язык</span>
-            <input
-              v-model.trim="form.locale"
-              class="form-field__control"
-              type="text"
-              maxlength="16"
               required
               :disabled="!canEdit"
             />

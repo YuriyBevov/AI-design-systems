@@ -25,7 +25,7 @@ import {
 import { getRequestId } from "../utils/request";
 import { assertCsrf, requireProjectScope } from "./auth";
 
-const defaultConfig = (project: {
+export const createDefaultAssistantConfig = (project: {
   name: string;
   defaultLocale: string;
 }): AssistantConfigValues => ({
@@ -53,7 +53,7 @@ export const ensureAssistantSettingsRecord = async (input: {
   project: { id: string; name: string; defaultLocale: string; primaryOrigin: string | null };
   userId: string;
 }): Promise<AssistantSettingsRecord> => {
-  const config = defaultConfig(input.project);
+  const config = createDefaultAssistantConfig(input.project);
   const originResult = normalizeAssistantOrigins(
     input.project.primaryOrigin
       ? [{ origin: input.project.primaryOrigin, environment: "production" }]

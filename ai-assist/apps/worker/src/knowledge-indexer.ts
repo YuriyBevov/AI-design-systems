@@ -9,6 +9,7 @@ import {
   knowledgeIndexEmbeddings,
   knowledgeIndexVersions,
   projectModelSettings,
+  projects,
   providerCredentials,
 } from "@ai-assist/database";
 import {
@@ -165,7 +166,12 @@ export const createKnowledgeIndexProcessor = (input: {
     }
 
     try {
-      const [[settings], [credential], chunks] = await Promise.all([
+      const [[project], [settings], [credential], chunks] = await Promise.all([
+        input.database.db
+          .select({ status: projects.status })
+          .from(projects)
+          .where(eq(projects.id, data.projectId))
+          .limit(1),
         input.database.db
           .select()
           .from(projectModelSettings)
@@ -183,6 +189,9 @@ export const createKnowledgeIndexProcessor = (input: {
           .limit(1),
         listPublishedChunks(input.database, data.projectId),
       ]);
+      if (!project || project.status !== "active") {
+        throw new KnowledgeIndexError("KNOWLEDGE_PROJECT_NOT_ACTIVE");
+      }
       if (!settings?.embeddingModelId || settings.embeddingModelId !== claimed.embeddingModelId) {
         throw new KnowledgeIndexError("KNOWLEDGE_EMBEDDING_MODEL_CHANGED");
       }

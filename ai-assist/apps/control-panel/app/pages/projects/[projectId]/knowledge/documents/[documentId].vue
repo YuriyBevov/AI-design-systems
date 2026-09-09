@@ -25,7 +25,6 @@ const form = reactive({
   title: "",
   content: "",
   canonicalUrl: "",
-  locale: "ru",
   tags: "",
   externalId: "",
   sku: "",
@@ -75,7 +74,6 @@ const applyLatestToForm = (version: KnowledgeDocumentVersionResponse): void => {
   form.title = version.title;
   form.content = version.content;
   form.canonicalUrl = version.canonicalUrl ?? "";
-  form.locale = version.locale;
   form.tags = version.tags.join(", ");
   form.externalId = version.product?.externalId ?? "";
   form.sku = version.product?.sku ?? "";
@@ -168,7 +166,7 @@ const buildVersionBody = (): CreateKnowledgeDocumentVersionRequest => {
     title: form.title,
     content: form.content,
     canonicalUrl: nullableText(form.canonicalUrl),
-    locale: form.locale,
+    locale: "ru",
     tags: form.tags
       .split(",")
       .map((tag) => tag.trim())
@@ -456,15 +454,6 @@ const remove = async (): Promise<void> => {
                 maxlength="2048"
               />
             </label>
-            <label class="form-field">
-              <span class="form-field__label">Локаль</span>
-              <input
-                v-model.trim="form.locale"
-                class="form-field__control"
-                maxlength="16"
-                required
-              />
-            </label>
             <label class="form-field form-field--wide">
               <span class="form-field__label">Теги через запятую</span>
               <input v-model="form.tags" class="form-field__control" maxlength="1300" />
@@ -503,9 +492,7 @@ const remove = async (): Promise<void> => {
           <header class="knowledge-preview__header">
             <div>
               <h3 class="knowledge-preview__title">{{ selectedVersion.title }}</h3>
-              <p class="knowledge-preview__meta">
-                {{ selectedVersion.locale }} · {{ selectedVersion.chunkCount }} chunks
-              </p>
+              <p class="knowledge-preview__meta">{{ selectedVersion.chunkCount }} chunks</p>
             </div>
             <span
               v-if="selectedVersion.id === detail.document.activeVersionId"
