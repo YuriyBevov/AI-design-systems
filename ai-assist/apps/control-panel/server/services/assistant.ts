@@ -55,9 +55,7 @@ export const ensureAssistantSettingsRecord = async (input: {
 }): Promise<AssistantSettingsRecord> => {
   const config = createDefaultAssistantConfig(input.project);
   const originResult = normalizeAssistantOrigins(
-    input.project.primaryOrigin
-      ? [{ origin: input.project.primaryOrigin, environment: "production" }]
-      : [],
+    input.project.primaryOrigin ? [{ origin: input.project.primaryOrigin }] : [],
   );
   if (!originResult.success) throw new Error("Stored project Origin is invalid");
   await ensureAssistantDraftRecord({

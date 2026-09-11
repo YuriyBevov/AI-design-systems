@@ -7,11 +7,11 @@ export const assistantOriginEnvironmentSchema = z.enum(["production", "preview"]
 export const assistantOriginInputSchema = z
   .object({
     origin: z.string().trim().min(1).max(512),
-    environment: assistantOriginEnvironmentSchema,
   })
   .strict();
 
 export const assistantAllowedOriginResponseSchema = assistantOriginInputSchema.extend({
+  environment: assistantOriginEnvironmentSchema,
   scheme: z.enum(["http", "https"]),
   host: z.string().min(1).max(255),
   port: z.number().int().min(1).max(65_535).nullable(),

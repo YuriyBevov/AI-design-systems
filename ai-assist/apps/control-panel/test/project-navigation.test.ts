@@ -33,7 +33,13 @@ describe("getProjectSelectionPath", () => {
 
   it("does not open owner-only provider settings for another role", () => {
     expect(getProjectSelectionPath("/projects/project-old/provider", "project-new", "viewer")).toBe(
-      "/projects/project-new/settings",
+      "/",
+    );
+  });
+
+  it("returns legacy project settings routes to the overview", () => {
+    expect(getProjectSelectionPath("/projects/project-old/settings", "project-new", "owner")).toBe(
+      "/",
     );
   });
 });

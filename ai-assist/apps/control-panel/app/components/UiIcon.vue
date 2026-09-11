@@ -18,6 +18,7 @@ type UiIconName =
   | "provider"
   | "settings"
   | "sun"
+  | "trash"
   | "users";
 
 defineProps<{

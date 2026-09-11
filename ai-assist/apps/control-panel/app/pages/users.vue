@@ -195,8 +195,7 @@ const changeStatus = async (user: UserResponse): Promise<void> => {
   <main class="page-frame">
     <header class="page-header">
       <div>
-        <p class="eyebrow">Доступ</p>
-        <h1 class="page-title page-title--compact">Пользователи</h1>
+        <h1 class="page-title page-title--compact">Управление пользователями</h1>
         <p class="page-description">
           Администраторы работают со всеми проектами. Пользователи видят только назначенные им
           проекты без технического раздела «Компоненты».
@@ -207,20 +206,13 @@ const changeStatus = async (user: UserResponse): Promise<void> => {
       </button>
     </header>
 
-    <section class="panel panel--flush" aria-labelledby="user-list-title">
-      <header class="prompt-list__header section-header">
-        <div>
-          <p class="eyebrow">Команда</p>
-          <h2 id="user-list-title" class="section-title">Все пользователи</h2>
-        </div>
-      </header>
-
+    <section class="panel panel--flush" aria-label="Пользователи">
       <div v-if="usersError" class="empty-state" role="alert">
         Не удалось загрузить пользователей.
       </div>
       <div v-else-if="!users?.length" class="empty-state">Пользователей пока нет.</div>
       <div v-else class="table-scroll">
-        <table class="data-table data-table--centered">
+        <table class="data-table" aria-label="Пользователи">
           <thead>
             <tr>
               <th scope="col">Пользователь</th>

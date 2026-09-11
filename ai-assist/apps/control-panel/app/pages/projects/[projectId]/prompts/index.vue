@@ -12,6 +12,7 @@ const session = useAdminSessionState();
 const requestFetch = useRequestFetch();
 const projectId = computed(() => String(route.params.projectId));
 const isCreating = ref(false);
+const isCreateModalOpen = ref(false);
 const message = ref<{ type: "success" | "error"; text: string } | null>(null);
 useToastMessage(message);
 const createForm = reactive<CreatePromptRequest>({
@@ -84,109 +85,24 @@ const create = async (): Promise<void> => {
     isCreating.value = false;
   }
 };
+
+const closeCreateModal = (): void => {
+  if (isCreating.value) return;
+  isCreateModalOpen.value = false;
+};
 </script>
 
 <template>
   <main class="page-frame">
-    <header class="page-header">
-      <div>
-        <p class="eyebrow">Поведение агента</p>
-        <h1 class="page-title page-title--compact">Prompts</h1>
-        <p class="page-description">
-          Версии инструкций ассистента. Изменения влияют на production только после публикации.
-        </p>
-      </div>
-      <span v-if="data?.promptList.activePublication" class="status-badge" data-status="published">
-        Версия {{ data.promptList.activePublication.revisionNo }} активна
-      </span>
-    </header>
-
-    <div v-if="error" class="empty-state" role="alert">Раздел prompts недоступен.</div>
+    <div v-if="error" class="empty-state" role="alert">Раздел «Роль и поведение» недоступен.</div>
 
     <template v-else-if="data">
-      <section v-if="canEdit" class="panel" aria-labelledby="create-prompt-title">
-        <header class="section-header">
-          <div>
-            <p class="eyebrow">Новый prompt</p>
-            <h2 id="create-prompt-title" class="section-title">Создать черновик</h2>
-          </div>
-          <p class="section-description">
-            Первая версия сохраняется как черновик и не используется агентом автоматически.
-          </p>
-        </header>
-
-        <form class="form-stack" @submit.prevent="create">
-          <div class="form-grid">
-            <label class="form-field">
-              <span class="form-field__label">Название</span>
-              <input
-                v-model.trim="createForm.name"
-                class="form-field__control"
-                type="text"
-                maxlength="160"
-                required
-              />
-            </label>
-
-            <div class="form-field">
-              <span class="form-field__label">Тип</span>
-              <BaseSelect
-                v-model="createForm.type"
-                :options="promptTypeOptions"
-                label="Тип prompt"
-                disabled
-              />
-            </div>
-
-            <label class="form-field form-field--wide">
-              <span class="form-field__label">Описание</span>
-              <input
-                v-model.trim="createForm.description"
-                class="form-field__control"
-                type="text"
-                maxlength="2000"
-              />
-            </label>
-
-            <label class="form-field form-field--wide">
-              <span class="form-field__label">Текст первой версии</span>
-              <textarea
-                v-model="createForm.content"
-                class="form-field__control prompt-editor__textarea prompt-editor__textarea--initial"
-                maxlength="50000"
-                required
-              />
-              <span class="form-field__hint">
-                Каталог товаров хранится в базе знаний, а не внутри system prompt.
-              </span>
-            </label>
-          </div>
-
-          <div class="form-actions">
-            <button class="button button--primary" type="submit" :disabled="isCreating">
-              {{ isCreating ? "Создаём…" : "Создать prompt" }}
-            </button>
-          </div>
-        </form>
-      </section>
-
-      <section class="panel panel--flush" aria-labelledby="prompt-list-title">
-        <header class="section-header prompt-list__header">
-          <div>
-            <p class="eyebrow">История</p>
-            <h2 id="prompt-list-title" class="section-title">Все prompts</h2>
-          </div>
-          <p class="section-description">Опубликованной может быть только одна system-версия.</p>
-        </header>
-
+      <section class="panel panel--flush" aria-label="Роли и инструкции">
         <div v-if="!data.promptList.prompts.length" class="empty-state">
-          Prompts пока не созданы.
+          Роли и инструкции пока не созданы.
         </div>
         <div v-else class="table-scroll">
-          <table class="data-table">
-            <caption class="visually-hidden">
-              Prompts проекта
-            </caption>
+          <table class="data-table" aria-label="Роли и инструкции проекта">
             <thead>
               <tr>
                 <th scope="col">Название</th>
@@ -231,6 +147,81 @@ const create = async (): Promise<void> => {
           </table>
         </div>
       </section>
+
+      <div v-if="canEdit" class="form-actions">
+        <button class="button button--primary" type="button" @click="isCreateModalOpen = true">
+          Создать
+        </button>
+      </div>
     </template>
+
+    <BaseModal
+      v-if="isCreateModalOpen"
+      title="Создать роль и поведение"
+      size="wide"
+      @close="closeCreateModal"
+    >
+      <form id="create-prompt-form" class="modal-form" @submit.prevent="create">
+        <div class="form-grid">
+          <label class="form-field">
+            <span class="form-field__label">Название</span>
+            <input
+              v-model.trim="createForm.name"
+              class="form-field__control"
+              type="text"
+              maxlength="160"
+              required
+            />
+          </label>
+
+          <div class="form-field">
+            <span class="form-field__label">Тип</span>
+            <BaseSelect
+              v-model="createForm.type"
+              :options="promptTypeOptions"
+              label="Тип инструкции"
+              disabled
+            />
+          </div>
+
+          <label class="form-field form-field--wide">
+            <span class="form-field__label">Описание</span>
+            <input
+              v-model.trim="createForm.description"
+              class="form-field__control"
+              type="text"
+              maxlength="2000"
+            />
+          </label>
+
+          <label class="form-field form-field--wide">
+            <span class="form-field__label">Текст первой версии</span>
+            <textarea
+              v-model="createForm.content"
+              class="form-field__control prompt-editor__textarea prompt-editor__textarea--initial"
+              maxlength="50000"
+              required
+            />
+            <span class="form-field__hint">
+              Каталог товаров хранится в базе знаний, а не внутри системной инструкции.
+            </span>
+          </label>
+        </div>
+      </form>
+
+      <template #footer>
+        <button
+          class="button button--primary"
+          type="submit"
+          form="create-prompt-form"
+          :disabled="isCreating"
+        >
+          {{ isCreating ? "Создаём…" : "Создать" }}
+        </button>
+        <button class="button" type="button" :disabled="isCreating" @click="closeCreateModal">
+          Отмена
+        </button>
+      </template>
+    </BaseModal>
   </main>
 </template>

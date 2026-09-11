@@ -4,9 +4,7 @@ import { checksumAssistantConfig, normalizeAssistantOrigins } from "../src/index
 
 describe("assistant config policies", () => {
   it("normalizes exact HTTPS origins and removes default ports", () => {
-    expect(
-      normalizeAssistantOrigins([{ origin: "HTTPS://Example.COM:443", environment: "production" }]),
-    ).toEqual({
+    expect(normalizeAssistantOrigins([{ origin: "HTTPS://Example.COM:443" }])).toEqual({
       success: true,
       origins: [
         {
@@ -21,13 +19,18 @@ describe("assistant config policies", () => {
   });
 
   it("allows plain HTTP only for a local preview origin", () => {
-    expect(
-      normalizeAssistantOrigins([{ origin: "http://localhost:3001", environment: "preview" }])
-        .success,
-    ).toBe(true);
-    expect(
-      normalizeAssistantOrigins([{ origin: "http://example.com", environment: "preview" }]),
-    ).toMatchObject({ success: false, code: "ASSISTANT_ORIGIN_HTTPS_REQUIRED" });
+    expect(normalizeAssistantOrigins([{ origin: "http://localhost:3001" }])).toMatchObject({
+      success: true,
+      origins: [{ environment: "preview" }],
+    });
+    expect(normalizeAssistantOrigins([{ origin: "https://127.0.0.1" }])).toMatchObject({
+      success: true,
+      origins: [{ environment: "preview" }],
+    });
+    expect(normalizeAssistantOrigins([{ origin: "http://example.com" }])).toMatchObject({
+      success: false,
+      code: "ASSISTANT_ORIGIN_HTTPS_REQUIRED",
+    });
   });
 
   it("rejects paths, credentials, wildcards and duplicate origins", () => {
@@ -36,14 +39,12 @@ describe("assistant config policies", () => {
       "https://user:pass@example.com",
       "https://*.example.com",
     ]) {
-      expect(normalizeAssistantOrigins([{ origin, environment: "production" }]).success).toBe(
-        false,
-      );
+      expect(normalizeAssistantOrigins([{ origin }]).success).toBe(false);
     }
     expect(
       normalizeAssistantOrigins([
-        { origin: "https://example.com", environment: "production" },
-        { origin: "https://EXAMPLE.com/", environment: "preview" },
+        { origin: "https://example.com" },
+        { origin: "https://EXAMPLE.com/" },
       ]),
     ).toMatchObject({ success: false, code: "ASSISTANT_ORIGIN_DUPLICATE", index: 1 });
   });

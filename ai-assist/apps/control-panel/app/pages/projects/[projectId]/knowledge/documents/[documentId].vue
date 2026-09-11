@@ -100,11 +100,6 @@ watch(
   { immediate: true },
 );
 
-const statusLabel = computed(() => {
-  const status = detail.value?.document.status;
-  return status ? { draft: "Черновик", published: "Опубликован", archived: "Архив" }[status] : "";
-});
-
 const formatDate = (value: string): string =>
   new Intl.DateTimeFormat("ru-RU", {
     dateStyle: "medium",
@@ -313,25 +308,10 @@ const remove = async (): Promise<void> => {
 
 <template>
   <main class="page-frame">
-    <header class="page-header">
-      <div>
-        <NuxtLink class="back-link" :to="`/projects/${projectId}/knowledge/documents`">
-          <UiIcon name="arrow-left" />
-          <span>База знаний</span>
-        </NuxtLink>
-        <p class="eyebrow">Версионируемая запись</p>
-        <h1 class="page-title page-title--compact">
-          {{ detail?.document.title ?? "Документ" }}
-        </h1>
-        <p v-if="detail" class="page-description">
-          {{ detail.document.type === "product" ? "Товар" : "Ручной документ" }}. Изменения влияют
-          на&nbsp;retrieval только после публикации версии.
-        </p>
-      </div>
-      <span v-if="detail" class="status-badge" :data-status="detail.document.status">
-        {{ statusLabel }}
-      </span>
-    </header>
+    <NuxtLink class="back-link" :to="`/projects/${projectId}/knowledge/documents`">
+      <UiIcon name="arrow-left" />
+      <span>База знаний</span>
+    </NuxtLink>
 
     <div v-if="error" class="empty-state" role="alert">Документ недоступен.</div>
 
@@ -339,7 +319,6 @@ const remove = async (): Promise<void> => {
       <section v-if="canEdit && !isArchived" class="panel" aria-labelledby="knowledge-edit-title">
         <header class="section-header">
           <div>
-            <p class="eyebrow">Редактор</p>
             <h2 id="knowledge-edit-title" class="section-title">Новая версия</h2>
           </div>
           <p class="section-description">Активная версия останется прежней до публикации.</p>
@@ -462,7 +441,6 @@ const remove = async (): Promise<void> => {
       <section class="panel" aria-labelledby="knowledge-versions-title">
         <header class="section-header">
           <div>
-            <p class="eyebrow">История</p>
             <h2 id="knowledge-versions-title" class="section-title">Версии документа</h2>
           </div>
           <p class="section-description">
@@ -525,7 +503,6 @@ const remove = async (): Promise<void> => {
       <section v-if="canEdit" class="panel prompt-danger" aria-labelledby="knowledge-danger-title">
         <header class="section-header">
           <div>
-            <p class="eyebrow">Жизненный цикл</p>
             <h2 id="knowledge-danger-title" class="section-title">Публикация и архив</h2>
           </div>
         </header>

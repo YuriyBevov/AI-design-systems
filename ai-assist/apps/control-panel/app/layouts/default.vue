@@ -3,21 +3,15 @@ const session = useAdminSessionState();
 const { activeProject } = useActiveProject();
 const isLoggingOut = ref(false);
 const route = useRoute();
+const isAssistantSettingsRoute = computed(() => isAssistantSettingsPath(route.path));
 
 const pageTitle = computed(() => {
-  if (route.path === "/") return "Обзор";
-  if (route.path === "/projects") return "Проекты";
-  if (route.path === "/users") return "Пользователи";
-  if (route.path.includes("/knowledge/documents/")) return "Документ";
-  if (route.path.endsWith("/knowledge/documents")) return "Документы";
-  if (route.path.endsWith("/knowledge/sources")) return "Источники";
-  if (route.path.includes("/prompts/")) return "Prompt";
-  if (route.path.endsWith("/prompts")) return "Prompts";
-  if (route.path.endsWith("/assistant")) return "Ассистент";
+  if (route.path === "/") return "Обзор проекта";
+  if (route.path === "/projects") return "Управление проектами";
+  if (route.path === "/users") return "Управление пользователями";
+  if (isAssistantSettingsRoute.value) return "Настройки ассистента";
   if (route.path.endsWith("/components")) return "Компоненты";
-  if (route.path.endsWith("/provider")) return "Провайдер и модели";
   if (route.path.endsWith("/audit")) return "Журнал аудита";
-  if (route.path.endsWith("/settings")) return "Настройки проекта";
   return "AI Assist";
 });
 const isAdmin = computed(() => session.value?.user.role === "admin");
@@ -68,7 +62,7 @@ const logout = async (): Promise<void> => {
                 exact-active-class="sidebar__link--active"
               >
                 <UiIcon class="ui-icon--medium" name="home" />
-                <span>Обзор</span>
+                <span>Обзор проекта</span>
               </NuxtLink>
             </li>
             <li>
@@ -79,7 +73,7 @@ const logout = async (): Promise<void> => {
                 exact-active-class="sidebar__link--active"
               >
                 <UiIcon class="ui-icon--medium" name="projects" />
-                <span>Проекты</span>
+                <span>Управление проектами</span>
               </NuxtLink>
             </li>
             <li v-if="isAdmin">
@@ -89,53 +83,24 @@ const logout = async (): Promise<void> => {
                 exact-active-class="sidebar__link--active"
               >
                 <UiIcon class="ui-icon--medium" name="users" />
-                <span>Пользователи</span>
+                <span>Управление пользователями</span>
               </NuxtLink>
             </li>
             <template v-if="activeProject">
               <li>
-                <NuxtLink class="sidebar__link" :to="`/projects/${activeProject.id}/settings`">
-                  <UiIcon class="ui-icon--medium" name="settings" />
-                  <span>Настройки</span>
-                </NuxtLink>
-              </li>
-              <li>
-                <NuxtLink class="sidebar__link" :to="`/projects/${activeProject.id}/assistant`">
-                  <UiIcon class="ui-icon--medium" name="assistant" />
-                  <span>Ассистент</span>
-                </NuxtLink>
-              </li>
-              <li>
-                <NuxtLink class="sidebar__link" :to="`/projects/${activeProject.id}/prompts`">
-                  <UiIcon class="ui-icon--medium" name="prompt" />
-                  <span>Prompts</span>
-                </NuxtLink>
-              </li>
-              <li>
                 <NuxtLink
                   class="sidebar__link"
-                  :class="{
-                    'sidebar__link--active': route.path.includes(
-                      `/projects/${activeProject.id}/knowledge/`,
-                    ),
-                  }"
-                  :to="`/projects/${activeProject.id}/knowledge/documents`"
-                  active-class="sidebar__link--ancestor"
+                  :class="{ 'sidebar__link--active': isAssistantSettingsRoute }"
+                  :to="`/projects/${activeProject.id}/assistant`"
                 >
-                  <UiIcon class="ui-icon--medium" name="knowledge" />
-                  <span>База знаний</span>
+                  <UiIcon class="ui-icon--medium" name="assistant" />
+                  <span>Настройки ассистента</span>
                 </NuxtLink>
               </li>
               <li v-if="isAdmin">
                 <NuxtLink class="sidebar__link" :to="`/projects/${activeProject.id}/components`">
                   <UiIcon class="ui-icon--medium" name="components" />
                   <span>Компоненты</span>
-                </NuxtLink>
-              </li>
-              <li v-if="isAdmin">
-                <NuxtLink class="sidebar__link" :to="`/projects/${activeProject.id}/provider`">
-                  <UiIcon class="ui-icon--medium" name="provider" />
-                  <span>Провайдер и модели</span>
                 </NuxtLink>
               </li>
               <li>
@@ -174,10 +139,10 @@ const logout = async (): Promise<void> => {
     <div class="app-shell__main">
       <header class="topbar">
         <p class="topbar__title" aria-hidden="true">{{ pageTitle }}</p>
-        <p v-if="activeProject" class="topbar__project">{{ activeProject.name }}</p>
       </header>
       <div class="app-shell__content">
         <div class="app-shell__workspace">
+          <AssistantSettingsTabs v-if="isAssistantSettingsRoute" />
           <slot />
         </div>
       </div>

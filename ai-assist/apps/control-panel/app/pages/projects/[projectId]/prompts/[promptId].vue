@@ -282,17 +282,9 @@ const deletePrompt = async (): Promise<void> => {
 
 <template>
   <main class="page-frame">
-    <header class="page-header">
-      <div>
-        <p class="eyebrow">Prompt editor</p>
-        <h1 class="page-title page-title--compact">{{ detail?.prompt.name ?? "Prompt" }}</h1>
-        <p class="page-description">
-          Каждое сохранение текста создаёт неизменяемую версию. Production меняется только явной
-          публикацией.
-        </p>
-      </div>
-      <NuxtLink class="button" :to="`/projects/${projectId}/prompts`"> К списку </NuxtLink>
-    </header>
+    <div class="form-actions">
+      <NuxtLink class="button" :to="`/projects/${projectId}/prompts`">К списку</NuxtLink>
+    </div>
 
     <div v-if="error" class="empty-state" role="alert">Prompt не найден или недоступен.</div>
 
@@ -300,7 +292,6 @@ const deletePrompt = async (): Promise<void> => {
       <section class="panel" aria-labelledby="prompt-metadata-title">
         <header class="section-header">
           <div>
-            <p class="eyebrow">Настройки</p>
             <h2 id="prompt-metadata-title" class="section-title">Метаданные</h2>
           </div>
           <span class="status-badge" :data-status="detail.prompt.status">
@@ -344,7 +335,6 @@ const deletePrompt = async (): Promise<void> => {
         <article class="panel prompt-editor">
           <header class="section-header">
             <div>
-              <p class="eyebrow">Черновик</p>
               <h2 class="section-title">Новая версия</h2>
             </div>
             <span class="prompt-editor__counter">{{ draftContent.length }} / 50000</span>
@@ -376,7 +366,6 @@ const deletePrompt = async (): Promise<void> => {
         <aside class="panel prompt-revisions" aria-labelledby="prompt-revisions-title">
           <header class="section-header">
             <div>
-              <p class="eyebrow">История</p>
               <h2 id="prompt-revisions-title" class="section-title">Версии</h2>
             </div>
           </header>
@@ -407,7 +396,6 @@ const deletePrompt = async (): Promise<void> => {
       <section v-if="selectedRevision" class="panel" aria-labelledby="selected-revision-title">
         <header class="section-header">
           <div>
-            <p class="eyebrow">Проверка</p>
             <h2 id="selected-revision-title" class="section-title">
               Версия {{ selectedRevision.revisionNo }}
             </h2>
@@ -469,7 +457,6 @@ const deletePrompt = async (): Promise<void> => {
       >
         <header class="section-header">
           <div>
-            <p class="eyebrow">AITUNNEL</p>
             <h2 id="prompt-playground-title" class="section-title">Preview ответа</h2>
           </div>
           <span class="status-badge" data-status="draft">
@@ -590,7 +577,6 @@ const deletePrompt = async (): Promise<void> => {
       <section v-if="canEdit" class="panel prompt-danger" aria-labelledby="prompt-danger-title">
         <header class="section-header">
           <div>
-            <p class="eyebrow">Жизненный цикл</p>
             <h2 id="prompt-danger-title" class="section-title">Архив и удаление</h2>
           </div>
         </header>

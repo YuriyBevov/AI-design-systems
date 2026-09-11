@@ -435,20 +435,11 @@ const publishRun = async (): Promise<void> => {
 
 <template>
   <main class="page-frame">
-    <header class="page-header">
-      <div>
-        <p class="eyebrow">Импорт из публичного сайта</p>
-        <h1 class="page-title page-title--compact">Источники сайта</h1>
-        <p class="page-description">
-          Обход создаёт черновики. Агент получит данные только после вашего подтверждения.
-        </p>
-      </div>
-      <div class="button-row page-actions">
-        <NuxtLink class="button" :to="`/projects/${projectId}/knowledge/documents`">
-          База знаний
-        </NuxtLink>
-      </div>
-    </header>
+    <nav class="button-row page-actions" aria-label="Навигация базы знаний">
+      <NuxtLink class="button" :to="`/projects/${projectId}/knowledge/documents`">
+        База знаний
+      </NuxtLink>
+    </nav>
 
     <div v-if="error" class="empty-state" role="alert">Источники недоступны.</div>
 
@@ -456,7 +447,6 @@ const publishRun = async (): Promise<void> => {
       <section v-if="canEdit" class="panel" aria-labelledby="source-create-title">
         <header class="section-header">
           <div>
-            <p class="eyebrow">Новый источник</p>
             <h2 id="source-create-title" class="section-title">Настроить парсинг сайта</h2>
           </div>
           <p class="section-description">После сохранения автоматически запустится первый обход.</p>
@@ -723,21 +713,12 @@ const publishRun = async (): Promise<void> => {
         </form>
       </section>
 
-      <section class="panel panel--flush" aria-labelledby="source-list-title">
-        <header class="section-header source-list__header">
-          <div>
-            <p class="eyebrow">URL-источники</p>
-            <h2 id="source-list-title" class="section-title">Настроенные сайты</h2>
-          </div>
-        </header>
+      <section class="panel panel--flush" aria-label="Настроенные источники сайта">
         <div v-if="!data.sourceList.sources.length" class="empty-state">
           Источники пока не добавлены.
         </div>
         <div v-else class="table-scroll">
-          <table class="data-table">
-            <caption class="visually-hidden">
-              Настроенные источники сайта
-            </caption>
+          <table class="data-table" aria-label="Настроенные источники сайта">
             <thead>
               <tr>
                 <th scope="col">Источник</th>
@@ -803,7 +784,6 @@ const publishRun = async (): Promise<void> => {
       <section v-if="selectedRun" class="panel panel--flush" aria-labelledby="crawl-result-title">
         <header class="section-header crawl-result__header">
           <div>
-            <p class="eyebrow">Результат обхода</p>
             <h2 id="crawl-result-title" class="section-title">
               {{ runStatusLabel(selectedRun.run.status) }}
             </h2>
@@ -915,10 +895,10 @@ const publishRun = async (): Promise<void> => {
           Страницы появятся по мере обхода.
         </div>
         <div v-else class="table-scroll">
-          <table class="data-table crawl-result__table">
-            <caption class="visually-hidden">
-              Страницы и черновики выбранного обхода
-            </caption>
+          <table
+            class="data-table crawl-result__table"
+            aria-label="Страницы и черновики выбранного обхода"
+          >
             <thead>
               <tr>
                 <th scope="col" class="crawl-result__selection-column">Выбор</th>

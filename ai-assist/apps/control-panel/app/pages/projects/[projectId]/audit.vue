@@ -51,7 +51,6 @@ const actionLabel = (action: string): string =>
   <main class="page-frame">
     <header class="page-header">
       <div>
-        <p class="eyebrow">Безопасность</p>
         <h1 class="page-title page-title--compact">Журнал аудита</h1>
         <p class="page-description">Значимые действия в проекте {{ data?.project.name }}.</p>
       </div>
@@ -65,7 +64,7 @@ const actionLabel = (action: string): string =>
     <section v-else class="panel panel--flush" aria-label="События аудита">
       <div v-if="!data?.events.length" class="empty-state">Событий пока нет.</div>
       <div v-else class="table-scroll">
-        <table class="data-table">
+        <table class="data-table" aria-label="События аудита">
           <thead>
             <tr>
               <th>Дата</th>

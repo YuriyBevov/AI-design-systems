@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import type {
-  CreateKnowledgeDocumentRequest,
-  KnowledgeDocumentDetailResponse,
   KnowledgeDocumentListResponse,
   KnowledgeDocumentStatus,
   KnowledgeDocumentType,
@@ -13,17 +11,21 @@ const route = useRoute();
 const session = useAdminSessionState();
 const requestFetch = useRequestFetch();
 const projectId = computed(() => String(route.params.projectId));
-const isCreating = ref(false);
 const isRequestingIndex = ref(false);
 const message = ref<{ type: "success" | "error"; text: string } | null>(null);
 useToastMessage(message);
-const createForm = reactive({
-  type: "manual" as KnowledgeDocumentType,
-  title: "",
-  content: "",
-  canonicalUrl: "",
-  tags: "",
-});
+type DocumentPageSize = "10" | "25" | "50" | "100" | "500" | "all";
+const searchQuery = ref("");
+const pageSize = ref<DocumentPageSize>("10");
+const currentPage = ref(1);
+const pageSizeOptions = [
+  { value: "10", label: "10" },
+  { value: "25", label: "25" },
+  { value: "50", label: "50" },
+  { value: "100", label: "100" },
+  { value: "500", label: "500" },
+  { value: "all", label: "Показать все" },
+] as const;
 
 const { data, error, refresh } = await useAsyncData(
   () => `project-knowledge-${projectId.value}`,
@@ -67,10 +69,52 @@ const statusLabel = (status: KnowledgeDocumentStatus): string =>
 
 const typeLabel = (type: KnowledgeDocumentType): string =>
   ({ page: "Страница", manual: "Документ", product: "Товар" })[type];
-const documentTypeOptions = [
-  { value: "manual", label: "Документ" },
-  { value: "product", label: "Товар" },
-] as const;
+
+const filteredDocuments = computed(() => {
+  const documents = data.value?.documentList.documents ?? [];
+  const query = searchQuery.value.trim().toLocaleLowerCase("ru-RU");
+  if (!query) return documents;
+  return documents.filter((document) =>
+    [document.title, typeLabel(document.type), statusLabel(document.status)].some((value) =>
+      value.toLocaleLowerCase("ru-RU").includes(query),
+    ),
+  );
+});
+const effectivePageSize = computed(() =>
+  pageSize.value === "all" ? Math.max(filteredDocuments.value.length, 1) : Number(pageSize.value),
+);
+const totalPages = computed(() =>
+  Math.max(1, Math.ceil(filteredDocuments.value.length / effectivePageSize.value)),
+);
+const paginatedDocuments = computed(() => {
+  const start = (currentPage.value - 1) * effectivePageSize.value;
+  return filteredDocuments.value.slice(start, start + effectivePageSize.value);
+});
+const paginationItems = computed(() => getPaginationItems(currentPage.value, totalPages.value));
+const firstVisibleRecord = computed(() =>
+  filteredDocuments.value.length ? (currentPage.value - 1) * effectivePageSize.value + 1 : 0,
+);
+const lastVisibleRecord = computed(() =>
+  Math.min(currentPage.value * effectivePageSize.value, filteredDocuments.value.length),
+);
+
+watch([searchQuery, pageSize, projectId], () => {
+  currentPage.value = 1;
+});
+watch(totalPages, (pageCount) => {
+  if (currentPage.value > pageCount) currentPage.value = pageCount;
+});
+
+const goToPage = (page: number): void => {
+  currentPage.value = Math.min(Math.max(page, 1), totalPages.value);
+};
+
+const notifyUploadUnavailable = (): void => {
+  message.value = {
+    type: "error",
+    text: "Безопасная загрузка файлов пока не подключена.",
+  };
+};
 
 const formatDate = (value: string): string =>
   new Intl.DateTimeFormat("ru-RU", {
@@ -109,74 +153,25 @@ const requestReindex = async (): Promise<void> => {
     isRequestingIndex.value = false;
   }
 };
-
-const create = async (): Promise<void> => {
-  if (!canEdit.value || isCreating.value) return;
-  isCreating.value = true;
-  message.value = null;
-  const common = {
-    title: createForm.title,
-    content: createForm.content,
-    canonicalUrl: createForm.canonicalUrl.trim() || null,
-    locale: "ru",
-    tags: createForm.tags
-      .split(",")
-      .map((tag) => tag.trim())
-      .filter(Boolean),
-  };
-  const body: CreateKnowledgeDocumentRequest =
-    createForm.type === "product"
-      ? {
-          type: "product",
-          ...common,
-          product: {
-            externalId: null,
-            sku: null,
-            category: null,
-            priceDisplay: null,
-            priceAmount: null,
-            currency: null,
-            availability: null,
-            minimumOrder: null,
-            characteristics: {},
-          },
-        }
-      : { type: "manual", ...common, product: null };
-  try {
-    const created = await $fetch<KnowledgeDocumentDetailResponse>(
-      `/api/v1/projects/${projectId.value}/knowledge/documents`,
-      { method: "POST", headers: getCsrfHeaders(), body },
-    );
-    await navigateTo(`/projects/${projectId.value}/knowledge/documents/${created.document.id}`);
-  } catch (requestError) {
-    const fetchError = requestError as { data?: { statusMessage?: string } };
-    message.value = {
-      type: "error",
-      text: fetchError.data?.statusMessage ?? "Не удалось создать документ",
-    };
-    await refresh();
-  } finally {
-    isCreating.value = false;
-  }
-};
 </script>
 
 <template>
-  <main class="page-frame">
-    <header class="page-header">
-      <div>
-        <p class="eyebrow">Проверяемые факты</p>
-        <h1 class="page-title page-title--compact">База знаний</h1>
-        <p class="page-description">
-          Ручные документы и&nbsp;товары. Агент использует только опубликованные версии.
-        </p>
-      </div>
-      <div class="button-row page-actions">
-        <NuxtLink class="button" :to="`/projects/${projectId}/knowledge/sources`">
-          Источники сайта
-        </NuxtLink>
-      </div>
-    </header>
+  <main class="page-frame page-frame--narrow">
+    <div class="button-row page-actions" aria-label="Действия базы знаний">
+      <NuxtLink class="button" :to="`/projects/${projectId}/knowledge/sources`">
+        Парсинг данных
+      </NuxtLink>
+      <button v-if="canEdit" class="button" type="button" @click="notifyUploadUnavailable">
+        Загрузить документ
+      </button>
+      <NuxtLink
+        v-if="canEdit"
+        class="button button--primary"
+        :to="`/projects/${projectId}/knowledge/documents/new`"
+      >
+        Создать запись
+      </NuxtLink>
+    </div>
 
     <div v-if="error" class="empty-state" role="alert">База знаний недоступна.</div>
 
@@ -184,7 +179,6 @@ const create = async (): Promise<void> => {
       <section class="panel" aria-labelledby="knowledge-index-title">
         <header class="section-header">
           <div>
-            <p class="eyebrow">Гибридный поиск</p>
             <h2 id="knowledge-index-title" class="section-title">Векторный индекс</h2>
           </div>
           <button
@@ -246,96 +240,35 @@ const create = async (): Promise<void> => {
         </p>
       </section>
 
-      <section v-if="canEdit" class="panel" aria-labelledby="create-knowledge-title">
-        <header class="section-header">
-          <div>
-            <p class="eyebrow">Новая запись</p>
-            <h2 id="create-knowledge-title" class="section-title">Создать черновик</h2>
+      <section class="panel panel--flush" aria-label="Документы базы знаний">
+        <div class="table-controls">
+          <input
+            v-model="searchQuery"
+            class="form-field__control table-controls__search"
+            type="search"
+            placeholder="Быстрый поиск"
+            aria-label="Быстрый поиск по записям"
+          />
+          <div class="table-controls__limit">
+            <span>Показывать</span>
+            <BaseSelect
+              v-model="pageSize"
+              :options="pageSizeOptions"
+              label="Количество записей на странице"
+              variant="compact"
+              width="content"
+            />
           </div>
-          <p class="section-description">
-            Первая версия не&nbsp;попадает в&nbsp;ответы до&nbsp;явной публикации.
-          </p>
-        </header>
-
-        <form class="form-stack" @submit.prevent="create">
-          <div class="form-grid">
-            <div class="form-field">
-              <span class="form-field__label">Тип</span>
-              <BaseSelect
-                v-model="createForm.type"
-                :options="documentTypeOptions"
-                label="Тип документа"
-              />
-            </div>
-
-            <label class="form-field form-field--wide">
-              <span class="form-field__label">Название</span>
-              <input
-                v-model.trim="createForm.title"
-                class="form-field__control"
-                type="text"
-                maxlength="500"
-                required
-              />
-            </label>
-
-            <label class="form-field form-field--wide">
-              <span class="form-field__label">Подтверждённый текст</span>
-              <textarea
-                v-model="createForm.content"
-                class="form-field__control knowledge-editor__textarea"
-                maxlength="30000"
-                required
-              />
-            </label>
-
-            <label class="form-field">
-              <span class="form-field__label">URL источника</span>
-              <input
-                v-model.trim="createForm.canonicalUrl"
-                class="form-field__control"
-                type="url"
-                maxlength="2048"
-                placeholder="https://example.ru/page"
-              />
-            </label>
-
-            <label class="form-field">
-              <span class="form-field__label">Теги через запятую</span>
-              <input
-                v-model="createForm.tags"
-                class="form-field__control"
-                type="text"
-                maxlength="1300"
-              />
-            </label>
-          </div>
-
-          <div class="form-actions">
-            <button class="button button--primary" type="submit" :disabled="isCreating">
-              {{ isCreating ? "Создаём…" : "Создать черновик" }}
-            </button>
-          </div>
-        </form>
-      </section>
-
-      <section class="panel panel--flush" aria-labelledby="knowledge-list-title">
-        <header class="section-header knowledge-list__header">
-          <div>
-            <p class="eyebrow">Документы</p>
-            <h2 id="knowledge-list-title" class="section-title">Все записи</h2>
-          </div>
-          <p class="section-description">Публикация каждой записи управляется отдельно.</p>
-        </header>
+        </div>
 
         <div v-if="!data.documentList.documents.length" class="empty-state">
-          База знаний пока пуста.
+          База знаний пока пуста. Создайте первую запись.
+        </div>
+        <div v-else-if="!filteredDocuments.length" class="empty-state">
+          По вашему запросу ничего не найдено.
         </div>
         <div v-else class="table-scroll">
-          <table class="data-table">
-            <caption class="visually-hidden">
-              Документы базы знаний
-            </caption>
+          <table class="data-table" aria-label="Документы базы знаний">
             <thead>
               <tr>
                 <th scope="col">Название</th>
@@ -347,7 +280,7 @@ const create = async (): Promise<void> => {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="document in data.documentList.documents" :key="document.id">
+              <tr v-for="document in paginatedDocuments" :key="document.id">
                 <td>
                   <strong>{{ document.title }}</strong>
                 </td>
@@ -377,6 +310,47 @@ const create = async (): Promise<void> => {
               </tr>
             </tbody>
           </table>
+        </div>
+
+        <div v-if="filteredDocuments.length" class="pagination">
+          <span class="pagination__summary">
+            Записи {{ firstVisibleRecord }}–{{ lastVisibleRecord }} из
+            {{ filteredDocuments.length }} · Страница {{ currentPage }} из {{ totalPages }}
+          </span>
+          <nav class="pagination__actions" aria-label="Навигация по страницам записей">
+            <button
+              class="button button--compact"
+              type="button"
+              :disabled="currentPage === 1"
+              @click="goToPage(currentPage - 1)"
+            >
+              Предыдущая
+            </button>
+            <template v-for="(item, index) in paginationItems" :key="`${item}-${index}`">
+              <span v-if="item === 'ellipsis'" class="pagination__ellipsis" aria-hidden="true">
+                …
+              </span>
+              <button
+                v-else
+                class="button button--compact pagination__page"
+                :class="{ 'button--primary': item === currentPage }"
+                type="button"
+                :aria-current="item === currentPage ? 'page' : undefined"
+                :aria-label="`Страница ${item}`"
+                @click="goToPage(item)"
+              >
+                {{ item }}
+              </button>
+            </template>
+            <button
+              class="button button--compact"
+              type="button"
+              :disabled="currentPage === totalPages"
+              @click="goToPage(currentPage + 1)"
+            >
+              Следующая
+            </button>
+          </nav>
         </div>
       </section>
     </template>

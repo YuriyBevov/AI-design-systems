@@ -33,7 +33,6 @@ const submit = async (): Promise<void> => {
     <section class="auth-card" aria-labelledby="login-title">
       <div class="auth-card__intro">
         <span class="brand__mark" aria-hidden="true">AI</span>
-        <p class="eyebrow">Панель управления</p>
         <h1 id="login-title" class="auth-card__title">Вход в AI Assist</h1>
         <p class="auth-card__description">
           Управляйте ассистентом, источниками знаний и настройками проекта.

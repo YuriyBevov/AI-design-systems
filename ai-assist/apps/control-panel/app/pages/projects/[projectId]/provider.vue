@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type {
+  AssistantSettingsResponse,
   ModelCatalogResponse,
   ProjectModelSettingsResponse,
   ProviderModelResponse,
@@ -29,14 +30,15 @@ const modelForm = reactive({
 const { data, error, refresh } = await useAsyncData(
   () => `project-provider-${projectId.value}`,
   async () => {
-    const [providerState, modelCatalog, modelSettings] = await Promise.all([
+    const [assistantSettings, providerState, modelCatalog, modelSettings] = await Promise.all([
+      requestFetch<AssistantSettingsResponse>(`/api/v1/projects/${projectId.value}/assistant`),
       requestFetch<ProviderStateResponse>(`/api/v1/projects/${projectId.value}/provider`),
       requestFetch<ModelCatalogResponse>("/api/v1/models"),
       requestFetch<ProjectModelSettingsResponse>(
         `/api/v1/projects/${projectId.value}/model-settings`,
       ),
     ]);
-    return { providerState, modelCatalog, modelSettings };
+    return { assistantSettings, providerState, modelCatalog, modelSettings };
   },
 );
 
@@ -56,6 +58,10 @@ watch(
 const credential = computed(() => data.value?.providerState.credential ?? null);
 const availableModels = computed(
   () => data.value?.modelCatalog.models.filter((model) => model.available) ?? [],
+);
+const hasConnectedProvider = computed(() => credential.value?.status === "verified");
+const showModelCatalog = computed(
+  () => hasConnectedProvider.value && availableModels.value.length > 0,
 );
 const chatModels = computed(() =>
   availableModels.value.filter(
@@ -253,21 +259,7 @@ const saveModels = async (): Promise<void> => {
 </script>
 
 <template>
-  <main class="page-frame page-frame--narrow">
-    <header class="page-header">
-      <div>
-        <p class="eyebrow">Интеграция</p>
-        <h1 class="page-title page-title--compact">AITUNNEL и модели</h1>
-        <p class="page-description">
-          Ключ остаётся только на сервере. После сохранения панель показывает маску и безопасные
-          метаданные.
-        </p>
-      </div>
-      <span class="status-badge" :data-status="credential?.status ?? 'idle'">
-        {{ credential?.status ?? "не подключён" }}
-      </span>
-    </header>
-
+  <main class="page-frame page-frame--narrow page-frame--fill">
     <div v-if="error" class="empty-state" role="alert">
       Настройки провайдера недоступны. Раздел открыт только владельцу проекта.
     </div>
@@ -276,7 +268,6 @@ const saveModels = async (): Promise<void> => {
       <section class="panel" aria-labelledby="credential-title">
         <header class="section-header">
           <div>
-            <p class="eyebrow">Шаг 1</p>
             <h2 id="credential-title" class="section-title">Ключ провайдера</h2>
           </div>
           <span class="section-description"
@@ -383,10 +374,9 @@ const saveModels = async (): Promise<void> => {
         </form>
       </section>
 
-      <section class="panel" aria-labelledby="models-title">
+      <section v-if="showModelCatalog" class="panel" aria-labelledby="models-title">
         <header class="section-header">
           <div>
-            <p class="eyebrow">Шаг 2</p>
             <h2 id="models-title" class="section-title">Каталог и выбор моделей</h2>
           </div>
           <button class="button" type="button" :disabled="isSyncingModels" @click="syncModels">
@@ -402,11 +392,7 @@ const saveModels = async (): Promise<void> => {
           </span>
         </div>
 
-        <div v-if="!data.modelCatalog.models.length" class="empty-state empty-state--compact">
-          Каталог ещё не загружен. Нажмите «Обновить каталог» — ключ для этого не требуется.
-        </div>
-
-        <form v-else class="form-stack" @submit.prevent="saveModels">
+        <form class="form-stack" @submit.prevent="saveModels">
           <div class="form-field">
             <span class="form-field__label">Chat model</span>
             <BaseSelect
@@ -472,6 +458,34 @@ const saveModels = async (): Promise<void> => {
             </button>
           </div>
         </form>
+      </section>
+
+      <section class="panel panel--push-end" aria-labelledby="assistant-identity-title">
+        <header class="section-header">
+          <div>
+            <h2 id="assistant-identity-title" class="section-title">Публичный идентификатор</h2>
+          </div>
+        </header>
+        <div class="readonly-summary">
+          <div>
+            <span>Assistant ID</span>
+            <code>{{ data.assistantSettings.assistant.publicId }}</code>
+          </div>
+          <div>
+            <span>Черновик</span>
+            <strong>revision {{ data.assistantSettings.draft.revisionNo }}</strong>
+          </div>
+          <div>
+            <span>Production</span>
+            <strong>
+              {{
+                data.assistantSettings.activeConfig
+                  ? `revision ${data.assistantSettings.activeConfig.revisionNo}`
+                  : "не опубликован"
+              }}
+            </strong>
+          </div>
+        </div>
       </section>
     </template>
   </main>

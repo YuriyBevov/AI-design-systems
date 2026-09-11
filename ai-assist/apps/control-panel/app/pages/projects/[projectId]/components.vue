@@ -1,20 +1,21 @@
 <script setup lang="ts">
 const iconSamples = [
-  { name: "home", label: "Обзор" },
+  { name: "home", label: "Обзор проекта" },
   { name: "settings", label: "Настройки" },
-  { name: "assistant", label: "Ассистент" },
-  { name: "prompt", label: "Prompts" },
+  { name: "assistant", label: "Настройки ассистента" },
+  { name: "prompt", label: "Роль и поведение" },
   { name: "knowledge", label: "База знаний" },
   { name: "logout", label: "Выход" },
   { name: "moon", label: "Тёмная тема" },
   { name: "components", label: "Компоненты" },
-  { name: "projects", label: "Проекты" },
-  { name: "users", label: "Пользователи" },
-  { name: "provider", label: "Провайдер" },
+  { name: "projects", label: "Управление проектами" },
+  { name: "users", label: "Управление пользователями" },
+  { name: "provider", label: "Подключение" },
   { name: "audit", label: "Аудит" },
   { name: "arrow-left", label: "Назад" },
   { name: "plus", label: "Добавить" },
   { name: "close", label: "Закрыть" },
+  { name: "trash", label: "Удалить" },
   { name: "help", label: "Подсказка" },
   { name: "chevron-down", label: "Раскрыть" },
   { name: "check", label: "Выбрано" },
@@ -22,6 +23,7 @@ const iconSamples = [
 ] as const;
 const selectValue = ref("balanced");
 const checkboxValue = ref(false);
+const activeTabPreview = ref("interface");
 const isModalPreviewOpen = ref(false);
 const toast = useToast();
 const selectOptions = [
@@ -29,13 +31,16 @@ const selectOptions = [
   { value: "balanced", label: "Сбалансированный" },
   { value: "accurate", label: "Точный" },
 ] as const;
+const tabSamples = [
+  { id: "interface", label: "Интерфейс" },
+  { id: "security", label: "Безопасность и ограничения" },
+] as const;
 </script>
 
 <template>
   <main class="page-frame">
     <header class="page-header">
       <div>
-        <p class="eyebrow">Дизайн-система</p>
         <h1 class="page-title page-title--compact">Компоненты</h1>
         <p class="page-description">
           Общий каталог компонентов интерфейса AI Assist для визуальной проверки и повторного
@@ -47,7 +52,6 @@ const selectOptions = [
     <section class="panel" aria-labelledby="button-components-title">
       <header class="section-header">
         <div>
-          <p class="eyebrow">Действия</p>
           <h2 id="button-components-title" class="section-title">Обычные кнопки</h2>
         </div>
         <p class="section-description">
@@ -70,7 +74,6 @@ const selectOptions = [
     <section class="panel" aria-labelledby="icon-button-components-title">
       <header class="section-header">
         <div>
-          <p class="eyebrow">Действия</p>
           <h2 id="icon-button-components-title" class="section-title">Кнопки с иконкой</h2>
         </div>
         <p class="section-description">
@@ -103,10 +106,34 @@ const selectOptions = [
       </div>
     </section>
 
+    <section class="panel" aria-labelledby="tabs-components-title">
+      <header class="section-header">
+        <div>
+          <h2 id="tabs-components-title" class="section-title">Вкладки</h2>
+        </div>
+        <p class="section-description">
+          Верхняя навигация внутри раздела использует общий компонент <code>tab-bar</code>.
+        </p>
+      </header>
+
+      <nav class="tab-bar" aria-label="Пример вкладок">
+        <a
+          v-for="tab in tabSamples"
+          :key="tab.id"
+          class="tab-bar__item"
+          :class="{ 'tab-bar__item--active': activeTabPreview === tab.id }"
+          href="#"
+          :aria-current="activeTabPreview === tab.id ? 'page' : undefined"
+          @click.prevent="activeTabPreview = tab.id"
+        >
+          {{ tab.label }}
+        </a>
+      </nav>
+    </section>
+
     <section class="panel" aria-labelledby="select-components-title">
       <header class="section-header">
         <div>
-          <p class="eyebrow">Поля формы</p>
           <h2 id="select-components-title" class="section-title">Выпадающие списки</h2>
         </div>
         <p class="section-description">
@@ -144,7 +171,6 @@ const selectOptions = [
     <section class="panel" aria-labelledby="checkbox-components-title">
       <header class="section-header">
         <div>
-          <p class="eyebrow">Поля формы</p>
           <h2 id="checkbox-components-title" class="section-title">Флажки</h2>
         </div>
         <p class="section-description">
@@ -161,7 +187,6 @@ const selectOptions = [
     <section class="panel" aria-labelledby="modal-components-title">
       <header class="section-header">
         <div>
-          <p class="eyebrow">Поверх страницы</p>
           <h2 id="modal-components-title" class="section-title">Модальные окна</h2>
         </div>
         <p class="section-description">
@@ -179,7 +204,6 @@ const selectOptions = [
     <section class="panel" aria-labelledby="toast-components-title">
       <header class="section-header">
         <div>
-          <p class="eyebrow">Обратная связь</p>
           <h2 id="toast-components-title" class="section-title">Уведомления</h2>
         </div>
         <p class="section-description">
@@ -208,7 +232,6 @@ const selectOptions = [
     <section class="panel" aria-labelledby="icon-components-title">
       <header class="section-header">
         <div>
-          <p class="eyebrow">Графика</p>
           <h2 id="icon-components-title" class="section-title">SVG-иконки</h2>
         </div>
         <p class="section-description">

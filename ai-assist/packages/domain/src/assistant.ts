@@ -4,10 +4,10 @@ export type AssistantOriginEnvironment = "production" | "preview";
 
 export type AssistantOriginInput = {
   origin: string;
-  environment: AssistantOriginEnvironment;
 };
 
 export type NormalizedAssistantOrigin = AssistantOriginInput & {
+  environment: AssistantOriginEnvironment;
   scheme: "http" | "https";
   host: string;
   port: number | null;
@@ -47,15 +47,12 @@ const normalizeOrigin = (
     return "ASSISTANT_ORIGIN_INVALID";
   }
 
-  if (url.protocol === "http:") {
-    const isLocalPreview =
-      input.environment === "preview" && previewHttpHosts.has(url.hostname.toLowerCase());
-    if (!isLocalPreview) return "ASSISTANT_ORIGIN_HTTPS_REQUIRED";
-  }
+  const isLocalPreview = previewHttpHosts.has(url.hostname.toLowerCase());
+  if (url.protocol === "http:" && !isLocalPreview) return "ASSISTANT_ORIGIN_HTTPS_REQUIRED";
 
   return {
     origin: url.origin.toLowerCase(),
-    environment: input.environment,
+    environment: isLocalPreview ? "preview" : "production",
     scheme: url.protocol.slice(0, -1) as "http" | "https",
     host: url.hostname.toLowerCase(),
     port: url.port ? Number(url.port) : null,

@@ -62,10 +62,7 @@ const draftBody = (settings, overrides = {}) => ({
   responseTimeoutSeconds: settings.draft.responseTimeoutSeconds,
   dailyRateLimit: settings.draft.dailyRateLimit,
   citationsEnabled: settings.draft.citationsEnabled,
-  allowedOrigins: settings.draft.allowedOrigins.map(({ origin, environment }) => ({
-    origin,
-    environment,
-  })),
+  allowedOrigins: settings.draft.allowedOrigins.map(({ origin }) => ({ origin })),
   ...overrides,
 });
 
@@ -133,9 +130,7 @@ try {
     headers: mutationHeaders,
     body: JSON.stringify(
       draftBody(initial, {
-        allowedOrigins: [
-          { origin: "https://assistant-smoke.example/catalog", environment: "production" },
-        ],
+        allowedOrigins: [{ origin: "https://assistant-smoke.example/catalog" }],
       }),
     ),
   });
@@ -154,8 +149,8 @@ try {
           name: "Smoke assistant",
           greeting: "Draft greeting two",
           allowedOrigins: [
-            { origin: "https://assistant-smoke.example/", environment: "production" },
-            { origin: "http://localhost:4173", environment: "preview" },
+            { origin: "https://assistant-smoke.example/" },
+            { origin: "http://localhost:4173" },
           ],
         }),
       ),

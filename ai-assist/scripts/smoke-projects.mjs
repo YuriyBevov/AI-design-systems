@@ -47,10 +47,7 @@ const assistantDraftBody = (settings, overrides = {}) => ({
   responseTimeoutSeconds: settings.draft.responseTimeoutSeconds,
   dailyRateLimit: settings.draft.dailyRateLimit,
   citationsEnabled: settings.draft.citationsEnabled,
-  allowedOrigins: settings.draft.allowedOrigins.map(({ origin, environment }) => ({
-    origin,
-    environment,
-  })),
+  allowedOrigins: settings.draft.allowedOrigins.map(({ origin }) => ({ origin })),
   ...overrides,
 });
 
@@ -151,7 +148,7 @@ try {
           name: "Reusable sales assistant",
           greeting: "Copied assistant greeting",
           contactFallback: "source-owner@example.test",
-          allowedOrigins: [{ origin: "https://source-project.example", environment: "production" }],
+          allowedOrigins: [{ origin: "https://source-project.example" }],
         }),
       ),
     },

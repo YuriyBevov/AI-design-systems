@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type {
-  AssistantOriginEnvironment,
   AssistantSettingsResponse,
   ProjectResponse,
   UpdateAssistantDraftRequest,
@@ -9,6 +8,7 @@ import type {
 const route = useRoute();
 const session = useAdminSessionState();
 const projectId = computed(() => String(route.params.projectId));
+const localTab = computed(() => getAssistantSettingsTab(route.path, route.query.tab));
 const requestFetch = useRequestFetch();
 const isSaving = ref(false);
 const isPublishing = ref(false);
@@ -19,10 +19,9 @@ useToastMessage(message);
 useToastMessage(retentionMessage);
 const retentionDays = ref(30);
 let nextOriginKey = 0;
-const createOriginRow = (origin: string, environment: AssistantOriginEnvironment) => ({
+const createOriginRow = (origin: string) => ({
   key: (nextOriginKey += 1),
   origin,
-  environment,
 });
 const form = reactive({
   name: "",
@@ -40,18 +39,12 @@ const form = reactive({
   allowedOrigins: [] as Array<{
     key: number;
     origin: string;
-    environment: AssistantOriginEnvironment;
   }>,
 });
 const launcherPositionOptions = [
   { value: "right", label: "Справа" },
   { value: "left", label: "Слева" },
 ] as const;
-const originEnvironmentOptions = [
-  { value: "production", label: "Production" },
-  { value: "preview", label: "Preview" },
-] as const;
-
 const { data, error } = await useAsyncData(
   () => `project-assistant-${projectId.value}`,
   () => requestFetch<AssistantSettingsResponse>(`/api/v1/projects/${projectId.value}/assistant`),
@@ -78,9 +71,7 @@ const applyDraft = (settings: AssistantSettingsResponse): void => {
   form.allowedOrigins.splice(
     0,
     form.allowedOrigins.length,
-    ...settings.draft.allowedOrigins.map(({ origin, environment }) =>
-      createOriginRow(origin, environment),
-    ),
+    ...settings.draft.allowedOrigins.map(({ origin }) => createOriginRow(origin)),
   );
 };
 
@@ -107,10 +98,10 @@ const canEdit = computed(() => projectRole.value === "owner");
 
 const errorMessages: Record<string, string> = {
   ASSISTANT_ORIGIN_INVALID:
-    "Origin должен содержать только scheme, host и порт без пути, wildcard или credentials.",
+    "URL-адрес должен содержать только протокол, домен и порт без пути и дополнительных параметров.",
   ASSISTANT_ORIGIN_HTTPS_REQUIRED:
-    "Production Origin обязан использовать HTTPS. HTTP разрешён только для localhost preview.",
-  ASSISTANT_ORIGIN_DUPLICATE: "Один Origin указан несколько раз.",
+    "Боевой URL-адрес должен использовать HTTPS. HTTP разрешён только для локального предпросмотра.",
+  ASSISTANT_ORIGIN_DUPLICATE: "Один URL-адрес указан несколько раз.",
   ASSISTANT_VERSION_CONFLICT:
     "Настройки уже изменены в другой вкладке. Обновите страницу перед повторным сохранением.",
   ASSISTANT_CONFIG_UNCHANGED: "В настройках нет изменений.",
@@ -129,7 +120,7 @@ const setError = (requestError: unknown, fallback: string): void => {
 };
 
 const addOrigin = (): void => {
-  form.allowedOrigins.push(createOriginRow("https://", "production"));
+  form.allowedOrigins.push(createOriginRow("https://"));
 };
 
 const removeOrigin = (index: number): void => {
@@ -152,7 +143,7 @@ const requestBody = (): UpdateAssistantDraftRequest => ({
   responseTimeoutSeconds: form.responseTimeoutSeconds,
   dailyRateLimit: form.dailyRateLimit,
   citationsEnabled: form.citationsEnabled,
-  allowedOrigins: form.allowedOrigins.map(({ origin, environment }) => ({ origin, environment })),
+  allowedOrigins: form.allowedOrigins.map(({ origin }) => ({ origin })),
 });
 
 const saveRetention = async (): Promise<void> => {
@@ -225,60 +216,239 @@ const publish = async (): Promise<void> => {
 
 <template>
   <main class="page-frame page-frame--narrow">
-    <header class="page-header">
-      <div>
-        <p class="eyebrow">Конфигурация</p>
-        <h1 class="page-title page-title--compact">Ассистент</h1>
-        <p class="page-description">
-          Черновик интерфейса и&nbsp;разрешённых сайтов. Production меняется только после
-          публикации.
-        </p>
-      </div>
-      <span
-        v-if="data"
-        class="status-badge"
-        :data-status="data.hasUnpublishedChanges ? 'draft' : 'published'"
-      >
-        {{ data.hasUnpublishedChanges ? "есть черновик" : "опубликовано" }}
-      </span>
-    </header>
-
     <div v-if="error" class="empty-state" role="alert">
       Настройки ассистента недоступны или&nbsp;проект не&nbsp;найден.
     </div>
 
     <template v-else-if="data">
-      <section class="panel assistant-summary" aria-labelledby="assistant-identity-title">
-        <header class="section-header">
-          <div>
-            <p class="eyebrow">Identity</p>
-            <h2 id="assistant-identity-title" class="section-title">Публичный идентификатор</h2>
-          </div>
-        </header>
-        <div class="readonly-summary">
-          <div>
-            <span>Assistant ID</span>
-            <code>{{ data.assistant.publicId }}</code>
-          </div>
-          <div>
-            <span>Черновик</span>
-            <strong>revision {{ data.draft.revisionNo }}</strong>
-          </div>
-          <div>
-            <span>Production</span>
-            <strong>
-              {{
-                data.activeConfig ? `revision ${data.activeConfig.revisionNo}` : "не опубликован"
-              }}
-            </strong>
-          </div>
-        </div>
-      </section>
+      <form
+        v-if="localTab === 'interface' || localTab === 'security'"
+        class="panel form-stack"
+        @submit.prevent="saveDraft"
+      >
+        <template v-if="localTab === 'interface'">
+          <header class="section-header">
+            <div>
+              <h2 class="section-title">Интерфейс</h2>
+            </div>
+          </header>
 
-      <form class="panel form-stack" @submit.prevent="saveRetention">
+          <div class="form-grid">
+            <label class="form-field">
+              <span class="form-field__label">Название ассистента</span>
+              <input
+                v-model.trim="form.name"
+                class="form-field__control"
+                type="text"
+                maxlength="160"
+                required
+                :disabled="!canEdit"
+              />
+            </label>
+
+            <label class="form-field form-field--wide">
+              <span class="form-field__label">Приветствие</span>
+              <textarea
+                v-model.trim="form.greeting"
+                class="form-field__control assistant-textarea"
+                maxlength="2000"
+                required
+                :disabled="!canEdit"
+              />
+            </label>
+
+            <label class="form-field">
+              <span class="form-field__label">Placeholder поля вопроса</span>
+              <input
+                v-model.trim="form.placeholder"
+                class="form-field__control"
+                type="text"
+                maxlength="200"
+                required
+                :disabled="!canEdit"
+              />
+            </label>
+
+            <div class="form-field">
+              <span class="form-field__label">Положение кнопки</span>
+              <BaseSelect
+                v-model="form.launcherPosition"
+                :options="launcherPositionOptions"
+                label="Положение кнопки"
+                :disabled="!canEdit"
+              />
+            </div>
+
+            <label class="form-field">
+              <span class="form-field__label">Акцентный цвет</span>
+              <span class="assistant-color">
+                <input
+                  v-model="form.accentColor"
+                  class="assistant-color__picker"
+                  type="color"
+                  :disabled="!canEdit"
+                />
+                <input
+                  v-model.trim="form.accentColor"
+                  class="form-field__control"
+                  type="text"
+                  pattern="#[A-Fa-f0-9]{6}"
+                  maxlength="7"
+                  required
+                  :disabled="!canEdit"
+                />
+              </span>
+            </label>
+
+            <label class="form-field">
+              <span class="form-field__label">Резервный контакт</span>
+              <input
+                v-model.trim="form.contactFallback"
+                class="form-field__control"
+                type="text"
+                maxlength="2000"
+                placeholder="Телефон, email или URL"
+                :disabled="!canEdit"
+              />
+            </label>
+
+            <label class="form-field form-field--wide">
+              <span class="form-field__label">Сообщение при&nbsp;отключённом виджете</span>
+              <textarea
+                v-model.trim="form.maintenanceMessage"
+                class="form-field__control assistant-textarea"
+                maxlength="2000"
+                :disabled="!canEdit"
+              />
+            </label>
+          </div>
+
+          <div class="assistant-toggles">
+            <label class="assistant-toggle">
+              <input v-model="form.enabled" type="checkbox" :disabled="!canEdit" />
+              <span>Виджет включён</span>
+            </label>
+            <label class="assistant-toggle">
+              <input v-model="form.citationsEnabled" type="checkbox" :disabled="!canEdit" />
+              <span>Показывать источники ответа</span>
+            </label>
+          </div>
+        </template>
+
+        <template v-else>
+          <header class="section-header">
+            <div>
+              <h2 class="section-title">Разрешённые URL-адреса</h2>
+            </div>
+            <button
+              class="button"
+              type="button"
+              :disabled="!canEdit || form.allowedOrigins.length >= 20"
+              @click="addOrigin"
+            >
+              Добавить URL-адрес
+            </button>
+          </header>
+
+          <div class="assistant-origin-list">
+            <div
+              v-for="(origin, index) in form.allowedOrigins"
+              :key="origin.key"
+              class="assistant-origin"
+            >
+              <div class="form-field">
+                <input
+                  v-model.trim="origin.origin"
+                  class="form-field__control"
+                  type="url"
+                  aria-label="URL-адрес"
+                  maxlength="512"
+                  required
+                  :disabled="!canEdit"
+                />
+              </div>
+              <button
+                class="icon-button icon-button--danger assistant-origin__remove"
+                type="button"
+                aria-label="Удалить URL-адрес"
+                :disabled="!canEdit || form.allowedOrigins.length <= 1"
+                @click="removeOrigin(index)"
+              >
+                <UiIcon name="trash" />
+              </button>
+            </div>
+          </div>
+
+          <p class="form-field__hint">* Только точный URL, например https://sitename.ru</p>
+
+          <header class="section-header assistant-section-header">
+            <div>
+              <h2 class="section-title">Ограничения работы</h2>
+            </div>
+          </header>
+
+          <div class="form-grid">
+            <label class="form-field">
+              <span class="form-field__label">Сообщений в&nbsp;диалоге</span>
+              <input
+                v-model.number="form.maxConversationTurns"
+                class="form-field__control"
+                type="number"
+                min="1"
+                max="50"
+                required
+                :disabled="!canEdit"
+              />
+            </label>
+            <label class="form-field">
+              <span class="form-field__label">Таймаут ответа, секунд</span>
+              <input
+                v-model.number="form.responseTimeoutSeconds"
+                class="form-field__control"
+                type="number"
+                min="5"
+                max="120"
+                required
+                :disabled="!canEdit"
+              />
+            </label>
+            <label class="form-field form-field--wide">
+              <span class="form-field__label">Дневной лимит запросов</span>
+              <input
+                v-model.number="form.dailyRateLimit"
+                class="form-field__control"
+                type="number"
+                min="10"
+                max="100000"
+                required
+                :disabled="!canEdit"
+              />
+            </label>
+          </div>
+        </template>
+
+        <p v-if="!canEdit" class="form-note">
+          Только администратор может изменять и&nbsp;публиковать настройки.
+        </p>
+
+        <div class="form-actions form-actions--split">
+          <button
+            class="button"
+            type="button"
+            :disabled="!canEdit || isPublishing || !data.hasUnpublishedChanges"
+            @click="publish"
+          >
+            {{ isPublishing ? "Публикуем…" : "Опубликовать настройки" }}
+          </button>
+          <button class="button button--primary" type="submit" :disabled="!canEdit || isSaving">
+            {{ isSaving ? "Сохраняем…" : "Сохранить черновик" }}
+          </button>
+        </div>
+      </form>
+
+      <form v-if="localTab === 'security'" class="panel form-stack" @submit.prevent="saveRetention">
         <header class="section-header">
           <div>
-            <p class="eyebrow">История</p>
             <h2 class="section-title">Хранение диалогов</h2>
           </div>
           <p class="section-description">
@@ -317,236 +487,6 @@ const publish = async (): Promise<void> => {
             </button>
           </div>
         </template>
-      </form>
-
-      <form class="panel form-stack" @submit.prevent="saveDraft">
-        <header class="section-header">
-          <div>
-            <p class="eyebrow">Интерфейс</p>
-            <h2 class="section-title">Тексты и&nbsp;отображение</h2>
-          </div>
-        </header>
-
-        <div class="form-grid">
-          <label class="form-field">
-            <span class="form-field__label">Название ассистента</span>
-            <input
-              v-model.trim="form.name"
-              class="form-field__control"
-              type="text"
-              maxlength="160"
-              required
-              :disabled="!canEdit"
-            />
-          </label>
-
-          <label class="form-field form-field--wide">
-            <span class="form-field__label">Приветствие</span>
-            <textarea
-              v-model.trim="form.greeting"
-              class="form-field__control assistant-textarea"
-              maxlength="2000"
-              required
-              :disabled="!canEdit"
-            />
-          </label>
-
-          <label class="form-field">
-            <span class="form-field__label">Placeholder поля вопроса</span>
-            <input
-              v-model.trim="form.placeholder"
-              class="form-field__control"
-              type="text"
-              maxlength="200"
-              required
-              :disabled="!canEdit"
-            />
-          </label>
-
-          <div class="form-field">
-            <span class="form-field__label">Положение кнопки</span>
-            <BaseSelect
-              v-model="form.launcherPosition"
-              :options="launcherPositionOptions"
-              label="Положение кнопки"
-              :disabled="!canEdit"
-            />
-          </div>
-
-          <label class="form-field">
-            <span class="form-field__label">Акцентный цвет</span>
-            <span class="assistant-color">
-              <input
-                v-model="form.accentColor"
-                class="assistant-color__picker"
-                type="color"
-                :disabled="!canEdit"
-              />
-              <input
-                v-model.trim="form.accentColor"
-                class="form-field__control"
-                type="text"
-                pattern="#[A-Fa-f0-9]{6}"
-                maxlength="7"
-                required
-                :disabled="!canEdit"
-              />
-            </span>
-          </label>
-
-          <label class="form-field">
-            <span class="form-field__label">Контактный fallback</span>
-            <input
-              v-model.trim="form.contactFallback"
-              class="form-field__control"
-              type="text"
-              maxlength="2000"
-              placeholder="Телефон, email или URL"
-              :disabled="!canEdit"
-            />
-          </label>
-
-          <label class="form-field form-field--wide">
-            <span class="form-field__label">Сообщение при&nbsp;отключённом виджете</span>
-            <textarea
-              v-model.trim="form.maintenanceMessage"
-              class="form-field__control assistant-textarea"
-              maxlength="2000"
-              :disabled="!canEdit"
-            />
-          </label>
-        </div>
-
-        <div class="assistant-toggles">
-          <label class="assistant-toggle">
-            <input v-model="form.enabled" type="checkbox" :disabled="!canEdit" />
-            <span>Виджет включён</span>
-          </label>
-          <label class="assistant-toggle">
-            <input v-model="form.citationsEnabled" type="checkbox" :disabled="!canEdit" />
-            <span>Показывать источники ответа</span>
-          </label>
-        </div>
-
-        <header class="section-header assistant-section-header">
-          <div>
-            <p class="eyebrow">Безопасность</p>
-            <h2 class="section-title">Разрешённые Origins</h2>
-          </div>
-          <button
-            class="button"
-            type="button"
-            :disabled="!canEdit || form.allowedOrigins.length >= 20"
-            @click="addOrigin"
-          >
-            Добавить Origin
-          </button>
-        </header>
-
-        <p class="form-field__hint">
-          Только точный origin без пути: например, https://gofroprodpak.ru. Wildcard запрещён.
-        </p>
-
-        <div class="assistant-origin-list">
-          <div
-            v-for="(origin, index) in form.allowedOrigins"
-            :key="origin.key"
-            class="assistant-origin"
-          >
-            <label class="form-field">
-              <span class="form-field__label">Origin</span>
-              <input
-                v-model.trim="origin.origin"
-                class="form-field__control"
-                type="url"
-                maxlength="512"
-                required
-                :disabled="!canEdit"
-              />
-            </label>
-            <div class="form-field">
-              <span class="form-field__label">Среда</span>
-              <BaseSelect
-                v-model="origin.environment"
-                :options="originEnvironmentOptions"
-                label="Среда"
-                :disabled="!canEdit"
-              />
-            </div>
-            <button
-              class="button button--text button--danger assistant-origin__remove"
-              type="button"
-              :disabled="!canEdit || form.allowedOrigins.length <= 1"
-              @click="removeOrigin(index)"
-            >
-              Удалить
-            </button>
-          </div>
-        </div>
-
-        <header class="section-header assistant-section-header">
-          <div>
-            <p class="eyebrow">Ограничения</p>
-            <h2 class="section-title">Runtime</h2>
-          </div>
-        </header>
-
-        <div class="form-grid">
-          <label class="form-field">
-            <span class="form-field__label">Сообщений в&nbsp;диалоге</span>
-            <input
-              v-model.number="form.maxConversationTurns"
-              class="form-field__control"
-              type="number"
-              min="1"
-              max="50"
-              required
-              :disabled="!canEdit"
-            />
-          </label>
-          <label class="form-field">
-            <span class="form-field__label">Timeout ответа, секунд</span>
-            <input
-              v-model.number="form.responseTimeoutSeconds"
-              class="form-field__control"
-              type="number"
-              min="5"
-              max="120"
-              required
-              :disabled="!canEdit"
-            />
-          </label>
-          <label class="form-field form-field--wide">
-            <span class="form-field__label">Дневной лимит запросов</span>
-            <input
-              v-model.number="form.dailyRateLimit"
-              class="form-field__control"
-              type="number"
-              min="10"
-              max="100000"
-              required
-              :disabled="!canEdit"
-            />
-          </label>
-        </div>
-
-        <p v-if="!canEdit" class="form-note">
-          Только администратор может изменять и&nbsp;публиковать настройки.
-        </p>
-
-        <div class="form-actions form-actions--split">
-          <button
-            class="button"
-            type="button"
-            :disabled="!canEdit || isPublishing || !data.hasUnpublishedChanges"
-            @click="publish"
-          >
-            {{ isPublishing ? "Публикуем…" : "Опубликовать настройки" }}
-          </button>
-          <button class="button button--primary" type="submit" :disabled="!canEdit || isSaving">
-            {{ isSaving ? "Сохраняем…" : "Сохранить черновик" }}
-          </button>
-        </div>
       </form>
     </template>
   </main>

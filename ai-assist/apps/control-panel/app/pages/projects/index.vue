@@ -149,8 +149,7 @@ const deleteProject = async (project: ProjectResponse): Promise<void> => {
   <main class="page-frame">
     <header class="page-header">
       <div>
-        <p class="eyebrow">Рабочие пространства</p>
-        <h1 class="page-title page-title--compact">Проекты</h1>
+        <h1 class="page-title page-title--compact">Управление проектами</h1>
         <p class="page-description">
           Каждый проект хранит собственные настройки, историю, знания и runtime ассистента.
         </p>
@@ -160,7 +159,6 @@ const deleteProject = async (project: ProjectResponse): Promise<void> => {
     <section v-if="isAdmin" class="panel" aria-labelledby="create-project-title">
       <header class="section-header">
         <div>
-          <p class="eyebrow">Новый проект</p>
           <h2 id="create-project-title" class="section-title">Создать рабочее пространство</h2>
         </div>
         <p class="section-description">
@@ -238,7 +236,6 @@ const deleteProject = async (project: ProjectResponse): Promise<void> => {
     <section class="panel" aria-labelledby="project-list-title">
       <header class="section-header">
         <div>
-          <p class="eyebrow">Управление</p>
           <h2 id="project-list-title" class="section-title">Доступные проекты</h2>
         </div>
         <p class="section-description">Приостановленный проект не обслуживает виджет и jobs.</p>
@@ -272,7 +269,8 @@ const deleteProject = async (project: ProjectResponse): Promise<void> => {
             <NuxtLink
               v-if="project.status === 'active'"
               class="button button--compact"
-              :to="`/projects/${project.id}/settings`"
+              to="/"
+              @click="selectProject(project.id)"
             >
               Открыть
             </NuxtLink>

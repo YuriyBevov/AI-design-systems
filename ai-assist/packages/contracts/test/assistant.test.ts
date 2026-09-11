@@ -20,7 +20,7 @@ const validDraft = {
   responseTimeoutSeconds: 45,
   dailyRateLimit: 500,
   citationsEnabled: true,
-  allowedOrigins: [{ origin: "https://example.com", environment: "production" }],
+  allowedOrigins: [{ origin: "https://example.com" }],
 };
 
 describe("assistant contracts", () => {
@@ -38,6 +38,15 @@ describe("assistant contracts", () => {
   it("requires at least one bounded Origin", () => {
     expect(
       updateAssistantDraftRequestSchema.safeParse({ ...validDraft, allowedOrigins: [] }).success,
+    ).toBe(false);
+  });
+
+  it("derives the Origin environment on the server", () => {
+    expect(
+      updateAssistantDraftRequestSchema.safeParse({
+        ...validDraft,
+        allowedOrigins: [{ origin: "https://example.com", environment: "preview" }],
+      }).success,
     ).toBe(false);
   });
 

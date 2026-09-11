@@ -1,5 +1,11 @@
 <script setup lang="ts">
-import type { KnowledgeIndexStateResponse } from "@ai-assist/contracts";
+import type {
+  KnowledgeIndexStateResponse,
+  ProjectResponse,
+  UpdateProjectRequest,
+} from "@ai-assist/contracts";
+
+import { russianTimezoneOptions } from "~/utils/project-options";
 
 type ReadinessState = {
   status: "idle" | "checking" | "ok" | "degraded";
@@ -10,6 +16,20 @@ const { activeProject: project } = useActiveProject();
 const session = useAdminSessionState();
 const requestFetch = useRequestFetch();
 const readiness = ref<ReadinessState>({ status: "idle" });
+const settingsForm = reactive({ name: "", timezone: "" });
+const isSavingSettings = ref(false);
+const settingsMessage = ref<{ type: "success" | "error"; text: string } | null>(null);
+useToastMessage(settingsMessage);
+
+const {
+  data: projectDetails,
+  error: projectDetailsError,
+  refresh: refreshProjectDetails,
+} = await useAsyncData("overview-project-details", () =>
+  project.value
+    ? requestFetch<ProjectResponse>(`/api/v1/projects/${project.value.id}`)
+    : Promise.resolve(null),
+);
 const { data: knowledgeState, refresh: refreshKnowledgeState } = await useAsyncData(
   "overview-knowledge-state",
   () =>
@@ -20,12 +40,52 @@ const { data: knowledgeState, refresh: refreshKnowledgeState } = await useAsyncD
 
 watch(
   () => project.value?.id,
-  () => void refreshKnowledgeState(),
+  () => void Promise.all([refreshProjectDetails(), refreshKnowledgeState()]),
+);
+
+watch(
+  projectDetails,
+  (value) => {
+    if (!value) return;
+    settingsForm.name = value.name;
+    settingsForm.timezone = value.timezone;
+  },
+  { immediate: true },
 );
 
 const roleLabel = computed(() =>
   session.value?.user.role === "admin" ? "Администратор" : "Пользователь",
 );
+const canEditProject = computed(
+  () => session.value?.user.role === "admin" && projectDetails.value?.role === "owner",
+);
+
+const saveProjectSettings = async (): Promise<void> => {
+  if (!project.value || !canEditProject.value || isSavingSettings.value) return;
+  isSavingSettings.value = true;
+  settingsMessage.value = null;
+
+  const update: UpdateProjectRequest = {
+    name: settingsForm.name,
+    timezone: settingsForm.timezone,
+  };
+
+  try {
+    const updated = await $fetch<ProjectResponse>(`/api/v1/projects/${project.value.id}`, {
+      method: "PATCH",
+      headers: getCsrfHeaders(),
+      body: update,
+    });
+    projectDetails.value = updated;
+    const sessionProject = session.value?.projects.find((item) => item.id === updated.id);
+    if (sessionProject) sessionProject.name = updated.name;
+    settingsMessage.value = { type: "success", text: "Настройки проекта сохранены" };
+  } catch {
+    settingsMessage.value = { type: "error", text: "Не удалось сохранить настройки проекта" };
+  } finally {
+    isSavingSettings.value = false;
+  }
+};
 
 const documentCountLabel = computed(() => {
   const count = knowledgeState.value?.publishedDocumentCount ?? 0;
@@ -70,16 +130,78 @@ const checkReadiness = async (): Promise<void> => {
 
 <template>
   <main class="page-frame">
-    <header class="page-header">
+    <header class="page-header page-header--visible-title">
       <div>
-        <p class="eyebrow">Текущий проект</p>
-        <h1 class="page-title">{{ project?.name ?? "AI Assist" }}</h1>
-        <p class="page-description">
-          Данные, навигация и настройки синхронизированы с выбранным проектом.
-        </p>
+        <h1 class="page-title">{{ project?.name ?? "Проект не выбран" }}</h1>
       </div>
       <span class="status-badge" data-status="active">Активен</span>
     </header>
+
+    <div v-if="projectDetailsError" class="empty-state" role="alert">
+      Настройки проекта недоступны.
+    </div>
+
+    <form
+      v-else-if="projectDetails"
+      class="panel form-stack"
+      aria-labelledby="project-settings-title"
+      @submit.prevent="saveProjectSettings"
+    >
+      <header class="section-header">
+        <div>
+          <h2 id="project-settings-title" class="section-title">Настройки проекта</h2>
+        </div>
+      </header>
+
+      <div class="form-grid">
+        <label class="form-field form-field--wide">
+          <span class="form-field__label">Название проекта</span>
+          <input
+            v-model.trim="settingsForm.name"
+            class="form-field__control"
+            type="text"
+            maxlength="160"
+            required
+            :disabled="!canEditProject"
+          />
+        </label>
+
+        <div class="form-field">
+          <span class="form-field__label">Часовой пояс</span>
+          <BaseSelect
+            v-model="settingsForm.timezone"
+            :options="russianTimezoneOptions"
+            label="Часовой пояс проекта"
+            :disabled="!canEditProject"
+          />
+        </div>
+      </div>
+
+      <div class="readonly-summary">
+        <div>
+          <span>Основной сайт</span>
+          <strong>{{ projectDetails.primaryOrigin ?? "Не задан" }}</strong>
+        </div>
+        <div>
+          <span>Идентификатор</span>
+          <code>{{ projectDetails.id }}</code>
+        </div>
+      </div>
+
+      <p v-if="!canEditProject" class="form-note">
+        Только администратор может изменять эти настройки.
+      </p>
+
+      <div class="form-actions">
+        <button
+          class="button button--primary"
+          type="submit"
+          :disabled="!canEditProject || isSavingSettings"
+        >
+          {{ isSavingSettings ? "Сохраняем…" : "Сохранить изменения" }}
+        </button>
+      </div>
+    </form>
 
     <section class="metric-grid" aria-label="Краткий статус">
       <article class="metric-card">
@@ -97,20 +219,12 @@ const checkReadiness = async (): Promise<void> => {
     <section class="panel" aria-labelledby="quick-actions-title">
       <header class="section-header">
         <div>
-          <p class="eyebrow">Управление</p>
           <h2 id="quick-actions-title" class="section-title">Быстрые действия</h2>
         </div>
-        <p class="section-description">Базовые административные функции первого проекта.</p>
+        <p class="section-description">Базовые административные функции текущего проекта.</p>
       </header>
 
       <div v-if="project" class="action-grid">
-        <NuxtLink class="action-card" :to="`/projects/${project.id}/settings`">
-          <span class="action-card__icon" aria-hidden="true">
-            <UiIcon class="ui-icon--large" name="settings" />
-          </span>
-          <strong>Настройки проекта</strong>
-          <span>Название и часовой пояс текущего проекта.</span>
-        </NuxtLink>
         <NuxtLink class="action-card" :to="`/projects/${project.id}/audit`">
           <span class="action-card__icon" aria-hidden="true">
             <UiIcon class="ui-icon--large" name="audit" />
@@ -142,7 +256,6 @@ const checkReadiness = async (): Promise<void> => {
     <section class="panel" aria-labelledby="health-title">
       <header class="section-header">
         <div>
-          <p class="eyebrow">Диагностика</p>
           <h2 id="health-title" class="section-title">Состояние сервисов</h2>
         </div>
         <button
