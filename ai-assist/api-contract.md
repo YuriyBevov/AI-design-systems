@@ -32,6 +32,7 @@ Admin API использует Secure HttpOnly session cookie и CSRF token дл
 
 ```text
 POST   /auth/login
+POST   /auth/reauthenticate
 POST   /auth/logout
 POST   /auth/password/forgot
 POST   /auth/password/reset
@@ -40,9 +41,9 @@ GET    /auth/session
 
 Login/reset endpoints имеют отдельные rate limits и не раскрывают существование email.
 
-Статус реализации этапа 2: `login`, `logout` и `session` работают; password reset будет подключён вместе с выбранным каналом доставки. Login принимает только строгий DTO, выдаёт новую opaque session и отдельный CSRF token; logout отзывает запись на сервере.
+Статус реализации этапа 2: `login`, `reauthenticate`, `logout` и `session` работают; password reset будет подключён вместе с выбранным каналом доставки. Login принимает только строгий DTO, выдаёт новую opaque session и отдельный CSRF token; logout отзывает запись на сервере.
 
-`GET /auth/session` возвращает пользователя с `name`, `email` и продуктовой ролью `admin|user`. Роли `owner|editor|viewer` не являются внешними ролями аккаунта и в интерфейсе не показываются.
+`GET /auth/session` возвращает пользователя с `name`, `email` и продуктовой ролью `admin|user`. Роли `owner|editor|viewer` не являются внешними ролями аккаунта и в интерфейсе не показываются. `POST /auth/reauthenticate` принимает только текущий пароль, требует активную сессию, same-origin и CSRF, имеет отдельный rate limit и после успешной проверки продлевает окно чувствительных операций на 30 минут без выхода из панели.
 
 ### Пользователи
 
@@ -77,7 +78,7 @@ GET    /projects/{projectId}/assistant/embed
 
 Реализованные project endpoints позволяют получить управляемый список, создать, изменить, приостановить/возобновить и безопасно удалить проект. `POST /projects` принимает имя, IANA timezone, nullable `templateProjectId` и массив `userIds` активных обычных пользователей. Уникальный slug всегда генерируется сервером и не является пользовательской настройкой. В текущей версии locale фиксирована как `ru` и также не выводится в интерфейс. Панель предлагает все региональные IANA identifiers России, покрывающие 11 UTC-смещений. Новый проект получает новый assistant/public id, пустые индивидуальные настройки, всех активных администраторов и выбранных пользователей.
 
-Если передан `templateProjectId`, инициатор должен быть администратором активного проекта-шаблона. Копируются только draft-настройки поведения/оформления assistant, политика срока хранения диалогов и последние revision неархивированных prompts. Origins/домены, contact fallback, provider credentials, model settings, knowledge, publications, conversations, memberships и audit всегда исключены. Без шаблона срок хранения по умолчанию равен 30 дням. В интерфейсе эта политика находится в разделе «Ассистент» и сохраняется сразу через `PATCH /projects/{projectId}`, независимо от публикации черновика. Один внешний provider key допускается вручную сохранить в нескольких проектах, но каждый credential остаётся отдельной project-scoped записью и автоматически не копируется.
+Если передан `templateProjectId`, инициатор должен быть администратором активного проекта-шаблона. Копируются только draft-настройки поведения/оформления assistant, политика срока хранения диалогов и последняя revision единственной рабочей роли: сначала выбирается роль активной публикации, иначе последняя неархивная. Origins/домены, contact fallback, provider credentials, model settings, knowledge, publications, conversations, memberships и audit всегда исключены. Без шаблона срок хранения по умолчанию равен 30 дням. В интерфейсе эта политика находится в разделе «Ассистент» и сохраняется сразу через `PATCH /projects/{projectId}`, независимо от публикации черновика. Один внешний provider key допускается вручную сохранить в нескольких проектах, но каждый credential остаётся отдельной project-scoped записью и автоматически не копируется.
 
 `POST /projects`, `PATCH /projects/{projectId}/status` и `DELETE /projects/{projectId}` доступны только администратору. Status endpoint принимает только `{ "status": "active" | "suspended" }` и требует CSRF. Suspended-проект остаётся в управляемом списке, но исключается из обычного project scope, public widget и worker runtime до возобновления. Удаление дополнительно требует recent authentication и выполняет soft-delete в `archived`; tenant history и audit физически не удаляются. Archived-проекты не возвращаются в `GET /projects`.
 
@@ -97,6 +98,7 @@ PATCH  /projects/{projectId}/prompts/{promptId}
 POST   /projects/{projectId}/prompts/{promptId}/revisions
 GET    /projects/{projectId}/prompts/{promptId}/revisions
 GET    /projects/{projectId}/prompts/{promptId}/revisions/{revisionId}
+DELETE /projects/{projectId}/prompts/{promptId}/revisions/{revisionId}
 POST   /projects/{projectId}/prompts/{promptId}/preview
 POST   /projects/{projectId}/prompts/{promptId}/publish
 POST   /projects/{projectId}/prompts/{promptId}/archive
@@ -104,7 +106,7 @@ DELETE /projects/{projectId}/prompts/{promptId}
 GET    /projects/{projectId}/prompt-publication
 ```
 
-Реализованы все перечисленные операции. `PATCH` меняет metadata логического prompt. Текст изменяется только созданием immutable revision. Все update/revision/publish/archive/delete-команды принимают обязательный `expectedVersion`; устаревшее значение возвращает `409` + `PROMPT_VERSION_CONFLICT` с текущей версией.
+Реализованы все перечисленные операции. В продуктовой модели проект имеет одну рабочую роль ассистента; `POST /prompts` возвращает `409` + `PROJECT_PROMPT_ALREADY_EXISTS`, если уже существует неархивная роль. Архивные прежние записи сохраняются, но не участвуют в выборе рабочей роли. `PATCH` меняет metadata логического prompt. Текст изменяется только созданием immutable revision. Все update/revision/publish/archive/delete-команды принимают обязательный `expectedVersion`; устаревшее значение возвращает `409` + `PROMPT_VERSION_CONFLICT` с текущей версией.
 
 `POST /prompts/{promptId}/preview` принимает строгий body `{ revisionId, question }`, где вопрос после trim содержит от 1 до 4000 символов. Preview использует указанную сохранённую prompt revision, текущую draft assistant config и текущие model settings, но не создаёт publication и не меняет active production pointer. В ответе возвращаются answer, prompt/config revision ids, requested/resolved model, generation parameters, finish reason, token usage, latency и retrieval со статусом `ready|empty`, режимом `hybrid|lexical`, nullable `indexVersionId`, безопасным `warningCode` и массивом sources. Источники выбираются только из активных опубликованных версий текущего проекта и локали. При отсутствии совместимого индекса или ошибке query embedding preview продолжает работу в lexical mode.
 
@@ -114,7 +116,7 @@ Preview доступен Editor/Owner, требует session, exact same-origin
 
 Draft может содержать неизвестные переменные для исправления в editor-е, но publish вернёт `422` + `PROMPT_TEMPLATE_INVALID`. Разрешены только `assistant.name`, `project.name`, `project.locale`, `runtime.current_date`, `runtime.contact_fallback`. Публикация также требует выбранную chat-модель и хотя бы один Origin, создаёт новую `assistant_publication`, snapshot модельных настроек и ссылку на точный immutable assistant config snapshot, затем атомарно переключает active pointer. Публикация прежней revision является rollback и тоже создаёт новую publication. `GET /prompt-publication` — авторизованный административный runtime-resolver активного prompt/config/model snapshot; публичный widget не получает prompt text через этот endpoint.
 
-`DELETE` допустим только для никогда не публиковавшегося prompt и требует recent authentication; использовавшийся prompt возвращает `409` + `PROMPT_DELETE_REQUIRES_ARCHIVE`. Активный prompt нельзя архивировать (`PROMPT_ACTIVE_PUBLICATION`). Чтение требует Viewer, изменения — Editor/Owner; state-changing операции защищены CSRF и tenant scope.
+Удаление prompt очищает саму роль, все revisions, связанные publications и generation runs; если publication была активной, assistant переходит в draft без active pointer. Удаление роли и отдельной revision не требует повторного входа. Отдельное удаление разрешено только для нетекущей и неединственной версии; текущая возвращает `409` + `PROMPT_REVISION_CURRENT`, единственная — `409` + `PROMPT_REVISION_LAST`. Активный prompt нельзя архивировать (`PROMPT_ACTIVE_PUBLICATION`). Чтение требует Viewer, изменения — Editor/Owner; state-changing операции защищены CSRF и tenant scope.
 
 ## 5. Provider и модели
 
@@ -156,7 +158,7 @@ PUT    /projects/{projectId}/model-settings
 }
 ```
 
-При отсутствии ключа `credential` равен `null`. Поля `apiKey`, `ciphertext`, `nonce` и `authTag` в response отсутствуют. `PUT` принимает `{ "apiKey": "..." }` как write-only, сначала требует корректный формат и настроенный non-default master key, затем проверяет ключ у provider и только после этого атомарно сохраняет новый envelope. Неверный формат возвращает `400` + `PROVIDER_CREDENTIAL_FORMAT_INVALID`; небезопасный development default — `503` + `CREDENTIAL_ENCRYPTION_KEY_REQUIRED`; некорректный base64/размер master key — `503` + `CREDENTIAL_ENCRYPTION_KEY_INVALID`. Save/test/delete требуют Owner, CSRF и recent authentication. Model settings требуют Owner; чтение каталога и настроек доступно авторизованному администратору в рамках его project scope.
+При отсутствии ключа `credential` равен `null`. Поля `apiKey`, `ciphertext`, `nonce` и `authTag` в response отсутствуют. `PUT` принимает `{ "apiKey": "..." }` как write-only, сначала требует корректный формат и настроенный non-default master key, затем проверяет ключ у provider и только после этого атомарно сохраняет новый envelope. Неверный формат возвращает `400` + `PROVIDER_CREDENTIAL_FORMAT_INVALID`; небезопасный development default — `503` + `CREDENTIAL_ENCRYPTION_KEY_REQUIRED`; некорректный base64/размер master key — `503` + `CREDENTIAL_ENCRYPTION_KEY_INVALID`. Save/delete требуют Owner, CSRF и подтверждения текущего пароля не старше 30 минут. При `RECENT_AUTHENTICATION_REQUIRED` панель открывает модальное подтверждение и автоматически повторяет исходное действие. Test требует Owner и CSRF, но не повторный ввод пароля. Model settings требуют Owner; чтение каталога и настроек доступно авторизованному администратору в рамках его project scope.
 
 ## 6. Knowledge и sources
 

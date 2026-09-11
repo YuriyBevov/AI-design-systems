@@ -16,6 +16,7 @@ type UiIconName =
   | "projects"
   | "prompt"
   | "provider"
+  | "save"
   | "settings"
   | "sun"
   | "trash"

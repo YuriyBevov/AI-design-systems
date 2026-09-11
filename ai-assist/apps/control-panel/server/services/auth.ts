@@ -1,6 +1,11 @@
 import { createHmac } from "node:crypto";
 
-import type { AdminSessionResponse, LoginRequest, ProjectRole } from "@ai-assist/contracts";
+import type {
+  AdminSessionResponse,
+  LoginRequest,
+  ProjectRole,
+  ReauthenticateResponse,
+} from "@ai-assist/contracts";
 import {
   canProjectRole,
   createOpaqueToken,
@@ -11,7 +16,7 @@ import {
   verifyPassword,
   type ProjectScope,
 } from "@ai-assist/domain";
-import type { H3Event } from "h3";
+import { createError, type H3Event } from "h3";
 
 import {
   createAdminSession,
@@ -19,6 +24,7 @@ import {
   findUserByEmail,
   listSessionProjects,
   markLoginSuccessful,
+  markSessionReauthenticated,
   revokeSession,
   touchSession,
   type AuthSessionRecord,
@@ -31,15 +37,21 @@ import { assertSameOrigin, getRequestId, getRequestSubject } from "../utils/requ
 const sessionCookieName = "ai_assist_session";
 const csrfCookieName = "ai_assist_csrf";
 const invalidLoginMessage = "Неверный email или пароль";
+const invalidReauthenticationMessage = "Неверный пароль";
+const recentAuthenticationMaxAgeMinutes = 30;
 const dummyPasswordHash = hashPassword("dummy-password-used-only-for-equalized-login-checks");
 
 const hashRateSubject = (value: string): string =>
   createHmac("sha256", getServiceEnvironment().SESSION_SECRET).update(value).digest("hex");
 
-const consumeLoginRateLimit = async (event: H3Event, email: string): Promise<string> => {
+const consumeAuthenticationRateLimit = async (
+  event: H3Event,
+  email: string,
+  operation: "login" | "reauthenticate",
+): Promise<string> => {
   const environment = getServiceEnvironment();
   const subjectHash = hashRateSubject(`${getRequestSubject(event)}|${email}`);
-  const key = `admin-login:${subjectHash}`;
+  const key = `admin-${operation}:${subjectHash}`;
   const count = await getInfrastructure().redis.incr(key);
 
   if (count === 1) {
@@ -101,7 +113,7 @@ export const loginAdmin = async (
 ): Promise<AdminSessionResponse> => {
   assertSameOrigin(event);
   const requestId = getRequestId(event);
-  const rateLimitKey = await consumeLoginRateLimit(event, credentials.email);
+  const rateLimitKey = await consumeAuthenticationRateLimit(event, credentials.email, "login");
   const user = await findUserByEmail(credentials.email);
   const passwordMatches = await verifyPassword(
     user?.passwordHash ?? (await dummyPasswordHash),
@@ -179,16 +191,58 @@ export const requireAccountAdmin = async (event: H3Event): Promise<AuthSessionRe
 
 export const assertRecentAdminAuthentication = (
   session: AuthSessionRecord,
-  maxAgeMinutes = 30,
+  maxAgeMinutes = recentAuthenticationMaxAgeMinutes,
 ): void => {
   const oldestAccepted = Date.now() - maxAgeMinutes * 60 * 1000;
-  if (session.createdAt.getTime() < oldestAccepted) {
+  if (session.reauthenticatedAt.getTime() < oldestAccepted) {
     throw createError({
       statusCode: 403,
       statusMessage: "Recent authentication required",
       data: { code: "RECENT_AUTHENTICATION_REQUIRED" },
     });
   }
+};
+
+export const reauthenticateAdmin = async (
+  event: H3Event,
+  password: string,
+): Promise<ReauthenticateResponse> => {
+  const session = await requireAdminSession(event);
+  assertCsrf(event, session);
+  const rateLimitKey = await consumeAuthenticationRateLimit(event, session.email, "reauthenticate");
+  const user = await findUserByEmail(session.email);
+  const passwordMatches = await verifyPassword(
+    user?.passwordHash ?? (await dummyPasswordHash),
+    password,
+  );
+
+  if (!user || user.id !== session.userId || !user.passwordHash || !passwordMatches) {
+    await writeAuditEvent({
+      projectId: (await listSessionProjects(session.userId))[0]?.id,
+      actorUserId: session.userId,
+      action: "auth.reauthentication_failed",
+      resourceType: "session",
+      resourceId: session.id,
+      requestId: getRequestId(event),
+    }).catch(() => undefined);
+    throw createError({
+      statusCode: 401,
+      statusMessage: invalidReauthenticationMessage,
+      data: { code: "REAUTHENTICATION_FAILED" },
+    });
+  }
+
+  await markSessionReauthenticated(session.id);
+  await getInfrastructure().redis.del(rateLimitKey);
+  await writeAuditEvent({
+    projectId: (await listSessionProjects(session.userId))[0]?.id,
+    actorUserId: session.userId,
+    action: "auth.reauthenticated",
+    resourceType: "session",
+    resourceId: session.id,
+    requestId: getRequestId(event),
+  });
+  return { status: "ok", validForMinutes: recentAuthenticationMaxAgeMinutes };
 };
 
 export const getAdminSessionResponse = async (event: H3Event): Promise<AdminSessionResponse> =>

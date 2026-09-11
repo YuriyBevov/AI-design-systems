@@ -98,7 +98,7 @@ Headless browser не является обходом этих правил. Е�
 - Внешние роли ограничены `admin|user`: Администратор получает все проекты, Пользователь — только назначенные read-only memberships. Изменение роли и назначений требует admin session и CSRF; отключение отзывает сессии, последнего активного администратора отключить нельзя.
 - Content Security Policy, HSTS, frame-ancestors, nosniff и безопасный Referrer-Policy задаются reverse proxy/app.
 - Prompt/document preview экранирует untrusted content и не исполняет HTML.
-- Destructive/secret operations требуют recent authentication при повышенной модели риска.
+- Destructive/secret operations требуют recent authentication при повышенной модели риска. Для provider credential панель запрашивает текущий пароль в модальном окне, сохраняет отдельное время подтверждения в сессии и открывает 30-минутное окно без полного выхода; проверка уже сохранённого ключа исключена как нечувствительная операция.
 
 Ориентир: [OWASP CSRF Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html).
 

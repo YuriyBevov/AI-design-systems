@@ -54,9 +54,7 @@ try {
     where project_id = ${sourceProjectId}
     limit 1
   `;
-  if (!modelSettings[0]?.chat_model_id) {
-    throw new Error("source project must have a selected chat model");
-  }
+  const sourceModelSettings = modelSettings[0];
 
   await database.client`
     insert into projects (id, name, slug, primary_origin)
@@ -78,11 +76,11 @@ try {
       updated_by
     ) values (
       ${projectId},
-      ${modelSettings[0].chat_model_id},
-      ${modelSettings[0].embedding_model_id},
-      ${modelSettings[0].rerank_model_id},
-      ${modelSettings[0].max_output_tokens},
-      ${modelSettings[0].temperature},
+      ${sourceModelSettings?.chat_model_id ?? "smoke-chat-model"},
+      ${sourceModelSettings?.embedding_model_id ?? null},
+      ${sourceModelSettings?.rerank_model_id ?? null},
+      ${sourceModelSettings?.max_output_tokens ?? 1500},
+      ${sourceModelSettings?.temperature ?? null},
       ${loginBody.user.id}
     )
   `;
@@ -114,6 +112,19 @@ try {
   promptId = created.prompt.id;
   if (created.prompt.version !== 1 || created.revisions[0]?.revisionNo !== 1) {
     throw new Error("initial prompt revision/version is incorrect");
+  }
+
+  const duplicatePrompt = await fetch(`${baseUrl}/api/v1/projects/${projectId}/prompts`, {
+    method: "POST",
+    headers: mutationHeaders,
+    body: JSON.stringify({
+      name: "Second active role",
+      content: "This role must not be created.",
+    }),
+  });
+  assertStatus(duplicatePrompt, 409, "duplicate active role");
+  if (!(await duplicatePrompt.text()).includes("PROJECT_PROMPT_ALREADY_EXISTS")) {
+    throw new Error("duplicate active role did not return the safe conflict code");
   }
 
   const crossProjectRead = await fetch(
@@ -249,14 +260,42 @@ try {
     throw new Error("active archive did not return its policy code");
   }
 
-  const deleteUsed = await fetch(
-    `${baseUrl}/api/v1/projects/${projectId}/prompts/${promptId}?expectedVersion=6`,
+  const deleteCurrentRevision = await fetch(
+    `${baseUrl}/api/v1/projects/${projectId}/prompts/${promptId}/revisions/${revisionOne.id}?expectedVersion=6`,
     { method: "DELETE", headers: mutationHeaders },
   );
-  assertStatus(deleteUsed, 409, "delete published prompt");
-  if (!(await deleteUsed.text()).includes("PROMPT_DELETE_REQUIRES_ARCHIVE")) {
-    throw new Error("published delete did not return its policy code");
+  assertStatus(deleteCurrentRevision, 409, "delete current prompt revision");
+  if (!(await deleteCurrentRevision.text()).includes("PROMPT_REVISION_CURRENT")) {
+    throw new Error("current revision delete did not return its policy code");
   }
+
+  const afterRevisionDelete = await requestJson(
+    `/api/v1/projects/${projectId}/prompts/${promptId}/revisions/${revisionThree.id}?expectedVersion=6`,
+    { method: "DELETE", headers: mutationHeaders },
+    200,
+    "delete non-current prompt revision",
+  );
+  if (
+    afterRevisionDelete.prompt.version !== 7 ||
+    afterRevisionDelete.revisions.some((revision) => revision.id === revisionThree.id)
+  ) {
+    throw new Error("non-current revision was not deleted");
+  }
+
+  await requestJson(
+    `/api/v1/projects/${projectId}/prompts/${promptId}?expectedVersion=7`,
+    { method: "DELETE", headers: mutationHeaders },
+    200,
+    "delete full prompt",
+  );
+  const deletedPrompt = await fetch(`${baseUrl}/api/v1/projects/${projectId}/prompts/${promptId}`, {
+    headers: authenticatedHeaders,
+  });
+  assertStatus(deletedPrompt, 404, "deleted prompt read");
+  const emptyRuntime = await fetch(`${baseUrl}/api/v1/projects/${projectId}/prompt-publication`, {
+    headers: authenticatedHeaders,
+  });
+  assertStatus(emptyRuntime, 204, "runtime after current prompt delete");
 
   const audit = await requestJson(
     `/api/v1/projects/${projectId}/audit`,
@@ -270,6 +309,8 @@ try {
     "prompt.revision_created",
     "prompt.published",
     "prompt.rolled_back",
+    "prompt.revision_deleted",
+    "prompt.deleted",
   ]) {
     if (!audit.some((event) => event.action === action)) {
       throw new Error(`prompt audit action is missing: ${action}`);
@@ -292,5 +333,5 @@ try {
 }
 
 console.log(
-  "Prompt smoke passed: CRUD, immutable revisions, conflict, publish, rollback, resolver and policies",
+  "Prompt smoke passed: CRUD, revisions, conflict, publish, rollback, revision delete and full delete",
 );

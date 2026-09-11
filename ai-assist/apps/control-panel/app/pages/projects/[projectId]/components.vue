@@ -19,12 +19,15 @@ const iconSamples = [
   { name: "help", label: "Подсказка" },
   { name: "chevron-down", label: "Раскрыть" },
   { name: "check", label: "Выбрано" },
+  { name: "save", label: "Сохранить изменения" },
   { name: "sun", label: "Светлая тема" },
 ] as const;
 const selectValue = ref("balanced");
 const checkboxValue = ref(false);
 const activeTabPreview = ref("interface");
 const isModalPreviewOpen = ref(false);
+const isConfirmModalPreviewOpen = ref(false);
+const isReauthenticateModalPreviewOpen = ref(false);
 const toast = useToast();
 const selectOptions = [
   { value: "fast", label: "Быстрый" },
@@ -34,6 +37,11 @@ const selectOptions = [
 const tabSamples = [
   { id: "interface", label: "Интерфейс" },
   { id: "security", label: "Безопасность и ограничения" },
+] as const;
+const noteSamples = [
+  "Используется выбранная сохранённая версия.",
+  "Несохранённый текст редактора в запрос не попадёт.",
+  "Запрос расходует бюджет провайдера.",
 ] as const;
 </script>
 
@@ -184,19 +192,45 @@ const tabSamples = [
       </div>
     </section>
 
+    <section class="panel" aria-labelledby="note-components-title">
+      <header class="section-header">
+        <div>
+          <h2 id="note-components-title" class="section-title">Примечания</h2>
+        </div>
+        <p class="section-description">
+          Короткие уточнения под полями используют единый компонент <code>BaseNote</code>.
+        </p>
+      </header>
+
+      <div class="component-preview" aria-label="Пример примечания">
+        <BaseNote :items="noteSamples" />
+      </div>
+    </section>
+
     <section class="panel" aria-labelledby="modal-components-title">
       <header class="section-header">
         <div>
           <h2 id="modal-components-title" class="section-title">Модальные окна</h2>
         </div>
         <p class="section-description">
-          Формы и подтверждения используют общий доступный компонент <code>BaseModal</code>.
+          Формы используют <code>BaseModal</code>, действия с подтверждением — единый
+          <code>ConfirmModal</code>, повторная проверка пароля — <code>ReauthenticateModal</code>.
         </p>
       </header>
 
       <div class="component-preview">
         <button class="button" type="button" @click="isModalPreviewOpen = true">
-          Открыть пример
+          Открыть форму
+        </button>
+        <button
+          class="button button--danger"
+          type="button"
+          @click="isConfirmModalPreviewOpen = true"
+        >
+          Открыть подтверждение
+        </button>
+        <button class="button" type="button" @click="isReauthenticateModalPreviewOpen = true">
+          Подтвердить пароль
         </button>
       </div>
     </section>
@@ -257,7 +291,8 @@ const tabSamples = [
       @close="isModalPreviewOpen = false"
     >
       <p class="section-description">
-        Модальное окно удерживает фокус, закрывается клавишей Escape и по нажатию на фон.
+        Модальное окно удерживает фокус и закрывается только клавишей Escape или по нажатию на
+        крестик. Нажатие за пределами окна не закрывает его и запускает короткую анимацию.
       </p>
       <template #footer>
         <button class="button button--primary" type="button" @click="isModalPreviewOpen = false">
@@ -266,5 +301,21 @@ const tabSamples = [
         <button class="button" type="button" @click="isModalPreviewOpen = false">Отмена</button>
       </template>
     </BaseModal>
+
+    <ConfirmModal
+      v-if="isConfirmModalPreviewOpen"
+      title="Подтвердить действие?"
+      description="Коротко объясняем последствия действия до его выполнения."
+      confirm-label="Подтвердить"
+      danger
+      @close="isConfirmModalPreviewOpen = false"
+      @confirm="isConfirmModalPreviewOpen = false"
+    />
+
+    <ReauthenticateModal
+      v-if="isReauthenticateModalPreviewOpen"
+      @close="isReauthenticateModalPreviewOpen = false"
+      @confirm="isReauthenticateModalPreviewOpen = false"
+    />
   </main>
 </template>

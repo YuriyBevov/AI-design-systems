@@ -5,8 +5,11 @@ import type {
   ProjectModelSettingsResponse,
   ProviderModelResponse,
   ProviderStateResponse,
+  ReauthenticateResponse,
   SyncModelsResponse,
 } from "@ai-assist/contracts";
+
+type SensitiveCredentialAction = "save" | "delete";
 
 const route = useRoute();
 const projectId = computed(() => String(route.params.projectId));
@@ -14,9 +17,13 @@ const requestFetch = useRequestFetch();
 const apiKey = ref("");
 const isSavingKey = ref(false);
 const isTestingKey = ref(false);
+const isDeletingKey = ref(false);
 const isSyncingModels = ref(false);
 const isSavingModels = ref(false);
 const deleteConfirmationVisible = ref(false);
+const reauthenticationVisible = ref(false);
+const isReauthenticating = ref(false);
+const pendingCredentialAction = ref<SensitiveCredentialAction | null>(null);
 const message = ref<{ type: "success" | "error"; text: string } | null>(null);
 useToastMessage(message);
 const modelForm = reactive({
@@ -89,8 +96,7 @@ const rerankModels = computed(() =>
 const providerErrorMessages: Record<string, string> = {
   PROVIDER_CREDENTIAL_FORMAT_INVALID:
     "Вставьте только полный ключ AITUNNEL без кавычек, пояснений и лишних символов.",
-  RECENT_AUTHENTICATION_REQUIRED:
-    "Для работы с ключом выйдите из панели, войдите заново и повторите операцию в течение 30 минут.",
+  REAUTHENTICATION_FAILED: "Пароль неверный. Проверьте его и повторите попытку.",
   CREDENTIAL_ENCRYPTION_KEY_REQUIRED:
     "На сервере не настроен безопасный master key для шифрования provider credential.",
   CREDENTIAL_ENCRYPTION_KEY_INVALID:
@@ -107,6 +113,11 @@ const providerErrorMessages: Record<string, string> = {
   PROVIDER_BAD_RESPONSE: "AITUNNEL вернул ответ неизвестного формата.",
 };
 
+const getErrorCode = (error: unknown): string | undefined => {
+  const fetchError = error as { data?: { code?: string; data?: { code?: string } } };
+  return fetchError.data?.data?.code ?? fetchError.data?.code;
+};
+
 const setError = (error: unknown, fallback: string): void => {
   const fetchError = error as {
     data?: { code?: string; data?: { code?: string }; statusMessage?: string };
@@ -116,6 +127,19 @@ const setError = (error: unknown, fallback: string): void => {
     type: "error",
     text: (code && providerErrorMessages[code]) || fetchError.data?.statusMessage || fallback,
   };
+};
+
+const requestReauthentication = (error: unknown, action: SensitiveCredentialAction): boolean => {
+  if (getErrorCode(error) !== "RECENT_AUTHENTICATION_REQUIRED") return false;
+  pendingCredentialAction.value = action;
+  reauthenticationVisible.value = true;
+  return true;
+};
+
+const closeReauthentication = (): void => {
+  if (isReauthenticating.value) return;
+  reauthenticationVisible.value = false;
+  pendingCredentialAction.value = null;
 };
 
 const formatDate = (value: string | null | undefined): string =>
@@ -169,9 +193,10 @@ const saveKey = async (): Promise<void> => {
     apiKey.value = "";
     message.value = { type: "success", text: "Ключ проверен, зашифрован и сохранён" };
   } catch (requestError) {
-    setError(requestError, "Ключ не прошёл проверку");
+    if (!requestReauthentication(requestError, "save")) {
+      setError(requestError, "Ключ не прошёл проверку");
+    }
   } finally {
-    apiKey.value = "";
     isSavingKey.value = false;
   }
 };
@@ -194,6 +219,8 @@ const testKey = async (): Promise<void> => {
 };
 
 const deleteKey = async (): Promise<void> => {
+  if (isDeletingKey.value) return;
+  isDeletingKey.value = true;
   message.value = null;
   try {
     await $fetch(`/api/v1/projects/${projectId.value}/provider/credential`, {
@@ -203,9 +230,34 @@ const deleteKey = async (): Promise<void> => {
     if (data.value) data.value.providerState = { provider: "aitunnel", credential: null };
     message.value = { type: "success", text: "Ключ удалён. Новые запросы к провайдеру отключены." };
   } catch (requestError) {
-    setError(requestError, "Не удалось удалить ключ");
+    if (!requestReauthentication(requestError, "delete")) {
+      setError(requestError, "Не удалось удалить ключ");
+    }
   } finally {
     deleteConfirmationVisible.value = false;
+    isDeletingKey.value = false;
+  }
+};
+
+const reauthenticate = async (password: string): Promise<void> => {
+  if (!pendingCredentialAction.value || isReauthenticating.value) return;
+  isReauthenticating.value = true;
+  message.value = null;
+  try {
+    await $fetch<ReauthenticateResponse>("/api/v1/auth/reauthenticate", {
+      method: "POST",
+      headers: getCsrfHeaders(),
+      body: { password },
+    });
+    const action = pendingCredentialAction.value;
+    reauthenticationVisible.value = false;
+    pendingCredentialAction.value = null;
+    if (action === "save") await saveKey();
+    if (action === "delete") await deleteKey();
+  } catch (requestError) {
+    setError(requestError, "Не удалось подтвердить пароль");
+  } finally {
+    isReauthenticating.value = false;
   }
 };
 
@@ -353,7 +405,7 @@ const saveModels = async (): Promise<void> => {
               </button>
             </div>
             <button
-              v-if="credential && !deleteConfirmationVisible"
+              v-if="credential"
               class="button button--text button--danger"
               type="button"
               @click="deleteConfirmationVisible = true"
@@ -361,20 +413,27 @@ const saveModels = async (): Promise<void> => {
               Удалить ключ
             </button>
           </div>
-
-          <div v-if="deleteConfirmationVisible" class="danger-confirmation">
-            <p>После удаления чат и индексация не смогут обращаться к AITUNNEL.</p>
-            <div class="button-group">
-              <button class="button button--danger" type="button" @click="deleteKey">
-                Удалить окончательно
-              </button>
-              <button class="button" type="button" @click="deleteConfirmationVisible = false">
-                Отмена
-              </button>
-            </div>
-          </div>
         </form>
       </section>
+
+      <ConfirmModal
+        v-if="deleteConfirmationVisible"
+        title="Удалить ключ AITUNNEL?"
+        description="После удаления чат и индексация не смогут обращаться к AITUNNEL."
+        confirm-label="Удалить ключ"
+        pending-label="Удаляем…"
+        :pending="isDeletingKey"
+        danger
+        @close="deleteConfirmationVisible = false"
+        @confirm="deleteKey"
+      />
+
+      <ReauthenticateModal
+        v-if="reauthenticationVisible"
+        :pending="isReauthenticating"
+        @close="closeReauthentication"
+        @confirm="reauthenticate"
+      />
 
       <section v-if="showModelCatalog" class="panel" aria-labelledby="models-title">
         <header class="section-header">

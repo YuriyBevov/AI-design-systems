@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, max, ne, sql } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, max, ne, sql } from "drizzle-orm";
 
 import {
   assistantConfigRevisions,
@@ -8,6 +8,7 @@ import {
   promptRevisions,
   prompts,
   users,
+  widgetGenerationRuns,
   type PromptModelSettingsSnapshot,
 } from "@ai-assist/database";
 import type {
@@ -530,7 +531,27 @@ export const archivePromptRecord = async (input: {
   return result[0] ?? null;
 };
 
-export type DeletePromptRecordResult = "deleted" | "not_found" | "version_conflict" | "used";
+export type DeletePromptRecordResult = "deleted" | "not_found" | "version_conflict";
+
+const deletePublicationHistory = async (
+  transaction: Parameters<
+    Parameters<ReturnType<typeof getInfrastructure>["database"]["db"]["transaction"]>[0]
+  >[0],
+  publicationIds: string[],
+): Promise<void> => {
+  if (!publicationIds.length) return;
+
+  await transaction
+    .update(assistants)
+    .set({ activePublicationId: null, status: "draft", updatedAt: new Date() })
+    .where(inArray(assistants.activePublicationId, publicationIds));
+  await transaction
+    .delete(widgetGenerationRuns)
+    .where(inArray(widgetGenerationRuns.publicationId, publicationIds));
+  await transaction
+    .delete(assistantPublications)
+    .where(inArray(assistantPublications.id, publicationIds));
+};
 
 export const deletePromptRecord = async (input: {
   projectId: string;
@@ -546,15 +567,9 @@ export const deletePromptRecord = async (input: {
     if (!prompt) return "not_found";
     if (prompt.version !== input.expectedVersion) return "version_conflict";
 
-    const [publicationUsage] = await transaction
-      .select({ count: sql<number>`count(*)::int` })
-      .from(assistantPublications)
-      .innerJoin(promptRevisions, eq(promptRevisions.id, assistantPublications.promptRevisionId))
-      .where(eq(promptRevisions.promptId, input.promptId));
-    if ((publicationUsage?.count ?? 0) > 0) return "used";
-
-    const deleted = await transaction
-      .delete(prompts)
+    const [lockedPrompt] = await transaction
+      .update(prompts)
+      .set({ version: sql`${prompts.version} + 1`, updatedAt: new Date() })
       .where(
         and(
           eq(prompts.id, input.promptId),
@@ -563,7 +578,101 @@ export const deletePromptRecord = async (input: {
         ),
       )
       .returning({ id: prompts.id });
-    return deleted.length === 1 ? "deleted" : "version_conflict";
+    if (!lockedPrompt) return "version_conflict";
+
+    const publicationUsage = await transaction
+      .select({ id: assistantPublications.id })
+      .from(assistantPublications)
+      .innerJoin(promptRevisions, eq(promptRevisions.id, assistantPublications.promptRevisionId))
+      .where(eq(promptRevisions.promptId, input.promptId));
+    await deletePublicationHistory(
+      transaction,
+      publicationUsage.map((publication) => publication.id),
+    );
+
+    const deleted = await transaction
+      .delete(prompts)
+      .where(
+        and(
+          eq(prompts.id, input.promptId),
+          eq(prompts.projectId, input.projectId),
+          eq(prompts.version, input.expectedVersion + 1),
+        ),
+      )
+      .returning({ id: prompts.id });
+    if (deleted.length !== 1) throw new Error("Prompt delete failed after acquiring version lock");
+    return "deleted";
+  });
+
+export type DeletePromptRevisionRecordResult =
+  | { outcome: "deleted"; revisionNo: number }
+  | { outcome: "not_found" }
+  | { outcome: "version_conflict" }
+  | { outcome: "current" }
+  | { outcome: "last_revision" };
+
+export const deletePromptRevisionRecord = async (input: {
+  projectId: string;
+  promptId: string;
+  revisionId: string;
+  expectedVersion: number;
+}): Promise<DeletePromptRevisionRecordResult> =>
+  getInfrastructure().database.db.transaction(async (transaction) => {
+    const [revision] = await transaction
+      .select({ id: promptRevisions.id, revisionNo: promptRevisions.revisionNo })
+      .from(promptRevisions)
+      .innerJoin(prompts, eq(prompts.id, promptRevisions.promptId))
+      .where(
+        and(
+          eq(prompts.projectId, input.projectId),
+          eq(prompts.id, input.promptId),
+          eq(promptRevisions.id, input.revisionId),
+        ),
+      )
+      .limit(1);
+    if (!revision) return { outcome: "not_found" };
+
+    const [revisionCount] = await transaction
+      .select({ count: sql<number>`count(*)::int` })
+      .from(promptRevisions)
+      .where(eq(promptRevisions.promptId, input.promptId));
+    if ((revisionCount?.count ?? 0) <= 1) return { outcome: "last_revision" };
+
+    const [activeUsage] = await transaction
+      .select({ id: assistantPublications.id })
+      .from(assistants)
+      .innerJoin(
+        assistantPublications,
+        eq(assistantPublications.id, assistants.activePublicationId),
+      )
+      .where(eq(assistantPublications.promptRevisionId, input.revisionId))
+      .limit(1);
+    if (activeUsage) return { outcome: "current" };
+
+    const [updatedPrompt] = await transaction
+      .update(prompts)
+      .set({ version: sql`${prompts.version} + 1`, updatedAt: new Date() })
+      .where(
+        and(
+          eq(prompts.projectId, input.projectId),
+          eq(prompts.id, input.promptId),
+          eq(prompts.version, input.expectedVersion),
+        ),
+      )
+      .returning({ id: prompts.id });
+    if (!updatedPrompt) return { outcome: "version_conflict" };
+
+    const publicationUsage = await transaction
+      .select({ id: assistantPublications.id })
+      .from(assistantPublications)
+      .where(eq(assistantPublications.promptRevisionId, input.revisionId));
+    await deletePublicationHistory(
+      transaction,
+      publicationUsage.map((publication) => publication.id),
+    );
+
+    await transaction.delete(promptRevisions).where(eq(promptRevisions.id, input.revisionId));
+    return { outcome: "deleted", revisionNo: revision.revisionNo };
   });
 
 export const getPromptModelSettingsSnapshot = async (

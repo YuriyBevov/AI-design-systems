@@ -533,70 +533,43 @@ const remove = async (): Promise<void> => {
             Удалить черновик
           </button>
         </div>
-
-        <div v-if="unpublishConfirmationVisible" class="danger-confirmation">
-          <p>Документ сразу перестанет попадать в&nbsp;retrieval и&nbsp;preview.</p>
-          <div class="form-actions">
-            <button
-              class="button button--danger"
-              type="button"
-              :disabled="isUnpublishing"
-              @click="unpublish"
-            >
-              {{ isUnpublishing ? "Снимаем…" : "Подтвердить снятие" }}
-            </button>
-            <button
-              class="button button--ghost"
-              type="button"
-              @click="unpublishConfirmationVisible = false"
-            >
-              Отмена
-            </button>
-          </div>
-        </div>
-
-        <div v-if="archiveConfirmationVisible" class="danger-confirmation">
-          <p>Архивный документ нельзя редактировать. История версий сохранится.</p>
-          <div class="form-actions">
-            <button
-              class="button button--danger"
-              type="button"
-              :disabled="isArchiving"
-              @click="archive"
-            >
-              {{ isArchiving ? "Архивируем…" : "Подтвердить архив" }}
-            </button>
-            <button
-              class="button button--ghost"
-              type="button"
-              @click="archiveConfirmationVisible = false"
-            >
-              Отмена
-            </button>
-          </div>
-        </div>
-
-        <div v-if="deleteConfirmationVisible" class="danger-confirmation">
-          <p>Физически удалить можно только документ, который никогда не&nbsp;публиковался.</p>
-          <div class="form-actions">
-            <button
-              class="button button--danger"
-              type="button"
-              :disabled="isDeleting"
-              @click="remove"
-            >
-              {{ isDeleting ? "Удаляем…" : "Удалить безвозвратно" }}
-            </button>
-            <button
-              class="button button--ghost"
-              type="button"
-              @click="deleteConfirmationVisible = false"
-            >
-              Отмена
-            </button>
-          </div>
-        </div>
       </section>
+
+      <ConfirmModal
+        v-if="unpublishConfirmationVisible"
+        title="Снять документ с публикации?"
+        description="Документ сразу перестанет попадать в retrieval и preview."
+        confirm-label="Снять с публикации"
+        pending-label="Снимаем…"
+        :pending="isUnpublishing"
+        danger
+        @close="unpublishConfirmationVisible = false"
+        @confirm="unpublish"
+      />
+
+      <ConfirmModal
+        v-if="archiveConfirmationVisible"
+        title="Архивировать документ?"
+        description="Архивный документ нельзя редактировать. История версий сохранится."
+        confirm-label="Архивировать"
+        pending-label="Архивируем…"
+        :pending="isArchiving"
+        danger
+        @close="archiveConfirmationVisible = false"
+        @confirm="archive"
+      />
+
+      <ConfirmModal
+        v-if="deleteConfirmationVisible"
+        title="Удалить документ?"
+        description="Удалить можно только документ, который никогда не публиковался."
+        confirm-label="Удалить"
+        pending-label="Удаляем…"
+        :pending="isDeleting"
+        danger
+        @close="deleteConfirmationVisible = false"
+        @confirm="remove"
+      />
     </template>
   </main>
 </template>

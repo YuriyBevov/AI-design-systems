@@ -21,6 +21,7 @@ export type AuthSessionRecord = {
   role: "admin" | "user";
   csrfTokenHash: string;
   expiresAt: Date;
+  reauthenticatedAt: Date;
   createdAt: Date;
 };
 
@@ -60,6 +61,7 @@ export const findActiveSession = async (tokenHash: string): Promise<AuthSessionR
       role: users.role,
       csrfTokenHash: sessions.csrfTokenHash,
       expiresAt: sessions.expiresAt,
+      reauthenticatedAt: sessions.reauthenticatedAt,
       createdAt: sessions.createdAt,
     })
     .from(sessions)
@@ -102,6 +104,13 @@ export const touchSession = async (sessionId: string): Promise<void> => {
     .database.db.update(sessions)
     .set({ lastSeenAt: new Date() })
     .where(eq(sessions.id, sessionId));
+};
+
+export const markSessionReauthenticated = async (sessionId: string): Promise<void> => {
+  await getInfrastructure()
+    .database.db.update(sessions)
+    .set({ reauthenticatedAt: new Date() })
+    .where(and(eq(sessions.id, sessionId), isNull(sessions.revokedAt)));
 };
 
 export const revokeSession = async (sessionId: string): Promise<void> => {

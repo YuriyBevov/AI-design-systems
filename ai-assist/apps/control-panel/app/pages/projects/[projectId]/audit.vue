@@ -25,6 +25,8 @@ const formatDate = (value: string): string =>
 const actionLabel = (action: string): string =>
   ({
     "auth.login": "Вход",
+    "auth.reauthenticated": "Подтверждение пароля",
+    "auth.reauthentication_failed": "Ошибка подтверждения пароля",
     "auth.logout": "Выход",
     "project.updated": "Настройки изменены",
     "assistant.config_revision_created": "Черновик ассистента сохранён",

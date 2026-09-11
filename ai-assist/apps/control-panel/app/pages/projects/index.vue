@@ -303,27 +303,17 @@ const deleteProject = async (project: ProjectResponse): Promise<void> => {
             </button>
           </div>
 
-          <div v-if="deleteConfirmationId === project.id" class="danger-confirmation">
-            <p>Проект исчезнет из панели и runtime, но данные сохранятся для audit и retention.</p>
-            <div class="button-group">
-              <button
-                class="button button--compact button--danger"
-                type="button"
-                :disabled="pendingProjectId === project.id"
-                @click="deleteProject(project)"
-              >
-                Удалить проект
-              </button>
-              <button
-                class="button button--compact"
-                type="button"
-                :disabled="pendingProjectId === project.id"
-                @click="deleteConfirmationId = null"
-              >
-                Отмена
-              </button>
-            </div>
-          </div>
+          <ConfirmModal
+            v-if="deleteConfirmationId === project.id"
+            :title="`Удалить проект «${project.name}»?`"
+            description="Проект исчезнет из панели и runtime, но данные сохранятся для audit и retention."
+            confirm-label="Удалить проект"
+            pending-label="Удаляем…"
+            :pending="pendingProjectId === project.id"
+            danger
+            @close="deleteConfirmationId = null"
+            @confirm="deleteProject(project)"
+          />
         </li>
       </ul>
     </section>

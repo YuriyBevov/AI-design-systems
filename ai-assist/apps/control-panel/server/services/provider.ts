@@ -289,7 +289,6 @@ export const testStoredProviderCredential = async (
 ): Promise<ProviderCredentialTestResponse> => {
   const { session, project } = await requireProjectScope(event, projectId, "owner");
   assertCsrf(event, session);
-  assertRecentAdminAuthentication(session);
   const credential = await findProviderCredential(project.id);
   if (!credential) {
     throw createError({ statusCode: 404, statusMessage: "Provider credential not found" });

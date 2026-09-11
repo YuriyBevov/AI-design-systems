@@ -31,6 +31,7 @@ import {
   createPromptRecord,
   createPromptRevisionRecord,
   deletePromptRecord,
+  deletePromptRevisionRecord,
   findActivePromptPublication,
   findPromptRecord,
   findPromptRevisionRecord,
@@ -48,7 +49,7 @@ import {
 import { getInfrastructure, getServiceEnvironment } from "../utils/infrastructure";
 import { getRequestId } from "../utils/request";
 import { ensureAssistantSettingsRecord } from "./assistant";
-import { assertCsrf, assertRecentAdminAuthentication, requireProjectScope } from "./auth";
+import { assertCsrf, requireProjectScope } from "./auth";
 import { retrievePublishedKnowledge } from "./knowledge";
 import {
   decryptStoredProviderCredential,
@@ -209,6 +210,16 @@ export const createPrompt = async (
 ): Promise<PromptDetailResponse> => {
   const { session, project } = await requireProjectScope(event, projectId, "editor");
   assertCsrf(event, session);
+  const existingPrompt = (await listPromptRecords(project.id)).find(
+    (prompt) => prompt.status !== "archived",
+  );
+  if (existingPrompt) {
+    throw createError({
+      statusCode: 409,
+      statusMessage: "В проекте уже настроена роль ассистента",
+      data: { code: "PROJECT_PROMPT_ALREADY_EXISTS", promptId: existingPrompt.id },
+    });
+  }
   const analysis = analyzePromptTemplate(input.content);
   const created = await createPromptRecord({
     projectId: project.id,
@@ -689,20 +700,12 @@ export const deletePrompt = async (
 ): Promise<DeletePromptResponse> => {
   const { session, project } = await requireProjectScope(event, projectId, "editor");
   assertCsrf(event, session);
-  assertRecentAdminAuthentication(session);
   const result = await deletePromptRecord({ projectId: project.id, promptId, expectedVersion });
   if (result === "not_found") {
     throw createError({ statusCode: 404, statusMessage: "Prompt not found" });
   }
   if (result === "version_conflict") {
     return throwPromptMutationConflict(project.id, promptId, expectedVersion);
-  }
-  if (result === "used") {
-    throw createError({
-      statusCode: 409,
-      statusMessage: "Published prompt cannot be deleted; archive it instead",
-      data: { code: "PROMPT_DELETE_REQUIRES_ARCHIVE" },
-    });
   }
   await writeAuditEvent({
     projectId: project.id,
@@ -713,6 +716,53 @@ export const deletePrompt = async (
     requestId: getRequestId(event),
   });
   return { id: promptId, deleted: true };
+};
+
+export const deletePromptRevision = async (
+  event: H3Event,
+  projectId: string,
+  promptId: string,
+  revisionId: string,
+  expectedVersion: number,
+): Promise<PromptDetailResponse> => {
+  const { session, project } = await requireProjectScope(event, projectId, "editor");
+  assertCsrf(event, session);
+  const result = await deletePromptRevisionRecord({
+    projectId: project.id,
+    promptId,
+    revisionId,
+    expectedVersion,
+  });
+  if (result.outcome === "not_found") {
+    throw createError({ statusCode: 404, statusMessage: "Prompt revision not found" });
+  }
+  if (result.outcome === "version_conflict") {
+    return throwPromptMutationConflict(project.id, promptId, expectedVersion);
+  }
+  if (result.outcome === "current") {
+    throw createError({
+      statusCode: 409,
+      statusMessage: "Current prompt revision cannot be deleted",
+      data: { code: "PROMPT_REVISION_CURRENT" },
+    });
+  }
+  if (result.outcome === "last_revision") {
+    throw createError({
+      statusCode: 409,
+      statusMessage: "The only prompt revision cannot be deleted separately",
+      data: { code: "PROMPT_REVISION_LAST" },
+    });
+  }
+  await writeAuditEvent({
+    projectId: project.id,
+    actorUserId: session.userId,
+    action: "prompt.revision_deleted",
+    resourceType: "prompt_revision",
+    resourceId: revisionId,
+    requestId: getRequestId(event),
+    metadata: { promptId, revisionNo: result.revisionNo },
+  });
+  return loadPromptDetail(project.id, promptId);
 };
 
 export const resolvePublishedPrompt = async (

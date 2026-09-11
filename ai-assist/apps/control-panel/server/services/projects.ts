@@ -9,7 +9,11 @@ import type { H3Event } from "h3";
 
 import { listProjectAuditEvents, writeAuditEvent } from "../repositories/audit";
 import { findAssistantSettingsRecord } from "../repositories/assistant";
-import { listPromptRecords, listPromptRevisionRecordsForProject } from "../repositories/prompts";
+import {
+  findActivePromptPublication,
+  listPromptRecords,
+  listPromptRevisionRecordsForProject,
+} from "../repositories/prompts";
 import {
   createProjectRecord,
   findManageableProjectForUser,
@@ -90,30 +94,33 @@ const assistantConfigFromTemplate = (
 };
 
 const promptsFromTemplate = async (projectId: string): Promise<ProjectTemplatePrompt[]> => {
-  const [promptRecords, revisions] = await Promise.all([
+  const [promptRecords, revisions, activePublication] = await Promise.all([
     listPromptRecords(projectId),
     listPromptRevisionRecordsForProject(projectId),
+    findActivePromptPublication(projectId),
   ]);
   const latestByPrompt = new Map<string, (typeof revisions)[number]>();
   for (const revision of revisions) {
     if (!latestByPrompt.has(revision.promptId)) latestByPrompt.set(revision.promptId, revision);
   }
 
-  return promptRecords.flatMap((prompt) => {
-    if (prompt.status === "archived") return [];
-    const revision = latestByPrompt.get(prompt.id);
-    if (!revision) return [];
-    return [
-      {
-        type: prompt.type,
-        name: prompt.name,
-        description: prompt.description,
-        content: revision.content,
-        variables: revision.variables,
-        contentChecksum: revision.contentChecksum,
-      },
-    ];
-  });
+  const prompt =
+    promptRecords.find((candidate) => candidate.id === activePublication?.promptId) ??
+    promptRecords.find((candidate) => candidate.status !== "archived");
+  if (!prompt || prompt.status === "archived") return [];
+  const revision = latestByPrompt.get(prompt.id);
+  if (!revision) return [];
+
+  return [
+    {
+      type: prompt.type,
+      name: prompt.name,
+      description: prompt.description,
+      content: revision.content,
+      variables: revision.variables,
+      contentChecksum: revision.contentChecksum,
+    },
+  ];
 };
 
 const requireManageableOwner = async (

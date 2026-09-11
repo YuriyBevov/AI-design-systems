@@ -5,6 +5,8 @@ import {
   createProjectRequestSchema,
   createUserRequestSchema,
   loginRequestSchema,
+  reauthenticateRequestSchema,
+  reauthenticateResponseSchema,
   updateUserRequestSchema,
   updateProjectRequestSchema,
   updateProjectStatusRequestSchema,
@@ -31,6 +33,20 @@ describe("admin contracts", () => {
     ).toEqual({
       email: "owner@example.com",
       password: "password",
+    });
+  });
+
+  it("accepts strict reauthentication payloads and responses", () => {
+    expect(reauthenticateRequestSchema.parse({ password: "current-password" })).toEqual({
+      password: "current-password",
+    });
+    expect(
+      reauthenticateRequestSchema.safeParse({ password: "current-password", email: "x@y.test" })
+        .success,
+    ).toBe(false);
+    expect(reauthenticateResponseSchema.parse({ status: "ok", validForMinutes: 30 })).toEqual({
+      status: "ok",
+      validForMinutes: 30,
     });
   });
 

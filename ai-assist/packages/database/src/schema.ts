@@ -169,6 +169,9 @@ export const sessions = pgTable(
     csrfTokenHash: varchar("csrf_token_hash", { length: 64 }).notNull(),
     expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
     lastSeenAt: timestamp("last_seen_at", { withTimezone: true }).defaultNow().notNull(),
+    reauthenticatedAt: timestamp("reauthenticated_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
     rotatedFromId: uuid("rotated_from_id").references((): AnyPgColumn => sessions.id, {
       onDelete: "set null",
     }),

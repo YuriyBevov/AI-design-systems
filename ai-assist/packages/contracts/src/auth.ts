@@ -14,6 +14,17 @@ export const loginRequestSchema = z
   })
   .strict();
 
+export const reauthenticateRequestSchema = z
+  .object({
+    password: z.string().min(1).max(128),
+  })
+  .strict();
+
+export const reauthenticateResponseSchema = z.object({
+  status: z.literal("ok"),
+  validForMinutes: z.number().int().positive(),
+});
+
 export const projectRoleSchema = z.enum(["owner", "editor", "viewer"]);
 
 export const sessionProjectSchema = z.object({
@@ -36,6 +47,8 @@ export const adminSessionResponseSchema = z.object({
 });
 
 export type LoginRequest = z.infer<typeof loginRequestSchema>;
+export type ReauthenticateRequest = z.infer<typeof reauthenticateRequestSchema>;
+export type ReauthenticateResponse = z.infer<typeof reauthenticateResponseSchema>;
 export type ProjectRole = z.infer<typeof projectRoleSchema>;
 export type SessionProject = z.infer<typeof sessionProjectSchema>;
 export type AdminSessionResponse = z.infer<typeof adminSessionResponseSchema>;

@@ -2,26 +2,41 @@
 import {
   DialogClose,
   DialogContent,
+  DialogDescription,
   DialogOverlay,
   DialogPortal,
   DialogRoot,
   DialogTitle,
 } from "reka-ui";
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     title: string;
+    description?: string;
     size?: "default" | "wide";
   }>(),
-  { size: "default" },
+  { description: undefined, size: "default" },
+);
+
+const accessibleDescription = computed(
+  () => props.description ?? `Диалоговое окно «${props.title}»`,
 );
 
 const emit = defineEmits<{
   close: [];
 }>();
 
+const isAttentionAnimating = ref(false);
+
 const handleOpenChange = (open: boolean): void => {
   if (!open) emit("close");
+};
+
+const handlePointerDownOutside = async (event: Event): Promise<void> => {
+  event.preventDefault();
+  isAttentionAnimating.value = false;
+  await nextTick();
+  isAttentionAnimating.value = true;
 };
 </script>
 
@@ -29,9 +44,21 @@ const handleOpenChange = (open: boolean): void => {
   <DialogRoot :open="true" @update:open="handleOpenChange">
     <DialogPortal>
       <DialogOverlay class="modal__overlay" />
-      <DialogContent class="modal__panel" :class="{ 'modal__panel--wide': size === 'wide' }">
+      <DialogContent
+        class="modal__panel"
+        :class="{
+          'modal__panel--wide': size === 'wide',
+          'modal__panel--attention': isAttentionAnimating,
+        }"
+        @pointer-down-outside="handlePointerDownOutside"
+        @interact-outside.prevent
+        @animationend="isAttentionAnimating = false"
+      >
         <header class="modal__header">
           <DialogTitle class="section-title">{{ title }}</DialogTitle>
+          <DialogDescription class="visually-hidden">
+            {{ accessibleDescription }}
+          </DialogDescription>
           <div class="modal__header-actions">
             <slot name="header-actions" />
             <DialogClose as-child>

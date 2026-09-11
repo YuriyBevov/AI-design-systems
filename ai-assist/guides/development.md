@@ -47,7 +47,7 @@ pnpm smoke:prompt-preview
 pnpm smoke:widget-chat
 ```
 
-`smoke:prompts` создаёт отдельный случайный development tenant, копирует в него только несекретный snapshot выбранных моделей и проверяет CRUD, optimistic conflict, неизвестную переменную, publish, rollback, runtime resolver и запреты archive/delete. В `finally` удаляется только созданный test tenant; проект клиента, его credential и prompt-ы не меняются.
+`smoke:prompts` создаёт отдельный случайный development tenant, использует несекретный snapshot выбранных моделей либо synthetic chat model и проверяет CRUD, optimistic conflict, неизвестную переменную, publish, rollback, runtime resolver, защиту текущей версии, удаление нетекущей версии и полное удаление роли. В `finally` удаляется только созданный test tenant; проект клиента, его credential и prompt-ы не меняются.
 
 `smoke:assistant` таким же изолированным способом проверяет начальные настройки, нормализацию и запреты Origins, immutable revisions, optimistic conflict и независимость draft от production snapshot. Финальная публикация конфигурации сохраняет активные prompt/model snapshots и переключает только config revision.
 
