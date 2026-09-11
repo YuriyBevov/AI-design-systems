@@ -10,7 +10,8 @@
   },
   "scripts": {
     "dev": "pnpm packages:build && pnpm --filter @ai-assist/widget build && pnpm --parallel --filter @ai-assist/control-panel --filter @ai-assist/worker dev",
-    "dev:setup": "pnpm infra:up && pnpm db:migrate && pnpm db:seed",
+    "dev:setup": "pnpm dev:secrets && pnpm infra:up && pnpm db:migrate && pnpm db:seed",
+    "dev:secrets": "node scripts/ensure-local-secrets.mjs",
     "dev:panel": "pnpm packages:build && pnpm --filter @ai-assist/control-panel dev",
     "dev:worker": "pnpm packages:build && pnpm --filter @ai-assist/worker dev",
     "dev:widget": "pnpm --filter @ai-assist/widget dev",

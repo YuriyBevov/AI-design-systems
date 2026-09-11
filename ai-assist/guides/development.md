@@ -24,6 +24,11 @@ pnpm typecheck
 pnpm test
 ```
 
+`pnpm dev:setup` запускает `pnpm dev:secrets`: если корневого `.env` или
+`CREDENTIAL_ENCRYPTION_KEY` в нём ещё нет, команда создаёт независимый случайный 32-байтовый ключ
+с правами файла `0600`. Существующий ключ никогда не заменяется автоматически. Панель и worker
+при локальном запуске читают этот общий `.env`.
+
 `pnpm dev:setup` поднимает Compose, применяет миграции и выполняет идемпотентный development seed. Панель по умолчанию слушает `http://localhost:3000`. PostgreSQL AI Assist опубликован на `localhost:55432`, Redis — на `6379`, MinIO API/console — на `9000/9001`. Если порт занят, его можно переопределить одноименной переменной Compose; `DATABASE_URL` должен указывать на тот же порт.
 
 `test:integration` и `test:e2e` будут добавлены вместе с первыми соответствующими сценариями; пустые команды не объявляются успешными проверками.
@@ -81,7 +86,9 @@ pnpm smoke:provider-credential
 
 Последний сценарий проверяет ciphertext/nonce непосредственно в development PostgreSQL, отсутствие plaintext и envelope fields в HTTP/audit, замену, повторный test и удаление созданного credential. Он намеренно прекращает работу, если у проекта уже есть ключ.
 
-Панель, запущенная без собственного `CREDENTIAL_ENCRYPTION_KEY`, должна блокировать запись. При пустом credential это проверяется отдельно:
+Панель, запущенная в обход `pnpm dev:setup` и без собственного
+`CREDENTIAL_ENCRYPTION_KEY`, должна блокировать запись. При пустом credential это проверяется
+отдельно:
 
 ```bash
 pnpm smoke:provider-encryption-guard
@@ -95,6 +102,9 @@ pnpm smoke:provider-encryption-guard
 - Значения, меняющие runtime behavior проекта, хранятся в БД как versioned config, а не в env.
 - Env содержит инфраструктурные адреса, encryption/session secrets и service-level настройки.
 - `.env.example` содержит имена и безопасные примеры, но не действительные secrets.
+- Локальный `.env` игнорируется Git. Потерянный master key нельзя заменить новым значением той же
+  версии: нужно вернуть прежний ключ через keyring либо увеличить версию и повторно ввести
+  provider credential.
 
 ## 4. Слои server-кода
 

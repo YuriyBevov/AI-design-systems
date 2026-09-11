@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "nuxt dev",
+    "dev": "nuxt dev --dotenv ../../.env",
     "build": "nuxt build",
     "lint": "eslint .",
     "typecheck": "nuxt typecheck",
@@ -19,6 +19,7 @@
     "@ai-assist/provider-aitunnel": "workspace:*",
     "bullmq": "^6.3.4",
     "drizzle-orm": "^0.45.2",
+    "h3": "^1.15.11",
     "ioredis": "^5.11.1",
     "nuxt": "^4.5.2",
     "reka-ui": "^2.10.4"

@@ -24,7 +24,7 @@ import {
   AitunnelProviderError,
   type CredentialVerification,
 } from "@ai-assist/provider-aitunnel";
-import type { H3Event } from "h3";
+import { createError, isError, type H3Event } from "h3";
 
 import { writeAuditEvent } from "../repositories/audit";
 import {
@@ -109,6 +109,8 @@ const providerErrorStatus = (error: AitunnelProviderError): number => {
 };
 
 export const throwProviderHttpError = (error: unknown): never => {
+  if (isError(error)) throw error;
+
   if (!(error instanceof AitunnelProviderError)) {
     throw createError({ statusCode: 500, statusMessage: "Provider operation failed" });
   }
@@ -118,6 +120,14 @@ export const throwProviderHttpError = (error: unknown): never => {
     statusMessage: "AITUNNEL request failed",
     data: { code: error.code, retryable: error.retryable },
   });
+};
+
+const getProviderErrorCode = (error: unknown, fallback: string): string => {
+  if (error instanceof AitunnelProviderError) return error.code;
+  if (isError<{ code?: unknown }>(error) && error.data && typeof error.data.code === "string") {
+    return error.data.code;
+  }
+  return fallback;
 };
 
 export const decryptStoredProviderCredential = (credential: ProviderCredentialRecord): string => {
@@ -141,20 +151,28 @@ export const decryptStoredProviderCredential = (credential: ProviderCredentialRe
     });
   }
 
-  return decryptCredential({
-    envelope: {
-      ciphertext: credential.ciphertext,
-      nonce: credential.nonce,
-      authTag: credential.authTag,
-      keyVersion: credential.keyVersion,
-    },
-    associatedData: createCredentialAssociatedData({
-      projectId: credential.projectId,
-      credentialId: credential.id,
-      provider: credential.provider,
-    }),
-    key,
-  });
+  try {
+    return decryptCredential({
+      envelope: {
+        ciphertext: credential.ciphertext,
+        nonce: credential.nonce,
+        authTag: credential.authTag,
+        keyVersion: credential.keyVersion,
+      },
+      associatedData: createCredentialAssociatedData({
+        projectId: credential.projectId,
+        credentialId: credential.id,
+        provider: credential.provider,
+      }),
+      key,
+    });
+  } catch {
+    throw createError({
+      statusCode: 503,
+      statusMessage: "Stored credential cannot be decrypted",
+      data: { code: "CREDENTIAL_DECRYPTION_FAILED", retryable: false },
+    });
+  }
 };
 
 export const getProviderState = async (
@@ -227,8 +245,7 @@ export const saveProviderCredential = async (
       requestId: getRequestId(event),
       metadata: {
         provider,
-        errorCode:
-          error instanceof AitunnelProviderError ? error.code : "PROVIDER_OPERATION_FAILED",
+        errorCode: getProviderErrorCode(error, "PROVIDER_OPERATION_FAILED"),
       },
     });
     return throwProviderHttpError(error);
@@ -302,8 +319,7 @@ export const testStoredProviderCredential = async (
     });
     return { status: "verified", lastVerifiedAt: verifiedAt.toISOString(), verification: metadata };
   } catch (error) {
-    const errorCode =
-      error instanceof AitunnelProviderError ? error.code : "PROVIDER_OPERATION_FAILED";
+    const errorCode = getProviderErrorCode(error, "PROVIDER_OPERATION_FAILED");
     await updateProviderCredentialVerification({
       credentialId: credential.id,
       status: errorCode === "PROVIDER_CREDENTIAL_INVALID" ? "invalid" : credential.status,

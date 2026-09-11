@@ -97,6 +97,8 @@ const providerErrorMessages: Record<string, string> = {
     "Master key сервера имеет неверный формат. Требуется base64 от 32 случайных байт; это не ключ AITUNNEL.",
   CREDENTIAL_KEY_VERSION_UNAVAILABLE:
     "На сервере отсутствует master key нужной версии. Проверьте конфигурацию ротации ключей.",
+  CREDENTIAL_DECRYPTION_FAILED:
+    "Сохранённый ключ не удалось расшифровать текущим master key. Верните прежний master key или сохраните ключ AITUNNEL заново.",
   PROVIDER_CREDENTIAL_INVALID: "AITUNNEL отклонил ключ. Проверьте его статус и ограничения.",
   PROVIDER_BUDGET_EXCEEDED: "Бюджет ключа AITUNNEL исчерпан.",
   PROVIDER_RATE_LIMITED: "AITUNNEL временно ограничил частоту запросов. Повторите позже.",

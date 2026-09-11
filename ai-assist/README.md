@@ -101,6 +101,10 @@ pnpm dev:setup
 pnpm dev
 ```
 
+`pnpm dev:setup` один раз создаёт отдельный случайный master key для provider credential в
+игнорируемом Git корневом `.env`. Панель и worker при локальном запуске читают один и тот же файл;
+повторный запуск не меняет существующий ключ.
+
 Панель: `http://localhost:3000`. PostgreSQL этого проекта опубликован на `localhost:55432`, чтобы не конфликтовать с типовой локальной БД на `5432`. Остановка инфраструктуры: `pnpm infra:down`.
 
 Development seed создаёт локального владельца:
@@ -118,7 +122,7 @@ password: LocalDev-ChangeMe-2026!
 openssl rand -base64 32
 ```
 
-Сгенерируйте значение один раз, сохраните его в локальном secret store и перед каждым запуском передавайте то же значение как `CREDENTIAL_ENCRYPTION_KEY`; номер версии — как `CREDENTIAL_ENCRYPTION_KEY_VERSION`. Известный development default позволяет открыть панель, но операция сохранения provider credential с ним вернет `CREDENTIAL_ENCRYPTION_KEY_REQUIRED`. Сам ключ AITUNNEL не помещается в `.env`: Owner вводит его на странице проекта «Провайдер». Если ключ когда-либо публиковался в чате, issue или логе, сначала отзовите его в AITUNNEL и создайте новый.
+Для ручной настройки сгенерируйте значение один раз, сохраните его в локальном secret store и перед каждым запуском передавайте то же значение как `CREDENTIAL_ENCRYPTION_KEY`; номер версии — как `CREDENTIAL_ENCRYPTION_KEY_VERSION`. Известный development default позволяет открыть панель, но операция сохранения provider credential с ним вернет `CREDENTIAL_ENCRYPTION_KEY_REQUIRED`. Потеря master key делает уже сохранённые credentials нерасшифровываемыми: прежний ключ нужно восстановить через `CREDENTIAL_ENCRYPTION_PREVIOUS_KEYS` либо увеличить версию и повторно сохранить AITUNNEL-ключ. Сам ключ AITUNNEL не помещается в `.env`: Администратор вводит его на странице проекта «Подключение». Если ключ когда-либо публиковался в чате, issue или логе, сначала отзовите его в AITUNNEL и создайте новый.
 
 После запуска панели `pnpm smoke:provider` проверяет реальный публичный каталог без provider key. Полная проверка credential flow выполняется на локальном mock командой `pnpm smoke:provider-credential`; порядок запуска описан в [guides/development.md](guides/development.md).
 

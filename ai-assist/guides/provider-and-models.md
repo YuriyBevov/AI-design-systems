@@ -89,6 +89,13 @@ Admin selector показывает только модели нужной capab
 
 Master key для credential envelope задается отдельно через `CREDENTIAL_ENCRYPTION_KEY` как base64 от 32 случайных байт. `CREDENTIAL_ENCRYPTION_KEY_VERSION` указывает активную версию, а `CREDENTIAL_ENCRYPTION_PREVIOUS_KEYS` временно содержит JSON-карту старых версий на период ротации. Production-конфигурация с development master key отклоняется при старте; в development известный default допускает просмотр панели, но блокирует credential save.
 
+Локально `pnpm dev:setup` создаёт независимый master key в игнорируемом Git корневом `.env`, а
+панель и worker читают его совместно. Значение должно сохраняться между перезапусками. Если
+сохранённая запись ссылается на отсутствующую версию, API возвращает
+`CREDENTIAL_KEY_VERSION_UNAVAILABLE`; если версия найдена, но AES-GCM envelope не проходит
+аутентификацию, — `CREDENTIAL_DECRYPTION_FAILED`. Ни одна из этих ошибок не должна превращаться в
+общий `Provider operation failed`.
+
 ## 5. Streaming adapter
 
 - Server открывает upstream streaming и преобразует provider-specific chunks в внутренние events.
