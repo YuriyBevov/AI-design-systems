@@ -452,7 +452,7 @@ const publishRun = async (): Promise<void> => {
           <p class="section-description">После сохранения автоматически запустится первый обход.</p>
         </header>
 
-        <form class="form-stack source-form" @submit.prevent="saveSource">
+        <form class="form-stack source-form" novalidate @submit.prevent="saveSource">
           <fieldset class="crawl-settings">
             <legend class="crawl-settings__legend">Настройки обхода</legend>
             <p class="crawl-settings__description">

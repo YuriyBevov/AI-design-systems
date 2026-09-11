@@ -112,12 +112,15 @@ export const throwProviderHttpError = (error: unknown): never => {
   if (isError(error)) throw error;
 
   if (!(error instanceof AitunnelProviderError)) {
-    throw createError({ statusCode: 500, statusMessage: "Provider operation failed" });
+    throw createError({
+      statusCode: 500,
+      statusMessage: "Операция с провайдером завершилась ошибкой",
+    });
   }
 
   throw createError({
     statusCode: providerErrorStatus(error),
-    statusMessage: "AITUNNEL request failed",
+    statusMessage: "Запрос к провайдеру завершился ошибкой",
     data: { code: error.code, retryable: error.retryable },
   });
 };
@@ -137,7 +140,7 @@ export const decryptStoredProviderCredential = (credential: ProviderCredentialRe
   } catch {
     throw createError({
       statusCode: 503,
-      statusMessage: "Credential encryption configuration is invalid",
+      statusMessage: "Настройки шифрования ключа некорректны",
       data: { code: "CREDENTIAL_ENCRYPTION_KEY_INVALID", retryable: false },
     });
   }
@@ -146,7 +149,7 @@ export const decryptStoredProviderCredential = (credential: ProviderCredentialRe
   if (!key) {
     throw createError({
       statusCode: 503,
-      statusMessage: "Credential key version is unavailable",
+      statusMessage: "Версия ключа шифрования недоступна",
       data: { code: "CREDENTIAL_KEY_VERSION_UNAVAILABLE", retryable: false },
     });
   }
@@ -169,7 +172,7 @@ export const decryptStoredProviderCredential = (credential: ProviderCredentialRe
   } catch {
     throw createError({
       statusCode: 503,
-      statusMessage: "Stored credential cannot be decrypted",
+      statusMessage: "Не удалось расшифровать сохранённый ключ",
       data: { code: "CREDENTIAL_DECRYPTION_FAILED", retryable: false },
     });
   }
@@ -206,7 +209,7 @@ export const saveProviderCredential = async (
     });
     throw createError({
       statusCode: 503,
-      statusMessage: "Credential encryption key is not configured",
+      statusMessage: "Ключ шифрования не настроен",
       data: { code: "CREDENTIAL_ENCRYPTION_KEY_REQUIRED", retryable: false },
     });
   }
@@ -227,7 +230,7 @@ export const saveProviderCredential = async (
     });
     throw createError({
       statusCode: 503,
-      statusMessage: "Credential encryption configuration is invalid",
+      statusMessage: "Настройки шифрования ключа некорректны",
       data: { code: "CREDENTIAL_ENCRYPTION_KEY_INVALID", retryable: false },
     });
   }
@@ -291,7 +294,7 @@ export const testStoredProviderCredential = async (
   assertCsrf(event, session);
   const credential = await findProviderCredential(project.id);
   if (!credential) {
-    throw createError({ statusCode: 404, statusMessage: "Provider credential not found" });
+    throw createError({ statusCode: 404, statusMessage: "Ключ провайдера не найден" });
   }
 
   try {
@@ -422,18 +425,21 @@ const validateSelectedModel = async (
 ): Promise<void> => {
   if (!modelId) return;
   if (capability === "embeddings" && modelId === "auto") {
-    throw createError({ statusCode: 422, statusMessage: "Auto is not allowed for embeddings" });
+    throw createError({
+      statusCode: 422,
+      statusMessage: "Автоматический выбор недоступен для модели векторизации",
+    });
   }
 
   const model = await findProviderModel(modelId, capability);
   if (!model || !model.available) {
-    throw createError({ statusCode: 422, statusMessage: `${capability} model is unavailable` });
+    throw createError({ statusCode: 422, statusMessage: "Выбранная модель недоступна" });
   }
 
   const expectedOutput =
     capability === "chat" ? "text" : capability === "embeddings" ? "embedding" : "rerank";
   if (!model.inputModalities.includes("text") || !model.outputModalities.includes(expectedOutput)) {
-    throw createError({ statusCode: 422, statusMessage: `${capability} model is incompatible` });
+    throw createError({ statusCode: 422, statusMessage: "Выбранная модель несовместима" });
   }
 };
 
@@ -492,7 +498,10 @@ export const updateProjectModelSettings = async (
   if (next.chatModelId) {
     const chatModel = await findProviderModel(next.chatModelId, "chat");
     if (chatModel?.maxOutput && next.maxOutputTokens > chatModel.maxOutput) {
-      throw createError({ statusCode: 422, statusMessage: "maxOutputTokens exceeds model limit" });
+      throw createError({
+        statusCode: 422,
+        statusMessage: "Максимум токенов ответа превышает ограничение модели",
+      });
     }
   }
 

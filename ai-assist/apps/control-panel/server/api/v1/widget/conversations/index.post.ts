@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
   prepareWidgetPreflight(event);
   const parsed = createWidgetConversationRequestSchema.safeParse((await readBody(event)) ?? {});
   if (!parsed.success) {
-    throw createError({ statusCode: 400, statusMessage: "Invalid widget conversation request" });
+    throw createError({ statusCode: 400, statusMessage: "Некорректный запрос создания диалога" });
   }
   return widgetConversationResponseSchema.parse(await createWidgetConversation(event));
 });

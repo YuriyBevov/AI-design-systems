@@ -39,7 +39,7 @@ const submit = async (): Promise<void> => {
         </p>
       </div>
 
-      <form class="form-stack" @submit.prevent="submit">
+      <form class="form-stack" novalidate @submit.prevent="submit">
         <label class="form-field">
           <span class="form-field__label">Email</span>
           <input

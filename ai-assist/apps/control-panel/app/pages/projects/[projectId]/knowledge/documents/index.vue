@@ -11,6 +11,7 @@ const route = useRoute();
 const session = useAdminSessionState();
 const requestFetch = useRequestFetch();
 const projectId = computed(() => String(route.params.projectId));
+const { setKnowledgeIndexState } = useKnowledgeIndexState();
 const isRequestingIndex = ref(false);
 const message = ref<{ type: "success" | "error"; text: string } | null>(null);
 useToastMessage(message);
@@ -63,6 +64,14 @@ const role = computed(
     data.value?.project.role,
 );
 const canEdit = computed(() => role.value === "owner" || role.value === "editor");
+
+watch(
+  () => data.value?.indexState,
+  (indexState) => {
+    if (indexState) setKnowledgeIndexState(projectId.value, indexState);
+  },
+  { immediate: true },
+);
 
 const statusLabel = (status: KnowledgeDocumentStatus): string =>
   ({ draft: "Черновик", published: "Опубликован", archived: "Архив" })[status];
@@ -198,7 +207,7 @@ const requestReindex = async (): Promise<void> => {
 
         <dl class="settings-summary">
           <div>
-            <dt>Embedding-модель</dt>
+            <dt>Модель векторизации (Embedding model)</dt>
             <dd>{{ data.indexState.configuredEmbeddingModelId ?? "Не выбрана" }}</dd>
           </div>
           <div>

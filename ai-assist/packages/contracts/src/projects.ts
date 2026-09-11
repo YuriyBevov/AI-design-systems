@@ -24,7 +24,7 @@ export const updateProjectRequestSchema = z
     conversationRetentionDays: z.number().int().min(0).max(3650).optional(),
   })
   .strict()
-  .refine((value) => Object.keys(value).length > 0, { message: "At least one field is required" });
+  .refine((value) => Object.keys(value).length > 0, { message: "Укажите хотя бы одно поле" });
 
 export const createProjectRequestSchema = z
   .object({

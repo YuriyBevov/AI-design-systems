@@ -6,7 +6,7 @@ import { getInfrastructure } from "../../../utils/infrastructure";
 
 export default defineEventHandler(async (event) => {
   if (process.env.NODE_ENV === "production") {
-    throw createError({ statusCode: 404, statusMessage: "Not found" });
+    throw createError({ statusCode: 404, statusMessage: "Не найдено" });
   }
 
   const requestId = getRequestHeader(event, "x-request-id") ?? randomUUID();

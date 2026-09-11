@@ -135,9 +135,9 @@ const requireManageableOwner = async (
   assertCsrf(event, session);
   if (requireRecentAuthentication) assertRecentAdminAuthentication(session);
   const project = await findManageableProjectForUser(session.userId, projectId);
-  if (!project) throw createError({ statusCode: 404, statusMessage: "Project not found" });
+  if (!project) throw createError({ statusCode: 404, statusMessage: "Проект не найден" });
   if (project.role !== "owner") {
-    throw createError({ statusCode: 403, statusMessage: "Project owner role required" });
+    throw createError({ statusCode: 403, statusMessage: "Требуются права администратора проекта" });
   }
   return { session, project };
 };
@@ -169,10 +169,13 @@ export const createProject = async (
   if (input.templateProjectId) {
     templateProject = await findManageableProjectForUser(session.userId, input.templateProjectId);
     if (!templateProject || templateProject.status !== "active") {
-      throw createError({ statusCode: 404, statusMessage: "Template project not found" });
+      throw createError({ statusCode: 404, statusMessage: "Проект для копирования не найден" });
     }
     if (templateProject.role !== "owner") {
-      throw createError({ statusCode: 403, statusMessage: "Template project owner role required" });
+      throw createError({
+        statusCode: 403,
+        statusMessage: "Недостаточно прав для копирования выбранного проекта",
+      });
     }
     [templateAssistant, templatePrompts] = await Promise.all([
       findAssistantSettingsRecord(templateProject.id),
@@ -218,7 +221,7 @@ export const createProject = async (
   if (!project) {
     throw createError({
       statusCode: 409,
-      statusMessage: "Project identifier could not be generated",
+      statusMessage: "Не удалось создать идентификатор проекта",
       data: { code: "PROJECT_SLUG_GENERATION_FAILED" },
     });
   }
@@ -266,7 +269,7 @@ export const patchProject = async (
   const updated = await updateProject(project.id, update);
 
   if (!updated) {
-    throw createError({ statusCode: 404, statusMessage: "Project not found" });
+    throw createError({ statusCode: 404, statusMessage: "Проект не найден" });
   }
 
   await writeAuditEvent({
@@ -290,7 +293,7 @@ export const changeProjectStatus = async (
   const { session, project } = await requireManageableOwner(event, projectId);
   if (project.status === input.status) return toProjectResponse(project);
   const updated = await updateProjectStatusRecord(project.id, input.status);
-  if (!updated) throw createError({ statusCode: 404, statusMessage: "Project not found" });
+  if (!updated) throw createError({ statusCode: 404, statusMessage: "Проект не найден" });
 
   await writeAuditEvent({
     projectId: project.id,
@@ -311,7 +314,7 @@ export const archiveProject = async (
 ): Promise<ProjectResponse> => {
   const { session, project } = await requireManageableOwner(event, projectId, true);
   const updated = await updateProjectStatusRecord(project.id, "archived");
-  if (!updated) throw createError({ statusCode: 404, statusMessage: "Project not found" });
+  if (!updated) throw createError({ statusCode: 404, statusMessage: "Проект не найден" });
 
   await writeAuditEvent({
     projectId: project.id,

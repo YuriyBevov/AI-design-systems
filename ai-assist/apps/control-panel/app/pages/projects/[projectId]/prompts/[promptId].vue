@@ -120,20 +120,20 @@ const setRequestError = async (requestError: unknown, fallback: string): Promise
       ? `Инструкция содержит неизвестные переменные: ${problem.unknownVariables.join(", ")}.`
       : "Проверьте синтаксис переменных в инструкции.",
     PROMPT_CHAT_MODEL_REQUIRED: "Перед проверкой или применением выберите chat-модель.",
-    PROVIDER_CREDENTIAL_REQUIRED: "Для preview сначала сохраните ключ AITUNNEL.",
-    PROVIDER_CREDENTIAL_NOT_READY: "Ключ AITUNNEL не готов к использованию. Проверьте его снова.",
-    PROVIDER_CREDENTIAL_INVALID: "AITUNNEL отклонил сохранённый ключ.",
+    PROVIDER_CREDENTIAL_REQUIRED: "Для preview сначала сохраните ключ провайдера.",
+    PROVIDER_CREDENTIAL_NOT_READY: "Ключ провайдера не готов к использованию. Проверьте его снова.",
+    PROVIDER_CREDENTIAL_INVALID: "Провайдер отклонил сохранённый ключ.",
     PROVIDER_MODEL_UNAVAILABLE: "Выбранная chat-модель недоступна для этого ключа.",
-    PROVIDER_BUDGET_EXCEEDED: "Бюджет ключа AITUNNEL исчерпан.",
-    PROVIDER_RATE_LIMITED: "AITUNNEL временно ограничил частоту запросов. Повторите позже.",
-    PROVIDER_TIMEOUT: "AITUNNEL не успел ответить за установленное время.",
-    PROVIDER_BAD_RESPONSE: "AITUNNEL вернул некорректный ответ.",
-    PROVIDER_UNAVAILABLE: "AITUNNEL временно недоступен.",
+    PROVIDER_BUDGET_EXCEEDED: "Бюджет ключа провайдера исчерпан.",
+    PROVIDER_RATE_LIMITED: "Провайдер временно ограничил частоту запросов. Повторите позже.",
+    PROVIDER_TIMEOUT: "Провайдер не успел ответить за установленное время.",
+    PROVIDER_BAD_RESPONSE: "Провайдер вернул некорректный ответ.",
+    PROVIDER_UNAVAILABLE: "Провайдер временно недоступен.",
     CREDENTIAL_ENCRYPTION_KEY_INVALID:
-      "Сервер не может расшифровать ключ AITUNNEL. Проверьте master key.",
-    CREDENTIAL_KEY_VERSION_UNAVAILABLE: "Версия master key для AITUNNEL недоступна на сервере.",
+      "Сервер не может расшифровать ключ провайдера. Проверьте master key.",
+    CREDENTIAL_KEY_VERSION_UNAVAILABLE: "Версия master key для провайдера недоступна на сервере.",
     CREDENTIAL_DECRYPTION_FAILED:
-      "Сохранённый ключ AITUNNEL не удалось расшифровать текущим master key.",
+      "Сохранённый ключ провайдера не удалось расшифровать текущим master key.",
     PROMPT_PREVIEW_RATE_LIMITED: "Лимит preview-запросов исчерпан. Повторите через минуту.",
     PROMPT_PREVIEW_CANCELLED: "Preview был отменён.",
     PROMPT_ACTIVE_PUBLICATION: "Текущую роль нельзя архивировать. Сначала примените другую роль.",
@@ -362,9 +362,9 @@ const deleteRevision = async (): Promise<void> => {
     <div v-if="error" class="empty-state" role="alert">Роль не найдена или недоступна.</div>
 
     <template v-else-if="detail">
-      <section class="prompt-layout" aria-label="Редактор и версии роли агента">
+      <section class="split-layout" aria-label="Редактор и версии роли агента">
         <article class="panel prompt-editor" aria-label="Основные данные роли агента">
-          <form class="form-stack" @submit.prevent="saveMetadata">
+          <form class="form-stack" novalidate @submit.prevent="saveMetadata">
             <div class="form-grid" :class="{ 'form-grid--with-action': canEdit && !isArchived }">
               <label class="form-field">
                 <span class="form-field__label">Название</span>
@@ -404,7 +404,7 @@ const deleteRevision = async (): Promise<void> => {
             </div>
           </form>
 
-          <form class="form-stack" @submit.prevent="apply">
+          <form class="form-stack" novalidate @submit.prevent="apply">
             <label class="form-field">
               <span class="form-field__label form-field__label-row">
                 <span>Роль и поведение агента</span>
@@ -451,7 +451,7 @@ const deleteRevision = async (): Promise<void> => {
           </form>
         </article>
 
-        <aside class="prompt-sidebar" aria-label="Версии и тестирование роли агента">
+        <aside class="panel-stack" aria-label="Версии и тестирование роли агента">
           <section class="panel prompt-revisions" aria-label="Версии роли агента">
             <ol class="prompt-revision-list">
               <li
@@ -520,7 +520,7 @@ const deleteRevision = async (): Promise<void> => {
             class="panel prompt-playground"
             aria-label="Предпросмотр ответа агента"
           >
-            <form class="form-stack" @submit.prevent="runPreview">
+            <form class="form-stack" novalidate @submit.prevent="runPreview">
               <label class="form-field">
                 <span class="form-field__label">Тестовый вопрос</span>
                 <textarea

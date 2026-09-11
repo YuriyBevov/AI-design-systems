@@ -10,8 +10,7 @@ const session = useAdminSessionState();
 const projectId = computed(() => String(route.params.projectId));
 const localTab = computed(() => getAssistantSettingsTab(route.path, route.query.tab));
 const requestFetch = useRequestFetch();
-const isSaving = ref(false);
-const isPublishing = ref(false);
+const isApplying = ref(false);
 const isSavingRetention = ref(false);
 const message = ref<{ type: "success" | "error"; text: string } | null>(null);
 const retentionMessage = ref<{ type: "success" | "error"; text: string } | null>(null);
@@ -156,7 +155,7 @@ const saveRetention = async (): Promise<void> => {
       headers: getCsrfHeaders(),
       body: { conversationRetentionDays: retentionDays.value },
     });
-    retentionMessage.value = { type: "success", text: "Срок хранения диалогов сохранён." };
+    retentionMessage.value = { type: "success", text: "Срок хранения диалогов применён." };
   } catch (requestError) {
     const fetchError = requestError as { data?: { statusMessage?: string } };
     retentionMessage.value = {
@@ -168,48 +167,74 @@ const saveRetention = async (): Promise<void> => {
   }
 };
 
-const saveDraft = async (): Promise<void> => {
-  if (!canEdit.value || !data.value) return;
-  isSaving.value = true;
-  message.value = null;
-  try {
-    data.value = await $fetch<AssistantSettingsResponse>(
-      `/api/v1/projects/${projectId.value}/assistant/draft`,
-      {
-        method: "PATCH",
-        headers: getCsrfHeaders(),
-        body: requestBody(),
-      },
-    );
-    message.value = {
-      type: "success",
-      text: "Черновик сохранён. Production-конфигурация пока не изменилась.",
-    };
-  } catch (requestError) {
-    setError(requestError, "Не удалось сохранить настройки ассистента.");
-  } finally {
-    isSaving.value = false;
-  }
+const savedDraftBody = (): UpdateAssistantDraftRequest | null => {
+  if (!data.value) return null;
+  const { draft, assistant } = data.value;
+  return {
+    expectedVersion: assistant.configVersion,
+    name: draft.name,
+    greeting: draft.greeting,
+    placeholder: draft.placeholder,
+    accentColor: draft.accentColor,
+    launcherPosition: draft.launcherPosition,
+    contactFallback: draft.contactFallback,
+    locale: draft.locale,
+    enabled: draft.enabled,
+    maintenanceMessage: draft.maintenanceMessage,
+    maxConversationTurns: draft.maxConversationTurns,
+    responseTimeoutSeconds: draft.responseTimeoutSeconds,
+    dailyRateLimit: draft.dailyRateLimit,
+    citationsEnabled: draft.citationsEnabled,
+    allowedOrigins: draft.allowedOrigins.map(({ origin }) => ({ origin })),
+  };
 };
 
-const publish = async (): Promise<void> => {
-  if (!canEdit.value || !data.value) return;
-  isPublishing.value = true;
+const hasFormChanges = computed(() => {
+  const saved = savedDraftBody();
+  return Boolean(saved && JSON.stringify(requestBody()) !== JSON.stringify(saved));
+});
+
+const canApply = computed(
+  () =>
+    canEdit.value &&
+    !isApplying.value &&
+    Boolean(hasFormChanges.value || data.value?.hasUnpublishedChanges),
+);
+
+const applySettings = async (): Promise<void> => {
+  if (!canEdit.value || !data.value || isApplying.value) return;
+  if (!hasFormChanges.value && !data.value.hasUnpublishedChanges) return;
+  isApplying.value = true;
   message.value = null;
   try {
-    data.value = await $fetch<AssistantSettingsResponse>(
-      `/api/v1/projects/${projectId.value}/assistant/publish`,
-      {
-        method: "POST",
-        headers: getCsrfHeaders(),
-        body: { expectedVersion: data.value.assistant.configVersion },
-      },
-    );
-    message.value = { type: "success", text: "Настройки ассистента опубликованы." };
+    let settings = data.value;
+    if (hasFormChanges.value) {
+      settings = await $fetch<AssistantSettingsResponse>(
+        `/api/v1/projects/${projectId.value}/assistant/draft`,
+        {
+          method: "PATCH",
+          headers: getCsrfHeaders(),
+          body: requestBody(),
+        },
+      );
+      data.value = settings;
+    }
+    if (settings.hasUnpublishedChanges) {
+      settings = await $fetch<AssistantSettingsResponse>(
+        `/api/v1/projects/${projectId.value}/assistant/publish`,
+        {
+          method: "POST",
+          headers: getCsrfHeaders(),
+          body: { expectedVersion: settings.assistant.configVersion },
+        },
+      );
+      data.value = settings;
+    }
+    message.value = { type: "success", text: "Настройки ассистента применены." };
   } catch (requestError) {
-    setError(requestError, "Не удалось опубликовать настройки ассистента.");
+    setError(requestError, "Не удалось применить настройки ассистента.");
   } finally {
-    isPublishing.value = false;
+    isApplying.value = false;
   }
 };
 </script>
@@ -224,7 +249,8 @@ const publish = async (): Promise<void> => {
       <form
         v-if="localTab === 'interface' || localTab === 'security'"
         class="panel form-stack"
-        @submit.prevent="saveDraft"
+        novalidate
+        @submit.prevent="applySettings"
       >
         <template v-if="localTab === 'interface'">
           <header class="section-header">
@@ -350,33 +376,31 @@ const publish = async (): Promise<void> => {
             </button>
           </header>
 
-          <div class="assistant-origin-list">
-            <div
-              v-for="(origin, index) in form.allowedOrigins"
-              :key="origin.key"
-              class="assistant-origin"
-            >
-              <div class="form-field">
-                <input
-                  v-model.trim="origin.origin"
-                  class="form-field__control"
-                  type="url"
-                  aria-label="URL-адрес"
-                  maxlength="512"
-                  required
-                  :disabled="!canEdit"
-                />
-              </div>
-              <button
-                class="icon-button icon-button--danger assistant-origin__remove"
-                type="button"
-                aria-label="Удалить URL-адрес"
-                :disabled="!canEdit || form.allowedOrigins.length <= 1"
-                @click="removeOrigin(index)"
-              >
-                <UiIcon name="trash" />
-              </button>
+          <div
+            v-for="(origin, index) in form.allowedOrigins"
+            :key="origin.key"
+            class="assistant-origin"
+          >
+            <div class="form-field">
+              <input
+                v-model.trim="origin.origin"
+                class="form-field__control"
+                type="url"
+                aria-label="URL-адрес"
+                maxlength="512"
+                required
+                :disabled="!canEdit"
+              />
             </div>
+            <button
+              class="icon-button icon-button--danger assistant-origin__remove"
+              type="button"
+              aria-label="Удалить URL-адрес"
+              :disabled="!canEdit || form.allowedOrigins.length <= 1"
+              @click="removeOrigin(index)"
+            >
+              <UiIcon name="trash" />
+            </button>
           </div>
 
           <p class="form-field__hint">* Только точный URL, например https://sitename.ru</p>
@@ -428,25 +452,22 @@ const publish = async (): Promise<void> => {
         </template>
 
         <p v-if="!canEdit" class="form-note">
-          Только администратор может изменять и&nbsp;публиковать настройки.
+          Только администратор может изменять и&nbsp;применять настройки.
         </p>
 
-        <div class="form-actions form-actions--split">
-          <button
-            class="button"
-            type="button"
-            :disabled="!canEdit || isPublishing || !data.hasUnpublishedChanges"
-            @click="publish"
-          >
-            {{ isPublishing ? "Публикуем…" : "Опубликовать настройки" }}
-          </button>
-          <button class="button button--primary" type="submit" :disabled="!canEdit || isSaving">
-            {{ isSaving ? "Сохраняем…" : "Сохранить черновик" }}
+        <div class="form-actions">
+          <button class="button button--primary" type="submit" :disabled="!canApply">
+            {{ isApplying ? "Применяем…" : "Применить" }}
           </button>
         </div>
       </form>
 
-      <form v-if="localTab === 'security'" class="panel form-stack" @submit.prevent="saveRetention">
+      <form
+        v-if="localTab === 'security'"
+        class="panel form-stack"
+        novalidate
+        @submit.prevent="saveRetention"
+      >
         <header class="section-header">
           <div>
             <h2 class="section-title">Хранение диалогов</h2>
@@ -473,7 +494,7 @@ const publish = async (): Promise<void> => {
               :disabled="!canEdit"
             />
             <span class="form-field__hint">
-              0 — хранить только до&nbsp;окончания текущей сессии. Максимум — 3650 дней.
+              * 0 — хранить только до&nbsp;окончания текущей сессии. Максимум — 3650 дней.
             </span>
           </label>
 
@@ -483,7 +504,7 @@ const publish = async (): Promise<void> => {
               type="submit"
               :disabled="!canEdit || isSavingRetention"
             >
-              {{ isSavingRetention ? "Сохраняем…" : "Сохранить срок хранения" }}
+              {{ isSavingRetention ? "Применяем…" : "Применить" }}
             </button>
           </div>
         </template>

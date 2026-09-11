@@ -75,6 +75,7 @@ const noteSamples = [
         <button class="button button--ghost" type="button">Без фона</button>
         <button class="button button--text" type="button">Текстовая</button>
         <button class="button button--compact" type="button">Компактная</button>
+        <button class="button button--large" type="button">Высота 44 px</button>
         <button class="button" type="button" disabled>Недоступная</button>
       </div>
     </section>
@@ -92,6 +93,9 @@ const noteSamples = [
 
       <div class="component-preview" aria-label="Варианты кнопки с иконкой">
         <button class="icon-button" type="button" aria-label="Добавить">
+          <UiIcon name="plus" />
+        </button>
+        <button class="icon-button icon-button--large" type="button" aria-label="Добавить">
           <UiIcon name="plus" />
         </button>
         <button
@@ -204,6 +208,22 @@ const noteSamples = [
 
       <div class="component-preview" aria-label="Пример примечания">
         <BaseNote :items="noteSamples" />
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="notice-components-title">
+      <header class="section-header">
+        <div>
+          <h2 id="notice-components-title" class="section-title">Системные уведомления</h2>
+        </div>
+        <p class="section-description">
+          Постоянные сообщения внутри страницы используют единый компонент
+          <code>BaseNotice</code>.
+        </p>
+      </header>
+
+      <div class="component-preview" aria-label="Пример системного уведомления">
+        <BaseNotice variant="warning">Требуется переиндексация базы знаний.</BaseNotice>
       </div>
     </section>
 

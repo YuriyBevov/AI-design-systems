@@ -145,6 +145,7 @@ const checkReadiness = async (): Promise<void> => {
       v-else-if="projectDetails"
       class="panel form-stack"
       aria-labelledby="project-settings-title"
+      novalidate
       @submit.prevent="saveProjectSettings"
     >
       <header class="section-header">
@@ -247,7 +248,7 @@ const checkReadiness = async (): Promise<void> => {
           <span class="action-card__icon" aria-hidden="true">
             <UiIcon class="ui-icon--large" name="provider" />
           </span>
-          <strong>AITUNNEL и модели</strong>
+          <strong>Провайдер и модели</strong>
           <span>Безопасно подключить ключ и выбрать chat/embedding модели.</span>
         </NuxtLink>
       </div>

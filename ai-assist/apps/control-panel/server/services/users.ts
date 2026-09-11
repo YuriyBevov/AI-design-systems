@@ -98,7 +98,7 @@ export const patchUser = async (
   const session = await requireAccountAdmin(event);
   assertCsrf(event, session);
   const current = await findUserRecord(userId);
-  if (!current) throw createError({ statusCode: 404, statusMessage: "User not found" });
+  if (!current) throw createError({ statusCode: 404, statusMessage: "Пользователь не найден" });
 
   const nextRole = input.role ?? current.role;
   const nextStatus = input.status ?? current.status;
@@ -118,7 +118,7 @@ export const patchUser = async (
       projectIds: input.projectIds ?? current.projectIds,
       protectLastAdministrator,
     });
-    if (!updated) throw createError({ statusCode: 404, statusMessage: "User not found" });
+    if (!updated) throw createError({ statusCode: 404, statusMessage: "Пользователь не найден" });
 
     await writeAuditEvent({
       actorUserId: session.userId,

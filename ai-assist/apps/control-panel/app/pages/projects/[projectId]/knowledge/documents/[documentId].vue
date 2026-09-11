@@ -324,7 +324,7 @@ const remove = async (): Promise<void> => {
           <p class="section-description">Активная версия останется прежней до публикации.</p>
         </header>
 
-        <form class="form-stack" @submit.prevent="saveVersion">
+        <form class="form-stack" novalidate @submit.prevent="saveVersion">
           <div class="form-grid">
             <label class="form-field form-field--wide">
               <span class="form-field__label">Название</span>

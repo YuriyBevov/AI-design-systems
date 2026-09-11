@@ -56,7 +56,7 @@ const publicErrorMessage = "Не удалось получить ответ. П�
 const normalizeWidgetOrigin = (event: H3Event): string => {
   const rawOrigin = getRequestHeader(event, "origin");
   if (!rawOrigin || rawOrigin.length > 512) {
-    throw createError({ statusCode: 403, statusMessage: "Widget Origin is required" });
+    throw createError({ statusCode: 403, statusMessage: "Не указан URL-адрес виджета" });
   }
   try {
     const url = new URL(rawOrigin);
@@ -65,7 +65,7 @@ const normalizeWidgetOrigin = (event: H3Event): string => {
     }
     return url.origin;
   } catch {
-    throw createError({ statusCode: 403, statusMessage: "Widget Origin is invalid" });
+    throw createError({ statusCode: 403, statusMessage: "URL-адрес виджета некорректен" });
   }
 };
 
@@ -106,7 +106,7 @@ const consumeRateLimit = async (input: {
   if (count > input.maximum) {
     throw createError({
       statusCode: 429,
-      statusMessage: "Widget rate limit exceeded",
+      statusMessage: "Превышен лимит запросов виджета",
       data: { code: input.code, retryAfter: await redis.ttl(input.key), retryable: true },
     });
   }
@@ -199,7 +199,7 @@ const bearerToken = (event: H3Event): string => {
   const authorization = getRequestHeader(event, "authorization");
   const match = authorization?.match(/^Bearer ([A-Za-z0-9_-]{32,256})$/u);
   if (!match?.[1]) {
-    throw createError({ statusCode: 401, statusMessage: "Widget session required" });
+    throw createError({ statusCode: 401, statusMessage: "Требуется сессия виджета" });
   }
   return match[1];
 };
@@ -211,7 +211,7 @@ const requireWidgetSession = async (
   applyWidgetCors(event, origin);
   const session = await findActiveWidgetSessionRecord(hashOpaqueToken(bearerToken(event)));
   if (!session || !hashesMatch(session.originHash, hashWidgetSubject(origin))) {
-    throw createError({ statusCode: 401, statusMessage: "Widget session is unavailable" });
+    throw createError({ statusCode: 401, statusMessage: "Сессия виджета недоступна" });
   }
   const runtime = await findWidgetRuntimeRecord(session.assistantPublicId, origin);
   if (
@@ -219,7 +219,7 @@ const requireWidgetSession = async (
     runtime.projectId !== session.projectId ||
     runtime.assistantId !== session.assistantId
   ) {
-    throw createError({ statusCode: 401, statusMessage: "Widget session is unavailable" });
+    throw createError({ statusCode: 401, statusMessage: "Сессия виджета недоступна" });
   }
   await touchWidgetSessionRecord(session.id);
   return { origin, session, runtime };
@@ -234,7 +234,7 @@ export const createWidgetSession = async (
   await consumeSessionCreationRateLimit(event, origin, input.assistantId);
   const runtime = await findWidgetRuntimeRecord(input.assistantId, origin);
   if (!runtime) {
-    throw createError({ statusCode: 404, statusMessage: "Assistant is unavailable" });
+    throw createError({ statusCode: 404, statusMessage: "Ассистент недоступен" });
   }
   const token = createOpaqueToken();
   const environment = getServiceEnvironment();
@@ -280,7 +280,7 @@ export const createWidgetConversation = async (
   if (!runtime.enabled) {
     throw createError({
       statusCode: 409,
-      statusMessage: "Assistant is disabled",
+      statusMessage: "Ассистент отключён",
       data: { code: "WIDGET_ASSISTANT_DISABLED" },
     });
   }
@@ -292,7 +292,7 @@ export const createWidgetConversation = async (
 const idempotencyKey = (event: H3Event): string => {
   const value = getRequestHeader(event, "idempotency-key");
   if (!value || !/^[A-Za-z0-9._:-]{16,128}$/u.test(value)) {
-    throw createError({ statusCode: 400, statusMessage: "Valid Idempotency-Key is required" });
+    throw createError({ statusCode: 400, statusMessage: "Требуется корректный Idempotency-Key" });
   }
   return value;
 };
@@ -345,14 +345,14 @@ export const streamWidgetChat = async (event: H3Event, input: WidgetChatRequest)
   if (!runtime.enabled) {
     throw createError({
       statusCode: 409,
-      statusMessage: "Assistant is disabled",
+      statusMessage: "Ассистент отключён",
       data: { code: "WIDGET_ASSISTANT_DISABLED" },
     });
   }
   if (input.page && new URL(input.page.url).origin !== origin) {
     throw createError({
       statusCode: 422,
-      statusMessage: "Page context Origin does not match the widget session",
+      statusMessage: "URL-адрес страницы не соответствует сессии виджета",
       data: { code: "WIDGET_PAGE_ORIGIN_MISMATCH" },
     });
   }
@@ -360,7 +360,7 @@ export const streamWidgetChat = async (event: H3Event, input: WidgetChatRequest)
   if (!chatModelId) {
     throw createError({
       statusCode: 503,
-      statusMessage: "Assistant model is unavailable",
+      statusMessage: "Модель ассистента недоступна",
       data: { code: "WIDGET_CHAT_MODEL_UNAVAILABLE", retryable: false },
     });
   }
@@ -368,7 +368,7 @@ export const streamWidgetChat = async (event: H3Event, input: WidgetChatRequest)
   if (!credential || credential.status !== "verified") {
     throw createError({
       statusCode: 503,
-      statusMessage: "Assistant provider is unavailable",
+      statusMessage: "Провайдер ассистента недоступен",
       data: { code: "WIDGET_PROVIDER_UNAVAILABLE", retryable: true },
     });
   }
@@ -377,7 +377,7 @@ export const streamWidgetChat = async (event: H3Event, input: WidgetChatRequest)
     ? await findActiveWidgetConversationRecord(session.id, input.conversationId)
     : await findActiveWidgetConversationRecord(session.id);
   if (input.conversationId && !requestedConversation) {
-    throw createError({ statusCode: 404, statusMessage: "Conversation not found" });
+    throw createError({ statusCode: 404, statusMessage: "Диалог не найден" });
   }
   const conversation = requestedConversation ?? (await newConversation(session, runtime));
   const history = await listWidgetMessageRecords(
@@ -403,19 +403,19 @@ export const streamWidgetChat = async (event: H3Event, input: WidgetChatRequest)
   if (generation.outcome === "duplicate") {
     throw createError({
       statusCode: 409,
-      statusMessage: "This message request was already accepted",
+      statusMessage: "Этот запрос сообщения уже принят",
       data: { code: "WIDGET_MESSAGE_DUPLICATE", retryable: false },
     });
   }
   if (generation.outcome === "busy") {
     throw createError({
       statusCode: 409,
-      statusMessage: "The conversation already has an active response",
+      statusMessage: "Для диалога уже формируется ответ",
       data: { code: "WIDGET_CONVERSATION_BUSY", retryable: true },
     });
   }
   if (generation.outcome === "conversation_unavailable") {
-    throw createError({ statusCode: 404, statusMessage: "Conversation not found" });
+    throw createError({ statusCode: 404, statusMessage: "Диалог не найден" });
   }
 
   setResponseHeaders(event, {

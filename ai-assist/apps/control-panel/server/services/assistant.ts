@@ -123,7 +123,7 @@ const normalizeRequestedOrigins = (input: UpdateAssistantDraftRequest) => {
   if (!result.success) {
     throw createError({
       statusCode: 422,
-      statusMessage: "Assistant Origin is invalid",
+      statusMessage: "Указан некорректный URL-адрес ассистента",
       data: { code: result.code, originIndex: result.index },
     });
   }
@@ -176,7 +176,7 @@ export const patchAssistantDraft = async (
     const latest = await findAssistantSettingsRecord(project.id);
     throw createError({
       statusCode: 409,
-      statusMessage: "Assistant settings were changed by another request",
+      statusMessage: "Настройки ассистента были изменены другим запросом",
       data: {
         code: "ASSISTANT_VERSION_CONFLICT",
         expectedVersion: input.expectedVersion,
@@ -187,7 +187,7 @@ export const patchAssistantDraft = async (
   if (result === "unchanged") {
     throw createError({
       statusCode: 409,
-      statusMessage: "Assistant settings are unchanged",
+      statusMessage: "Настройки ассистента не изменились",
       data: { code: "ASSISTANT_CONFIG_UNCHANGED" },
     });
   }
@@ -220,14 +220,14 @@ export const publishAssistant = async (
   if (!current.draft.allowedOrigins.length) {
     throw createError({
       statusCode: 422,
-      statusMessage: "At least one allowed Origin is required",
+      statusMessage: "Укажите хотя бы один разрешённый URL-адрес",
       data: { code: "ASSISTANT_ORIGIN_REQUIRED" },
     });
   }
   if (current.activeConfig?.configRevisionId === current.draft.id) {
     throw createError({
       statusCode: 409,
-      statusMessage: "Assistant settings are already published",
+      statusMessage: "Настройки ассистента уже опубликованы",
       data: { code: "ASSISTANT_CONFIG_UNCHANGED" },
     });
   }
@@ -240,7 +240,7 @@ export const publishAssistant = async (
     const latest = await findAssistantSettingsRecord(project.id);
     throw createError({
       statusCode: 409,
-      statusMessage: "Assistant settings were changed by another request",
+      statusMessage: "Настройки ассистента были изменены другим запросом",
       data: {
         code: "ASSISTANT_VERSION_CONFLICT",
         expectedVersion: input.expectedVersion,
@@ -251,7 +251,7 @@ export const publishAssistant = async (
   if (result.outcome === "prompt_missing") {
     throw createError({
       statusCode: 422,
-      statusMessage: "Publish a system prompt before assistant settings",
+      statusMessage: "Перед публикацией настроек примените роль ассистента",
       data: { code: "ASSISTANT_PROMPT_REQUIRED" },
     });
   }

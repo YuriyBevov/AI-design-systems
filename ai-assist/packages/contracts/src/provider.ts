@@ -100,7 +100,7 @@ export const updateProjectModelSettingsRequestSchema = z
     temperature: z.number().min(0).max(2).nullable().optional(),
   })
   .strict()
-  .refine((value) => Object.keys(value).length > 0, { message: "At least one field is required" });
+  .refine((value) => Object.keys(value).length > 0, { message: "Укажите хотя бы одно поле" });
 
 export type ProviderCredentialStatus = z.infer<typeof providerCredentialStatusSchema>;
 export type ProviderVerificationMetadata = z.infer<typeof providerVerificationMetadataSchema>;

@@ -39,7 +39,7 @@ export const productLookupSchema = z
     sku: z.string().min(1).max(255).optional(),
   })
   .refine((input) => Boolean(input.externalId || input.sku), {
-    message: "externalId or sku is required",
+    message: "Укажите внешний идентификатор или артикул",
   });
 
 export type CatalogSourceType = z.infer<typeof catalogSourceTypeSchema>;

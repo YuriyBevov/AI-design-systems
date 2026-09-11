@@ -10,7 +10,7 @@ const promptContentSchema = z
   .string()
   .min(1)
   .max(50_000)
-  .refine((content) => content.trim().length > 0, { message: "Prompt content is required" });
+  .refine((content) => content.trim().length > 0, { message: "Укажите текст роли ассистента" });
 
 export const promptTemplateValidationSchema = z.object({
   variables: z.array(z.string().min(1).max(100)),
@@ -109,7 +109,7 @@ export const updatePromptRequestSchema = z
   })
   .strict()
   .refine((value) => value.name !== undefined || value.description !== undefined, {
-    message: "At least one prompt field is required",
+    message: "Укажите хотя бы одно поле роли ассистента",
   });
 
 export const createPromptRevisionRequestSchema = z

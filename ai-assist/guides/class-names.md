@@ -277,7 +277,7 @@ is-active is-open is-hidden is-loading is-disabled has-error
 <button class="button button--compact" type="button">Проверить</button>
 ```
 
-Базовый `button` уже описывает нейтральный вариант. Модификатор добавляется только для реального визуального отличия: `button--primary`, `button--danger`, `button--ghost`, `button--text`, `button--compact`, `button--wide`, `button--with-icon`.
+Базовый `button` уже описывает нейтральный вариант. Модификатор добавляется только для реального визуального отличия: `button--primary`, `button--danger`, `button--ghost`, `button--text`, `button--compact`, `button--large`, `button--wide`, `button--with-icon`.
 
 Кнопка только с иконкой всегда использует отдельный базовый блок `icon-button`:
 
@@ -323,8 +323,9 @@ section-header section-title section-description
 ```text
 form-section form-row field field__label field__control field__hint field__error
 base-select base-select__value base-select__icon base-select__content base-select__item
-button button--primary button--danger button--ghost button--text button--compact button--wide
-button--with-icon icon-button icon-button--compact icon-button--tiny icon-button--ghost ui-icon
+button button--primary button--danger button--ghost button--text button--compact button--large
+button--wide button--with-icon icon-button icon-button--compact icon-button--large icon-button--tiny
+icon-button--ghost ui-icon
 button-row
 ```
 

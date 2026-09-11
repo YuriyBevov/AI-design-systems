@@ -120,7 +120,7 @@ const loadPromptDetail = async (
     listPromptRevisionRecords(projectId, promptId),
     findActivePromptPublication(projectId),
   ]);
-  if (!prompt) throw createError({ statusCode: 404, statusMessage: "Prompt not found" });
+  if (!prompt) throw createError({ statusCode: 404, statusMessage: "Роль ассистента не найдена" });
 
   return {
     prompt: toPromptSummary(prompt, revisions, activePublication),
@@ -136,17 +136,17 @@ const throwPromptMutationConflict = async (
   expectedVersion: number,
 ): Promise<never> => {
   const current = await findPromptRecord(projectId, promptId);
-  if (!current) throw createError({ statusCode: 404, statusMessage: "Prompt not found" });
+  if (!current) throw createError({ statusCode: 404, statusMessage: "Роль ассистента не найдена" });
   if (current.status === "archived") {
     throw createError({
       statusCode: 409,
-      statusMessage: "Archived prompt cannot be changed",
+      statusMessage: "Архивную роль ассистента нельзя изменить",
       data: { code: "PROMPT_ARCHIVED", currentVersion: current.version },
     });
   }
   throw createError({
     statusCode: 409,
-    statusMessage: "Prompt was changed by another request",
+    statusMessage: "Роль ассистента была изменена другим запросом",
     data: {
       code: "PROMPT_VERSION_CONFLICT",
       expectedVersion,
@@ -198,7 +198,7 @@ export const getPromptRevision = async (
   const { project } = await requireProjectScope(event, projectId);
   const revision = await findPromptRevisionRecord(project.id, promptId, revisionId);
   if (!revision) {
-    throw createError({ statusCode: 404, statusMessage: "Prompt revision not found" });
+    throw createError({ statusCode: 404, statusMessage: "Версия роли ассистента не найдена" });
   }
   return toRevisionResponse(revision);
 };
@@ -288,7 +288,7 @@ export const createPromptRevision = async (
   if (revisions[0]?.contentChecksum === checksum) {
     throw createError({
       statusCode: 409,
-      statusMessage: "Prompt revision is unchanged",
+      statusMessage: "Версия роли ассистента не изменилась",
       data: { code: "PROMPT_REVISION_UNCHANGED" },
     });
   }
@@ -331,13 +331,13 @@ export const publishPrompt = async (
   assertCsrf(event, session);
   const revision = await findPromptRevisionRecord(project.id, promptId, input.revisionId);
   if (!revision) {
-    throw createError({ statusCode: 404, statusMessage: "Prompt revision not found" });
+    throw createError({ statusCode: 404, statusMessage: "Версия роли ассистента не найдена" });
   }
   const analysis = analyzePromptTemplate(revision.content);
   if (!analysis.isPublishable) {
     throw createError({
       statusCode: 422,
-      statusMessage: "Prompt template cannot be published",
+      statusMessage: "Роль ассистента содержит ошибки и не может быть применена",
       data: {
         code: "PROMPT_TEMPLATE_INVALID",
         unknownVariables: analysis.unknownVariables,
@@ -352,7 +352,7 @@ export const publishPrompt = async (
   if (!assistantSettings.draft.allowedOrigins.length) {
     throw createError({
       statusCode: 422,
-      statusMessage: "At least one allowed Origin is required",
+      statusMessage: "Укажите хотя бы один разрешённый URL-адрес",
       data: { code: "ASSISTANT_ORIGIN_REQUIRED" },
     });
   }
@@ -360,7 +360,7 @@ export const publishPrompt = async (
   if (!modelSettings?.chatModelId) {
     throw createError({
       statusCode: 422,
-      statusMessage: "Chat model must be selected before prompt publication",
+      statusMessage: "Перед применением роли выберите диалоговую модель",
       data: { code: "PROMPT_CHAT_MODEL_REQUIRED" },
     });
   }
@@ -375,12 +375,12 @@ export const publishPrompt = async (
     modelSettingsSnapshot: modelSettings as PromptModelSettingsSnapshot,
   });
   if (result.outcome === "revision_not_found") {
-    throw createError({ statusCode: 404, statusMessage: "Prompt revision not found" });
+    throw createError({ statusCode: 404, statusMessage: "Версия роли ассистента не найдена" });
   }
   if (result.outcome === "assistant_config_missing") {
     throw createError({
       statusCode: 409,
-      statusMessage: "Assistant configuration is unavailable",
+      statusMessage: "Настройки ассистента недоступны",
       data: { code: "ASSISTANT_CONFIG_MISSING" },
     });
   }
@@ -423,7 +423,7 @@ const consumePromptPreviewRateLimit = async (projectId: string, userId: string):
   if (count > environment.PROMPT_PREVIEW_RATE_LIMIT_MAX) {
     throw createError({
       statusCode: 429,
-      statusMessage: "Prompt preview rate limit exceeded",
+      statusMessage: "Превышен лимит тестовых запросов роли ассистента",
       data: {
         code: "PROMPT_PREVIEW_RATE_LIMITED",
         retryAfter: await getInfrastructure().redis.ttl(key),
@@ -449,12 +449,12 @@ export const previewPrompt = async (
     findProviderCredential(project.id),
   ]);
   if (!prompt || !revision) {
-    throw createError({ statusCode: 404, statusMessage: "Prompt revision not found" });
+    throw createError({ statusCode: 404, statusMessage: "Версия роли ассистента не найдена" });
   }
   if (prompt.status === "archived") {
     throw createError({
       statusCode: 409,
-      statusMessage: "Archived prompt cannot be previewed",
+      statusMessage: "Архивную роль ассистента нельзя протестировать",
       data: { code: "PROMPT_ARCHIVED" },
     });
   }
@@ -463,7 +463,7 @@ export const previewPrompt = async (
   if (!analysis.isPublishable) {
     throw createError({
       statusCode: 422,
-      statusMessage: "Prompt template cannot be previewed",
+      statusMessage: "Роль ассистента содержит ошибки и не может быть протестирована",
       data: {
         code: "PROMPT_TEMPLATE_INVALID",
         unknownVariables: analysis.unknownVariables,
@@ -474,21 +474,21 @@ export const previewPrompt = async (
   if (!modelSettings?.chatModelId) {
     throw createError({
       statusCode: 422,
-      statusMessage: "Chat model must be selected before prompt preview",
+      statusMessage: "Перед тестированием роли выберите диалоговую модель",
       data: { code: "PROMPT_CHAT_MODEL_REQUIRED" },
     });
   }
   if (!credential) {
     throw createError({
       statusCode: 422,
-      statusMessage: "Provider credential is required for prompt preview",
+      statusMessage: "Перед тестированием роли добавьте ключ провайдера",
       data: { code: "PROVIDER_CREDENTIAL_REQUIRED" },
     });
   }
   if (credential.status !== "verified") {
     throw createError({
       statusCode: 422,
-      statusMessage: "Provider credential is not ready for prompt preview",
+      statusMessage: "Перед тестированием роли проверьте ключ провайдера",
       data: { code: "PROVIDER_CREDENTIAL_NOT_READY" },
     });
   }
@@ -594,7 +594,7 @@ export const previewPrompt = async (
     if (abortController.signal.aborted) {
       throw createError({
         statusCode: 499,
-        statusMessage: "Prompt preview was cancelled",
+        statusMessage: "Тестовый запрос роли ассистента отменён",
         data: { code: "PROMPT_PREVIEW_CANCELLED", retryable: true },
       });
     }
@@ -664,11 +664,11 @@ export const archivePrompt = async (
   const { session, project } = await requireProjectScope(event, projectId, "editor");
   assertCsrf(event, session);
   const current = await findPromptRecord(project.id, promptId);
-  if (!current) throw createError({ statusCode: 404, statusMessage: "Prompt not found" });
+  if (!current) throw createError({ statusCode: 404, statusMessage: "Роль ассистента не найдена" });
   if (current.status === "published") {
     throw createError({
       statusCode: 409,
-      statusMessage: "Active published prompt cannot be archived",
+      statusMessage: "Текущую роль ассистента нельзя архивировать",
       data: { code: "PROMPT_ACTIVE_PUBLICATION" },
     });
   }
@@ -702,7 +702,7 @@ export const deletePrompt = async (
   assertCsrf(event, session);
   const result = await deletePromptRecord({ projectId: project.id, promptId, expectedVersion });
   if (result === "not_found") {
-    throw createError({ statusCode: 404, statusMessage: "Prompt not found" });
+    throw createError({ statusCode: 404, statusMessage: "Роль ассистента не найдена" });
   }
   if (result === "version_conflict") {
     return throwPromptMutationConflict(project.id, promptId, expectedVersion);
@@ -734,7 +734,7 @@ export const deletePromptRevision = async (
     expectedVersion,
   });
   if (result.outcome === "not_found") {
-    throw createError({ statusCode: 404, statusMessage: "Prompt revision not found" });
+    throw createError({ statusCode: 404, statusMessage: "Версия роли ассистента не найдена" });
   }
   if (result.outcome === "version_conflict") {
     return throwPromptMutationConflict(project.id, promptId, expectedVersion);
@@ -742,14 +742,14 @@ export const deletePromptRevision = async (
   if (result.outcome === "current") {
     throw createError({
       statusCode: 409,
-      statusMessage: "Current prompt revision cannot be deleted",
+      statusMessage: "Текущую версию роли ассистента нельзя удалить",
       data: { code: "PROMPT_REVISION_CURRENT" },
     });
   }
   if (result.outcome === "last_revision") {
     throw createError({
       statusCode: 409,
-      statusMessage: "The only prompt revision cannot be deleted separately",
+      statusMessage: "Единственную версию нельзя удалить отдельно от роли ассистента",
       data: { code: "PROMPT_REVISION_LAST" },
     });
   }

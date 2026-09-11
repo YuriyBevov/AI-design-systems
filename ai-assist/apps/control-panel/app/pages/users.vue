@@ -272,7 +272,7 @@ const changeStatus = async (user: UserResponse): Promise<void> => {
       :title="isEditing ? 'Изменить пользователя' : 'Создать пользователя'"
       @close="closeUserModal"
     >
-      <form id="user-form" class="modal-form" @submit.prevent="saveUser">
+      <form id="user-form" class="modal-form" novalidate @submit.prevent="saveUser">
         <label class="form-field">
           <span class="form-field__label">Имя</span>
           <input

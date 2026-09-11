@@ -19,7 +19,7 @@ describe("provider credential errors", () => {
   it("preserves a classified H3 credential error", () => {
     const source = createError({
       statusCode: 503,
-      statusMessage: "Credential key version is unavailable",
+      statusMessage: "Версия ключа шифрования недоступна",
       data: { code: "CREDENTIAL_KEY_VERSION_UNAVAILABLE", retryable: false },
     });
 

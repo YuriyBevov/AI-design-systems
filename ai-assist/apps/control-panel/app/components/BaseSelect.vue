@@ -25,6 +25,8 @@ const props = withDefaults(
     options: readonly BaseSelectOption<TValue>[];
     placeholder?: string;
     disabled?: boolean;
+    invalid?: boolean;
+    describedBy?: string;
     label: string;
     id?: string;
     variant?: "default" | "compact";
@@ -33,6 +35,8 @@ const props = withDefaults(
   {
     placeholder: "Выберите значение",
     disabled: false,
+    invalid: false,
+    describedBy: undefined,
     id: undefined,
     variant: "default",
     width: "fill",
@@ -73,6 +77,8 @@ const normalizedOptions = computed(() =>
       }"
       :disabled="disabled"
       :aria-label="label"
+      :aria-invalid="invalid || undefined"
+      :aria-describedby="describedBy"
     >
       <span
         class="base-select__value"

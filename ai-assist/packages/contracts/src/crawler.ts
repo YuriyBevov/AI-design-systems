@@ -20,10 +20,13 @@ const publicSourceUrlSchema = z
   .superRefine((value, context) => {
     const url = new URL(value);
     if (!(["http:", "https:"] as string[]).includes(url.protocol)) {
-      context.addIssue({ code: "custom", message: "Only HTTP(S) source URLs are allowed" });
+      context.addIssue({ code: "custom", message: "Разрешены только HTTP(S)-адреса источников" });
     }
     if (url.username || url.password || url.hash) {
-      context.addIssue({ code: "custom", message: "URL credentials and fragments are forbidden" });
+      context.addIssue({
+        code: "custom",
+        message: "В URL-адресе запрещены данные доступа и фрагменты",
+      });
     }
   });
 
@@ -53,14 +56,14 @@ export const urlKnowledgeSourceSettingsSchema = z
     if (value.includePathPrefixes.length + value.includeExactPaths.length === 0) {
       context.addIssue({
         code: "custom",
-        message: "At least one exact path or path prefix must be included",
+        message: "Добавьте хотя бы один точный путь или префикс пути",
       });
     }
     if (value.crawlMode === "limited" && value.maxPages > 100) {
       context.addIssue({
         code: "custom",
         path: ["maxPages"],
-        message: "Limited crawl cannot process more than 100 pages",
+        message: "Ограниченный парсинг не может обработать более 100 страниц",
       });
     }
   });

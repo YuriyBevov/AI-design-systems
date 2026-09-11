@@ -114,7 +114,7 @@ const create = async (action: "apply" | "draft"): Promise<void> => {
     </div>
 
     <section v-else class="panel" aria-label="Создание роли агента">
-      <form class="form-stack" @submit.prevent="create('apply')">
+      <form class="form-stack" novalidate @submit.prevent="create('apply')">
         <div class="form-grid">
           <label class="form-field">
             <span class="form-field__label">Название</span>

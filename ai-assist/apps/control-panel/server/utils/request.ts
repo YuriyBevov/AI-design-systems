@@ -18,10 +18,10 @@ export const assertSameOrigin = (event: H3Event): void => {
   const fetchSite = getRequestHeader(event, "sec-fetch-site");
 
   if (!origin || origin !== requestOrigin) {
-    throw createError({ statusCode: 403, statusMessage: "Origin validation failed" });
+    throw createError({ statusCode: 403, statusMessage: "Не удалось проверить источник запроса" });
   }
 
   if (fetchSite && fetchSite !== "same-origin" && fetchSite !== "none") {
-    throw createError({ statusCode: 403, statusMessage: "Cross-site request blocked" });
+    throw createError({ statusCode: 403, statusMessage: "Межсайтовый запрос заблокирован" });
   }
 };

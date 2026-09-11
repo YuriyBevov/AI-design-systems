@@ -3256,6 +3256,7 @@ var _o = "1.0.0", vo = class extends Error {
 			], 10, Ro)]))), 128))], 512),
 			Z("form", {
 				class: "chat-composer",
+				novalidate: "",
 				onSubmit: co(le, ["prevent"])
 			}, [
 				Z("label", {

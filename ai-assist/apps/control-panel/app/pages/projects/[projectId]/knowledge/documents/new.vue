@@ -110,7 +110,7 @@ const create = async (): Promise<void> => {
         </p>
       </header>
 
-      <form class="form-stack" @submit.prevent="create">
+      <form class="form-stack" novalidate @submit.prevent="create">
         <div class="form-grid">
           <div class="form-field">
             <span class="form-field__label">Тип</span>

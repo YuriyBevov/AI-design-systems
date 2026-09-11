@@ -2,17 +2,17 @@ import { getInfrastructure } from "../../../../utils/infrastructure";
 
 export default defineEventHandler(async (event) => {
   if (process.env.NODE_ENV === "production") {
-    throw createError({ statusCode: 404, statusMessage: "Not found" });
+    throw createError({ statusCode: 404, statusMessage: "Не найдено" });
   }
 
   const id = getRouterParam(event, "id");
   if (!id) {
-    throw createError({ statusCode: 400, statusMessage: "Job id is required" });
+    throw createError({ statusCode: 400, statusMessage: "Не указан идентификатор задания" });
   }
 
   const job = await getInfrastructure().systemQueue.getJob(id);
   if (!job) {
-    throw createError({ statusCode: 404, statusMessage: "Job not found" });
+    throw createError({ statusCode: 404, statusMessage: "Задание не найдено" });
   }
 
   return {

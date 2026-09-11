@@ -6,7 +6,10 @@ export default defineEventHandler(async (event) => {
   const projectId = getRouterParam(event, "projectId");
   const sourceId = getRouterParam(event, "sourceId");
   if (!projectId || !sourceId) {
-    throw createError({ statusCode: 400, statusMessage: "Project and source ids are required" });
+    throw createError({
+      statusCode: 400,
+      statusMessage: "Не указаны идентификаторы проекта и источника",
+    });
   }
   const response = requestKnowledgeCrawlResponseSchema.parse(
     await requestKnowledgeCrawl(event, projectId, sourceId),

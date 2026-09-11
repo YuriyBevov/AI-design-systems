@@ -23,7 +23,7 @@ describe("recent authentication", () => {
   it("rejects a confirmation older than the configured window", () => {
     const staleConfirmation = new Date(Date.now() - 31 * 60 * 1000);
     expect(() => assertRecentAdminAuthentication(createSession(staleConfirmation))).toThrow(
-      "Recent authentication required",
+      "Требуется повторное подтверждение пароля",
     );
   });
 });

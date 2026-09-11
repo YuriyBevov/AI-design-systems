@@ -5,11 +5,11 @@ import { changeProjectStatus } from "../../../../services/projects";
 export default defineEventHandler(async (event) => {
   const projectId = getRouterParam(event, "projectId");
   if (!projectId) {
-    throw createError({ statusCode: 400, statusMessage: "Project id is required" });
+    throw createError({ statusCode: 400, statusMessage: "Не указан идентификатор проекта" });
   }
   const parsed = updateProjectStatusRequestSchema.safeParse(await readBody(event));
   if (!parsed.success) {
-    throw createError({ statusCode: 400, statusMessage: "Invalid project status update" });
+    throw createError({ statusCode: 400, statusMessage: "Некорректный статус проекта" });
   }
   return projectResponseSchema.parse(await changeProjectStatus(event, projectId, parsed.data));
 });

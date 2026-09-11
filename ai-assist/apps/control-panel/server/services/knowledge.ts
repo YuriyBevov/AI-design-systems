@@ -106,7 +106,7 @@ const buildVersionValues = (
   if (!chunks.length || chunks.length > 40) {
     throw createError({
       statusCode: 422,
-      statusMessage: "Knowledge document cannot be chunked safely",
+      statusMessage: "Документ базы знаний нельзя безопасно разделить на фрагменты",
       data: { code: "KNOWLEDGE_CHUNK_LIMIT" },
     });
   }
@@ -208,7 +208,7 @@ const loadKnowledgeDocumentDetail = async (
     findActiveKnowledgePublicationRecord(projectId, documentId),
   ]);
   if (!document) {
-    throw createError({ statusCode: 404, statusMessage: "Knowledge document not found" });
+    throw createError({ statusCode: 404, statusMessage: "Документ базы знаний не найден" });
   }
   return {
     document: toSummaryResponse(document, versions),
@@ -224,18 +224,18 @@ const throwKnowledgeMutationConflict = async (
 ): Promise<never> => {
   const current = await findKnowledgeDocumentRecord(projectId, documentId);
   if (!current) {
-    throw createError({ statusCode: 404, statusMessage: "Knowledge document not found" });
+    throw createError({ statusCode: 404, statusMessage: "Документ базы знаний не найден" });
   }
   if (current.status === "archived") {
     throw createError({
       statusCode: 409,
-      statusMessage: "Archived knowledge document cannot be changed",
+      statusMessage: "Архивный документ базы знаний нельзя изменить",
       data: { code: "KNOWLEDGE_DOCUMENT_ARCHIVED", currentVersion: current.version },
     });
   }
   throw createError({
     statusCode: 409,
-    statusMessage: "Knowledge document was changed by another request",
+    statusMessage: "Документ базы знаний был изменён другим запросом",
     data: {
       code: "KNOWLEDGE_VERSION_CONFLICT",
       expectedVersion,
@@ -316,12 +316,12 @@ export const createKnowledgeDocumentVersion = async (
   assertCsrf(event, session);
   const document = await findKnowledgeDocumentRecord(project.id, documentId);
   if (!document) {
-    throw createError({ statusCode: 404, statusMessage: "Knowledge document not found" });
+    throw createError({ statusCode: 404, statusMessage: "Документ базы знаний не найден" });
   }
   if (document.type !== input.type) {
     throw createError({
       statusCode: 422,
-      statusMessage: "Knowledge document type cannot be changed",
+      statusMessage: "Тип документа базы знаний нельзя изменить",
       data: { code: "KNOWLEDGE_TYPE_IMMUTABLE" },
     });
   }
@@ -330,7 +330,7 @@ export const createKnowledgeDocumentVersion = async (
   if (versions[0]?.contentChecksum === versionValues.contentChecksum) {
     throw createError({
       statusCode: 409,
-      statusMessage: "Knowledge document version is unchanged",
+      statusMessage: "Версия документа базы знаний не изменилась",
       data: { code: "KNOWLEDGE_REVISION_UNCHANGED" },
     });
   }
@@ -374,15 +374,18 @@ export const publishKnowledgeDocument = async (
     findKnowledgeDocumentVersionRecord(project.id, documentId, input.versionId),
   ]);
   if (!document) {
-    throw createError({ statusCode: 404, statusMessage: "Knowledge document not found" });
+    throw createError({ statusCode: 404, statusMessage: "Документ базы знаний не найден" });
   }
   if (!target) {
-    throw createError({ statusCode: 404, statusMessage: "Knowledge document version not found" });
+    throw createError({
+      statusCode: 404,
+      statusMessage: "Версия документа базы знаний не найдена",
+    });
   }
   if (document.status === "published" && document.activeVersionId === target.id) {
     throw createError({
       statusCode: 409,
-      statusMessage: "Knowledge document version is already active",
+      statusMessage: "Версия документа базы знаний уже активна",
       data: { code: "KNOWLEDGE_VERSION_ALREADY_ACTIVE", currentVersion: document.version },
     });
   }
@@ -394,10 +397,13 @@ export const publishKnowledgeDocument = async (
     publishedBy: session.userId,
   });
   if (result === "not_found") {
-    throw createError({ statusCode: 404, statusMessage: "Knowledge document not found" });
+    throw createError({ statusCode: 404, statusMessage: "Документ базы знаний не найден" });
   }
   if (result === "version_not_found") {
-    throw createError({ statusCode: 404, statusMessage: "Knowledge document version not found" });
+    throw createError({
+      statusCode: 404,
+      statusMessage: "Версия документа базы знаний не найдена",
+    });
   }
   if (result === "version_conflict") {
     return throwKnowledgeMutationConflict(project.id, documentId, input.expectedVersion);
@@ -424,12 +430,12 @@ export const unpublishKnowledgeDocument = async (
   assertCsrf(event, session);
   const current = await findKnowledgeDocumentRecord(project.id, documentId);
   if (!current) {
-    throw createError({ statusCode: 404, statusMessage: "Knowledge document not found" });
+    throw createError({ statusCode: 404, statusMessage: "Документ базы знаний не найден" });
   }
   if (current.status !== "published" || !current.activeVersionId) {
     throw createError({
       statusCode: 409,
-      statusMessage: "Knowledge document is not published",
+      statusMessage: "Документ базы знаний не опубликован",
       data: { code: "KNOWLEDGE_DOCUMENT_NOT_PUBLISHED", currentVersion: current.version },
     });
   }
@@ -462,12 +468,12 @@ export const archiveKnowledgeDocument = async (
   assertCsrf(event, session);
   const current = await findKnowledgeDocumentRecord(project.id, documentId);
   if (!current) {
-    throw createError({ statusCode: 404, statusMessage: "Knowledge document not found" });
+    throw createError({ statusCode: 404, statusMessage: "Документ базы знаний не найден" });
   }
   if (current.status === "published") {
     throw createError({
       statusCode: 409,
-      statusMessage: "Published knowledge document must be unpublished before archive",
+      statusMessage: "Перед архивацией снимите документ базы знаний с публикации",
       data: { code: "KNOWLEDGE_DOCUMENT_ACTIVE" },
     });
   }
@@ -505,19 +511,19 @@ export const deleteKnowledgeDocument = async (
     expectedVersion,
   });
   if (result === "not_found") {
-    throw createError({ statusCode: 404, statusMessage: "Knowledge document not found" });
+    throw createError({ statusCode: 404, statusMessage: "Документ базы знаний не найден" });
   }
   if (result === "used") {
     throw createError({
       statusCode: 409,
-      statusMessage: "Published knowledge document must be archived instead of deleted",
+      statusMessage: "Опубликованный документ базы знаний нужно архивировать, а не удалять",
       data: { code: "KNOWLEDGE_DELETE_REQUIRES_ARCHIVE" },
     });
   }
   if (result === "not_draft") {
     throw createError({
       statusCode: 409,
-      statusMessage: "Only an unused draft knowledge document can be deleted",
+      statusMessage: "Удалить можно только неиспользуемый черновик документа базы знаний",
       data: { code: "KNOWLEDGE_DELETE_DRAFT_ONLY" },
     });
   }
@@ -576,21 +582,21 @@ export const requestKnowledgeReindex = async (
   if (!settings?.embeddingModelId) {
     throw createError({
       statusCode: 422,
-      statusMessage: "Embedding model must be selected before indexing",
+      statusMessage: "Перед индексацией выберите модель векторизации",
       data: { code: "KNOWLEDGE_EMBEDDING_MODEL_REQUIRED" },
     });
   }
   if (!credential || credential.status !== "verified") {
     throw createError({
       statusCode: 422,
-      statusMessage: "Verified provider credential is required before indexing",
+      statusMessage: "Перед индексацией подключите и проверьте ключ провайдера",
       data: { code: "PROVIDER_CREDENTIAL_NOT_READY" },
     });
   }
   if (!fingerprintRows.length) {
     throw createError({
       statusCode: 422,
-      statusMessage: "Publish at least one knowledge document before indexing",
+      statusMessage: "Перед индексацией опубликуйте хотя бы один документ базы знаний",
       data: { code: "KNOWLEDGE_PUBLISHED_CONTENT_REQUIRED" },
     });
   }
@@ -643,7 +649,7 @@ export const requestKnowledgeReindex = async (
     await failQueuedKnowledgeIndexVersion(created.id, "KNOWLEDGE_QUEUE_UNAVAILABLE");
     throw createError({
       statusCode: 503,
-      statusMessage: "Knowledge indexing queue is unavailable",
+      statusMessage: "Очередь индексации базы знаний недоступна",
       data: { code: "KNOWLEDGE_QUEUE_UNAVAILABLE", retryable: true },
     });
   }

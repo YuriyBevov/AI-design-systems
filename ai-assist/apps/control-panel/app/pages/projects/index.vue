@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { AdminSessionResponse, ProjectResponse, UserResponse } from "@ai-assist/contracts";
 
+import { validateProjectRequiredFields } from "~/utils/project-form-validation";
 import { russianTimezoneOptions } from "~/utils/project-options";
 
 const requestFetch = useRequestFetch();
@@ -13,6 +14,7 @@ const form = reactive({
   templateProjectId: null as string | null,
   userIds: [] as string[],
 });
+const formErrors = reactive({ name: "", timezone: "" });
 const isCreating = ref(false);
 const pendingProjectId = ref<string | null>(null);
 const deleteConfirmationId = ref<string | null>(null);
@@ -40,6 +42,19 @@ const templateOptions = computed(() => [
     .map((project) => ({ value: project.id, label: project.name })),
 ]);
 
+watch(
+  () => form.name,
+  () => {
+    formErrors.name = "";
+  },
+);
+watch(
+  () => form.timezone,
+  () => {
+    formErrors.timezone = "";
+  },
+);
+
 const statusLabel = (status: ProjectResponse["status"]): string =>
   ({ active: "Активен", suspended: "Приостановлен", archived: "Удалён" })[status];
 
@@ -63,6 +78,13 @@ const requestErrorMessage = (requestError: unknown, fallback: string): string =>
 
 const createProject = async (): Promise<void> => {
   if (isCreating.value) return;
+  Object.assign(formErrors, validateProjectRequiredFields(form));
+  const firstError = formErrors.name || formErrors.timezone;
+  if (firstError) {
+    message.value = { type: "error", text: firstError };
+    return;
+  }
+
   isCreating.value = true;
   message.value = null;
   const body = {
@@ -151,22 +173,17 @@ const deleteProject = async (project: ProjectResponse): Promise<void> => {
       <div>
         <h1 class="page-title page-title--compact">Управление проектами</h1>
         <p class="page-description">
-          Каждый проект хранит собственные настройки, историю, знания и runtime ассистента.
+          Каждый проект хранит собственные настройки, историю, знания и данные ассистента.
         </p>
       </div>
     </header>
 
     <section v-if="isAdmin" class="panel" aria-labelledby="create-project-title">
       <header class="section-header">
-        <div>
-          <h2 id="create-project-title" class="section-title">Создать рабочее пространство</h2>
-        </div>
-        <p class="section-description">
-          Новый проект всегда создаётся без доменов, provider credential и выбранных моделей.
-        </p>
+        <h2 id="create-project-title" class="section-title">Добавить проект</h2>
       </header>
 
-      <form class="form-stack" @submit.prevent="createProject">
+      <form class="form-stack" novalidate @submit.prevent="createProject">
         <div class="form-grid form-grid--three-column-compact">
           <label class="form-field">
             <span class="form-field__label">Название</span>
@@ -176,7 +193,12 @@ const deleteProject = async (project: ProjectResponse): Promise<void> => {
               type="text"
               maxlength="160"
               required
+              :aria-invalid="Boolean(formErrors.name) || undefined"
+              :aria-describedby="formErrors.name ? 'project-name-error' : undefined"
             />
+            <span v-if="formErrors.name" id="project-name-error" class="form-field__error">
+              {{ formErrors.name }}
+            </span>
           </label>
           <div class="form-field">
             <span class="form-field__label">Часовой пояс</span>
@@ -185,7 +207,12 @@ const deleteProject = async (project: ProjectResponse): Promise<void> => {
               :options="russianTimezoneOptions"
               label="Часовой пояс проекта"
               width="content"
+              :invalid="Boolean(formErrors.timezone)"
+              :described-by="formErrors.timezone ? 'project-timezone-error' : undefined"
             />
+            <span v-if="formErrors.timezone" id="project-timezone-error" class="form-field__error">
+              {{ formErrors.timezone }}
+            </span>
           </div>
           <div class="form-field">
             <span class="form-field__label">Создать на основе проекта</span>
@@ -215,19 +242,12 @@ const deleteProject = async (project: ProjectResponse): Promise<void> => {
         </fieldset>
 
         <div class="copy-policy">
-          <p>
-            <strong>При копировании:</strong> переносятся draft-настройки ассистента, срок хранения
-            диалогов и последние версии prompts.
-          </p>
-          <p>
-            Не переносятся домены, контакты, ключи, provider/model settings, БЗ, публикации, диалоги
-            и audit. Один ключ можно затем вручную указать в нескольких проектах.
-          </p>
+          <p>При копировании не переносятся домены, контакты, настройки провайдера и модели.</p>
         </div>
 
         <div class="form-actions">
           <button class="button button--primary" type="submit" :disabled="isCreating">
-            {{ isCreating ? "Создаём…" : "Создать проект" }}
+            {{ isCreating ? "Создаём…" : "Создать" }}
           </button>
         </div>
       </form>
@@ -238,7 +258,9 @@ const deleteProject = async (project: ProjectResponse): Promise<void> => {
         <div>
           <h2 id="project-list-title" class="section-title">Доступные проекты</h2>
         </div>
-        <p class="section-description">Приостановленный проект не обслуживает виджет и jobs.</p>
+        <p class="section-description">
+          Приостановленный проект не обслуживает виджет и фоновые задачи.
+        </p>
       </header>
 
       <div v-if="error" class="empty-state" role="alert">Не удалось загрузить проекты.</div>
@@ -306,7 +328,7 @@ const deleteProject = async (project: ProjectResponse): Promise<void> => {
           <ConfirmModal
             v-if="deleteConfirmationId === project.id"
             :title="`Удалить проект «${project.name}»?`"
-            description="Проект исчезнет из панели и runtime, но данные сохранятся для audit и retention."
+            description="Проект исчезнет из панели и перестанет работать, но данные сохранятся в журнале аудита на установленный срок."
             confirm-label="Удалить проект"
             pending-label="Удаляем…"
             :pending="pendingProjectId === project.id"

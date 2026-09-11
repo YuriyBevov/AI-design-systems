@@ -350,7 +350,7 @@ onBeforeUnmount(() => {
         </li>
       </ol>
 
-      <form class="chat-composer" @submit.prevent="submit">
+      <form class="chat-composer" novalidate @submit.prevent="submit">
         <label class="visually-hidden" :for="messageInputId">Сообщение</label>
         <input
           :id="messageInputId"

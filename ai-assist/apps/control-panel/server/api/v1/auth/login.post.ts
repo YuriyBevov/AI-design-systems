@@ -5,7 +5,7 @@ import { loginAdmin } from "../../../services/auth";
 export default defineEventHandler(async (event) => {
   const parsed = loginRequestSchema.safeParse(await readBody(event));
   if (!parsed.success) {
-    throw createError({ statusCode: 400, statusMessage: "Invalid login request" });
+    throw createError({ statusCode: 400, statusMessage: "Некорректные данные для входа" });
   }
 
   const credentials = parsed.data;

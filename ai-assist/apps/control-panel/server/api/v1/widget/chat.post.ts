@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
   prepareWidgetPreflight(event);
   const parsed = widgetChatRequestSchema.safeParse(await readBody(event));
   if (!parsed.success) {
-    throw createError({ statusCode: 400, statusMessage: "Invalid widget chat request" });
+    throw createError({ statusCode: 400, statusMessage: "Некорректный запрос к чату" });
   }
   await streamWidgetChat(event, parsed.data);
 });

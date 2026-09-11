@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type {
   AssistantSettingsResponse,
+  KnowledgeIndexStateResponse,
   ModelCatalogResponse,
   ProjectModelSettingsResponse,
   ProviderModelResponse,
@@ -14,6 +15,7 @@ type SensitiveCredentialAction = "save" | "delete";
 const route = useRoute();
 const projectId = computed(() => String(route.params.projectId));
 const requestFetch = useRequestFetch();
+const { setKnowledgeIndexState, markKnowledgeReindexRequired } = useKnowledgeIndexState();
 const apiKey = ref("");
 const isSavingKey = ref(false);
 const isTestingKey = ref(false);
@@ -37,15 +39,17 @@ const modelForm = reactive({
 const { data, error, refresh } = await useAsyncData(
   () => `project-provider-${projectId.value}`,
   async () => {
-    const [assistantSettings, providerState, modelCatalog, modelSettings] = await Promise.all([
-      requestFetch<AssistantSettingsResponse>(`/api/v1/projects/${projectId.value}/assistant`),
-      requestFetch<ProviderStateResponse>(`/api/v1/projects/${projectId.value}/provider`),
-      requestFetch<ModelCatalogResponse>("/api/v1/models"),
-      requestFetch<ProjectModelSettingsResponse>(
-        `/api/v1/projects/${projectId.value}/model-settings`,
-      ),
-    ]);
-    return { assistantSettings, providerState, modelCatalog, modelSettings };
+    const [assistantSettings, providerState, modelCatalog, modelSettings, indexState] =
+      await Promise.all([
+        requestFetch<AssistantSettingsResponse>(`/api/v1/projects/${projectId.value}/assistant`),
+        requestFetch<ProviderStateResponse>(`/api/v1/projects/${projectId.value}/provider`),
+        requestFetch<ModelCatalogResponse>("/api/v1/models"),
+        requestFetch<ProjectModelSettingsResponse>(
+          `/api/v1/projects/${projectId.value}/model-settings`,
+        ),
+        requestFetch<KnowledgeIndexStateResponse>(`/api/v1/projects/${projectId.value}/knowledge`),
+      ]);
+    return { assistantSettings, providerState, modelCatalog, modelSettings, indexState };
   },
 );
 
@@ -58,6 +62,14 @@ watch(
     modelForm.rerankModelId = settings.rerankModelId;
     modelForm.maxOutputTokens = settings.maxOutputTokens;
     modelForm.temperature = settings.temperature;
+  },
+  { immediate: true },
+);
+
+watch(
+  () => data.value?.indexState,
+  (indexState) => {
+    if (indexState) setKnowledgeIndexState(projectId.value, indexState);
   },
   { immediate: true },
 );
@@ -78,6 +90,48 @@ const chatModels = computed(() =>
       model.outputModalities.includes("text"),
   ),
 );
+const selectedChatModel = computed(() =>
+  chatModels.value.find((model) => model.id === modelForm.chatModelId),
+);
+const applicationMaxOutputTokens = 64_000;
+const modelMaxOutputTokens = computed(() => selectedChatModel.value?.maxOutput ?? null);
+const maxOutputTokensLimit = computed(() =>
+  Math.min(modelMaxOutputTokens.value ?? applicationMaxOutputTokens, applicationMaxOutputTokens),
+);
+const formatInteger = (value: number): string =>
+  new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 0 }).format(value);
+const maxOutputTokenNotes = computed(() => [
+  "Задаёт верхний предел длины одного ответа. Модель может завершить ответ раньше.",
+  "Чем выше значение, тем длиннее может быть ответ и тем больше потенциальный расход бюджета.",
+  modelMaxOutputTokens.value
+    ? `Максимум в панели — ${formatInteger(maxOutputTokensLimit.value)} токенов. Технический максимум выбранной модели — ${formatInteger(modelMaxOutputTokens.value)}.`
+    : `Максимум в панели — ${formatInteger(maxOutputTokensLimit.value)} токенов. Провайдер не указал технический максимум выбранной модели.`,
+]);
+const clampNumberInput = (
+  event: Event,
+  minimum: number,
+  maximum: number,
+  update: (value: number) => void,
+): void => {
+  const input = event.target as HTMLInputElement;
+  if (!input.value) return;
+  const value = input.valueAsNumber;
+  if (!Number.isFinite(value)) return;
+  const clampedValue = Math.min(maximum, Math.max(minimum, value));
+  if (clampedValue === value) return;
+  input.value = String(clampedValue);
+  update(clampedValue);
+};
+const clampMaxOutputTokens = (event: Event): void => {
+  clampNumberInput(event, 1, maxOutputTokensLimit.value, (value) => {
+    modelForm.maxOutputTokens = value;
+  });
+};
+const clampTemperature = (event: Event): void => {
+  clampNumberInput(event, 0, 2, (value) => {
+    modelForm.temperature = value;
+  });
+};
 const embeddingModels = computed(() =>
   availableModels.value.filter(
     (model) =>
@@ -95,22 +149,22 @@ const rerankModels = computed(() =>
 
 const providerErrorMessages: Record<string, string> = {
   PROVIDER_CREDENTIAL_FORMAT_INVALID:
-    "Вставьте только полный ключ AITUNNEL без кавычек, пояснений и лишних символов.",
+    "Вставьте только полный ключ провайдера без кавычек, пояснений и лишних символов.",
   REAUTHENTICATION_FAILED: "Пароль неверный. Проверьте его и повторите попытку.",
   CREDENTIAL_ENCRYPTION_KEY_REQUIRED:
     "На сервере не настроен безопасный master key для шифрования provider credential.",
   CREDENTIAL_ENCRYPTION_KEY_INVALID:
-    "Master key сервера имеет неверный формат. Требуется base64 от 32 случайных байт; это не ключ AITUNNEL.",
+    "Master key сервера имеет неверный формат. Требуется base64 от 32 случайных байт; это не ключ провайдера.",
   CREDENTIAL_KEY_VERSION_UNAVAILABLE:
     "На сервере отсутствует master key нужной версии. Проверьте конфигурацию ротации ключей.",
   CREDENTIAL_DECRYPTION_FAILED:
-    "Сохранённый ключ не удалось расшифровать текущим master key. Верните прежний master key или сохраните ключ AITUNNEL заново.",
-  PROVIDER_CREDENTIAL_INVALID: "AITUNNEL отклонил ключ. Проверьте его статус и ограничения.",
-  PROVIDER_BUDGET_EXCEEDED: "Бюджет ключа AITUNNEL исчерпан.",
-  PROVIDER_RATE_LIMITED: "AITUNNEL временно ограничил частоту запросов. Повторите позже.",
-  PROVIDER_TIMEOUT: "AITUNNEL не ответил за отведённое время. Повторите позже.",
-  PROVIDER_UNAVAILABLE: "AITUNNEL временно недоступен. Повторите позже.",
-  PROVIDER_BAD_RESPONSE: "AITUNNEL вернул ответ неизвестного формата.",
+    "Сохранённый ключ не удалось расшифровать текущим master key. Верните прежний master key или сохраните ключ провайдера заново.",
+  PROVIDER_CREDENTIAL_INVALID: "Провайдер отклонил ключ. Проверьте его статус и ограничения.",
+  PROVIDER_BUDGET_EXCEEDED: "Бюджет ключа провайдера исчерпан.",
+  PROVIDER_RATE_LIMITED: "Провайдер временно ограничил частоту запросов. Повторите позже.",
+  PROVIDER_TIMEOUT: "Провайдер не ответил за отведённое время. Повторите позже.",
+  PROVIDER_UNAVAILABLE: "Провайдер временно недоступен. Повторите позже.",
+  PROVIDER_BAD_RESPONSE: "Провайдер вернул ответ неизвестного формата.",
 };
 
 const getErrorCode = (error: unknown): string | undefined => {
@@ -148,6 +202,18 @@ const formatDate = (value: string | null | undefined): string =>
         new Date(value),
       )
     : "—";
+const formatExpiration = (value: string | null | undefined): string =>
+  value ? formatDate(value) : "Бессрочно";
+const formatSyncDate = (value: string | null | undefined): string =>
+  value
+    ? new Intl.DateTimeFormat("ru-RU", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      }).format(new Date(value))
+    : "—";
 
 const formatModel = (model: ProviderModelResponse): string => {
   const providerName = model.upstreamProvider ? ` · ${model.upstreamProvider}` : "";
@@ -167,6 +233,23 @@ const rerankModelOptions = computed(() => [
   { value: null, label: "Не используется" },
   ...rerankModels.value.map((model) => ({ value: model.id, label: formatModel(model) })),
 ]);
+const isModelFormDirty = computed(() => {
+  const savedSettings = data.value?.modelSettings;
+  if (!savedSettings) return false;
+
+  const temperature =
+    typeof modelForm.temperature === "number" && Number.isFinite(modelForm.temperature)
+      ? modelForm.temperature
+      : null;
+
+  return (
+    (modelForm.chatModelId || null) !== savedSettings.chatModelId ||
+    (modelForm.embeddingModelId || null) !== savedSettings.embeddingModelId ||
+    (modelForm.rerankModelId || null) !== savedSettings.rerankModelId ||
+    modelForm.maxOutputTokens !== savedSettings.maxOutputTokens ||
+    temperature !== savedSettings.temperature
+  );
+});
 
 const saveKey = async (): Promise<void> => {
   const normalizedApiKey = apiKey.value.trim();
@@ -275,7 +358,7 @@ const syncModels = async (): Promise<void> => {
     }
     message.value = {
       type: "success",
-      text: `Каталог обновлён: chat ${result.counts.chat}, embeddings ${result.counts.embeddings}, rerank ${result.counts.rerank}`,
+      text: `Каталог обновлён: диалоговые — ${result.counts.chat}, векторизация — ${result.counts.embeddings}, переранжирование — ${result.counts.rerank}`,
     };
   } catch (requestError) {
     setError(requestError, "Не удалось обновить каталог моделей");
@@ -287,6 +370,29 @@ const syncModels = async (): Promise<void> => {
 const saveModels = async (): Promise<void> => {
   isSavingModels.value = true;
   message.value = null;
+  const previousEmbeddingModelId = data.value?.modelSettings.embeddingModelId ?? null;
+  if (
+    !Number.isInteger(modelForm.maxOutputTokens) ||
+    modelForm.maxOutputTokens < 1 ||
+    modelForm.maxOutputTokens > maxOutputTokensLimit.value
+  ) {
+    message.value = {
+      type: "error",
+      text: `Укажите максимум токенов от 1 до ${formatInteger(maxOutputTokensLimit.value)}.`,
+    };
+    isSavingModels.value = false;
+    return;
+  }
+  if (
+    typeof modelForm.temperature === "number" &&
+    (!Number.isFinite(modelForm.temperature) ||
+      modelForm.temperature < 0 ||
+      modelForm.temperature > 2)
+  ) {
+    message.value = { type: "error", text: "Укажите вариативность ответа от 0 до 2." };
+    isSavingModels.value = false;
+    return;
+  }
   try {
     const modelSettings = await $fetch<ProjectModelSettingsResponse>(
       `/api/v1/projects/${projectId.value}/model-settings`,
@@ -302,8 +408,24 @@ const saveModels = async (): Promise<void> => {
         },
       },
     );
-    if (data.value) data.value.modelSettings = modelSettings;
-    message.value = { type: "success", text: "Настройки моделей сохранены" };
+    if (data.value) {
+      data.value.modelSettings = modelSettings;
+      data.value.indexState.configuredEmbeddingModelId = modelSettings.embeddingModelId;
+      setKnowledgeIndexState(projectId.value, data.value.indexState);
+    }
+    const embeddingModelChanged =
+      modelSettings.embeddingModelId !== null &&
+      modelSettings.embeddingModelId !== previousEmbeddingModelId;
+    const reindexRequiredAfterSave =
+      embeddingModelChanged &&
+      data.value?.indexState.active?.embeddingModelId !== modelSettings.embeddingModelId;
+    if (reindexRequiredAfterSave) markKnowledgeReindexRequired(projectId.value);
+    message.value = {
+      type: "success",
+      text: embeddingModelChanged
+        ? "Модель векторизации сохранена. Требуется переиндексация базы знаний."
+        : "Настройки моделей сохранены",
+    };
   } catch (requestError) {
     setError(requestError, "Не удалось сохранить модели");
   } finally {
@@ -313,113 +435,225 @@ const saveModels = async (): Promise<void> => {
 </script>
 
 <template>
-  <main class="page-frame page-frame--narrow page-frame--fill">
+  <main class="page-frame page-frame--fill">
     <div v-if="error" class="empty-state" role="alert">
       Настройки провайдера недоступны. Раздел открыт только владельцу проекта.
     </div>
 
     <template v-else-if="data">
-      <section class="panel" aria-labelledby="credential-title">
-        <header class="section-header">
-          <div>
-            <h2 id="credential-title" class="section-title">Ключ провайдера</h2>
-          </div>
-          <span class="section-description"
-            >AES-256-GCM · key version {{ credential?.keyVersion ?? "—" }}</span
-          >
-        </header>
+      <section class="split-layout" aria-label="Настройки подключения">
+        <div class="panel-stack">
+          <section class="panel" aria-label="Подключение ключа провайдера">
+            <form class="form-stack" novalidate @submit.prevent="saveKey">
+              <div class="form-row">
+                <label class="form-field">
+                  <span class="visually-hidden">Ключ провайдера</span>
+                  <input
+                    v-model="apiKey"
+                    class="form-field__control"
+                    type="password"
+                    name="provider-key"
+                    autocomplete="off"
+                    data-1p-ignore
+                    data-lpignore="true"
+                    minlength="20"
+                    maxlength="512"
+                    placeholder="Добавить новый ключ"
+                    spellcheck="false"
+                    autocapitalize="off"
+                    required
+                  />
+                </label>
+                <button
+                  class="icon-button"
+                  type="submit"
+                  :aria-label="isSavingKey ? 'Активируем ключ' : 'Активировать ключ'"
+                  :title="isSavingKey ? 'Активируем…' : 'Активировать ключ'"
+                  :disabled="isSavingKey"
+                >
+                  <UiIcon name="save" />
+                </button>
+              </div>
+            </form>
+          </section>
 
-        <div v-if="credential" class="credential-summary">
-          <div>
-            <span>Ключ</span>
-            <strong>{{ credential.maskedHint }}</strong>
-          </div>
-          <div>
-            <span>Последняя проверка</span>
-            <strong>{{ formatDate(credential.lastVerifiedAt) }}</strong>
-          </div>
-          <div>
-            <span>Имя в AITUNNEL</span>
-            <strong>{{ credential.verification?.keyName ?? "—" }}</strong>
-          </div>
-          <div>
-            <span>Остаток бюджета</span>
-            <strong>
-              {{ credential.verification?.budgetRemaining ?? "—" }}
-              {{ credential.verification?.budgetRemaining !== null ? "₽" : "" }}
-            </strong>
-          </div>
-          <div>
-            <span>Срок действия</span>
-            <strong>{{ formatDate(credential.verification?.expiresAt) }}</strong>
-          </div>
-          <div>
-            <span>Защита PII</span>
-            <strong>{{ credential.verification?.piiMode ?? "выключена/не задана" }}</strong>
-          </div>
+          <section v-if="showModelCatalog" class="panel" aria-labelledby="models-title">
+            <header class="section-header">
+              <div>
+                <h2 id="models-title" class="section-title">Каталог и выбор моделей</h2>
+              </div>
+              <button class="button" type="button" :disabled="isSyncingModels" @click="syncModels">
+                {{ isSyncingModels ? "Синхронизируем…" : "Обновить каталог" }}
+              </button>
+            </header>
+
+            <div class="catalog-meta">
+              <span>
+                Последняя синхронизация: {{ formatSyncDate(data.modelCatalog.lastSyncedAt) }}
+              </span>
+            </div>
+
+            <form class="form-stack" novalidate @submit.prevent="saveModels">
+              <div class="form-field">
+                <span class="form-field__label">
+                  Диалоговая модель (Chat model, {{ chatModels.length }})
+                </span>
+                <BaseSelect
+                  v-model="modelForm.chatModelId"
+                  :options="chatModelOptions"
+                  :label="`Диалоговая модель (Chat model, ${chatModels.length})`"
+                />
+                <BaseNote
+                  :items="[
+                    'Формирует ответы ассистента на сообщения пользователей.',
+                    'В режиме auto фактическая модель и стоимость могут меняться.',
+                  ]"
+                />
+              </div>
+
+              <div class="form-field">
+                <span class="form-field__label">
+                  Модель векторизации (Embedding model, {{ embeddingModels.length }})
+                </span>
+                <BaseSelect
+                  v-model="modelForm.embeddingModelId"
+                  :options="embeddingModelOptions"
+                  :label="`Модель векторизации (Embedding model, ${embeddingModels.length})`"
+                />
+                <BaseNote
+                  :items="[
+                    'Определяет качество поиска по смыслу: какие фрагменты базы знаний будут найдены для вопроса пользователя.',
+                    'Также влияет на скорость и стоимость индексации и поиска, но не формирует текст ответа.',
+                    'Смена модели потребует полной переиндексации базы знаний.',
+                  ]"
+                />
+              </div>
+
+              <div class="form-field">
+                <span class="form-field__label">
+                  Модель переранжирования (Rerank model, {{ rerankModels.length }}, опционально)
+                </span>
+                <BaseSelect
+                  v-model="modelForm.rerankModelId"
+                  :options="rerankModelOptions"
+                  :label="`Модель переранжирования (Rerank model, ${rerankModels.length}, опционально)`"
+                />
+                <BaseNote
+                  :items="[
+                    'Повторно сортирует найденные фрагменты по релевантности перед формированием ответа.',
+                  ]"
+                />
+              </div>
+
+              <div class="form-grid">
+                <div class="form-field">
+                  <label class="form-field__label" for="max-output-tokens">
+                    Максимум токенов ответа
+                  </label>
+                  <input
+                    id="max-output-tokens"
+                    v-model.number="modelForm.maxOutputTokens"
+                    class="form-field__control"
+                    type="number"
+                    min="1"
+                    :max="maxOutputTokensLimit"
+                    required
+                    @input="clampMaxOutputTokens"
+                  />
+                  <BaseNote :items="maxOutputTokenNotes" />
+                </div>
+                <div class="form-field">
+                  <label class="form-field__label" for="model-temperature">
+                    Вариативность ответа (Temperature, опционально)
+                  </label>
+                  <input
+                    id="model-temperature"
+                    v-model.number="modelForm.temperature"
+                    class="form-field__control"
+                    type="number"
+                    min="0"
+                    max="2"
+                    step="0.1"
+                    placeholder="По умолчанию модели"
+                    @input="clampTemperature"
+                  />
+                  <BaseNote
+                    :items="[
+                      'Управляет вариативностью ответа: 0–0,3 — стабильнее, высокие значения — разнообразнее.',
+                      'Можно выбрать значение от 0 до 2. Для стабильных ответов рекомендуем 0,2.',
+                    ]"
+                  />
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button
+                  class="button button--primary"
+                  type="submit"
+                  :disabled="isSavingModels || !isModelFormDirty"
+                >
+                  {{ isSavingModels ? "Применяем…" : "Применить" }}
+                </button>
+              </div>
+            </form>
+          </section>
         </div>
 
-        <form class="form-stack provider-key-form" @submit.prevent="saveKey">
-          <label class="form-field">
-            <span class="form-field__label">
-              {{ credential ? "Новый ключ для замены" : "Новый AITUNNEL-ключ" }}
-            </span>
-            <input
-              v-model="apiKey"
-              class="form-field__control"
-              type="password"
-              name="provider-key"
-              autocomplete="off"
-              data-1p-ignore
-              data-lpignore="true"
-              minlength="20"
-              maxlength="512"
-              placeholder="sk-aitunnel-…"
-              spellcheck="false"
-              autocapitalize="off"
-              required
-            />
-            <span class="form-field__hint">
-              Значение проверяется server-side и никогда не возвращается в браузер после запроса.
-            </span>
-          </label>
-          <div class="form-actions form-actions--split">
-            <div class="button-group">
-              <button class="button button--primary" type="submit" :disabled="isSavingKey">
-                {{
-                  isSavingKey
-                    ? "Проверяем…"
-                    : credential
-                      ? "Проверить и заменить"
-                      : "Проверить и сохранить"
-                }}
-              </button>
+        <aside class="panel-stack" aria-label="Состояние подключения">
+          <div v-if="credential" class="credential-summary credential-summary--sidebar">
+            <div>
+              <span>Текущий ключ</span>
+              <strong>{{ credential.maskedHint }}</strong>
+            </div>
+            <div>
+              <span>Остаток бюджета</span>
+              <strong>
+                {{ credential.verification?.budgetRemaining ?? "—" }}
+                {{ credential.verification?.budgetRemaining !== null ? "₽" : "" }}
+              </strong>
+            </div>
+            <div>
+              <span>Срок действия</span>
+              <strong>{{ formatExpiration(credential.verification?.expiresAt) }}</strong>
+            </div>
+            <div>
+              <span>Последняя проверка</span>
+              <strong>{{ formatDate(credential.lastVerifiedAt) }}</strong>
+            </div>
+            <div class="credential-summary__action">
               <button
-                v-if="credential"
-                class="button"
+                class="button button--large"
                 type="button"
                 :disabled="isTestingKey"
                 @click="testKey"
               >
-                {{ isTestingKey ? "Проверяем…" : "Проверить сохранённый" }}
+                {{ isTestingKey ? "Проверяем…" : "Проверить ключ" }}
+              </button>
+              <button
+                class="icon-button icon-button--large icon-button--danger"
+                type="button"
+                aria-label="Удалить ключ"
+                title="Удалить ключ"
+                @click="deleteConfirmationVisible = true"
+              >
+                <UiIcon name="trash" />
               </button>
             </div>
-            <button
-              v-if="credential"
-              class="button button--text button--danger"
-              type="button"
-              @click="deleteConfirmationVisible = true"
-            >
-              Удалить ключ
-            </button>
           </div>
-        </form>
+
+          <div class="readonly-summary readonly-summary--column panel--push-end">
+            <div>
+              <span>Публичный идентификатор</span>
+              <code>{{ data.assistantSettings.assistant.publicId }}</code>
+            </div>
+          </div>
+        </aside>
       </section>
 
       <ConfirmModal
         v-if="deleteConfirmationVisible"
-        title="Удалить ключ AITUNNEL?"
-        description="После удаления чат и индексация не смогут обращаться к AITUNNEL."
+        title="Удалить ключ провайдера?"
+        description="После удаления чат и индексация не смогут обращаться к провайдеру."
         confirm-label="Удалить ключ"
         pending-label="Удаляем…"
         :pending="isDeletingKey"
@@ -434,120 +668,6 @@ const saveModels = async (): Promise<void> => {
         @close="closeReauthentication"
         @confirm="reauthenticate"
       />
-
-      <section v-if="showModelCatalog" class="panel" aria-labelledby="models-title">
-        <header class="section-header">
-          <div>
-            <h2 id="models-title" class="section-title">Каталог и выбор моделей</h2>
-          </div>
-          <button class="button" type="button" :disabled="isSyncingModels" @click="syncModels">
-            {{ isSyncingModels ? "Синхронизируем…" : "Обновить каталог" }}
-          </button>
-        </header>
-
-        <div class="catalog-meta">
-          <span>Синхронизация: {{ formatDate(data.modelCatalog.lastSyncedAt) }}</span>
-          <span>
-            Chat {{ chatModels.length }} · embeddings {{ embeddingModels.length }} · rerank
-            {{ rerankModels.length }}
-          </span>
-        </div>
-
-        <form class="form-stack" @submit.prevent="saveModels">
-          <div class="form-field">
-            <span class="form-field__label">Chat model</span>
-            <BaseSelect
-              v-model="modelForm.chatModelId"
-              :options="chatModelOptions"
-              label="Chat model"
-            />
-            <span class="form-field__hint"
-              >`auto` допустим, но фактическая модель и стоимость могут меняться.</span
-            >
-          </div>
-
-          <div class="form-field">
-            <span class="form-field__label">Embedding model</span>
-            <BaseSelect
-              v-model="modelForm.embeddingModelId"
-              :options="embeddingModelOptions"
-              label="Embedding model"
-            />
-            <span class="form-field__hint"
-              >Модель фиксируется: смена потребует полной переиндексации знаний.</span
-            >
-          </div>
-
-          <div class="form-field">
-            <span class="form-field__label">Rerank model — опционально</span>
-            <BaseSelect
-              v-model="modelForm.rerankModelId"
-              :options="rerankModelOptions"
-              label="Rerank model"
-            />
-          </div>
-
-          <div class="form-grid">
-            <label class="form-field">
-              <span class="form-field__label">Максимум токенов ответа</span>
-              <input
-                v-model.number="modelForm.maxOutputTokens"
-                class="form-field__control"
-                type="number"
-                min="1"
-                max="64000"
-                required
-              />
-            </label>
-            <label class="form-field">
-              <span class="form-field__label">Temperature — опционально</span>
-              <input
-                v-model.number="modelForm.temperature"
-                class="form-field__control"
-                type="number"
-                min="0"
-                max="2"
-                step="0.1"
-                placeholder="Дефолт модели"
-              />
-            </label>
-          </div>
-
-          <div class="form-actions">
-            <button class="button button--primary" type="submit" :disabled="isSavingModels">
-              {{ isSavingModels ? "Сохраняем…" : "Сохранить модели" }}
-            </button>
-          </div>
-        </form>
-      </section>
-
-      <section class="panel panel--push-end" aria-labelledby="assistant-identity-title">
-        <header class="section-header">
-          <div>
-            <h2 id="assistant-identity-title" class="section-title">Публичный идентификатор</h2>
-          </div>
-        </header>
-        <div class="readonly-summary">
-          <div>
-            <span>Assistant ID</span>
-            <code>{{ data.assistantSettings.assistant.publicId }}</code>
-          </div>
-          <div>
-            <span>Черновик</span>
-            <strong>revision {{ data.assistantSettings.draft.revisionNo }}</strong>
-          </div>
-          <div>
-            <span>Production</span>
-            <strong>
-              {{
-                data.assistantSettings.activeConfig
-                  ? `revision ${data.assistantSettings.activeConfig.revisionNo}`
-                  : "не опубликован"
-              }}
-            </strong>
-          </div>
-        </div>
-      </section>
     </template>
   </main>
 </template>

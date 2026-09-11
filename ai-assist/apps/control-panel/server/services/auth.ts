@@ -149,7 +149,7 @@ export const loginAdmin = async (
   const session = await findActiveSession(hashOpaqueToken(sessionToken));
   if (!session) {
     clearSessionCookies(event);
-    throw createError({ statusCode: 500, statusMessage: "Session creation failed" });
+    throw createError({ statusCode: 500, statusMessage: "Не удалось создать сессию" });
   }
 
   const response = await toSessionResponse(session, csrfToken);
@@ -168,13 +168,13 @@ export const loginAdmin = async (
 export const requireAdminSession = async (event: H3Event): Promise<AuthSessionRecord> => {
   const token = getCookie(event, sessionCookieName);
   if (!token) {
-    throw createError({ statusCode: 401, statusMessage: "Authentication required" });
+    throw createError({ statusCode: 401, statusMessage: "Требуется авторизация" });
   }
 
   const session = await findActiveSession(hashOpaqueToken(token));
   if (!session) {
     clearSessionCookies(event);
-    throw createError({ statusCode: 401, statusMessage: "Session expired" });
+    throw createError({ statusCode: 401, statusMessage: "Срок действия сессии истёк" });
   }
 
   await touchSession(session.id);
@@ -184,7 +184,7 @@ export const requireAdminSession = async (event: H3Event): Promise<AuthSessionRe
 export const requireAccountAdmin = async (event: H3Event): Promise<AuthSessionRecord> => {
   const session = await requireAdminSession(event);
   if (session.role !== "admin") {
-    throw createError({ statusCode: 403, statusMessage: "Administrator role required" });
+    throw createError({ statusCode: 403, statusMessage: "Требуются права администратора" });
   }
   return session;
 };
@@ -197,7 +197,7 @@ export const assertRecentAdminAuthentication = (
   if (session.reauthenticatedAt.getTime() < oldestAccepted) {
     throw createError({
       statusCode: 403,
-      statusMessage: "Recent authentication required",
+      statusMessage: "Требуется повторное подтверждение пароля",
       data: { code: "RECENT_AUTHENTICATION_REQUIRED" },
     });
   }
@@ -259,7 +259,10 @@ export const assertCsrf = (event: H3Event, session: AuthSessionRecord): void => 
     cookieToken !== headerToken ||
     !opaqueTokenMatches(headerToken, session.csrfTokenHash)
   ) {
-    throw createError({ statusCode: 403, statusMessage: "CSRF validation failed" });
+    throw createError({
+      statusCode: 403,
+      statusMessage: "Не удалось проверить безопасность запроса",
+    });
   }
 };
 
@@ -293,11 +296,11 @@ export const requireProjectScope = async (
   const project = await findProjectForUser(session.userId, projectId);
 
   if (!project) {
-    throw createError({ statusCode: 404, statusMessage: "Project not found" });
+    throw createError({ statusCode: 404, statusMessage: "Проект не найден" });
   }
 
   if (!canProjectRole(project.role, requiredRole)) {
-    throw createError({ statusCode: 403, statusMessage: "Insufficient project role" });
+    throw createError({ statusCode: 403, statusMessage: "Недостаточно прав в проекте" });
   }
 
   return {

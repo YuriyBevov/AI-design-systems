@@ -51,7 +51,7 @@ export const updateUserRequestSchema = z
     projectIds: projectIdListSchema.optional(),
   })
   .strict()
-  .refine((value) => Object.keys(value).length > 0, { message: "At least one field is required" });
+  .refine((value) => Object.keys(value).length > 0, { message: "Укажите хотя бы одно поле" });
 
 export type AccountRole = z.infer<typeof accountRoleSchema>;
 export type UserStatus = z.infer<typeof userStatusSchema>;

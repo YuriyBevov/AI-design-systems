@@ -1,9 +1,74 @@
 <script setup lang="ts">
+import type { KnowledgeIndexStateResponse } from "@ai-assist/contracts";
+
 const session = useAdminSessionState();
 const { activeProject } = useActiveProject();
+const {
+  states: knowledgeIndexStates,
+  pendingReindex,
+  setKnowledgeIndexState,
+} = useKnowledgeIndexState();
+const requestFetch = useRequestFetch();
 const isLoggingOut = ref(false);
 const route = useRoute();
 const isAssistantSettingsRoute = computed(() => isAssistantSettingsPath(route.path));
+const activeProjectId = computed(() => activeProject.value?.id ?? null);
+
+const { data: fetchedKnowledgeIndexState, refresh: refreshTopbarKnowledgeIndexState } =
+  await useAsyncData(
+    () => `topbar-knowledge-index-${activeProjectId.value ?? "none"}`,
+    () =>
+      activeProjectId.value
+        ? requestFetch<KnowledgeIndexStateResponse>(
+            `/api/v1/projects/${activeProjectId.value}/knowledge`,
+          )
+        : Promise.resolve(null),
+  );
+
+watch(
+  [activeProjectId, fetchedKnowledgeIndexState],
+  ([projectId, state]) => {
+    if (projectId && state) setKnowledgeIndexState(projectId, state);
+  },
+  { immediate: true },
+);
+
+const activeKnowledgeIndexState = computed(() =>
+  activeProjectId.value ? knowledgeIndexStates.value[activeProjectId.value] : undefined,
+);
+const showKnowledgeReindexNotice = computed(() => {
+  const projectId = activeProjectId.value;
+  return Boolean(
+    projectId &&
+    (pendingReindex.value[projectId] ||
+      requiresKnowledgeModelReindex(activeKnowledgeIndexState.value)),
+  );
+});
+
+let topbarIndexPollTimer: ReturnType<typeof setTimeout> | undefined;
+const pollTopbarKnowledgeIndex = async (): Promise<void> => {
+  await refreshTopbarKnowledgeIndexState();
+  const status = fetchedKnowledgeIndexState.value?.latest?.status;
+  if (status === "queued" || status === "building") {
+    topbarIndexPollTimer = setTimeout(() => void pollTopbarKnowledgeIndex(), 1_500);
+  }
+};
+
+watch(
+  [activeProjectId, () => activeKnowledgeIndexState.value?.latest?.status],
+  ([projectId, status]) => {
+    if (!import.meta.client) return;
+    if (topbarIndexPollTimer) clearTimeout(topbarIndexPollTimer);
+    if (projectId && (status === "queued" || status === "building")) {
+      topbarIndexPollTimer = setTimeout(() => void pollTopbarKnowledgeIndex(), 1_500);
+    }
+  },
+  { immediate: true },
+);
+
+onBeforeUnmount(() => {
+  if (topbarIndexPollTimer) clearTimeout(topbarIndexPollTimer);
+});
 
 const pageTitle = computed(() => {
   if (route.path === "/") return "Обзор проекта";
@@ -139,6 +204,9 @@ const logout = async (): Promise<void> => {
     <div class="app-shell__main">
       <header class="topbar">
         <p class="topbar__title" aria-hidden="true">{{ pageTitle }}</p>
+        <BaseNotice v-if="showKnowledgeReindexNotice" class="topbar__notice" variant="warning">
+          Для выбранной модели векторизации требуется переиндексация базы знаний.
+        </BaseNotice>
       </header>
       <div class="app-shell__content">
         <div class="app-shell__workspace">

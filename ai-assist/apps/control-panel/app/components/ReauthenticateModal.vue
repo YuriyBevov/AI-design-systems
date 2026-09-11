@@ -24,7 +24,12 @@ const close = (): void => {
     description="Повторное подтверждение защищает добавление, замену и удаление ключа провайдера"
     @close="close"
   >
-    <form id="reauthentication-form" class="modal-form" @submit.prevent="emit('confirm', password)">
+    <form
+      id="reauthentication-form"
+      class="modal-form"
+      novalidate
+      @submit.prevent="emit('confirm', password)"
+    >
       <label class="form-field">
         <span class="form-field__label">Текущий пароль</span>
         <input

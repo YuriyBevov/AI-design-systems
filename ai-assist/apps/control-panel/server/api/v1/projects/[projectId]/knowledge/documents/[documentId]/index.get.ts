@@ -6,7 +6,10 @@ export default defineEventHandler(async (event) => {
   const projectId = getRouterParam(event, "projectId");
   const documentId = getRouterParam(event, "documentId");
   if (!projectId || !documentId) {
-    throw createError({ statusCode: 400, statusMessage: "Project and document ids are required" });
+    throw createError({
+      statusCode: 400,
+      statusMessage: "Не указаны идентификаторы проекта и записи",
+    });
   }
   return knowledgeDocumentDetailResponseSchema.parse(
     await getKnowledgeDocument(event, projectId, documentId),

@@ -21,7 +21,10 @@ const canonicalUrlSchema = z
     if (!value) return;
     const url = new URL(value);
     if (!(["http:", "https:"] as string[]).includes(url.protocol) || url.username || url.password) {
-      context.addIssue({ code: "custom", message: "Only public HTTP(S) source URLs are allowed" });
+      context.addIssue({
+        code: "custom",
+        message: "Разрешены только публичные HTTP(S)-адреса источников",
+      });
     }
   });
 
