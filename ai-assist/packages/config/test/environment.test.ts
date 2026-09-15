@@ -23,6 +23,7 @@ describe("service environment", () => {
     expect(environment.PROMPT_PREVIEW_RATE_LIMIT_WINDOW_SECONDS).toBe(60);
     expect(environment.WIDGET_SESSION_TTL_HOURS).toBe(72);
     expect(environment.WIDGET_CHAT_RATE_LIMIT_MAX).toBe(20);
+    expect(environment.KNOWLEDGE_CRAWL_AI_TIMEOUT_MS).toBe(60_000);
     expect(environment.PROVIDER_RESPONSE_MAX_BYTES).toBe(1_048_576);
     expect(isLocalCredentialEncryptionKey(environment.CREDENTIAL_ENCRYPTION_KEY)).toBe(false);
     expect(isValidCredentialEncryptionKey(environment.CREDENTIAL_ENCRYPTION_KEY)).toBe(true);
@@ -47,5 +48,10 @@ describe("service environment", () => {
   it("rejects unsafe widget session and chat limits", () => {
     expect(() => parseServiceEnvironment({ WIDGET_SESSION_TTL_HOURS: "0" })).toThrow();
     expect(() => parseServiceEnvironment({ WIDGET_CHAT_RATE_LIMIT_WINDOW_SECONDS: "5" })).toThrow();
+  });
+
+  it("bounds the knowledge crawl AI timeout", () => {
+    expect(() => parseServiceEnvironment({ KNOWLEDGE_CRAWL_AI_TIMEOUT_MS: "9999" })).toThrow();
+    expect(() => parseServiceEnvironment({ KNOWLEDGE_CRAWL_AI_TIMEOUT_MS: "120001" })).toThrow();
   });
 });

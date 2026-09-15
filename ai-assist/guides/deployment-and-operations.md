@@ -39,6 +39,11 @@ Secret manager предпочтительнее plain environment management UI.
 
 Tenant AITUNNEL keys хранятся только encrypted в БД, не как общий `.env`. `.env.example` не является production source.
 
+`KNOWLEDGE_CRAWL_AI_TIMEOUT_MS` ограничивает полный поток ИИ-нормализации одной страницы. Значение по
+умолчанию — 60 секунд, допустимый диапазон — от 10 до 120 секунд. Общий
+`PROVIDER_REQUEST_TIMEOUT_MS` остаётся коротким лимитом служебных provider-запросов и не должен
+использоваться для длинной нормализации контента.
+
 ## 4. Release procedure
 
 1. CI build/test/scan и immutable images/assets.

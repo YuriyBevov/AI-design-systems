@@ -78,6 +78,7 @@ export const processRawPage = async (input: {
   page: CrawlPageResult;
   apiKey: string;
   modelId: string;
+  timeoutMs: number;
   client: Pick<AitunnelClient, "streamChat">;
 }): Promise<ProcessedCrawlPage> => {
   if (!input.page.extracted) throw new KnowledgeCrawlError("CRAWL_EXTRACTED_PAGE_REQUIRED");
@@ -87,6 +88,7 @@ export const processRawPage = async (input: {
     model: input.modelId,
     temperature: 0,
     maxOutputTokens: 4_000,
+    timeoutMs: input.timeoutMs,
     messages: [
       {
         role: "system",
@@ -517,6 +519,7 @@ export const createKnowledgeCrawlProcessor =
                 page,
                 apiKey,
                 modelId: chatModelId,
+                timeoutMs: input.environment.KNOWLEDGE_CRAWL_AI_TIMEOUT_MS,
                 client,
               });
               draft = await syncPageDraft(input.database, {
