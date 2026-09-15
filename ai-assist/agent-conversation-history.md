@@ -879,3 +879,14 @@ Assistant config revisions и Origins, полноценный visual diff, draft
 - все 178 тестов workspace, общий lint, typecheck и production build панели прошли успешно;
 - readiness панели, PostgreSQL и Redis подтверждён, development-серверы панели, worker и widget
   preview оставлены запущенными.
+
+## 2026-09-15 — Доступ worker к master key credential
+
+### Исправление
+
+- ошибка `CREDENTIAL_KEY_VERSION_UNAVAILABLE` воспроизведена при запуске обхода: credential в БД и
+  корневой `.env` использовали версию 2, но дочерний процесс worker в watch-режиме запускался только
+  со вторым устаревшим путём `apps/control-panel/.env` и получал дефолтную версию 1;
+- из `dev` и `start` worker удалён несуществующий второй `--env-file-if-exists`; единственным
+  источником server secrets оставлен общий корневой `.env`, как предусмотрено руководством запуска;
+- сохранённые provider credentials и сами master keys не изменялись.
