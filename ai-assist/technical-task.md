@@ -139,8 +139,13 @@
 - Discovery объединяет sitemap и все найденные навигационные меню главной страницы во вложенное дерево
   до заданной глубины; после выбора узлов внутренние ссылки расширяют разрешённую область crawl.
 - HTML-crawler извлекает сырой видимый текст без schema.org/JSON-LD/microdata classification и без
-  удаления boilerplate. Отдельный AI-normalizer удаляет мусор, выбирает `info|product|service` и
-  формирует Markdown; его JSON-ответ проходит runtime validation и ручное подтверждение.
+  удаления видимого boilerplate; невидимый технический код в `script/style/noscript/template/svg`
+  исключается до передачи модели. Отдельный AI-normalizer удаляет мусор, сохраняет все уникальные
+  относящиеся к странице сведения без резюмирования, выбирает `info|product|service` и формирует
+  Markdown; его JSON-ответ проходит runtime validation и ручное подтверждение.
+- Операторский prompt AI-normalizer доступен до запуска. После технического обхода его можно
+  изменить и создать новый AI-only run по сохранённому сырому тексту без повторного fetch сайта;
+  неизменяемая safety policy не редактируется.
 - Основной HTML parsing выполняется DOM parser-ом. Headless browser применяется только для отмеченных JS-dependent источников и с теми же сетевыми ограничениями.
 - URL нормализуются; tracking parameters и fragments не создают отдельные документы.
 - Redirect проверяется на каждом переходе; переход на private/local/link-local/multicast/metadata address запрещен.

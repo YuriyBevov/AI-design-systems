@@ -116,13 +116,20 @@ Post-pilot сущность для источников, которым дейс
 
 ### `ingestion_jobs`
 
-Реализованная таблица `knowledge_crawl_runs`: `id`, `project_id`, `source_id`, status, requested user/request id, profile version, progress/diff/review counters, safe error code и timestamps. Один source имеет не более одного `queued|running` run.
+Реализованная таблица `knowledge_crawl_runs`: `id`, `project_id`, `source_id`, status, requested
+user/request id, profile version, неизменяемый снимок операторского normalization prompt,
+progress/diff/review counters, safe error code и timestamps. Один source имеет не более одного
+`queued|running` run.
 
 Статусы: `queued`, `running`, `succeeded`, `partial`, `failed`, `cancelled`.
 
 ### `ingestion_page_results`
 
-Реализованная таблица `knowledge_crawl_pages`: tenant/run, normalized URL/depth, HTTP metadata, status, document/version ids, `new|changed|unchanged`, type/title/checksum/confidence/warnings, safe retryable error code, review status и fetched time. Raw HTML в ней не хранится и через admin API не отдаётся.
+Реализованная таблица `knowledge_crawl_pages`: tenant/run, normalized URL/depth, HTTP metadata,
+status, document/version ids, `new|changed|unchanged`, type/title/checksum/confidence/warnings,
+safe retryable error code, review status, fetched time, извлечённый сырой заголовок и видимый текст.
+Raw HTML не хранится; сырой текст нужен только для AI-only reprocessing и через admin API не
+отдаётся. API сообщает лишь булеву доступность такого снимка.
 
 Для feed/manual/product sources эквивалентный result хранит external id/cursor, profile version и безопасные error metadata.
 

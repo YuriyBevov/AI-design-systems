@@ -37,6 +37,19 @@ const pathPrefixSchema = z
   .max(300)
   .refine((value) => value.startsWith("/"), "Path prefix must start with /");
 
+export const defaultKnowledgeNormalizationPrompt = [
+  "Определи основной предмет текущей страницы по URL, заголовку и содержимому.",
+  "Оставь только сведения, которые относятся к основному предмету текущей страницы.",
+  "Удали меню, хлебные крошки, списки навигационных ссылок, cookie-баннеры, формы, повторяющиеся CTA, футер, технический текст и блоки о других товарах или услугах.",
+  "Сохрани все уникальные и подтвержденные факты об основном предмете страницы без исключений.",
+  "Не резюмируй, не обобщай и не сокращай полезные сведения: перенеси полное описание, назначение, области применения, материалы, конструкцию, свойства, преимущества, ограничения, стандарты, варианты, характеристики, артикулы, цены, наличие и условия заказа, если они присутствуют.",
+  "Удаляй только точные повторы и сведения, не относящиеся к контексту текущей страницы.",
+  "Определи ровно один тип: product — конкретный товар; service — конкретная услуга; info — сведения о компании, доставке, оплате, контактах, категориях и другие страницы, не являющиеся одним конкретным товаром или одной конкретной услугой.",
+  "Оформи все сохранённые сведения в подробное структурированное Markdown-описание.",
+].join("\n");
+
+export const knowledgeNormalizationPromptSchema = z.string().trim().min(100).max(10_000);
+
 export const urlKnowledgeSourceSettingsSchema = z
   .object({
     startUrl: publicSourceUrlSchema,
@@ -50,6 +63,9 @@ export const urlKnowledgeSourceSettingsSchema = z
     maxPages: z.number().int().min(1).max(5_000).default(25),
     maxDepth: z.number().int().min(1).max(8).default(5),
     requestDelayMs: z.number().int().min(250).max(5_000).default(500),
+    normalizationPrompt: knowledgeNormalizationPromptSchema.default(
+      defaultKnowledgeNormalizationPrompt,
+    ),
   })
   .strict()
   .superRefine((value, context) => {
@@ -133,6 +149,7 @@ export const crawlRunResponseSchema = z.object({
   unchangedCount: z.number().int().nonnegative(),
   approvedCount: z.number().int().nonnegative(),
   profileVersion: z.string().min(1).max(100),
+  normalizationPrompt: knowledgeNormalizationPromptSchema,
   errorCode: z.string().min(1).max(100).nullable(),
   requestedByEmail: z.string().email().nullable(),
   requestId: z.string().min(1).max(128),
@@ -175,6 +192,7 @@ export const crawlPageResponseSchema = z.object({
   documentType: z.enum(["page", "product", "service"]).nullable(),
   title: z.string().min(1).max(500).nullable(),
   contentChecksum: z.string().length(64).nullable(),
+  hasRawContent: z.boolean(),
   confidence: z.number().min(0).max(1).nullable(),
   warnings: z.array(z.string().min(1).max(100)),
   errorCode: z.string().min(1).max(100).nullable(),
@@ -206,6 +224,13 @@ export const requestKnowledgeCrawlResponseSchema = z.object({
   jobId: z.string().min(1).max(255),
   run: crawlRunResponseSchema,
 });
+
+export const reprocessKnowledgeCrawlRequestSchema = z
+  .object({
+    expectedSourceVersion: z.number().int().positive(),
+    normalizationPrompt: knowledgeNormalizationPromptSchema,
+  })
+  .strict();
 
 export const publishCrawlRunRequestSchema = z.discriminatedUnion("selection", [
   z
@@ -239,6 +264,7 @@ export const knowledgeCrawlJobDataSchema = z
     runId: z.string().uuid(),
     requestedAt: z.string().datetime(),
     requestId: z.string().min(1).max(128),
+    rawSourceRunId: z.string().uuid().nullable().default(null),
   })
   .strict();
 
@@ -275,6 +301,7 @@ export type CrawlPageResponse = z.infer<typeof crawlPageResponseSchema>;
 export type CrawlRunDetailResponse = z.infer<typeof crawlRunDetailResponseSchema>;
 export type CrawlRunPagesQuery = z.infer<typeof crawlRunPagesQuerySchema>;
 export type RequestKnowledgeCrawlResponse = z.infer<typeof requestKnowledgeCrawlResponseSchema>;
+export type ReprocessKnowledgeCrawlRequest = z.infer<typeof reprocessKnowledgeCrawlRequestSchema>;
 export type PublishCrawlRunRequest = z.infer<typeof publishCrawlRunRequestSchema>;
 export type PublishCrawlRunResponse = z.infer<typeof publishCrawlRunResponseSchema>;
 export type KnowledgeCrawlJobData = z.infer<typeof knowledgeCrawlJobDataSchema>;

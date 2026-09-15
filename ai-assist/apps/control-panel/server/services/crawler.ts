@@ -8,12 +8,17 @@ import type {
   DiscoverSiteStructureResponse,
   PublishCrawlRunRequest,
   PublishCrawlRunResponse,
+  ReprocessKnowledgeCrawlRequest,
   RequestKnowledgeCrawlResponse,
   UpdateUrlKnowledgeSourceRequest,
   UrlKnowledgeSourceListResponse,
   UrlKnowledgeSourceResponse,
 } from "@ai-assist/contracts";
-import { knowledgeCrawlJobName, urlKnowledgeSourceSettingsSchema } from "@ai-assist/contracts";
+import {
+  defaultKnowledgeNormalizationPrompt,
+  knowledgeCrawlJobName,
+  urlKnowledgeSourceSettingsSchema,
+} from "@ai-assist/contracts";
 import { CrawlerError, discoverSiteStructure, validateCrawlSource } from "@ai-assist/crawler";
 import type { H3Event } from "h3";
 
@@ -26,6 +31,7 @@ import {
   findLatestCrawlRunRecords,
   findPendingCrawlRunRecord,
   findUrlSourceRecord,
+  hasRawCrawlContent,
   listCrawlPageRecords,
   listUrlSourceRecords,
   publishCrawlRunRecords,
@@ -41,6 +47,7 @@ import { requestKnowledgeReindex } from "./knowledge";
 
 const toRunResponse = (run: CrawlRunRecord): CrawlRunResponse => ({
   ...run,
+  normalizationPrompt: run.normalizationPrompt ?? defaultKnowledgeNormalizationPrompt,
   requestedByEmail: run.requestedByEmail,
   startedAt: run.startedAt?.toISOString() ?? null,
   finishedAt: run.finishedAt?.toISOString() ?? null,
@@ -220,6 +227,7 @@ export const requestKnowledgeCrawl = async (
   const pending = await findPendingCrawlRunRecord(project.id, source.id);
   if (pending) return { jobId: `knowledge-crawl-${pending.id}`, run: toRunResponse(pending) };
   const requestId = getRequestId(event);
+  const settings = urlKnowledgeSourceSettingsSchema.parse(source.settings);
   let run: CrawlRunRecord;
   try {
     run = await createCrawlRunRecord({
@@ -227,6 +235,7 @@ export const requestKnowledgeCrawl = async (
       sourceId: source.id,
       requestedBy: session.userId,
       requestId,
+      normalizationPrompt: settings.normalizationPrompt,
     });
   } catch (error) {
     const raced = await findPendingCrawlRunRecord(project.id, source.id);
@@ -243,6 +252,7 @@ export const requestKnowledgeCrawl = async (
         runId: run.id,
         requestedAt: new Date().toISOString(),
         requestId,
+        rawSourceRunId: null,
       },
       { jobId, attempts: 1, removeOnComplete: 100 },
     );
@@ -258,6 +268,105 @@ export const requestKnowledgeCrawl = async (
     resourceId: run.id,
     requestId,
     metadata: { sourceId: source.id },
+  });
+  return { jobId, run: toRunResponse(run) };
+};
+
+export const requestKnowledgeCrawlReprocess = async (
+  event: H3Event,
+  projectId: string,
+  rawSourceRunId: string,
+  input: ReprocessKnowledgeCrawlRequest,
+): Promise<RequestKnowledgeCrawlResponse> => {
+  const { session, project } = await requireProjectScope(event, projectId, "editor");
+  assertCsrf(event, session);
+  const sourceRun = await findCrawlRunRecord(project.id, rawSourceRunId);
+  if (!sourceRun)
+    throw createError({ statusCode: 404, statusMessage: "Задание обхода не найдено" });
+  if (["queued", "running"].includes(sourceRun.status)) {
+    throw createError({ statusCode: 409, statusMessage: "Технический парсинг ещё не завершён" });
+  }
+  if (!(await hasRawCrawlContent(project.id, sourceRun.id))) {
+    throw createError({
+      statusCode: 409,
+      statusMessage: "В этом запуске не сохранён сырой текст страниц",
+      data: { code: "CRAWL_RAW_CONTENT_UNAVAILABLE" },
+    });
+  }
+  const source = await findUrlSourceRecord(project.id, sourceRun.sourceId);
+  if (!source) throw createError({ statusCode: 404, statusMessage: "Источник не найден" });
+  if (source.status !== "active") {
+    throw createError({ statusCode: 409, statusMessage: "Источник находится в архиве" });
+  }
+  if (await findPendingCrawlRunRecord(project.id, source.id)) {
+    throw createError({
+      statusCode: 409,
+      statusMessage: "Для источника уже выполняется обработка",
+    });
+  }
+
+  const settings = urlKnowledgeSourceSettingsSchema.parse(source.settings);
+  const updatedSource = await updateUrlSourceRecord({
+    projectId: project.id,
+    sourceId: source.id,
+    expectedVersion: input.expectedSourceVersion,
+    name: source.name,
+    status: source.status,
+    settings: { ...settings, normalizationPrompt: input.normalizationPrompt },
+  });
+  if (!updatedSource) {
+    throw createError({
+      statusCode: 409,
+      statusMessage: "Источник был изменён другим запросом",
+      data: { code: "SOURCE_VERSION_CONFLICT" },
+    });
+  }
+
+  const requestId = getRequestId(event);
+  let run: CrawlRunRecord;
+  try {
+    run = await createCrawlRunRecord({
+      projectId: project.id,
+      sourceId: source.id,
+      requestedBy: session.userId,
+      requestId,
+      normalizationPrompt: input.normalizationPrompt,
+    });
+  } catch (error) {
+    if (await findPendingCrawlRunRecord(project.id, source.id)) {
+      throw createError({
+        statusCode: 409,
+        statusMessage: "Для источника уже выполняется обработка",
+      });
+    }
+    throw error;
+  }
+  const jobId = `knowledge-reprocess-${run.id}`;
+  try {
+    await getInfrastructure().systemQueue.add(
+      knowledgeCrawlJobName,
+      {
+        projectId: project.id,
+        sourceId: source.id,
+        runId: run.id,
+        requestedAt: new Date().toISOString(),
+        requestId,
+        rawSourceRunId: sourceRun.id,
+      },
+      { jobId, attempts: 1, removeOnComplete: 100 },
+    );
+  } catch {
+    await failQueuedCrawlRunRecord(run.id, "CRAWL_QUEUE_UNAVAILABLE");
+    throw createError({ statusCode: 503, statusMessage: "Очередь обработки недоступна" });
+  }
+  await writeAuditEvent({
+    projectId: project.id,
+    actorUserId: session.userId,
+    action: "knowledge.crawl_reprocessing_requested",
+    resourceType: "knowledge_crawl_run",
+    resourceId: run.id,
+    requestId,
+    metadata: { sourceId: source.id, rawSourceRunId: sourceRun.id },
   });
   return { jobId, run: toRunResponse(run) };
 };

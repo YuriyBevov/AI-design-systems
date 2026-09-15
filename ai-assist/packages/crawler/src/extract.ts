@@ -18,14 +18,17 @@ const normalizeRawText = (value: string): string =>
     .replace(/\n{3,}/g, "\n\n")
     .trim();
 
+const rawContentCharacterLimit = 120_000;
+
 export const extractHtmlPage = (html: string, requestedUrl: string): ExtractedPage => {
   const $ = load(html);
   const title = normalizeRawText($("h1").first().text() || $("title").first().text()).slice(0, 500);
   if (!title) throw new CrawlerError("CRAWL_TITLE_MISSING");
 
-  // This is intentionally raw body extraction. Boilerplate, navigation, repeated blocks and
-  // classification are handled only by the isolated AI normalization stage in the worker.
-  const content = normalizeRawText($("body").text()).slice(0, 30_000);
+  // Only non-visible technical nodes are excluded here. Visible boilerplate, navigation, repeated
+  // blocks and classification remain raw input for the isolated AI normalization stage.
+  $("script, style, noscript, template, svg").remove();
+  const content = normalizeRawText($("body").text()).slice(0, rawContentCharacterLimit);
   if (!content) throw new CrawlerError("CRAWL_CONTENT_EMPTY");
 
   const links = $("a[href]")

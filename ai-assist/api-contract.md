@@ -183,6 +183,7 @@ POST   /projects/{projectId}/knowledge/sources
 PATCH  /projects/{projectId}/knowledge/sources/{sourceId}
 POST   /projects/{projectId}/knowledge/sources/{sourceId}/crawl
 GET    /projects/{projectId}/knowledge/crawl-runs/{runId}
+POST   /projects/{projectId}/knowledge/crawl-runs/{runId}/reprocess
 POST   /projects/{projectId}/knowledge/crawl-runs/{runId}/publish
 
 POST   /projects/{projectId}/knowledge/uploads
@@ -214,6 +215,13 @@ robots/sitemap и навигационные меню главной стран�
 для удаления шума, классификации `info|product|service` и формирования Markdown JSON. Для crawl
 обязательны verified credential и chat model. Provider output строго валидируется; на страницу
 создаётся не более одной записи. Ручная batch-публикация и versioned reindex сохраняются.
+
+Настройки URL-источника содержат `normalizationPrompt` длиной 100–10 000 символов. Run возвращает
+снимок использованного prompt-а, а каждая страница — только `hasRawContent`, без самого сырого текста.
+`POST .../crawl-runs/{runId}/reprocess` принимает `{ expectedSourceVersion, normalizationPrompt }`,
+требует Editor/Owner, CSRF и завершённый tenant-scoped run с сохранённым сырьём, обновляет prompt
+источника по optimistic version и возвращает `202` с новым run. Worker повторно вызывает только ИИ;
+fetch сайта не выполняется. Неизменяемая safety-инструкция не входит в редактируемый контракт.
 
 Целевой первый pilot поддерживает `url`, `feed`, `file`, `manual` и `product`; `mysql` и `api` не принимаются. В текущей реализации готовы `manual|product` document endpoints и URL-specific source/crawl endpoints. Пока upload/import flow не завершён целиком, общего endpoint с выбором `file|feed|mysql|api` нет.
 

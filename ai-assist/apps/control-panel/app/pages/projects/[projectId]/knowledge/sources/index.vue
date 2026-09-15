@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { defaultKnowledgeNormalizationPrompt } from "@ai-assist/contracts";
 import type {
   CrawlChangeType,
   CrawlPageResponse,
@@ -27,7 +28,10 @@ const isSaving = ref(false);
 const isDiscovering = ref(false);
 const runningSourceId = ref<string | null>(null);
 const isPublishing = ref(false);
+const isReprocessing = ref(false);
 const selectedRun = ref<CrawlRunDetailResponse | null>(null);
+const promptRunId = ref<string | null>(null);
+const normalizationPromptDraft = ref(defaultKnowledgeNormalizationPrompt);
 const selectedPageIds = ref<string[]>([]);
 const selectAllRunPages = ref(false);
 const selectionRunId = ref<string | null>(null);
@@ -41,6 +45,7 @@ useToastMessage(message);
 const form = reactive({
   startUrl: "",
   maxDepth: 5,
+  normalizationPrompt: defaultKnowledgeNormalizationPrompt,
 });
 
 const { data, error, refresh } = await useAsyncData(
@@ -62,6 +67,14 @@ const role = computed(
     data.value?.project.role,
 );
 const canEdit = computed(() => role.value === "owner" || role.value === "editor");
+const selectedRunSource = computed(() =>
+  data.value?.sourceList.sources.find((source) => source.id === selectedRun.value?.run.sourceId),
+);
+const canReprocessSelectedRun = computed(
+  () =>
+    Boolean(selectedRun.value?.pages.some((page) => page.hasRawContent)) &&
+    Boolean(selectedRun.value && !["queued", "running"].includes(selectedRun.value.run.status)),
+);
 
 watch(
   () => data.value?.project.primaryOrigin,
@@ -218,6 +231,10 @@ const loadRun = async (runId: string, requestedPage?: number): Promise<void> => 
     `/api/v1/projects/${projectId.value}/knowledge/crawl-runs/${runId}?page=${page}&pageSize=${crawlPageSize}`,
   );
   selectedRun.value = detail;
+  if (promptRunId.value !== runId) {
+    promptRunId.value = runId;
+    normalizationPromptDraft.value = detail.run.normalizationPrompt;
+  }
   crawlPage.value = detail.pagination.page;
   const eligibleIds = detail.pages.filter(isSelectablePage).map((page) => page.id);
   const justFinished =
@@ -279,6 +296,14 @@ const saveSource = async (): Promise<void> => {
     };
     return;
   }
+  const promptLength = form.normalizationPrompt.trim().length;
+  if (promptLength < 100 || promptLength > 10_000) {
+    message.value = {
+      type: "error",
+      text: "Промпт должен содержать от 100 до 10 000 символов.",
+    };
+    return;
+  }
   isSaving.value = true;
   message.value = null;
   try {
@@ -298,6 +323,7 @@ const saveSource = async (): Promise<void> => {
             maxPages: 5_000,
             maxDepth: Number(form.maxDepth),
             requestDelayMs: 500,
+            normalizationPrompt: form.normalizationPrompt,
           },
         },
       },
@@ -313,6 +339,54 @@ const saveSource = async (): Promise<void> => {
     };
   } finally {
     isSaving.value = false;
+  }
+};
+
+const reprocessRun = async (): Promise<void> => {
+  if (
+    !canEdit.value ||
+    !selectedRun.value ||
+    !selectedRunSource.value ||
+    !canReprocessSelectedRun.value ||
+    isReprocessing.value
+  )
+    return;
+  const promptLength = normalizationPromptDraft.value.trim().length;
+  if (promptLength < 100 || promptLength > 10_000) {
+    message.value = {
+      type: "error",
+      text: "Промпт должен содержать от 100 до 10 000 символов.",
+    };
+    return;
+  }
+  isReprocessing.value = true;
+  message.value = null;
+  try {
+    const result = await $fetch<RequestKnowledgeCrawlResponse>(
+      `/api/v1/projects/${projectId.value}/knowledge/crawl-runs/${selectedRun.value.run.id}/reprocess`,
+      {
+        method: "POST",
+        headers: getCsrfHeaders(),
+        body: {
+          expectedSourceVersion: selectedRunSource.value.version,
+          normalizationPrompt: normalizationPromptDraft.value,
+        },
+      },
+    );
+    message.value = {
+      type: "success",
+      text: "Повторная ИИ-обработка сохранённого сырого текста запущена.",
+    };
+    await refresh();
+    await loadRun(result.run.id);
+  } catch (requestError) {
+    const fetchError = requestError as { data?: { statusMessage?: string } };
+    message.value = {
+      type: "error",
+      text: fetchError.data?.statusMessage ?? "Не удалось запустить повторную ИИ-обработку",
+    };
+  } finally {
+    isReprocessing.value = false;
   }
 };
 
@@ -460,6 +534,26 @@ const publishRun = async (): Promise<void> => {
                   type="number"
                   min="1"
                   max="8"
+                  required
+                />
+              </div>
+              <div class="form-field form-field--wide prompt-editor">
+                <div class="form-field__label-row">
+                  <label class="form-field__label" for="crawl-normalization-prompt">
+                    Промпт ИИ после технического парсинга
+                  </label>
+                  <SettingTooltip
+                    tooltip-id="crawl-normalization-prompt-help"
+                    text="Инструкции определяют полноту и очистку записи. Системный запрет выполнять инструкции сайта и придумывать факты изменить нельзя."
+                  />
+                </div>
+                <textarea
+                  id="crawl-normalization-prompt"
+                  v-model="form.normalizationPrompt"
+                  class="form-field__control prompt-editor__textarea"
+                  rows="12"
+                  minlength="100"
+                  maxlength="10000"
                   required
                 />
               </div>
@@ -634,6 +728,41 @@ const publishRun = async (): Promise<void> => {
             }}
           </button>
         </header>
+
+        <section
+          class="crawl-prompt-editor prompt-editor"
+          aria-labelledby="crawl-prompt-editor-title"
+        >
+          <div class="form-field__label-row">
+            <h3 id="crawl-prompt-editor-title" class="form-field__label">Промпт ИИ-обработки</h3>
+            <SettingTooltip
+              tooltip-id="crawl-reprocess-prompt-help"
+              text="Измените инструкции и повторно обработайте сохранённый сырой текст страниц без нового технического обхода сайта."
+            />
+          </div>
+          <textarea
+            v-model="normalizationPromptDraft"
+            class="form-field__control prompt-editor__textarea"
+            rows="12"
+            minlength="100"
+            maxlength="10000"
+            :disabled="!canEdit || isReprocessing"
+            aria-label="Промпт повторной ИИ-обработки"
+          />
+          <div v-if="canEdit" class="form-actions">
+            <button
+              class="button button--primary"
+              type="button"
+              :disabled="!canReprocessSelectedRun || isReprocessing"
+              @click="reprocessRun"
+            >
+              {{ isReprocessing ? "Запускаем…" : "Применить и обработать заново" }}
+            </button>
+          </div>
+          <p v-if="!canReprocessSelectedRun" class="form-note">
+            Повторная обработка станет доступна для запусков, выполненных после обновления парсера.
+          </p>
+        </section>
 
         <div
           v-if="selectedRun.run.status === 'queued' || selectedRun.run.status === 'running'"

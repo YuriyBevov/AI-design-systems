@@ -3,9 +3,11 @@ import { describe, expect, it } from "vitest";
 import {
   createUrlKnowledgeSourceRequestSchema,
   crawlRunPagesQuerySchema,
+  defaultKnowledgeNormalizationPrompt,
   discoverSiteStructureResponseSchema,
   knowledgeCrawlJobDataSchema,
   publishCrawlRunRequestSchema,
+  reprocessKnowledgeCrawlRequestSchema,
 } from "../src/crawler.js";
 
 describe("crawler contracts", () => {
@@ -18,6 +20,7 @@ describe("crawler contracts", () => {
     expect(parsed.settings.crawlMode).toBe("limited");
     expect(parsed.settings.includePathPrefixes).toEqual(["/"]);
     expect(parsed.settings.includeExactPaths).toEqual([]);
+    expect(parsed.settings.normalizationPrompt).toBe(defaultKnowledgeNormalizationPrompt);
   });
 
   it("supports exact section pages and selected crawl-page publication", () => {
@@ -137,8 +140,32 @@ describe("crawler contracts", () => {
       requestId: "req-crawl",
     };
     expect(knowledgeCrawlJobDataSchema.safeParse(payload).success).toBe(true);
+    expect(knowledgeCrawlJobDataSchema.parse(payload).rawSourceRunId).toBeNull();
     expect(knowledgeCrawlJobDataSchema.safeParse({ ...payload, apiKey: "forbidden" }).success).toBe(
       false,
     );
+  });
+
+  it("accepts only a bounded prompt for repeated AI processing", () => {
+    const expectedSourceVersion = 2;
+    expect(
+      reprocessKnowledgeCrawlRequestSchema.safeParse({
+        expectedSourceVersion,
+        normalizationPrompt: defaultKnowledgeNormalizationPrompt,
+      }).success,
+    ).toBe(true);
+    expect(
+      reprocessKnowledgeCrawlRequestSchema.safeParse({
+        expectedSourceVersion,
+        normalizationPrompt: "Коротко",
+      }).success,
+    ).toBe(false);
+    expect(
+      reprocessKnowledgeCrawlRequestSchema.safeParse({
+        expectedSourceVersion,
+        normalizationPrompt: defaultKnowledgeNormalizationPrompt,
+        systemPrompt: "forbidden",
+      }).success,
+    ).toBe(false);
   });
 });

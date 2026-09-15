@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, inArray, max, ne, sql } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, isNotNull, max, ne, sql } from "drizzle-orm";
 
 import {
   knowledgeCrawlPages,
@@ -47,6 +47,7 @@ export type CrawlRunRecord = {
   unchangedCount: number;
   approvedCount: number;
   profileVersion: string;
+  normalizationPrompt: string | null;
   errorCode: string | null;
   requestedByEmail: string | null;
   requestId: string;
@@ -69,6 +70,7 @@ export type CrawlPageRecord = {
   documentType: "page" | "product" | "service" | null;
   title: string | null;
   contentChecksum: string | null;
+  hasRawContent: boolean;
   confidence: number | null;
   warnings: string[];
   errorCode: string | null;
@@ -106,6 +108,7 @@ const runSelection = {
   unchangedCount: knowledgeCrawlRuns.unchangedCount,
   approvedCount: knowledgeCrawlRuns.approvedCount,
   profileVersion: knowledgeCrawlRuns.profileVersion,
+  normalizationPrompt: knowledgeCrawlRuns.normalizationPrompt,
   errorCode: knowledgeCrawlRuns.errorCode,
   requestedByEmail: users.emailNormalized,
   requestId: knowledgeCrawlRuns.requestId,
@@ -225,11 +228,27 @@ export const findPendingCrawlRunRecord = async (
   return run ?? null;
 };
 
+export const hasRawCrawlContent = async (projectId: string, runId: string): Promise<boolean> => {
+  const [page] = await getInfrastructure()
+    .database.db.select({ id: knowledgeCrawlPages.id })
+    .from(knowledgeCrawlPages)
+    .where(
+      and(
+        eq(knowledgeCrawlPages.projectId, projectId),
+        eq(knowledgeCrawlPages.runId, runId),
+        isNotNull(knowledgeCrawlPages.rawContent),
+      ),
+    )
+    .limit(1);
+  return Boolean(page);
+};
+
 export const createCrawlRunRecord = async (input: {
   projectId: string;
   sourceId: string;
   requestedBy: string;
   requestId: string;
+  normalizationPrompt: string;
 }): Promise<CrawlRunRecord> => {
   const [run] = await getInfrastructure()
     .database.db.insert(knowledgeCrawlRuns)
@@ -271,6 +290,7 @@ export const listCrawlPageRecords = async (
         documentType: knowledgeCrawlPages.documentType,
         title: knowledgeCrawlPages.title,
         contentChecksum: knowledgeCrawlPages.contentChecksum,
+        hasRawContent: sql<boolean>`${knowledgeCrawlPages.rawContent} is not null`,
         confidence: knowledgeCrawlPages.confidence,
         warnings: knowledgeCrawlPages.warnings,
         errorCode: knowledgeCrawlPages.errorCode,

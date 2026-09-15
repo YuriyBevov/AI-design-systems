@@ -156,6 +156,7 @@ sequenceDiagram
     W->>P: mark running
     W->>S: SSRF-safe discovery/fetch
     W->>W: raw HTML-to-text
+    W->>P: persist extracted visible text
     W->>AI: classify + clean + Markdown JSON
     W->>W: schema validate + checksum
     W->>P: write draft versions
@@ -172,11 +173,19 @@ sequenceDiagram
 
 1. URL safety and scope.
 2. Fetch metadata/content with limits.
-3. Raw body text and link extraction without semantic classification or boilerplate removal.
-4. Isolated AI normalization into `info|product|service`, title and Markdown.
-5. Strict provider-output validation; source content remains untrusted user data.
-6. Deduplication/internal versioning and manual publication.
-7. Chunking and indexing.
+3. Removal of non-visible technical nodes, then visible body text and link extraction without
+   semantic classification or content-boilerplate removal.
+4. Storage of raw visible text and an immutable operator-prompt snapshot for later reprocessing.
+5. Isolated AI normalization into `info|product|service`, title and detailed Markdown. The default
+   instruction preserves all unique relevant facts without summarization.
+6. Strict provider-output validation; source content remains untrusted user data, while immutable
+   safety policy remains separate from the editable prompt.
+7. Deduplication/internal versioning and manual publication.
+8. Chunking and indexing.
+
+После завершения технического обхода Admin API может создать новый AI-only run из сохранённых
+страниц и изменённого операторского prompt-а. Этот путь не выполняет сетевых запросов к сайту и не
+перезаписывает исходный run.
 
 Модель не дополняет отсутствующие факты. Ошибка ответа или runtime-схемы даёт page-level failure;
 валидный результат остаётся на ручном подтверждении до публикации.

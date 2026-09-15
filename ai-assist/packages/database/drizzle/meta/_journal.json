@@ -92,6 +92,13 @@
       "when": 1789469010169,
       "tag": "0012_green_gwen_stacy",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1789478442703,
+      "tag": "0013_lumpy_klaw",
+      "breakpoints": true
     }
   ]
 }
