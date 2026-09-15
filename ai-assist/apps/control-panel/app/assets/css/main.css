@@ -850,8 +850,9 @@ code {
 
 .tree-select__content {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  align-items: center;
   min-width: 0;
 }
 

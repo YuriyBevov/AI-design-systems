@@ -95,7 +95,7 @@ const structureNodes = computed(() => flattenNodes(structure.value?.nodes ?? [])
 const mapStructureNode = (node: SiteStructureNode): TreeSelectNode => ({
   id: node.path,
   label: node.label,
-  description: `${node.path} · вложенных узлов: ${node.descendantCount}`,
+  description: `(${node.path}) · вложенных узлов: ${node.descendantCount}`,
   children: node.children.map(mapStructureNode),
 });
 const structureTree = computed(() => (structure.value?.nodes ?? []).map(mapStructureNode));
