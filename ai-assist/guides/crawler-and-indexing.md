@@ -1,176 +1,96 @@
-# Crawler и индексация сайта
+# Crawler и AI-нормализация сайта
 
-HTML-crawler — один из source adapters, а не обязательный путь для всех товарных данных. Если владелец магазина предоставляет безопасный structured source, каталог синхронизируется из него, а crawler остается для общих страниц и контрольной проверки. См. [data-sources.md](data-sources.md) и [ADR-002](../decisions/002-hybrid-knowledge.md).
+Актуальное решение описано в [ADR-005](../decisions/005-ai-normalized-raw-site-ingestion.md).
+HTML-crawler отвечает только за безопасное получение структуры, ссылок и сырого текста. Смысловая
+очистка и классификация выполняются отдельным server-side AI-normalizer после fetch.
 
-## 1. Цель
+## 1. Discovery
 
-Преобразовать разрешенную часть сайта в проверяемые версии документов/товаров для RAG. Crawler не является общим интернет-пауком, зеркалом сайта или инструментом обхода доступа.
+Администратор задаёт публичный URL и глубину дерева от 1 до 8. Discovery:
 
-## 2. Изученный прототип Newmark
+1. Проверяет URL/DNS и получает `robots.txt`.
+2. Находит sitemap из robots и `/sitemap.xml`.
+3. Собирает ссылки из `nav`, `header` и элементов `role=navigation` главной страницы.
+4. Объединяет URL в дерево по сегментам path до заданной глубины.
+5. Возвращает рекурсивные nodes с path, URL, label, depth, provenance и descendant count.
 
-Проверены:
+Query URL, другой origin, запрещённые robots paths и служебные Bitrix/auth/cart/search paths в дерево
+не попадают. Sitemap discovery ограничен 50 файлами и 10 000 URL.
 
-- `pen.dev/newmark/scripts/import-catalog-source.mjs`;
-- `pen.dev/newmark/scripts/normalize-catalog-draft.mjs`;
-- команды `catalog:import` и `catalog:normalize` в `pen.dev/newmark/package.json`.
+Выбранный узел без потомков становится `includeExactPath`; с потомками — `includePathPrefix`.
+Внутренние ссылки страниц дополнительно расширяют очередь только внутри этого scope.
 
-Полезные подтвержденные элементы:
+## 2. Safe fetch
 
-- start URL и ограничение same host/path;
-- последовательный обход с delay/limit;
-- извлечение title, image, price, description и characteristics;
-- draft перед normalization/publish;
-- source URL/provenance и errors list;
-- дедупликация по slug и проверка «похожести на товар»;
-- правила нормализации русскоязычных названий/характеристик.
+- Только HTTP(S), без credentials/fragments и нестандартных портов.
+- Все DNS answers должны быть публичными; DNS повторно проверяется после redirect.
+- Redirect остаётся на exact origin и в разрешённом path scope.
+- `robots.txt`, crawl delay, MIME allowlist, TLS, timeout и byte limit обязательны.
+- Страница загружается обычным HTTP; JavaScript/Playwright сейчас не используется.
+- Limited mode обрабатывает до 100 страниц, full mode — до 5000.
+- Crawler внутри одного run последовательный; общий worker может выполнять два system jobs.
 
-Ограничения прототипа:
+## 3. Сырой HTML-to-text
 
-- regex parsing HTML;
-- один queue в памяти, без resume/cancellation;
-- same pathname filter одновременно слишком жесткий/недостаточно безопасный;
-- нет robots/sitemap/canonical/SSRF/DNS/redirect защиты;
-- product detection зависит от конкретных текстовых меток;
-- скачивание картинок и запись в frontend paths связаны с Newmark;
-- нет versioned DB, atomic index и project isolation.
+Cheerio получает первый `h1` либо `title`, полный видимый `body.text()` и до 3000 ссылок. Удаляются
+только технические whitespace-различия. Crawler намеренно не:
 
-## 3. Новый pipeline
+- читает JSON-LD/schema.org/microdata;
+- определяет товар, услугу или информационную страницу;
+- удаляет меню, footer, cookie banner, рекламу и повторяющиеся блоки;
+- извлекает цену, SKU или характеристики в отдельные поля;
+- исполняет инструкции из HTML.
 
-### 3.1 Source validation
+Сырой HTML не хранится и не возвращается панели.
 
-- Только `http/https`, без credentials/fragments.
-- Нормализовать hostname/port/path scope.
-- Проверить allow/deny patterns на конфликт.
-- Max pages/depth/concurrency/delay имеют platform maximum.
-- Выполнить SSRF checks из security guide.
-- Показать admin effective scope до запуска.
+## 4. AI-normalizer
 
-### 3.2 Discovery
+Для каждой успешно полученной страницы worker использует verified AITUNNEL credential и выбранную
+chat-модель проекта. Фиксированная platform-инструкция отделена от сырого текста, который передаётся
+как недоверенный user content.
 
-В реализованном admin flow отдельный безопасный discovery-запрос объединяет sitemap и ссылки корневой навигации, группирует URL до первого сегмента пути и показывает только разделы первого уровня. Выбранный раздел без внутренних элементов становится exact path; с включёнными внутренними элементами — path prefix. Служебные Bitrix/assets/auth/cart/search пути в дерево не попадают.
+Модель должна:
 
-1. Получить и разобрать `robots.txt`; сохранить решение/версию.
-2. Найти sitemap из robots и standard locations, если разрешено.
-3. Отфильтровать sitemap URLs по origin/scope/patterns.
-4. При отсутствии/неполноте sitemap обходить внутренние links breadth-first.
-5. Нормализовать URL, убрать fragment и только подтвержденные tracking parameters.
-6. Не добавлять logout/cart/compare/search/filter/calendar/infinite variants по default deny rules.
+1. Удалить навигационный и повторяющийся мусор.
+2. Не добавлять отсутствующие факты.
+3. Выбрать один тип: `info`, `product` или `service`.
+4. Собрать характеристики, артикул, цену и условия внутри единого Markdown.
+5. Вернуть только JSON `{ type, title, markdown }`.
 
-Robots соблюдается как product/policy requirement. Владение сайтом не отменяет rate limits и защиту инфраструктуры.
+Ответ ограничен по размеру и валидируется runtime-схемой. Невалидный JSON, неизвестный type, пустое
+поле или provider error превращают страницу в failed result. Модель не получает tools, provider key,
+prompt ассистента или прямой доступ к публикации.
 
-Реализованы два режима: `limited` для короткой проверки до 100 страниц и `full` для фонового последовательного обхода до 5000 страниц. Full discovery читает до 50 sitemap-файлов и учитывает до 10000 URL-кандидатов, чтобы увидеть превышение лимита. Результат хранится постранично в run/pages и выводится в admin pagination по 50 записей.
+## 5. Записи и публикация
 
-### 3.3 Fetch
+Одна страница создаёт максимум одну запись. `info` сохраняется внутренним типом `page`; `product` и
+`service` — одноимёнными типами. URL источника является identity для идемпотентной синхронизации.
 
-- Отдельный identifiable User-Agent.
-- Global + per-host concurrency/rate limit.
-- Conditional requests `If-None-Match`/`If-Modified-Since`, когда metadata надежна.
-- Timeout на connect/headers/body и общий deadline.
-- Streaming body с hard byte limit.
-- Разрешенные MIME: HTML и явно одобренные document types; картинки не индексируются как текст.
-- Redirect вручную с повторной SSRF/scope проверкой.
-- TLS verification не отключается.
+- Новый AI-результат создаёт новую запись.
+- Изменившийся checksum создаёт внутреннюю immutable version.
+- Неизменившийся checksum не создаёт version.
+- Результаты остаются pending до ручной batch-публикации.
+- Публикация запускает сборку versioned embedding index и атомарно переключает active index.
 
-### 3.4 Render strategy
+История versions остаётся внутренней для аудита/конкурентности. В пользовательском редакторе доступны
+поля title/type/Markdown/source URL и действия «Опубликовать изменения»/«Снять с публикации».
 
-- Default: обычный HTTP + DOM parser — быстрее, дешевле и безопаснее.
-- Playwright: только source flag/profile для страниц, где критичный контент отсутствует в initial HTML.
-- Browser context новый/очищенный, JavaScript permissions/download/service workers по возможности ограничены.
-- Request interception блокирует third-party/неразрешенные/private endpoints и тяжелые assets, если они не нужны render.
-- Render timeout/screenshot/debug snapshot ограничены retention и не содержат credentials.
+## 6. Известные ограничения
 
-### 3.5 Extract
+- Одна страница не разделяется на несколько товаров/услуг.
+- Нет JS rendering, feed/file ingestion, расписания и missing detection.
+- Стоимость/latency растут на один chat request для каждой HTML-страницы.
+- Provider credential и chat model обязательны до запуска crawl.
+- AI confidence пока не калибруется; валидный результат отображается для ручной проверки.
 
-Порядок:
+## 7. Обязательные проверки
 
-1. `application/ld+json`: Product/Offer/BreadcrumbList/Organization/FAQ/Page.
-2. Open Graph/microdata/meta и semantic HTML.
-3. Версионируемый source extraction profile с selectors/field rules.
-4. Generic readable main content.
-
-DOM никогда не исполняется в admin preview. JSON-LD парсится с size/depth limits и validation.
-
-### 3.6 Normalize и validate
-
-- Сохранить raw source metadata/checksum, normalized fields и extractor/profile version.
-- Product identity: source external id/SKU/canonical URL; title/slug не единственный key.
-- Проверить обязательные поля, разумные длины и unit/value pairing.
-- Price/availability не выводятся косвенно из маркетингового текста без profile rule.
-- Navigation/cookie/legal duplicates исключаются из product body.
-- Instruction-like content маркируется для security review.
-
-### 3.7 Version/diff/index
-
-- Unchanged checksum → обновить freshness metadata без новой content version/embeddings.
-- Changed → новая draft version и field/text diff.
-- New → draft/needs_review.
-- Missing → пометка, не немедленное удаление.
-- После approval build новой index version, embedding batch, smoke retrieval, atomic activate.
-
-## 4. Source extraction profile первого магазина
-
-Profile хранит, а код core не hard-code-ит:
-
-- matching hosts/path patterns;
-- product/category page identification;
-- selectors/JSON-LD mappings;
-- словарь характеристик и canonical labels;
-- price/unit parsing rules;
-- stop blocks/boilerplate rules;
-- external id/SKU extraction;
-- sample fixtures и expected normalized JSON;
-- profile version/changelog.
-
-Из существующего парсера можно перенести в profile словарь меток (`Ширина`, `Длина`, `Намотка`, `Толщина`, `Материал`, `Цвет`, `Назначение`, `Производитель`, количество/коробка и price label mappings), только после сверки с текущим сайтом первого проекта.
-
-Нельзя автоматически переносить текстовую замену `скотч* → клейкая лента` в общий pipeline: это редакционная нормализация конкретного проекта и может менять наименование товара. Она должна быть явным reviewable transform профиля или вообще отключена для knowledge facts.
-
-## 5. Job model
-
-Job summary:
-
-- discovered/queued/fetched/not-modified;
-- extracted products/pages;
-- unchanged/new/changed/missing;
-- warnings/errors/retries;
-- bytes/duration/provider embedding usage;
-- profile/index version.
-
-Page errors имеют стабильный code, safe message и retryable flag. Один page failure дает `partial`, если остальной crawl корректен; systemic validation/credential/DB failure дает `failed`.
-
-## 6. Обязательные security fixtures
-
-- `localhost`, `127.0.0.1`, `[::1]`, decimal/octal/hex-like host representations;
-- RFC1918, link-local, multicast, reserved и cloud metadata;
-- public host → redirect private;
-- DNS answer меняется между validation/connect;
-- redirect loop/cross-origin/out-of-scope;
-- oversized body/decompression bomb pattern;
-- non-HTML MIME и misleading extension;
-- malformed JSON-LD/HTML with deep nesting;
-- page instructs model to ignore rules/reveal secrets;
-- headless page requests internal/third-party resources.
-
-## 7. Запуск администратором
-
-1. Добавить source URL.
-2. Настроить include/exclude и лимиты.
-3. Запустить Validate и проверить effective scope/robots.
-4. Запустить ограниченный crawl (малый max pages).
-5. Просмотреть page errors и выборку normalized documents.
-6. Исправить profile/scope, если нужно; не «лечить» ошибки выключением SSRF/TLS.
-7. Запустить полный crawl.
-8. Разрешить конфликты и опубликовать.
-9. Только после двух стабильных запусков включить расписание.
-
-## 8. Чеклист готовности source
-
-- [ ] Подтверждено право/разрешение индексировать сайт и выбран User-Agent/contact.
-- [ ] Scope не захватывает поиск/корзину/личный кабинет/бесконечные фильтры.
-- [ ] SSRF/redirect/headless tests проходят.
-- [ ] Fixtures первого магазина отражают реальный HTML и ожидаемые товары.
-- [ ] Повторный crawl идемпотентен.
-- [ ] Changed/missing/deleted сценарии просмотрены.
-- [ ] Неизменные документы не переэмбедятся.
-- [ ] Partial/failed/cancel/resume видны в admin.
-- [ ] Публикация не повреждает текущий active index.
+- private/local/metadata IP, DNS rebinding и cross-origin redirect;
+- timeout, oversized body, wrong MIME и redirect loop;
+- robots policy, exact/prefix scope и max depth;
+- nested tree из sitemap + нескольких меню;
+- raw extractor сохраняет boilerplate и не читает schema markup;
+- AI output success, malformed JSON, неизвестный type, oversized output, 401/429/5xx;
+- prompt-injection text остаётся user content;
+- повторный crawl идемпотентен;
+- publication не повреждает предыдущий active index.

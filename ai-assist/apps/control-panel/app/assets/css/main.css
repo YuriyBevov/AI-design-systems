@@ -829,12 +829,21 @@ code {
 }
 
 .site-tree__item {
+  background: var(--color-surface);
+}
+
+.site-tree__node {
   display: grid;
   grid-template-columns: minmax(220px, 1fr) minmax(180px, auto) minmax(280px, auto);
   gap: 18px;
   align-items: center;
   padding: 14px 18px 14px 36px;
   background: var(--color-surface);
+}
+
+.site-tree__list--nested {
+  margin-left: 24px;
+  border-left: 1px solid var(--color-border-strong);
 }
 
 .site-tree__section {
@@ -1016,7 +1025,7 @@ code {
 }
 
 @media (max-width: 900px) {
-  .site-tree__item {
+  .site-tree__node {
     grid-template-columns: 1fr;
     gap: 10px;
   }

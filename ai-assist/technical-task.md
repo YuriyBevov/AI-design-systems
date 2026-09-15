@@ -108,10 +108,12 @@
 ### 5.5 База знаний CRUD
 
 - Список документов с type, title, source URL, status, indexed time, checksum и error summary.
-- Создание/редактирование ручного документа.
-- Создание/редактирование структурированного товара: title, URL, SKU, description, price display, currency, availability text, category, characteristics, images metadata и updated time.
-- Просмотр извлеченного текста до публикации.
-- Publish/unpublish, reindex и archive.
+- Создание/редактирование записи типа «Инфо», «Товар» или «Услуга».
+- Единый контракт записи: title, type, Markdown-описание и URL источника. Характеристики, цена,
+  артикул и другие факты товара/услуги хранятся внутри Markdown без отдельных полей интерфейса.
+- Пользовательский workflow содержит публикацию изменений и снятие с публикации; внутренняя история
+  immutable versions сохраняется для аудита и optimistic concurrency, но не показывается как набор
+  черновиков.
 - Физическое удаление разрешено для неиспользованного draft без ссылок; опубликованный/использованный документ сначала архивируется, а затем очищается retention job по отдельной подтвержденной операции.
 - Физическое удаление chunks выполняется асинхронно и не оставляет их доступными для retrieval с момента archive.
 - Повторная индексация атомарна: до успешного завершения используется предыдущая опубликованная версия.
@@ -134,13 +136,16 @@
 - Администратор задает стартовый HTTPS/HTTP URL, include/exclude patterns, max pages, max depth, rate limit и расписание.
 - Перед сохранением и каждым fetch выполняется SSRF-защита.
 - Crawler учитывает robots.txt и использует идентифицируемый User-Agent с contact URL/email.
-- Приоритет discovery: sitemap → внутренние ссылки в разрешенной области.
-- Приоритет extraction: JSON-LD (`Product`, `Offer`, `BreadcrumbList`) → семантическая разметка → configurable selectors → generic readable content.
+- Discovery объединяет sitemap и все найденные навигационные меню главной страницы во вложенное дерево
+  до заданной глубины; после выбора узлов внутренние ссылки расширяют разрешённую область crawl.
+- HTML-crawler извлекает сырой видимый текст без schema.org/JSON-LD/microdata classification и без
+  удаления boilerplate. Отдельный AI-normalizer удаляет мусор, выбирает `info|product|service` и
+  формирует Markdown; его JSON-ответ проходит runtime validation и ручное подтверждение.
 - Основной HTML parsing выполняется DOM parser-ом. Headless browser применяется только для отмеченных JS-dependent источников и с теми же сетевыми ограничениями.
 - URL нормализуются; tracking parameters и fragments не создают отдельные документы.
 - Redirect проверяется на каждом переходе; переход на private/local/link-local/multicast/metadata address запрещен.
 - Ограничиваются response size, MIME types, redirects, duration и concurrency.
-- Дедупликация основана минимум на canonical URL и content checksum.
+- Дедупликация основана на URL источника и content checksum нормализованного AI-результата.
 - Job поддерживает `queued/running/succeeded/partial/failed/cancelled` и page-level результаты.
 - Новые crawl-данные сначала попадают в draft. Публикация может быть ручной в MVP.
 - Существующий Newmark parser используется как источник fixture-ов и site-specific extraction rules согласно профильному гайду.

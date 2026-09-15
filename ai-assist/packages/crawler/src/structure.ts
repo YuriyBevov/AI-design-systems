@@ -11,27 +11,30 @@ import {
   type DnsLookup,
 } from "./url-policy.js";
 
-export type DiscoveredSiteSection = {
+export type DiscoveredSiteNode = {
   path: string;
   url: string;
   label: string;
+  depth: number;
   descendantCount: number;
   source: "sitemap" | "navigation" | "both";
+  children: DiscoveredSiteNode[];
 };
 
 export type DiscoveredSiteStructure = {
   origin: string;
   method: "sitemap" | "navigation" | "mixed";
-  sections: DiscoveredSiteSection[];
+  nodes: DiscoveredSiteNode[];
 };
 
-type SectionAccumulator = {
+type NodeAccumulator = {
   path: string;
-  urls: Set<string>;
-  navigationLabel: string | null;
+  label: string | null;
+  depth: number;
   navigationOrder: number | null;
   seenInNavigation: boolean;
   seenInSitemap: boolean;
+  children: Set<string>;
 };
 
 const robotsContentTypes = ["text/plain", "text/html"];
@@ -54,18 +57,11 @@ const wait = async (milliseconds: number): Promise<void> => {
   await new Promise((resolve) => setTimeout(resolve, milliseconds));
 };
 
-const firstLevelPath = (url: URL): string | null => {
-  const [segment] = url.pathname.split("/").filter(Boolean);
-  if (!segment || ignoredFirstLevelPaths.has(segment.toLowerCase())) return null;
-  if (/\.(?:avif|css|gif|ico|jpe?g|js|json|pdf|png|svg|webp|xml)$/i.test(segment)) return null;
-  return `/${segment}/`;
-};
-
 const normalizeLabel = (value: string): string =>
   value.normalize("NFKC").replace(/\s+/g, " ").trim().slice(0, 160);
 
 const fallbackLabel = (path: string): string => {
-  const segment = path.split("/").filter(Boolean)[0] ?? path;
+  const segment = path.split("/").filter(Boolean).at(-1) ?? path;
   try {
     return decodeURIComponent(segment).replace(/[-_]+/g, " ");
   } catch {
@@ -73,9 +69,22 @@ const fallbackLabel = (path: string): string => {
   }
 };
 
+const nodePaths = (url: URL, maximumDepth: number): string[] => {
+  const segments = url.pathname.split("/").filter(Boolean);
+  if (!segments.length || ignoredFirstLevelPaths.has(segments[0]!.toLowerCase())) return [];
+  if (/\.(?:avif|css|gif|ico|jpe?g|js|json|pdf|png|svg|webp|xml)$/i.test(segments.at(-1)!)) {
+    return [];
+  }
+  const paths: string[] = [];
+  for (let index = 0; index < Math.min(segments.length, maximumDepth); index += 1) {
+    paths.push(`/${segments.slice(0, index + 1).join("/")}/`);
+  }
+  return paths;
+};
+
 export const discoverSiteStructure = async (input: {
   startUrl: string;
-  maxSections?: number;
+  maxDepth?: number;
   requestDelayMs?: number;
   lookup?: DnsLookup;
   request?: ResourceRequester;
@@ -83,7 +92,7 @@ export const discoverSiteStructure = async (input: {
   const lookup = input.lookup ?? defaultDnsLookup;
   const validated = await resolvePublicUrl(input.startUrl, lookup);
   const origin = validated.url.origin;
-  const maxSections = Math.min(100, Math.max(1, input.maxSections ?? 100));
+  const maximumDepth = Math.min(8, Math.max(1, input.maxDepth ?? 5));
   let effectiveDelayMs = Math.max(0, input.requestDelayMs ?? 250);
   const fetchResource = async (
     url: string | URL,
@@ -118,64 +127,66 @@ export const discoverSiteStructure = async (input: {
   const robots = parseRobots(robotsResponse.status === 404 ? "" : robotsResponse.body);
   effectiveDelayMs = Math.max(effectiveDelayMs, robots.crawlDelayMs);
 
-  const sections = new Map<string, SectionAccumulator>();
+  const nodes = new Map<string, NodeAccumulator>();
+  let order = 0;
   const record = (url: URL, source: "sitemap" | "navigation", label?: string): boolean => {
     if (url.origin !== origin || url.search || !robots.allows(url)) return false;
-    const path = firstLevelPath(url);
-    if (!path) return false;
-    let section = sections.get(path);
-    if (!section) {
-      if (sections.size >= maxSections) return false;
-      section = {
-        path,
-        urls: new Set(),
-        navigationLabel: null,
-        navigationOrder: null,
-        seenInNavigation: false,
-        seenInSitemap: false,
-      };
-      sections.set(path, section);
+    const paths = nodePaths(url, maximumDepth);
+    if (!paths.length) return false;
+    for (const [index, path] of paths.entries()) {
+      let node = nodes.get(path);
+      if (!node) {
+        node = {
+          path,
+          label: null,
+          depth: index + 1,
+          navigationOrder: null,
+          seenInNavigation: false,
+          seenInSitemap: false,
+          children: new Set(),
+        };
+        nodes.set(path, node);
+      }
+      if (source === "sitemap") node.seenInSitemap = true;
+      if (source === "navigation") {
+        node.seenInNavigation = true;
+        node.navigationOrder ??= order;
+        if (index === paths.length - 1 && label) node.label ||= normalizeLabel(label) || null;
+      }
+      const parentPath = paths[index - 1];
+      if (parentPath) nodes.get(parentPath)?.children.add(path);
     }
-    section.urls.add(url.href);
-    if (source === "sitemap") section.seenInSitemap = true;
-    if (source === "navigation") {
-      section.seenInNavigation = true;
-      section.navigationOrder ??= sections.size;
-      section.navigationLabel ||= label ? normalizeLabel(label) || null : null;
-    }
+    order += 1;
     return true;
   };
 
   let navigationFound = false;
-  const navigationCandidates = [new URL("/", origin), validated.url].filter(
-    (url, index, values) =>
-      values.findIndex((candidate) => candidate.href === url.href) === index && robots.allows(url),
-  );
-  for (const navigationUrl of navigationCandidates) {
+  const homeUrl = new URL("/", origin);
+  if (robots.allows(homeUrl)) {
     try {
       const response = await fetchResource(
-        navigationUrl,
+        homeUrl,
         htmlContentTypes,
         (url) => url.origin === origin && robots.allows(url),
       );
-      if (response.status < 200 || response.status >= 300) continue;
-      const $ = load(response.body);
-      $("a[href]")
-        .toArray()
-        .slice(0, 2_000)
-        .forEach((element) => {
-          const href = $(element).attr("href");
-          if (!href) return;
-          try {
-            const url = normalizeCrawlUrl(new URL(href, response.finalUrl));
-            if (record(url, "navigation", $(element).text())) navigationFound = true;
-          } catch {
-            // Invalid, unsupported and out-of-origin links are ignored.
-          }
-        });
-      break;
+      if (response.status >= 200 && response.status < 300) {
+        const $ = load(response.body);
+        $("nav a[href], header a[href], [role='navigation'] a[href]")
+          .toArray()
+          .slice(0, 3_000)
+          .forEach((element) => {
+            const href = $(element).attr("href");
+            if (!href) return;
+            try {
+              const url = normalizeCrawlUrl(new URL(href, response.finalUrl));
+              if (record(url, "navigation", $(element).text())) navigationFound = true;
+            } catch {
+              // Invalid, unsupported and out-of-origin links are ignored.
+            }
+          });
+      }
     } catch {
-      // A sitemap can still provide the structure when navigation is unavailable.
+      // Sitemap discovery can still build the tree when the home page is unavailable.
     }
   }
 
@@ -183,7 +194,7 @@ export const discoverSiteStructure = async (input: {
   const sitemapQueue = [...robots.sitemapUrls, new URL("/sitemap.xml", origin).toString()];
   const visitedSitemaps = new Set<string>();
   const sitemapUrls = new Set<string>();
-  while (sitemapQueue.length && visitedSitemaps.size < 8 && sitemapUrls.size < 2_000) {
+  while (sitemapQueue.length && visitedSitemaps.size < 50 && sitemapUrls.size < 10_000) {
     const value = sitemapQueue.shift()!;
     let sitemapUrl: URL;
     try {
@@ -202,52 +213,71 @@ export const discoverSiteStructure = async (input: {
       if (response.status < 200 || response.status >= 300) continue;
       const $ = load(response.body, { xmlMode: true });
       $("sitemap > loc").each((_, element) => {
-        if (sitemapQueue.length + visitedSitemaps.size < 30) {
+        if (sitemapQueue.length + visitedSitemaps.size < 100) {
           sitemapQueue.push($(element).text().trim());
         }
       });
       $("url > loc").each((_, element) => {
-        if (sitemapUrls.size >= 2_000) return;
+        if (sitemapUrls.size >= 10_000) return;
         try {
           const url = normalizeCrawlUrl($(element).text().trim());
           if (url.origin !== origin || url.search || !robots.allows(url)) return;
           sitemapUrls.add(url.href);
-          record(url, "sitemap");
-          sitemapFound = true;
+          if (record(url, "sitemap")) sitemapFound = true;
         } catch {
           // Invalid sitemap entries are untrusted and ignored.
         }
       });
     } catch {
-      // A physical navigation structure can still be returned.
+      // Navigation can still provide a partial tree.
     }
   }
+
+  const countDescendants = (path: string): number => {
+    const node = nodes.get(path);
+    if (!node) return 0;
+    return [...node.children].reduce((total, child) => total + 1 + countDescendants(child), 0);
+  };
+  const toNode = (path: string): DiscoveredSiteNode => {
+    const node = nodes.get(path)!;
+    const children = [...node.children]
+      .sort((left, right) => {
+        const leftNode = nodes.get(left)!;
+        const rightNode = nodes.get(right)!;
+        return (
+          (leftNode.navigationOrder ?? Number.MAX_SAFE_INTEGER) -
+            (rightNode.navigationOrder ?? Number.MAX_SAFE_INTEGER) || left.localeCompare(right)
+        );
+      })
+      .map(toNode);
+    return {
+      path: node.path,
+      url: new URL(node.path, origin).toString(),
+      label: node.label ?? fallbackLabel(node.path),
+      depth: node.depth,
+      descendantCount: countDescendants(node.path),
+      source:
+        node.seenInNavigation && node.seenInSitemap
+          ? "both"
+          : node.seenInSitemap
+            ? "sitemap"
+            : "navigation",
+      children,
+    };
+  };
+
+  const roots = [...nodes.values()]
+    .filter((node) => node.depth === 1)
+    .sort(
+      (left, right) =>
+        (left.navigationOrder ?? Number.MAX_SAFE_INTEGER) -
+          (right.navigationOrder ?? Number.MAX_SAFE_INTEGER) || left.path.localeCompare(right.path),
+    )
+    .map((node) => toNode(node.path));
 
   return {
     origin,
     method: sitemapFound && navigationFound ? "mixed" : sitemapFound ? "sitemap" : "navigation",
-    sections: [...sections.values()]
-      .sort(
-        (left, right) =>
-          (left.navigationOrder ?? Number.MAX_SAFE_INTEGER) -
-            (right.navigationOrder ?? Number.MAX_SAFE_INTEGER) ||
-          left.path.localeCompare(right.path),
-      )
-      .map((section) => ({
-        path: section.path,
-        url: new URL(section.path, origin).toString(),
-        label: section.navigationLabel ?? fallbackLabel(section.path),
-        descendantCount: Math.max(
-          0,
-          [...section.urls].filter((url) => normalizeCrawlUrl(url).pathname !== section.path)
-            .length,
-        ),
-        source:
-          section.seenInNavigation && section.seenInSitemap
-            ? "both"
-            : section.seenInSitemap
-              ? "sitemap"
-              : "navigation",
-      })),
+    nodes: roots,
   };
 };

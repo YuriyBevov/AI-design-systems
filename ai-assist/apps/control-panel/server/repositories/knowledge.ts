@@ -425,6 +425,7 @@ export const createKnowledgeDocumentVersionRecord = async (input: {
   projectId: string;
   documentId: string;
   expectedVersion: number;
+  documentType: KnowledgeDocumentType;
   createdBy: string;
   version: KnowledgeVersionValues;
 }): Promise<{
@@ -434,7 +435,11 @@ export const createKnowledgeDocumentVersionRecord = async (input: {
   getInfrastructure().database.db.transaction(async (transaction) => {
     const [document] = await transaction
       .update(knowledgeDocuments)
-      .set({ version: sql`${knowledgeDocuments.version} + 1`, updatedAt: new Date() })
+      .set({
+        type: input.documentType,
+        version: sql`${knowledgeDocuments.version} + 1`,
+        updatedAt: new Date(),
+      })
       .where(
         and(
           eq(knowledgeDocuments.projectId, input.projectId),

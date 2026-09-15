@@ -155,7 +155,9 @@ sequenceDiagram
     Q->>W: consume
     W->>P: mark running
     W->>S: SSRF-safe discovery/fetch
-    W->>W: extract + normalize + checksum
+    W->>W: raw HTML-to-text
+    W->>AI: classify + clean + Markdown JSON
+    W->>W: schema validate + checksum
     W->>P: write draft versions
     W->>AI: embeddings in bounded batches
     W->>P: write index version + activate
@@ -166,18 +168,18 @@ sequenceDiagram
 
 В первом pilot единственный автоматический внешний участник — публичный сайт/feed. Доступ к БД или приватному API отсутствует. Будущие file/DB imports, если будут одобрены отдельным ADR, обязаны использовать тот же draft, validation/diff и atomic publication pipeline. Актуальная граница описана в [ADR-003](decisions/003-public-sources-for-pilot.md).
 
-### Extraction layers
+### Ingestion layers
 
 1. URL safety and scope.
 2. Fetch metadata/content with limits.
-3. JSON-LD and semantic product extraction.
-4. Site adapter selectors/normalizers.
-5. Generic readable content extraction.
-6. Validation, provenance and confidence.
-7. Deduplication/versioning.
-8. Chunking and indexing.
+3. Raw body text and link extraction without semantic classification or boilerplate removal.
+4. Isolated AI normalization into `info|product|service`, title and Markdown.
+5. Strict provider-output validation; source content remains untrusted user data.
+6. Deduplication/internal versioning and manual publication.
+7. Chunking and indexing.
 
-Низкая confidence или неполный обязательный товарный набор переводит документ в `needs_review`, а не дополняет данные догадками.
+Модель не дополняет отсутствующие факты. Ошибка ответа или runtime-схемы даёт page-level failure;
+валидный результат остаётся на ручном подтверждении до публикации.
 
 ## 6. Поток ответа
 

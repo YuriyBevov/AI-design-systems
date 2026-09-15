@@ -74,10 +74,10 @@ watch(
 );
 
 const statusLabel = (status: KnowledgeDocumentStatus): string =>
-  ({ draft: "Черновик", published: "Опубликован", archived: "Архив" })[status];
+  ({ draft: "Не опубликован", published: "Опубликован", archived: "Архив" })[status];
 
 const typeLabel = (type: KnowledgeDocumentType): string =>
-  ({ page: "Страница", manual: "Документ", product: "Товар" })[type];
+  ({ page: "Инфо", manual: "Инфо", product: "Товар", service: "Услуга" })[type];
 
 const filteredDocuments = computed(() => {
   const documents = data.value?.documentList.documents ?? [];
@@ -283,7 +283,6 @@ const requestReindex = async (): Promise<void> => {
                 <th scope="col">Название</th>
                 <th scope="col">Тип</th>
                 <th scope="col">Статус</th>
-                <th scope="col">Версии</th>
                 <th scope="col">Обновлён</th>
                 <th scope="col">Действие</th>
               </tr>
@@ -297,12 +296,6 @@ const requestReindex = async (): Promise<void> => {
                 <td>
                   <span class="status-badge status-badge--compact" :data-status="document.status">
                     {{ statusLabel(document.status) }}
-                  </span>
-                </td>
-                <td>
-                  {{ document.latestVersionNo }}
-                  <span v-if="document.activeVersionNo">
-                    · active {{ document.activeVersionNo }}
                   </span>
                 </td>
                 <td>

@@ -2,27 +2,28 @@
 import type {
   CreateKnowledgeDocumentRequest,
   KnowledgeDocumentDetailResponse,
-  KnowledgeDocumentType,
   ProjectResponse,
 } from "@ai-assist/contracts";
+
+type EditableKnowledgeType = "manual" | "product" | "service";
 
 const route = useRoute();
 const session = useAdminSessionState();
 const requestFetch = useRequestFetch();
 const projectId = computed(() => String(route.params.projectId));
-const isCreating = ref(false);
+const isPublishing = ref(false);
 const message = ref<{ type: "success" | "error"; text: string } | null>(null);
 useToastMessage(message);
 const form = reactive({
-  type: "manual" as KnowledgeDocumentType,
+  type: "manual" as EditableKnowledgeType,
   title: "",
   content: "",
   canonicalUrl: "",
-  tags: "",
 });
 const documentTypeOptions = [
-  { value: "manual", label: "Документ" },
+  { value: "manual", label: "Инфо" },
   { value: "product", label: "Товар" },
+  { value: "service", label: "Услуга" },
 ] as const;
 
 const { data: project, error } = await useAsyncData(
@@ -37,52 +38,57 @@ const role = computed(
 );
 const canEdit = computed(() => role.value === "owner" || role.value === "editor");
 
-const create = async (): Promise<void> => {
-  if (!canEdit.value || isCreating.value) return;
-  isCreating.value = true;
+const emptyProduct = {
+  externalId: null,
+  sku: null,
+  category: null,
+  priceDisplay: null,
+  priceAmount: null,
+  currency: null,
+  availability: null,
+  minimumOrder: null,
+  characteristics: {},
+} as const;
+
+const publish = async (): Promise<void> => {
+  if (!canEdit.value || isPublishing.value) return;
+  isPublishing.value = true;
   message.value = null;
   const common = {
     title: form.title,
     content: form.content,
     canonicalUrl: form.canonicalUrl.trim() || null,
     locale: "ru",
-    tags: form.tags
-      .split(",")
-      .map((tag) => tag.trim())
-      .filter(Boolean),
+    tags: [],
   };
   const body: CreateKnowledgeDocumentRequest =
     form.type === "product"
-      ? {
-          type: "product",
-          ...common,
-          product: {
-            externalId: null,
-            sku: null,
-            category: null,
-            priceDisplay: null,
-            priceAmount: null,
-            currency: null,
-            availability: null,
-            minimumOrder: null,
-            characteristics: {},
-          },
-        }
-      : { type: "manual", ...common, product: null };
+      ? { type: "product", ...common, product: emptyProduct }
+      : { type: form.type, ...common, product: null };
   try {
     const created = await $fetch<KnowledgeDocumentDetailResponse>(
       `/api/v1/projects/${projectId.value}/knowledge/documents`,
       { method: "POST", headers: getCsrfHeaders(), body },
+    );
+    const versionId = created.versions[0]?.id;
+    if (!versionId) throw new Error("Созданная запись не содержит версии");
+    await $fetch(
+      `/api/v1/projects/${projectId.value}/knowledge/documents/${created.document.id}/publish`,
+      {
+        method: "POST",
+        headers: getCsrfHeaders(),
+        body: { expectedVersion: created.document.version, versionId },
+      },
     );
     await navigateTo(`/projects/${projectId.value}/knowledge/documents/${created.document.id}`);
   } catch (requestError) {
     const fetchError = requestError as { data?: { statusMessage?: string } };
     message.value = {
       type: "error",
-      text: fetchError.data?.statusMessage ?? "Не удалось создать запись",
+      text: fetchError.data?.statusMessage ?? "Не удалось опубликовать запись",
     };
   } finally {
-    isCreating.value = false;
+    isPublishing.value = false;
   }
 };
 </script>
@@ -104,19 +110,10 @@ const create = async (): Promise<void> => {
         <div>
           <h2 id="create-knowledge-title" class="section-title">Создание записи</h2>
         </div>
-        <p class="section-description">
-          Новая запись будет сохранена как черновик и&nbsp;не&nbsp;попадёт в&nbsp;ответы до
-          публикации.
-        </p>
       </header>
 
-      <form class="form-stack" novalidate @submit.prevent="create">
+      <form class="form-stack" novalidate @submit.prevent="publish">
         <div class="form-grid">
-          <div class="form-field">
-            <span class="form-field__label">Тип</span>
-            <BaseSelect v-model="form.type" :options="documentTypeOptions" label="Тип записи" />
-          </div>
-
           <label class="form-field form-field--wide">
             <span class="form-field__label">Название</span>
             <input
@@ -128,8 +125,13 @@ const create = async (): Promise<void> => {
             />
           </label>
 
+          <div class="form-field">
+            <span class="form-field__label">Тип записи</span>
+            <BaseSelect v-model="form.type" :options="documentTypeOptions" label="Тип записи" />
+          </div>
+
           <label class="form-field form-field--wide">
-            <span class="form-field__label">Подтверждённый текст</span>
+            <span class="form-field__label">Описание в формате Markdown</span>
             <textarea
               v-model="form.content"
               class="form-field__control knowledge-editor__textarea"
@@ -138,7 +140,7 @@ const create = async (): Promise<void> => {
             />
           </label>
 
-          <label class="form-field">
+          <label class="form-field form-field--wide">
             <span class="form-field__label">URL источника</span>
             <input
               v-model.trim="form.canonicalUrl"
@@ -148,16 +150,11 @@ const create = async (): Promise<void> => {
               placeholder="https://example.ru/page"
             />
           </label>
-
-          <label class="form-field">
-            <span class="form-field__label">Теги через запятую</span>
-            <input v-model="form.tags" class="form-field__control" type="text" maxlength="1300" />
-          </label>
         </div>
 
         <div class="form-actions">
-          <button class="button button--primary" type="submit" :disabled="isCreating">
-            {{ isCreating ? "Создаём…" : "Создать запись" }}
+          <button class="button button--primary" type="submit" :disabled="isPublishing">
+            {{ isPublishing ? "Публикуем…" : "Опубликовать" }}
           </button>
         </div>
       </form>

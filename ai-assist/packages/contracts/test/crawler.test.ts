@@ -70,18 +70,20 @@ describe("crawler contracts", () => {
     expect(crawlRunPagesQuerySchema.safeParse({ page: 1, pageSize: 101 }).success).toBe(false);
   });
 
-  it("validates a bounded first-level site structure", () => {
+  it("validates a bounded nested site structure", () => {
     expect(
       discoverSiteStructureResponseSchema.safeParse({
         origin: "https://shop.example",
         method: "mixed",
-        sections: [
+        nodes: [
           {
             path: "/catalog/",
             url: "https://shop.example/catalog/",
             label: "Каталог",
+            depth: 1,
             descendantCount: 42,
             source: "both",
+            children: [],
           },
         ],
       }).success,

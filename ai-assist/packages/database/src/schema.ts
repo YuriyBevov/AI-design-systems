@@ -37,12 +37,14 @@ export const knowledgeSourceType = pgEnum("knowledge_source_type", [
   "url",
   "manual",
   "product",
+  "service",
 ]);
 export const knowledgeSourceStatus = pgEnum("knowledge_source_status", ["active", "archived"]);
 export const knowledgeDocumentType = pgEnum("knowledge_document_type", [
   "page",
   "manual",
   "product",
+  "service",
 ]);
 export const knowledgeDocumentStatus = pgEnum("knowledge_document_status", [
   "draft",

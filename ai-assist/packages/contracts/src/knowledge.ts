@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const knowledgeDocumentTypeSchema = z.enum(["page", "manual", "product"]);
+export const knowledgeDocumentTypeSchema = z.enum(["page", "manual", "product", "service"]);
 export const knowledgeDocumentStatusSchema = z.enum(["draft", "published", "archived"]);
 export const knowledgeIndexStatusSchema = z.enum([
   "queued",
@@ -77,9 +77,24 @@ export const createKnowledgeDocumentRequestSchema = z.discriminatedUnion("type",
       product: knowledgeProductInputSchema,
     })
     .strict(),
+  z
+    .object({
+      type: z.literal("service"),
+      ...knowledgeContentFields,
+      product: z.null().optional().default(null),
+    })
+    .strict(),
 ]);
 
 export const createKnowledgeDocumentVersionRequestSchema = z.discriminatedUnion("type", [
+  z
+    .object({
+      expectedVersion: z.number().int().positive(),
+      type: z.literal("page"),
+      ...knowledgeContentFields,
+      product: z.null().optional().default(null),
+    })
+    .strict(),
   z
     .object({
       expectedVersion: z.number().int().positive(),
@@ -94,6 +109,14 @@ export const createKnowledgeDocumentVersionRequestSchema = z.discriminatedUnion(
       type: z.literal("product"),
       ...knowledgeContentFields,
       product: knowledgeProductInputSchema,
+    })
+    .strict(),
+  z
+    .object({
+      expectedVersion: z.number().int().positive(),
+      type: z.literal("service"),
+      ...knowledgeContentFields,
+      product: z.null().optional().default(null),
     })
     .strict(),
 ]);

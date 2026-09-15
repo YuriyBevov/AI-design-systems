@@ -66,7 +66,7 @@ export type CrawlPageRecord = {
   documentId: string | null;
   documentVersionId: string | null;
   changeType: CrawlChangeType | null;
-  documentType: "page" | "product" | null;
+  documentType: "page" | "product" | "service" | null;
   title: string | null;
   contentChecksum: string | null;
   confidence: number | null;

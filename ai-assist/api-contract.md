@@ -198,11 +198,22 @@ GET    /projects/{projectId}/ingestion/jobs/{jobId}/pages
 POST   /projects/{projectId}/ingestion/jobs/{jobId}/cancel
 ```
 
-В текущем срезе реализованы list/create/detail/version/publish/unpublish/archive/delete для `knowledge/documents`. Create принимает discriminated union `manual|product`: общие поля `title`, `content`, optional `canonicalUrl`, `locale`, `tags`; товар дополнительно принимает structured `product` с SKU/external id, category, display/parsed price, currency, availability, minimum order и characteristics. Изменение контента всегда создаёт новую immutable version. Version/publish/unpublish/archive/delete требуют `expectedVersion`; write требует Editor/Owner и CSRF, физическое удаление — также recent authentication.
+В текущем UI запись имеет только title, type (`info|product|service`), Markdown content и optional
+source URL. На API legacy `manual|page` соответствуют пользовательскому типу `info`; `service`
+добавлен в document/source enum. Внутреннее создание immutable version и её публикация выполняются
+одним пользовательским действием. Mutation API сохраняет `expectedVersion`; write требует
+Editor/Owner и CSRF.
 
 Публикация атомарно переключает `activeVersionId`. Повторная публикация уже активной версии возвращает `409 KNOWLEDGE_VERSION_ALREADY_ACTIVE`; unpublish сразу очищает active pointer и исключает chunks из следующего retrieval; использовавшийся документ нельзя физически удалить (`409 KNOWLEDGE_DELETE_REQUIRES_ARCHIVE`). Все чтения и retrieval tenant-scoped. Project-level `reindex` и URL source/crawl endpoints реализованы; отдельный playground/retrieve, feed/file imports и универсальный ingestion jobs API остаются следующими срезами.
 
-URL source create/update выполняет строгую schema, DNS/IP и scope validation, но не выполняет crawl внутри request. `POST .../sources/discover` принимает только публичный `startUrl`, безопасно читает robots/sitemap и корневую навигацию и возвращает не более 100 разделов первого уровня с provenance и количеством найденных внутренних адресов. Выбор с внутренними элементами сохраняется в `includePathPrefixes`, выбор без них — в `includeExactPaths`. Настройки содержат `crawlMode=limited|full`: limited ограничен 100 страницами, full — 5000 страницами; worker остаётся последовательным и соблюдает delay/robots. `POST .../crawl` возвращает `202` с `{ jobId, run }`; payload очереди содержит только project/source/run/request identifiers. Повторный запрос во время активного run возвращает существующее задание. `GET .../crawl-runs/{runId}?page=1&pageSize=50` отдаёт до 100 page results, pagination metadata и короткий escaped preview без raw HTML. `POST .../publish` принимает `{ selection: "selected", pageIds: uuid[] }` либо `{ selection: "all" }`, активирует только соответствующие последние `new|changed` draft versions текущего tenant/run, отклоняет устаревшие и по возможности ставит versioned knowledge reindex в очередь.
+URL source create/update выполняет строгую schema, DNS/IP и scope validation, но не выполняет crawl
+внутри request. `POST .../sources/discover` принимает `{ startUrl, maxDepth }`, безопасно читает
+robots/sitemap и навигационные меню главной страницы и возвращает рекурсивный `nodes[]` до восьми
+уровней. Выбор узла с потомками сохраняется в `includePathPrefixes`, без потомков — в
+`includeExactPaths`. Worker последовательно получает сырой body text, затем вызывает AITUNNEL chat
+для удаления шума, классификации `info|product|service` и формирования Markdown JSON. Для crawl
+обязательны verified credential и chat model. Provider output строго валидируется; на страницу
+создаётся не более одной записи. Ручная batch-публикация и versioned reindex сохраняются.
 
 Целевой первый pilot поддерживает `url`, `feed`, `file`, `manual` и `product`; `mysql` и `api` не принимаются. В текущей реализации готовы `manual|product` document endpoints и URL-specific source/crawl endpoints. Пока upload/import flow не завершён целиком, общего endpoint с выбором `file|feed|mysql|api` нет.
 

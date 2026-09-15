@@ -8,7 +8,7 @@ import type {
   ProjectResponse,
   PublishCrawlRunResponse,
   RequestKnowledgeCrawlResponse,
-  SiteStructureSection,
+  SiteStructureNode,
   UrlKnowledgeSourceListResponse,
   UrlKnowledgeSourceResponse,
 } from "@ai-assist/contracts";
@@ -29,26 +29,14 @@ const crawlPage = ref(1);
 const crawlPageSize = 50;
 const structure = ref<DiscoverSiteStructureResponse | null>(null);
 const structureStartUrl = ref<string | null>(null);
-type SectionSelection = SiteStructureSection & {
-  included: boolean;
-  includeDescendants: boolean;
-};
-const sectionSelections = ref<SectionSelection[]>([]);
+type SectionSelection = Record<string, { included: boolean; includeDescendants: boolean }>;
+const sectionSelections = ref<SectionSelection>({});
 const message = ref<{ type: "success" | "error"; text: string } | null>(null);
 useToastMessage(message);
 const form = reactive({
-  name: "Сайт магазина",
   startUrl: "",
-  crawlMode: "full" as "limited" | "full",
-  excludePathPrefixes: "/bitrix/, /basket/, /search/, /auth/, /personal/",
-  maxPages: 2000,
   maxDepth: 5,
-  requestDelayMs: 500,
 });
-const crawlModeOptions = [
-  { value: "limited", label: "Быстрая проверка" },
-  { value: "full", label: "Полный сайт" },
-] as const;
 
 const { data, error, refresh } = await useAsyncData(
   () => `project-knowledge-sources-${projectId.value}`,
@@ -96,36 +84,12 @@ const formatDate = (value: string): string =>
     new Date(value),
   );
 
-const parsePrefixes = (value: string): string[] => [
-  ...new Set(
-    value
-      .split(",")
-      .map((item) => item.trim())
-      .filter(Boolean),
-  ),
-];
-const sectionDomId = (path: string): string =>
-  path.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "") || "root";
-
+const flattenNodes = (nodes: SiteStructureNode[]): SiteStructureNode[] =>
+  nodes.flatMap((node) => [node, ...flattenNodes(node.children)]);
+const structureNodes = computed(() => flattenNodes(structure.value?.nodes ?? []));
 const includedSections = computed(() =>
-  sectionSelections.value.filter((section) => section.included),
+  structureNodes.value.filter((node) => sectionSelections.value[node.path]?.included),
 );
-const estimatedPageCount = computed(() =>
-  includedSections.value.reduce(
-    (total, section) => total + (section.includeDescendants ? section.descendantCount + 1 : 1),
-    0,
-  ),
-);
-const maxPageLimit = computed(() => (form.crawlMode === "full" ? 5_000 : 100));
-
-watch(
-  () => form.crawlMode,
-  (mode, previousMode) => {
-    if (!previousMode) return;
-    form.maxPages = mode === "full" ? Math.max(form.maxPages, 2_000) : Math.min(form.maxPages, 100);
-  },
-);
-
 const structureMethodLabel = computed(() => {
   if (!structure.value) return "";
   return {
@@ -140,26 +104,27 @@ const discoverStructure = async (): Promise<void> => {
   isDiscovering.value = true;
   message.value = null;
   structure.value = null;
-  sectionSelections.value = [];
+  sectionSelections.value = {};
   try {
     const result = await $fetch<DiscoverSiteStructureResponse>(
       `/api/v1/projects/${projectId.value}/knowledge/sources/discover`,
       {
         method: "POST",
         headers: getCsrfHeaders(),
-        body: { startUrl: form.startUrl },
+        body: { startUrl: form.startUrl, maxDepth: Number(form.maxDepth) },
       },
     );
     structure.value = result;
     structureStartUrl.value = form.startUrl;
-    sectionSelections.value = result.sections.map((section) => ({
-      ...section,
-      included: false,
-      includeDescendants: true,
-    }));
-    message.value = result.sections.length
-      ? { type: "success", text: `Найдено разделов первого уровня: ${result.sections.length}.` }
-      : { type: "error", text: "Разделы первого уровня не найдены." };
+    sectionSelections.value = Object.fromEntries(
+      flattenNodes(result.nodes).map((node) => [
+        node.path,
+        { included: false, includeDescendants: true },
+      ]),
+    );
+    message.value = structureNodes.value.length
+      ? { type: "success", text: `Найдено узлов структуры: ${structureNodes.value.length}.` }
+      : { type: "error", text: "Структура сайта не найдена." };
   } catch (requestError) {
     const fetchError = requestError as { data?: { statusMessage?: string } };
     message.value = {
@@ -172,10 +137,25 @@ const discoverStructure = async (): Promise<void> => {
 };
 
 const setAllSections = (included: boolean): void => {
-  sectionSelections.value = sectionSelections.value.map((section) => ({
-    ...section,
-    included,
-  }));
+  sectionSelections.value = Object.fromEntries(
+    structureNodes.value.map((node) => [
+      node.path,
+      { ...(sectionSelections.value[node.path] ?? { includeDescendants: true }), included },
+    ]),
+  );
+};
+
+const setSectionIncluded = (path: string, included: boolean): void => {
+  const current = sectionSelections.value[path] ?? { included: false, includeDescendants: true };
+  sectionSelections.value = { ...sectionSelections.value, [path]: { ...current, included } };
+};
+
+const setSectionDescendants = (path: string, includeDescendants: boolean): void => {
+  const current = sectionSelections.value[path] ?? { included: false, includeDescendants: true };
+  sectionSelections.value = {
+    ...sectionSelections.value,
+    [path]: { ...current, includeDescendants },
+  };
 };
 
 watch(
@@ -184,7 +164,7 @@ watch(
     if (structureStartUrl.value && value !== structureStartUrl.value) {
       structure.value = null;
       structureStartUrl.value = null;
-      sectionSelections.value = [];
+      sectionSelections.value = {};
     }
   },
 );
@@ -317,20 +297,20 @@ const saveSource = async (): Promise<void> => {
         method: "POST",
         headers: getCsrfHeaders(),
         body: {
-          name: form.name,
+          name: new URL(form.startUrl).hostname,
           settings: {
             startUrl: form.startUrl,
-            crawlMode: form.crawlMode,
+            crawlMode: "full",
             includePathPrefixes: includedSections.value
-              .filter((section) => section.includeDescendants)
+              .filter((section) => sectionSelections.value[section.path]?.includeDescendants)
               .map((section) => section.path),
             includeExactPaths: includedSections.value
-              .filter((section) => !section.includeDescendants)
+              .filter((section) => !sectionSelections.value[section.path]?.includeDescendants)
               .map((section) => section.path),
-            excludePathPrefixes: parsePrefixes(form.excludePathPrefixes),
-            maxPages: Number(form.maxPages),
+            excludePathPrefixes: ["/bitrix/", "/basket/", "/search/", "/auth/", "/personal/"],
+            maxPages: 5_000,
             maxDepth: Number(form.maxDepth),
-            requestDelayMs: Number(form.requestDelayMs),
+            requestDelayMs: 500,
           },
         },
       },
@@ -456,30 +436,13 @@ const publishRun = async (): Promise<void> => {
           <fieldset class="crawl-settings">
             <legend class="crawl-settings__legend">Настройки обхода</legend>
             <p class="crawl-settings__description">
-              Полный режим обходит все найденные страницы выбранных разделов до защитного лимита. ИИ
-              для парсинга не вызывается.
+              Сначала crawler получает сырой текст выбранных страниц. Затем ИИ удаляет шум,
+              определяет тип записи и формирует Markdown для базы знаний.
             </p>
             <div class="form-grid">
               <div class="form-field">
                 <div class="form-field__label-row">
-                  <label class="form-field__label" for="crawl-source-name">Название</label>
-                  <SettingTooltip
-                    tooltip-id="crawl-source-name-help"
-                    text="Внутреннее название источника в административной панели. На сайт и содержимое БЗ оно не влияет."
-                  />
-                </div>
-                <input
-                  id="crawl-source-name"
-                  v-model.trim="form.name"
-                  class="form-field__control"
-                  type="text"
-                  maxlength="160"
-                  required
-                />
-              </div>
-              <div class="form-field">
-                <div class="form-field__label-row">
-                  <label class="form-field__label" for="crawl-start-url">Стартовый URL</label>
+                  <label class="form-field__label" for="crawl-start-url">URL сайта</label>
                   <SettingTooltip
                     tooltip-id="crawl-start-url-help"
                     text="Публичный адрес сайта. Он задаёт разрешённый домен; переходы на другие домены и внутренние IP блокируются."
@@ -497,17 +460,20 @@ const publishRun = async (): Promise<void> => {
               </div>
               <div class="form-field">
                 <div class="form-field__label-row">
-                  <label class="form-field__label" for="crawl-mode">Режим обхода</label>
+                  <label class="form-field__label" for="crawl-depth">Глубина структуры</label>
                   <SettingTooltip
-                    tooltip-id="crawl-mode-help"
-                    text="Быстрый режим ограничен 100 страницами для проверки. Полный режим обходит все найденные URL до общего лимита 5000 страниц."
+                    tooltip-id="crawl-depth-help"
+                    text="Сколько уровней URL показать в дереве и обходить по внутренним ссылкам. От 1 до 8."
                   />
                 </div>
-                <BaseSelect
-                  id="crawl-mode"
-                  v-model="form.crawlMode"
-                  :options="crawlModeOptions"
-                  label="Режим обхода"
+                <input
+                  id="crawl-depth"
+                  v-model.number="form.maxDepth"
+                  class="form-field__control"
+                  type="number"
+                  min="1"
+                  max="8"
+                  required
                 />
               </div>
               <section class="site-structure" aria-labelledby="site-structure-title">
@@ -519,12 +485,12 @@ const publishRun = async (): Promise<void> => {
                       </h3>
                       <SettingTooltip
                         tooltip-id="crawl-structure-help"
-                        text="Структура собирается из sitemap.xml и ссылок навигации. В интерфейсе показываются только разделы первого уровня."
+                        text="Вложенное дерево собирается до заданной глубины из sitemap.xml и навигационных меню главной страницы."
                       />
                     </div>
                     <p class="site-structure__description">
-                      Сначала найдём sitemap и разделы навигации. В список попадёт только первый
-                      уровень.
+                      Сначала найдём sitemap и меню главной страницы, затем построим вложенное
+                      дерево до указанной глубины.
                     </p>
                   </div>
                   <button
@@ -545,7 +511,7 @@ const publishRun = async (): Promise<void> => {
                         >Источник структуры: {{ structureMethodLabel }}</span
                       >
                     </div>
-                    <div v-if="sectionSelections.length" class="button-row">
+                    <div v-if="structureNodes.length" class="button-row">
                       <button
                         class="button button--text"
                         type="button"
@@ -562,145 +528,24 @@ const publishRun = async (): Promise<void> => {
                       </button>
                     </div>
                   </div>
-                  <ul v-if="sectionSelections.length" class="site-tree__list">
-                    <li
-                      v-for="section in sectionSelections"
-                      :key="section.path"
-                      class="site-tree__item"
-                    >
-                      <div class="site-tree__section">
-                        <strong>{{ section.label }}</strong>
-                        <span class="data-table__secondary">
-                          {{ section.path }} · внутренних адресов: {{ section.descendantCount }}
-                        </span>
-                      </div>
-                      <div class="site-tree__option">
-                        <input
-                          :id="`crawl-include-${sectionDomId(section.path)}`"
-                          v-model="section.included"
-                          type="checkbox"
-                        />
-                        <label :for="`crawl-include-${sectionDomId(section.path)}`">
-                          Включить в парсинг
-                        </label>
-                        <SettingTooltip
-                          :tooltip-id="`crawl-include-${sectionDomId(section.path)}-help`"
-                          text="Разрешает crawler-у обработать страницу этого раздела."
-                        />
-                      </div>
-                      <div class="site-tree__option">
-                        <input
-                          :id="`crawl-descendants-${sectionDomId(section.path)}`"
-                          v-model="section.includeDescendants"
-                          type="checkbox"
-                          :disabled="!section.included"
-                        />
-                        <label :for="`crawl-descendants-${sectionDomId(section.path)}`">
-                          Включая все внутренние разделы и элементы
-                        </label>
-                        <SettingTooltip
-                          :tooltip-id="`crawl-descendants-${sectionDomId(section.path)}-help`"
-                          text="Разрешает все вложенные URL этого раздела: подразделы, карточки товаров и информационные страницы."
-                        />
-                      </div>
-                    </li>
+                  <ul v-if="structureNodes.length" class="site-tree__list">
+                    <KnowledgeSiteTreeNode
+                      v-for="node in structure?.nodes ?? []"
+                      :key="node.path"
+                      :node="node"
+                      :selection="sectionSelections"
+                      @include="setSectionIncluded"
+                      @descendants="setSectionDescendants"
+                    />
                   </ul>
-                  <div v-else class="empty-state">Разделы первого уровня не найдены.</div>
-                  <p v-if="sectionSelections.length" class="site-tree__summary">
-                    Выбрано разделов: {{ includedSections.length }} из
-                    {{ sectionSelections.length }}.
+                  <div v-else class="empty-state">Структура сайта не найдена.</div>
+                  <p v-if="structureNodes.length" class="site-tree__summary">
+                    Выбрано узлов: {{ includedSections.length }} из {{ structureNodes.length }}.
                   </p>
                 </div>
               </section>
-              <div class="form-field">
-                <div class="form-field__label-row">
-                  <label class="form-field__label" for="crawl-excluded-paths"
-                    >Исключённые пути</label
-                  >
-                  <SettingTooltip
-                    tooltip-id="crawl-excluded-paths-help"
-                    text="Пути, которые crawler никогда не откроет, даже если они входят в выбранный раздел. Значения указываются через запятую."
-                  />
-                </div>
-                <input
-                  id="crawl-excluded-paths"
-                  v-model="form.excludePathPrefixes"
-                  class="form-field__control"
-                  type="text"
-                  maxlength="2400"
-                />
-              </div>
-              <div class="form-field">
-                <div class="form-field__label-row">
-                  <label class="form-field__label" for="crawl-page-limit"
-                    >Общий лимит страниц</label
-                  >
-                  <SettingTooltip
-                    tooltip-id="crawl-page-limit-help"
-                    text="Защитный потолок одного запуска. Полный обход завершится раньше, если доступные страницы закончатся. Максимум — 5000."
-                  />
-                </div>
-                <input
-                  id="crawl-page-limit"
-                  v-model.number="form.maxPages"
-                  class="form-field__control"
-                  type="number"
-                  min="1"
-                  :max="maxPageLimit"
-                  required
-                />
-                <span class="form-field__hint">
-                  Оценка по выбранной структуре: {{ estimatedPageCount }} страниц.
-                </span>
-              </div>
-              <div class="form-field">
-                <div class="form-field__label-row">
-                  <label class="form-field__label" for="crawl-depth">Глубина ссылок</label>
-                  <SettingTooltip
-                    tooltip-id="crawl-depth-help"
-                    text="Сколько уровней внутренних ссылок обходить, если URL отсутствуют в sitemap. На страницы, уже найденные в sitemap, настройка не влияет."
-                  />
-                </div>
-                <input
-                  id="crawl-depth"
-                  v-model.number="form.maxDepth"
-                  class="form-field__control"
-                  type="number"
-                  min="0"
-                  max="5"
-                  required
-                />
-              </div>
-              <div class="form-field">
-                <div class="form-field__label-row">
-                  <label class="form-field__label" for="crawl-request-delay"
-                    >Пауза между запросами, мс</label
-                  >
-                  <SettingTooltip
-                    tooltip-id="crawl-request-delay-help"
-                    text="Задержка снижает нагрузку на сайт. Минимум 250 мс; если robots.txt требует большую паузу, применяется его значение."
-                  />
-                </div>
-                <input
-                  id="crawl-request-delay"
-                  v-model.number="form.requestDelayMs"
-                  class="form-field__control"
-                  type="number"
-                  min="250"
-                  max="5000"
-                  step="250"
-                  required
-                />
-              </div>
             </div>
           </fieldset>
-          <p
-            v-if="estimatedPageCount > Number(form.maxPages)"
-            class="field-note field-note--warning"
-          >
-            В выбранных разделах найдено около {{ estimatedPageCount }} адресов, но лимит установлен
-            на {{ form.maxPages }}. Увеличьте его, если нужен полный обход.
-          </p>
           <div class="form-actions">
             <button
               class="button button--primary"
@@ -895,10 +740,7 @@ const publishRun = async (): Promise<void> => {
           Страницы появятся по мере обхода.
         </div>
         <div v-else class="table-scroll">
-          <table
-            class="data-table crawl-result__table"
-            aria-label="Страницы и черновики выбранного обхода"
-          >
+          <table class="data-table crawl-result__table" aria-label="Записи выбранного обхода">
             <thead>
               <tr>
                 <th scope="col" class="crawl-result__selection-column">Выбор</th>
@@ -932,9 +774,11 @@ const publishRun = async (): Promise<void> => {
                   {{
                     page.documentType === "product"
                       ? "Товар"
-                      : page.documentType === "page"
-                        ? "Страница"
-                        : "—"
+                      : page.documentType === "service"
+                        ? "Услуга"
+                        : page.documentType === "page"
+                          ? "Инфо"
+                          : "—"
                   }}
                 </td>
                 <td>{{ changeLabel(page.changeType) }}</td>
@@ -947,7 +791,7 @@ const publishRun = async (): Promise<void> => {
                     class="data-table__link"
                     :to="`/projects/${projectId}/knowledge/documents/${page.documentId}`"
                   >
-                    {{ page.reviewStatus === "approved" ? "Опубликовано" : "Открыть черновик" }}
+                    {{ page.reviewStatus === "approved" ? "Опубликовано" : "Открыть запись" }}
                   </NuxtLink>
                   <span v-else>{{ page.errorCode ?? "Пропущено" }}</span>
                   <span v-if="page.warnings.length" class="data-table__secondary">

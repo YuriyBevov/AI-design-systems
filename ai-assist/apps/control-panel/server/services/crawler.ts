@@ -99,7 +99,10 @@ export const discoverUrlKnowledgeStructure = async (
   assertCsrf(event, session);
   let structure: DiscoverSiteStructureResponse;
   try {
-    structure = await discoverSiteStructure({ startUrl: input.startUrl });
+    structure = await discoverSiteStructure({
+      startUrl: input.startUrl,
+      maxDepth: input.maxDepth,
+    });
   } catch (error) {
     const crawlerError = error instanceof CrawlerError ? error : null;
     throw createError({
@@ -120,7 +123,8 @@ export const discoverUrlKnowledgeStructure = async (
     metadata: {
       origin: structure.origin,
       method: structure.method,
-      sectionCount: structure.sections.length,
+      rootNodeCount: structure.nodes.length,
+      maxDepth: input.maxDepth,
     },
   });
   return structure;

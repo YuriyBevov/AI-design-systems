@@ -196,7 +196,7 @@ export const crawlWebsite = async (input: {
   }
 
   let processedCount = 0;
-  let profileVersion = "generic-v1";
+  const profileVersion = "raw-html-v1";
   while (queue.length && processedCount < input.settings.maxPages) {
     const current = queue.shift()!;
     let result: CrawlPageResult;
@@ -206,9 +206,6 @@ export const crawlWebsite = async (input: {
         throw new CrawlerError(`CRAWL_HTTP_${response.status}`, response.status >= 500);
       }
       const extracted = extractHtmlPage(response.body, response.finalUrl.toString());
-      const canonical = normalizeCrawlUrl(extracted.canonicalUrl);
-      if (!isScoped(canonical)) extracted.canonicalUrl = response.finalUrl.toString();
-      profileVersion = extracted.profileVersion;
       result = {
         normalizedUrl: response.finalUrl.toString(),
         depth: current.depth,

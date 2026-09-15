@@ -45,6 +45,9 @@ const waitForRun = async (project, runId, headers) => {
   throw new Error("crawl run did not finish before the smoke timeout");
 };
 
+const flattenStructure = (nodes) =>
+  nodes.flatMap((node) => [node, ...flattenStructure(node.children ?? [])]);
+
 const login = await fetch(`${baseUrl}/api/v1/auth/login`, {
   method: "POST",
   headers: { ...originHeaders, "content-type": "application/json" },
@@ -114,13 +117,13 @@ try {
     {
       method: "POST",
       headers: mutationHeaders,
-      body: JSON.stringify({ startUrl: "https://gofroprodpak.ru/" }),
+      body: JSON.stringify({ startUrl: "https://gofroprodpak.ru/", maxDepth: 5 }),
     },
     200,
     "discover site structure",
   );
-  if (!structure.sections.some((section) => section.path === "/catalog/")) {
-    throw new Error("site structure did not expose the first-level catalog section");
+  if (!flattenStructure(structure.nodes).some((node) => node.path === "/catalog/")) {
+    throw new Error("site structure did not expose the catalog subtree");
   }
 
   const source = await requestJson(
@@ -140,10 +143,10 @@ try {
     throw new Error(`first crawl failed: ${first.run.errorCode ?? first.run.status}`);
   }
   if (first.run.newCount < 1 || !first.pages.some((page) => page.documentId)) {
-    throw new Error("first crawl did not create reviewable drafts");
+    throw new Error("first crawl did not create reviewable knowledge records");
   }
-  if (!first.pages.some((page) => page.documentType === "product")) {
-    throw new Error("first crawl did not extract a product from the live store profile");
+  if (!first.pages.every((page) => ["page", "product", "service"].includes(page.documentType))) {
+    throw new Error("AI normalization returned an unsupported knowledge record type");
   }
   const pagedResult = await requestJson(
     `/api/v1/projects/${projectId}/knowledge/crawl-runs/${first.run.id}?page=2&pageSize=1`,
@@ -168,7 +171,7 @@ try {
     )
     .slice(0, 2);
   if (selectedForPublication.length !== 2) {
-    throw new Error("crawl did not create enough drafts for bulk publication");
+    throw new Error("crawl did not create enough records for bulk publication");
   }
   const publication = await requestJson(
     `/api/v1/projects/${projectId}/knowledge/crawl-runs/${first.run.id}/publish`,
@@ -181,9 +184,10 @@ try {
       }),
     },
     200,
-    "publish crawl drafts",
+    "publish crawl records",
   );
-  if (publication.publishedCount !== 2) throw new Error("selected crawl drafts were not published");
+  if (publication.publishedCount !== 2)
+    throw new Error("selected crawl records were not published");
   const reviewed = await requestJson(
     `/api/v1/projects/${projectId}/knowledge/crawl-runs/${first.run.id}`,
     { headers: authenticatedHeaders },
@@ -194,7 +198,7 @@ try {
     throw new Error("bulk publication changed an unexpected number of pages");
   }
   if (!reviewed.pages.some((page) => page.reviewStatus === "pending")) {
-    throw new Error("bulk publication ignored the unselected draft boundary");
+    throw new Error("bulk publication ignored the unselected record boundary");
   }
   const remainingPublication = await requestJson(
     `/api/v1/projects/${projectId}/knowledge/crawl-runs/${first.run.id}/publish`,
@@ -204,10 +208,10 @@ try {
       body: JSON.stringify({ selection: "all" }),
     },
     200,
-    "publish all remaining crawl drafts",
+    "publish all remaining crawl records",
   );
   if (remainingPublication.publishedCount !== 1) {
-    throw new Error("run-wide publication did not publish the remaining draft");
+    throw new Error("run-wide publication did not publish the remaining record");
   }
 
   const secondRequest = await requestJson(

@@ -96,7 +96,7 @@ Embedding setting дополнительно имеет `embedding_profile_versi
 
 ### `knowledge_sources`
 
-Целевая сущность: `id`, `project_id`, `type(feed|url|file|manual|product)`, `name`, `status`, normalized public endpoint/origin, scope/settings JSON, schedule, last successful job, timestamps. `mysql` и `api` зарезервированы только как возможные post-pilot расширения.
+Целевая сущность: `id`, `project_id`, `type(feed|url|file|manual|product|service)`, `name`, `status`, normalized public endpoint/origin, scope/settings JSON, schedule, last successful job, timestamps. `mysql` и `api` зарезервированы только как возможные post-pilot расширения.
 
 В миграциях `0005_clammy_wallow.sql` и `0007_rich_onslaught.sql` реализованы source record без `file`: `id`, `project_id`, `type`, `name`, `status`, optimistic `version`, nullable `system_key`, versioned JSON settings, crawl freshness/error metadata и timestamps. Для ручных документов и товаров сервис создаёт по одному управляемому source на проект; URL-source хранит нормализованный start URL, рекурсивные `includePathPrefixes`, нерекурсивные `includeExactPaths`, exclude prefixes и bounded limits. `file` добавляется только вместе с upload/import entities и защищённым ingestion flow.
 
@@ -128,7 +128,7 @@ Post-pilot сущность для источников, которым дейс
 
 ### `knowledge_documents`
 
-Логическая сущность: `id`, `project_id`, `source_id`, optional hashed source external identity, `type(page|product|manual)`, `status`, optimistic `version`, `active_version_id`, timestamps. Уникальная source identity обеспечивает идемпотентный повторный crawl.
+Логическая сущность: `id`, `project_id`, `source_id`, optional hashed source external identity, `type(page|product|service|manual)`, `status`, optimistic `version`, `active_version_id`, timestamps. `page` и legacy `manual` отображаются пользователю как «Инфо». Уникальная source identity обеспечивает идемпотентный повторный crawl.
 
 Статусы текущего ручного среза: `draft`, `published`, `archived`. `needs_review` будет состоянием ingestion/review pipeline. Runtime проверяет active published version.
 
@@ -138,7 +138,9 @@ Post-pilot сущность для источников, которым дейс
 
 ### `knowledge_products`
 
-Проекция структурированной товарной версии для редактирования/фильтрации: document version id, external id, SKU, category, price display/amount/currency, availability text, minimum order и characteristics JSON. Источником retrieval остается published document version/chunks. Image metadata добавится вместе с ingestion.
+Legacy-проекция структурированной товарной версии сохранена для обратной совместимости прежних данных.
+Новый URL-crawler и UI не создают отдельные товарные поля: все подтверждённые свойства входят в
+Markdown document version, который остаётся источником chunks/retrieval.
 
 ### `knowledge_document_publications`
 

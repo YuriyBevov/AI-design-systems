@@ -4,7 +4,7 @@ import type { ResourceRequester } from "../src/safe-fetch.js";
 import { discoverSiteStructure } from "../src/structure.js";
 
 describe("site structure discovery", () => {
-  it("returns only first-level sections combined from navigation and sitemap", async () => {
+  it("returns a nested tree combined from home navigation and sitemap", async () => {
     const request = vi.fn<ResourceRequester>(async (url) => {
       if (url.pathname === "/robots.txt") {
         return {
@@ -38,24 +38,19 @@ describe("site structure discovery", () => {
 
     const result = await discoverSiteStructure({
       startUrl: "https://shop.example/",
+      maxDepth: 4,
       requestDelayMs: 0,
       lookup: async () => [{ address: "93.184.216.34", family: 4 }],
       request,
     });
 
     expect(result.method).toBe("mixed");
-    expect(result.sections.map((section) => section.path)).toEqual([
-      "/catalog/",
-      "/about/",
-      "/delivery/",
-    ]);
-    expect(result.sections[0]).toMatchObject({
+    expect(result.nodes.map((node) => node.path)).toEqual(["/catalog/", "/about/", "/delivery/"]);
+    expect(result.nodes[0]).toMatchObject({
       label: "Каталог продукции",
       descendantCount: 1,
       source: "both",
     });
-    expect(
-      result.sections.every((section) => section.path.split("/").filter(Boolean).length === 1),
-    ).toBe(true);
+    expect(result.nodes[0]?.children.map((node) => node.path)).toEqual(["/catalog/box/"]);
   });
 });

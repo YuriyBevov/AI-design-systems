@@ -48,7 +48,7 @@ export const urlKnowledgeSourceSettingsSchema = z
       .max(30)
       .default(["/bitrix/", "/basket/", "/search/", "/auth/", "/personal/"]),
     maxPages: z.number().int().min(1).max(5_000).default(25),
-    maxDepth: z.number().int().min(0).max(5).default(2),
+    maxDepth: z.number().int().min(1).max(8).default(5),
     requestDelayMs: z.number().int().min(250).max(5_000).default(500),
   })
   .strict()
@@ -69,21 +69,38 @@ export const urlKnowledgeSourceSettingsSchema = z
   });
 
 export const discoverSiteStructureRequestSchema = z
-  .object({ startUrl: publicSourceUrlSchema })
+  .object({
+    startUrl: publicSourceUrlSchema,
+    maxDepth: z.number().int().min(1).max(8).default(5),
+  })
   .strict();
 
-export const siteStructureSectionSchema = z.object({
-  path: pathPrefixSchema,
-  url: publicSourceUrlSchema,
-  label: z.string().trim().min(1).max(160),
-  descendantCount: z.number().int().nonnegative(),
-  source: z.enum(["sitemap", "navigation", "both"]),
-});
+export type SiteStructureNode = {
+  path: string;
+  url: string;
+  label: string;
+  depth: number;
+  descendantCount: number;
+  source: "sitemap" | "navigation" | "both";
+  children: SiteStructureNode[];
+};
+
+export const siteStructureNodeSchema: z.ZodType<SiteStructureNode> = z.lazy(() =>
+  z.object({
+    path: pathPrefixSchema,
+    url: publicSourceUrlSchema,
+    label: z.string().trim().min(1).max(160),
+    depth: z.number().int().min(1).max(8),
+    descendantCount: z.number().int().nonnegative(),
+    source: z.enum(["sitemap", "navigation", "both"]),
+    children: z.array(siteStructureNodeSchema).max(500),
+  }),
+);
 
 export const discoverSiteStructureResponseSchema = z.object({
   origin: z.string().url(),
   method: z.enum(["sitemap", "navigation", "mixed"]),
-  sections: z.array(siteStructureSectionSchema).max(100),
+  nodes: z.array(siteStructureNodeSchema).max(500),
 });
 
 export const createUrlKnowledgeSourceRequestSchema = z
@@ -155,7 +172,7 @@ export const crawlPageResponseSchema = z.object({
   documentId: z.string().uuid().nullable(),
   documentVersionId: z.string().uuid().nullable(),
   changeType: crawlChangeTypeSchema.nullable(),
-  documentType: z.enum(["page", "product"]).nullable(),
+  documentType: z.enum(["page", "product", "service"]).nullable(),
   title: z.string().min(1).max(500).nullable(),
   contentChecksum: z.string().length(64).nullable(),
   confidence: z.number().min(0).max(1).nullable(),
@@ -234,13 +251,20 @@ export const knowledgeCrawlJobResultSchema = z.object({
   failedCount: z.number().int().nonnegative(),
 });
 
+export const processedCrawlPageSchema = z
+  .object({
+    type: z.enum(["info", "product", "service"]),
+    title: z.string().trim().min(1).max(500),
+    markdown: z.string().trim().min(1).max(30_000),
+  })
+  .strict();
+
 export type CrawlRunStatus = z.infer<typeof crawlRunStatusSchema>;
 export type CrawlPageStatus = z.infer<typeof crawlPageStatusSchema>;
 export type CrawlChangeType = z.infer<typeof crawlChangeTypeSchema>;
 export type CrawlReviewStatus = z.infer<typeof crawlReviewStatusSchema>;
 export type UrlKnowledgeSourceSettings = z.infer<typeof urlKnowledgeSourceSettingsSchema>;
 export type DiscoverSiteStructureRequest = z.infer<typeof discoverSiteStructureRequestSchema>;
-export type SiteStructureSection = z.infer<typeof siteStructureSectionSchema>;
 export type DiscoverSiteStructureResponse = z.infer<typeof discoverSiteStructureResponseSchema>;
 export type CreateUrlKnowledgeSourceRequest = z.infer<typeof createUrlKnowledgeSourceRequestSchema>;
 export type UpdateUrlKnowledgeSourceRequest = z.infer<typeof updateUrlKnowledgeSourceRequestSchema>;
@@ -255,3 +279,4 @@ export type PublishCrawlRunRequest = z.infer<typeof publishCrawlRunRequestSchema
 export type PublishCrawlRunResponse = z.infer<typeof publishCrawlRunResponseSchema>;
 export type KnowledgeCrawlJobData = z.infer<typeof knowledgeCrawlJobDataSchema>;
 export type KnowledgeCrawlJobResult = z.infer<typeof knowledgeCrawlJobResultSchema>;
+export type ProcessedCrawlPage = z.infer<typeof processedCrawlPageSchema>;

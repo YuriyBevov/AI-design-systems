@@ -133,7 +133,13 @@ Playground показывает релевантные chunks ручных до�
 
 ## Этап 6. Источники данных и импорт первого интернет-магазина
 
-Первый URL-crawl срез реализован 2026-09-02: CRUD публичного URL-источника, versioned настройки scope/лимитов, BullMQ runs с page-level результатами, DNS-pinned SSRF-safe HTTP(S), redirects/bytes/MIME/timeouts, robots/sitemap discovery, DOM/JSON-LD/microdata/generic extraction, профиль `gofroprodpak-v1`, идемпотентные draft versions и пакетное ручное подтверждение с запуском индексации. Перед созданием источника панель объединяет sitemap и физическую навигацию в дерево разделов первого уровня; каждый раздел сохраняется как точный путь либо рекурсивный префикс. Реализованы быстрый режим до 100 страниц и полный фоновый режим до 5000 страниц, прогресс, предупреждение о достигнутом лимите, pagination результатов и публикация выбранных строк/всего запуска. Ограниченный live smoke первого магазина подтвердил discovery, full-mode worker path, обе массовые publication-команды и `unchanged` на повторном обходе. Feed/file adapters, field-level diff/conflicts, missing detection, расписание и bounded fresh lookup ещё не реализованы.
+URL-crawl pipeline пересмотрен 2026-09-15 по ADR-005: discovery строит рекурсивное дерево до заданной
+глубины из sitemap и меню главной страницы; crawler сохраняет только сырой body text и ссылки, не
+интерпретирует schema.org/JSON-LD/microdata и не удаляет boilerplate. Отдельный AITUNNEL-вызов
+очищает страницу, классифицирует её как `info|product|service` и возвращает title/Markdown по строгой
+JSON-схеме. Результаты по-прежнему подтверждаются вручную и индексируются атомарно. UI записей скрывает
+историю черновых versions и отдельные товарные поля. Feed/file adapters, missing detection,
+расписание, JS rendering и bounded fresh lookup ещё не реализованы.
 
 ### Работы
 

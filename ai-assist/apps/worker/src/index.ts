@@ -25,7 +25,7 @@ const connection = new IORedis(environment.REDIS_URL, {
 });
 const database = createDatabase(environment.DATABASE_URL);
 const processKnowledgeIndex = createKnowledgeIndexProcessor({ database, environment });
-const processKnowledgeCrawl = createKnowledgeCrawlProcessor({ database });
+const processKnowledgeCrawl = createKnowledgeCrawlProcessor({ database, environment });
 
 const worker = new Worker(
   systemQueueName,

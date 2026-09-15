@@ -318,13 +318,6 @@ export const createKnowledgeDocumentVersion = async (
   if (!document) {
     throw createError({ statusCode: 404, statusMessage: "Документ базы знаний не найден" });
   }
-  if (document.type !== input.type) {
-    throw createError({
-      statusCode: 422,
-      statusMessage: "Тип документа базы знаний нельзя изменить",
-      data: { code: "KNOWLEDGE_TYPE_IMMUTABLE" },
-    });
-  }
   const versionValues = buildVersionValues(input);
   const versions = await listKnowledgeDocumentVersionRecords(project.id, documentId);
   if (versions[0]?.contentChecksum === versionValues.contentChecksum) {
@@ -338,6 +331,7 @@ export const createKnowledgeDocumentVersion = async (
     projectId: project.id,
     documentId,
     expectedVersion: input.expectedVersion,
+    documentType: input.type,
     createdBy: session.userId,
     version: versionValues,
   });
