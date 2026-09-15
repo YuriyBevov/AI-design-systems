@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { TreeSelectNode } from "~/utils/tree-select";
+
 const iconSamples = [
   { name: "home", label: "Обзор проекта" },
   { name: "settings", label: "Настройки" },
@@ -24,6 +26,7 @@ const iconSamples = [
 ] as const;
 const selectValue = ref("balanced");
 const checkboxValue = ref(false);
+const selectedRegions = ref<string[]>(["moscow", "moscow-region"]);
 const activeTabPreview = ref("interface");
 const isModalPreviewOpen = ref(false);
 const isConfirmModalPreviewOpen = ref(false);
@@ -43,6 +46,39 @@ const noteSamples = [
   "Несохранённый текст редактора в запрос не попадёт.",
   "Запрос расходует бюджет провайдера.",
 ] as const;
+const regionTreeNodes: TreeSelectNode[] = [
+  {
+    id: "russia",
+    label: "Россия",
+    children: [
+      {
+        id: "central",
+        label: "Центральный федеральный округ",
+        children: [
+          { id: "moscow", label: "Москва", children: [] },
+          { id: "moscow-region", label: "Московская область", children: [] },
+          { id: "tula-region", label: "Тульская область", children: [] },
+        ],
+      },
+      {
+        id: "northwestern",
+        label: "Северо-Западный федеральный округ",
+        children: [
+          { id: "saint-petersburg", label: "Санкт-Петербург", children: [] },
+          { id: "leningrad-region", label: "Ленинградская область", children: [] },
+        ],
+      },
+      {
+        id: "southern",
+        label: "Южный федеральный округ",
+        children: [
+          { id: "krasnodar-region", label: "Краснодарский край", children: [] },
+          { id: "rostov-region", label: "Ростовская область", children: [] },
+        ],
+      },
+    ],
+  },
+];
 </script>
 
 <template>
@@ -193,6 +229,27 @@ const noteSamples = [
       <div class="component-preview" aria-label="Варианты флажка">
         <BaseCheckbox v-model="checkboxValue" label="Доступный вариант" />
         <BaseCheckbox v-model="checkboxValue" label="Недоступный вариант" disabled />
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="tree-select-components-title">
+      <header class="section-header">
+        <div>
+          <h2 id="tree-select-components-title" class="section-title">Раскрывающееся дерево</h2>
+        </div>
+        <p class="section-description">
+          Компонент <code>BaseTreeSelect</code> связывает выбор родителя со всеми вложенными
+          элементами и показывает частичный выбор промежуточным состоянием.
+        </p>
+      </header>
+
+      <div class="component-preview component-preview--tree">
+        <BaseTreeSelect
+          v-model="selectedRegions"
+          :nodes="regionTreeNodes"
+          label="Пример выбора регионов"
+          :initially-expanded-depth="2"
+        />
       </div>
     </section>
 

@@ -90,6 +90,35 @@ describe("crawler contracts", () => {
     ).toBe(true);
   });
 
+  it("accepts large catalog branches returned by sitemap discovery", () => {
+    const children = Array.from({ length: 501 }, (_, index) => ({
+      path: `/catalog/product-${index}/`,
+      url: `https://shop.example/catalog/product-${index}/`,
+      label: `Product ${index}`,
+      depth: 2,
+      descendantCount: 0,
+      source: "sitemap" as const,
+      children: [],
+    }));
+    expect(
+      discoverSiteStructureResponseSchema.safeParse({
+        origin: "https://shop.example",
+        method: "sitemap",
+        nodes: [
+          {
+            path: "/catalog/",
+            url: "https://shop.example/catalog/",
+            label: "Catalog",
+            depth: 1,
+            descendantCount: children.length,
+            source: "sitemap",
+            children,
+          },
+        ],
+      }).success,
+    ).toBe(true);
+  });
+
   it("rejects credentials, fragments and excessive crawl limits", () => {
     expect(
       createUrlKnowledgeSourceRequestSchema.safeParse({

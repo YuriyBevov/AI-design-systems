@@ -12,6 +12,12 @@ import type {
   UrlKnowledgeSourceListResponse,
   UrlKnowledgeSourceResponse,
 } from "@ai-assist/contracts";
+import type { TreeSelectNode } from "~/utils/tree-select";
+import {
+  compressTreeSelection,
+  flattenTreeNodeIds,
+  normalizeTreeSelection,
+} from "~/utils/tree-select";
 
 const route = useRoute();
 const requestFetch = useRequestFetch();
@@ -29,8 +35,7 @@ const crawlPage = ref(1);
 const crawlPageSize = 50;
 const structure = ref<DiscoverSiteStructureResponse | null>(null);
 const structureStartUrl = ref<string | null>(null);
-type SectionSelection = Record<string, { included: boolean; includeDescendants: boolean }>;
-const sectionSelections = ref<SectionSelection>({});
+const selectedStructurePaths = ref<string[]>([]);
 const message = ref<{ type: "success" | "error"; text: string } | null>(null);
 useToastMessage(message);
 const form = reactive({
@@ -87,8 +92,18 @@ const formatDate = (value: string): string =>
 const flattenNodes = (nodes: SiteStructureNode[]): SiteStructureNode[] =>
   nodes.flatMap((node) => [node, ...flattenNodes(node.children)]);
 const structureNodes = computed(() => flattenNodes(structure.value?.nodes ?? []));
-const includedSections = computed(() =>
-  structureNodes.value.filter((node) => sectionSelections.value[node.path]?.included),
+const mapStructureNode = (node: SiteStructureNode): TreeSelectNode => ({
+  id: node.path,
+  label: node.label,
+  description: `${node.path} · вложенных узлов: ${node.descendantCount}`,
+  children: node.children.map(mapStructureNode),
+});
+const structureTree = computed(() => (structure.value?.nodes ?? []).map(mapStructureNode));
+const normalizedStructurePaths = computed(() =>
+  normalizeTreeSelection(structureTree.value, selectedStructurePaths.value),
+);
+const selectedCrawlScopes = computed(() =>
+  compressTreeSelection(structureTree.value, normalizedStructurePaths.value),
 );
 const structureMethodLabel = computed(() => {
   if (!structure.value) return "";
@@ -104,7 +119,7 @@ const discoverStructure = async (): Promise<void> => {
   isDiscovering.value = true;
   message.value = null;
   structure.value = null;
-  sectionSelections.value = {};
+  selectedStructurePaths.value = [];
   try {
     const result = await $fetch<DiscoverSiteStructureResponse>(
       `/api/v1/projects/${projectId.value}/knowledge/sources/discover`,
@@ -116,12 +131,6 @@ const discoverStructure = async (): Promise<void> => {
     );
     structure.value = result;
     structureStartUrl.value = form.startUrl;
-    sectionSelections.value = Object.fromEntries(
-      flattenNodes(result.nodes).map((node) => [
-        node.path,
-        { included: false, includeDescendants: true },
-      ]),
-    );
     message.value = structureNodes.value.length
       ? { type: "success", text: `Найдено узлов структуры: ${structureNodes.value.length}.` }
       : { type: "error", text: "Структура сайта не найдена." };
@@ -137,25 +146,7 @@ const discoverStructure = async (): Promise<void> => {
 };
 
 const setAllSections = (included: boolean): void => {
-  sectionSelections.value = Object.fromEntries(
-    structureNodes.value.map((node) => [
-      node.path,
-      { ...(sectionSelections.value[node.path] ?? { includeDescendants: true }), included },
-    ]),
-  );
-};
-
-const setSectionIncluded = (path: string, included: boolean): void => {
-  const current = sectionSelections.value[path] ?? { included: false, includeDescendants: true };
-  sectionSelections.value = { ...sectionSelections.value, [path]: { ...current, included } };
-};
-
-const setSectionDescendants = (path: string, includeDescendants: boolean): void => {
-  const current = sectionSelections.value[path] ?? { included: false, includeDescendants: true };
-  sectionSelections.value = {
-    ...sectionSelections.value,
-    [path]: { ...current, includeDescendants },
-  };
+  selectedStructurePaths.value = included ? flattenTreeNodeIds(structureTree.value) : [];
 };
 
 watch(
@@ -164,7 +155,7 @@ watch(
     if (structureStartUrl.value && value !== structureStartUrl.value) {
       structure.value = null;
       structureStartUrl.value = null;
-      sectionSelections.value = {};
+      selectedStructurePaths.value = [];
     }
   },
 );
@@ -281,7 +272,7 @@ onBeforeUnmount(() => {
 
 const saveSource = async (): Promise<void> => {
   if (!canEdit.value || isSaving.value) return;
-  if (!structure.value || !includedSections.value.length) {
+  if (!structure.value || !normalizedStructurePaths.value.length) {
     message.value = {
       type: "error",
       text: "Сначала получите структуру сайта и выберите хотя бы один раздел.",
@@ -301,12 +292,8 @@ const saveSource = async (): Promise<void> => {
           settings: {
             startUrl: form.startUrl,
             crawlMode: "full",
-            includePathPrefixes: includedSections.value
-              .filter((section) => sectionSelections.value[section.path]?.includeDescendants)
-              .map((section) => section.path),
-            includeExactPaths: includedSections.value
-              .filter((section) => !sectionSelections.value[section.path]?.includeDescendants)
-              .map((section) => section.path),
+            includePathPrefixes: selectedCrawlScopes.value.prefixIds,
+            includeExactPaths: selectedCrawlScopes.value.exactIds,
             excludePathPrefixes: ["/bitrix/", "/basket/", "/search/", "/auth/", "/personal/"],
             maxPages: 5_000,
             maxDepth: Number(form.maxDepth),
@@ -528,19 +515,17 @@ const publishRun = async (): Promise<void> => {
                       </button>
                     </div>
                   </div>
-                  <ul v-if="structureNodes.length" class="site-tree__list">
-                    <KnowledgeSiteTreeNode
-                      v-for="node in structure?.nodes ?? []"
-                      :key="node.path"
-                      :node="node"
-                      :selection="sectionSelections"
-                      @include="setSectionIncluded"
-                      @descendants="setSectionDescendants"
-                    />
-                  </ul>
+                  <BaseTreeSelect
+                    v-if="structureNodes.length"
+                    v-model="selectedStructurePaths"
+                    :nodes="structureTree"
+                    label="Разделы сайта для парсинга"
+                    :initially-expanded-depth="1"
+                  />
                   <div v-else class="empty-state">Структура сайта не найдена.</div>
                   <p v-if="structureNodes.length" class="site-tree__summary">
-                    Выбрано узлов: {{ includedSections.length }} из {{ structureNodes.length }}.
+                    Выбрано узлов: {{ normalizedStructurePaths.length }} из
+                    {{ structureNodes.length }}.
                   </p>
                 </div>
               </section>
@@ -550,7 +535,7 @@ const publishRun = async (): Promise<void> => {
             <button
               class="button button--primary"
               type="submit"
-              :disabled="isSaving || !structure || !includedSections.length"
+              :disabled="isSaving || !structure || !normalizedStructurePaths.length"
             >
               {{ isSaving ? "Проверяем…" : "Сохранить и запустить" }}
             </button>

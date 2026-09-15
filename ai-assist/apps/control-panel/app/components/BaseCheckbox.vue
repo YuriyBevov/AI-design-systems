@@ -6,11 +6,13 @@ const props = withDefaults(
     label: string;
     disabled?: boolean;
     required?: boolean;
+    indeterminate?: boolean;
   }>(),
   {
     value: undefined,
     disabled: false,
     required: false,
+    indeterminate: false,
   },
 );
 
@@ -23,6 +25,11 @@ const isChecked = computed(() =>
     ? Boolean(props.value && props.modelValue.includes(props.value))
     : props.modelValue,
 );
+
+const control = ref<HTMLInputElement | null>(null);
+watchEffect(() => {
+  if (control.value) control.value.indeterminate = props.indeterminate;
+});
 
 const updateValue = (event: Event): void => {
   const checked = (event.target as HTMLInputElement).checked;
@@ -39,14 +46,16 @@ const updateValue = (event: Event): void => {
 </script>
 
 <template>
-  <label class="checkbox">
+  <label class="checkbox" :class="{ 'checkbox--indeterminate': indeterminate }">
     <input
+      ref="control"
       class="checkbox__control"
       type="checkbox"
       :checked="isChecked"
       :disabled="disabled"
       :required="required"
       :value="value"
+      :aria-checked="indeterminate ? 'mixed' : undefined"
       @change="updateValue"
     />
     <span class="checkbox__box" aria-hidden="true" />

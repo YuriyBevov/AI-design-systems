@@ -93,14 +93,14 @@ export const siteStructureNodeSchema: z.ZodType<SiteStructureNode> = z.lazy(() =
     depth: z.number().int().min(1).max(8),
     descendantCount: z.number().int().nonnegative(),
     source: z.enum(["sitemap", "navigation", "both"]),
-    children: z.array(siteStructureNodeSchema).max(500),
+    children: z.array(siteStructureNodeSchema).max(10_000),
   }),
 );
 
 export const discoverSiteStructureResponseSchema = z.object({
   origin: z.string().url(),
   method: z.enum(["sitemap", "navigation", "mixed"]),
-  nodes: z.array(siteStructureNodeSchema).max(500),
+  nodes: z.array(siteStructureNodeSchema).max(10_000),
 });
 
 export const createUrlKnowledgeSourceRequestSchema = z
