@@ -281,7 +281,7 @@ const closeDocument = async (): Promise<void> => {
 
           <div v-if="canEdit" class="knowledge-editor__actions">
             <button
-              class="icon-button icon-button--compact icon-button--ghost"
+              class="icon-button icon-button--ghost"
               type="submit"
               :aria-label="
                 isPublishing
@@ -297,7 +297,7 @@ const closeDocument = async (): Promise<void> => {
             </button>
             <button
               v-if="detail.document.status === 'published'"
-              class="icon-button icon-button--compact icon-button--ghost"
+              class="icon-button icon-button--ghost"
               type="button"
               aria-label="Снять запись с публикации"
               title="Снять с публикации"
@@ -306,7 +306,7 @@ const closeDocument = async (): Promise<void> => {
               <UiIcon name="unpublish" />
             </button>
             <button
-              class="icon-button icon-button--compact icon-button--ghost icon-button--danger"
+              class="icon-button icon-button--ghost icon-button--danger"
               type="button"
               aria-label="Удалить запись"
               title="Удалить"

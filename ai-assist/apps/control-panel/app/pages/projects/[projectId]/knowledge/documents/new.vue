@@ -25,6 +25,20 @@ const documentTypeOptions = [
   { value: "product", label: "Товар" },
   { value: "service", label: "Услуга" },
 ] as const;
+const normalizationErrorMessages: Record<string, string> = {
+  KNOWLEDGE_AI_MODEL_REQUIRED: "Сначала выберите диалоговую модель во вкладке «Подключение».",
+  PROVIDER_CREDENTIAL_REQUIRED: "Сначала добавьте ключ провайдера во вкладке «Подключение».",
+  PROVIDER_CREDENTIAL_NOT_READY: "Сначала проверьте ключ провайдера во вкладке «Подключение».",
+  PROVIDER_BUDGET_EXCEEDED: "Бюджет провайдера исчерпан.",
+  PROVIDER_RATE_LIMITED: "Провайдер ограничил частоту запросов. Повторите немного позже.",
+  PROVIDER_TIMEOUT: "ИИ не успел обработать запись. Повторите попытку.",
+  PROVIDER_UNAVAILABLE: "Провайдер временно недоступен. Повторите попытку позже.",
+  PROVIDER_BAD_RESPONSE: "Провайдер вернул некорректный ответ. Повторите попытку.",
+  KNOWLEDGE_AI_RESPONSE_INVALID: "ИИ вернул пустой или некорректный текст. Повторите попытку.",
+  KNOWLEDGE_AI_OUTPUT_TRUNCATED: "ИИ не закончил обработку текста. Увеличьте лимит токенов.",
+  KNOWLEDGE_AI_RESPONSE_TOO_LARGE: "Обработанный текст превышает допустимый размер записи.",
+  KNOWLEDGE_AI_CANCELLED: "Обработка записи была отменена.",
+};
 
 const { data: project, error } = await useAsyncData(
   () => `knowledge-document-create-${projectId.value}`,
@@ -82,39 +96,43 @@ const publish = async (): Promise<void> => {
     );
     await navigateTo(`/projects/${projectId.value}/knowledge/documents/${created.document.id}`);
   } catch (requestError) {
-    const fetchError = requestError as { data?: { statusMessage?: string } };
+    const fetchError = requestError as {
+      data?: { statusMessage?: string; code?: string; data?: { code?: string } };
+    };
+    const code = fetchError.data?.data?.code ?? fetchError.data?.code;
     message.value = {
       type: "error",
-      text: fetchError.data?.statusMessage ?? "Не удалось опубликовать запись",
+      text:
+        (code && normalizationErrorMessages[code]) ||
+        fetchError.data?.statusMessage ||
+        "Не удалось обработать и опубликовать запись",
     };
   } finally {
     isPublishing.value = false;
   }
 };
+
+const closeCreate = async (): Promise<void> => {
+  await navigateTo(`/projects/${projectId.value}/knowledge/documents`);
+};
 </script>
 
 <template>
   <main class="page-frame">
-    <NuxtLink class="back-link" :to="`/projects/${projectId}/knowledge/documents`">
-      <UiIcon name="arrow-left" />
-      <span>База знаний</span>
-    </NuxtLink>
+    <template v-if="error || !canEdit">
+      <NuxtLink class="back-link" :to="`/projects/${projectId}/knowledge/documents`">
+        <UiIcon name="arrow-left" />
+        <span>База знаний</span>
+      </NuxtLink>
+      <div class="empty-state" role="alert">
+        {{ error ? "Проект недоступен." : "Недостаточно прав для создания записи." }}
+      </div>
+    </template>
 
-    <div v-if="error" class="empty-state" role="alert">Проект недоступен.</div>
-    <div v-else-if="!canEdit" class="empty-state" role="alert">
-      Недостаточно прав для создания записи.
-    </div>
-
-    <section v-else class="panel" aria-labelledby="create-knowledge-title">
-      <header class="section-header">
-        <div>
-          <h2 id="create-knowledge-title" class="section-title">Создание записи</h2>
-        </div>
-      </header>
-
-      <form class="form-stack" novalidate @submit.prevent="publish">
-        <div class="form-grid">
-          <label class="form-field form-field--wide">
+    <BaseModal v-else title="Новая запись базы знаний" size="full" @close="closeCreate">
+      <form class="knowledge-editor" novalidate :aria-busy="isPublishing" @submit.prevent="publish">
+        <div class="knowledge-editor__toolbar">
+          <label class="form-field">
             <span class="form-field__label">Название</span>
             <input
               v-model.trim="form.title"
@@ -122,25 +140,22 @@ const publish = async (): Promise<void> => {
               type="text"
               maxlength="500"
               required
+              :disabled="isPublishing"
             />
           </label>
 
           <div class="form-field">
             <span class="form-field__label">Тип записи</span>
-            <BaseSelect v-model="form.type" :options="documentTypeOptions" label="Тип записи" />
+            <BaseSelect
+              v-model="form.type"
+              :options="documentTypeOptions"
+              label="Тип записи"
+              width="content"
+              :disabled="isPublishing"
+            />
           </div>
 
-          <label class="form-field form-field--wide">
-            <span class="form-field__label">Описание в формате Markdown</span>
-            <textarea
-              v-model="form.content"
-              class="form-field__control knowledge-editor__textarea"
-              maxlength="30000"
-              required
-            />
-          </label>
-
-          <label class="form-field form-field--wide">
+          <label class="form-field">
             <span class="form-field__label">URL источника</span>
             <input
               v-model.trim="form.canonicalUrl"
@@ -148,16 +163,49 @@ const publish = async (): Promise<void> => {
               type="url"
               maxlength="2048"
               placeholder="https://example.ru/page"
+              :disabled="isPublishing"
             />
           </label>
+
+          <div class="knowledge-editor__actions">
+            <button
+              class="icon-button icon-button--ghost"
+              type="submit"
+              :aria-label="
+                isPublishing ? 'ИИ обрабатывает запись' : 'Обработать и опубликовать запись'
+              "
+              :title="isPublishing ? 'ИИ обрабатывает…' : 'Обработать и опубликовать'"
+              :disabled="isPublishing"
+            >
+              <UiIcon name="publish" />
+            </button>
+          </div>
         </div>
 
-        <div class="form-actions">
-          <button class="button button--primary" type="submit" :disabled="isPublishing">
-            {{ isPublishing ? "Публикуем…" : "Опубликовать" }}
-          </button>
+        <div v-if="isPublishing" class="task-progress" role="status" aria-live="polite">
+          <div class="task-progress__header">
+            <strong>ИИ обрабатывает запись</strong>
+            <span>После обработки запись будет опубликована</span>
+          </div>
+          <progress aria-label="ИИ обрабатывает запись">Обработка записи</progress>
         </div>
+
+        <label class="form-field knowledge-editor__content">
+          <span class="form-field__label">Исходный текст</span>
+          <textarea
+            v-model="form.content"
+            class="form-field__control knowledge-editor__textarea"
+            maxlength="30000"
+            placeholder="Введите или вставьте любые сведения. ИИ сохранит факты и оформит их в Markdown."
+            required
+            :disabled="isPublishing"
+          />
+          <span class="form-field__hint">
+            Текст может быть несвязным или уже оформленным. Перед публикацией ИИ структурирует его,
+            не добавляя новых фактов.
+          </span>
+        </label>
       </form>
-    </section>
+    </BaseModal>
   </main>
 </template>

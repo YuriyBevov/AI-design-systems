@@ -22,13 +22,14 @@ const tabs = computed<SettingsTab[]>(() => {
   const projectBase = `/projects/${projectId.value}`;
   const allTabs: SettingsTab[] = [
     {
-      id: "interface",
-      label: "Интерфейс",
-      to: { path: `${projectBase}/assistant`, query: { tab: "interface" } },
+      id: "integration",
+      label: "Подключение",
+      to: `${projectBase}/provider`,
+      adminOnly: true,
     },
     {
       id: "security",
-      label: "Безопасность и ограничения",
+      label: "Безопасность",
       to: { path: `${projectBase}/assistant`, query: { tab: "security" } },
     },
     {
@@ -37,15 +38,14 @@ const tabs = computed<SettingsTab[]>(() => {
       to: `${projectBase}/prompts`,
     },
     {
+      id: "interface",
+      label: "Интерфейс",
+      to: { path: `${projectBase}/assistant`, query: { tab: "interface" } },
+    },
+    {
       id: "knowledge",
       label: "База знаний",
       to: `${projectBase}/knowledge/documents`,
-    },
-    {
-      id: "integration",
-      label: "Подключение",
-      to: `${projectBase}/provider`,
-      adminOnly: true,
     },
   ];
   return allTabs.filter((tab) => !tab.adminOnly || isAdmin.value);

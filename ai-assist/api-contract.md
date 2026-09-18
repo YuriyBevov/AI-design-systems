@@ -218,11 +218,13 @@ GET    /projects/{projectId}/ingestion/jobs/{jobId}/pages
 POST   /projects/{projectId}/ingestion/jobs/{jobId}/cancel
 ```
 
-В текущем UI запись имеет только title, type (`info|product|service`), Markdown content и optional
-source URL. На API legacy `manual|page` соответствуют пользовательскому типу `info`; `service`
-добавлен в document/source enum. Внутреннее создание immutable version и её публикация выполняются
-одним пользовательским действием. Mutation API сохраняет `expectedVersion`; write требует
-Editor/Owner и CSRF.
+В текущем UI запись имеет title, type (`info|product|service`), исходный content и optional source
+URL. На API legacy `manual|page` соответствуют пользовательскому типу `info`; `service` добавлен в
+document/source enum. `POST /knowledge/documents` всегда обрабатывает `content` выбранной chat-моделью
+до записи в БД: сохраняет подтверждённые факты, структурирует результат как Markdown и отклоняет
+пустой, усечённый или превышающий 30 000 символов ответ. При provider/AI error документ не создаётся.
+Внутреннее создание immutable version и её публикация выполняются одним пользовательским действием.
+Mutation API сохраняет `expectedVersion`; write требует Editor/Owner и CSRF.
 
 `POST /knowledge/documents/bulk` принимает `{ action: publish|unpublish|delete, documentIds[] }`.
 Идентификаторы дедуплицируются, выбор ограничен 5 000 записями и всегда проверяется в рамках текущего

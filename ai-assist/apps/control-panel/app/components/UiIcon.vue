@@ -7,6 +7,7 @@ type UiIconName =
   | "chevron-down"
   | "close"
   | "components"
+  | "copy"
   | "edit"
   | "eye"
   | "help"

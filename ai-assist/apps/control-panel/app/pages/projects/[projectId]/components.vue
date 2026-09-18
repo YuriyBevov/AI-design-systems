@@ -17,6 +17,7 @@ const iconSamples = [
   { name: "arrow-left", label: "Назад" },
   { name: "plus", label: "Добавить" },
   { name: "close", label: "Закрыть" },
+  { name: "copy", label: "Скопировать" },
   { name: "trash", label: "Удалить" },
   { name: "edit", label: "Изменить" },
   { name: "power", label: "Активировать или деактивировать" },

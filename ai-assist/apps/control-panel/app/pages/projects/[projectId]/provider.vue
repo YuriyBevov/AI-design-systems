@@ -22,12 +22,15 @@ const isTestingKey = ref(false);
 const isDeletingKey = ref(false);
 const isSyncingModels = ref(false);
 const isSavingModels = ref(false);
+const isWidgetCodeCopied = ref(false);
+const widgetCodeField = ref<HTMLTextAreaElement | null>(null);
 const deleteConfirmationVisible = ref(false);
 const reauthenticationVisible = ref(false);
 const isReauthenticating = ref(false);
 const pendingCredentialAction = ref<SensitiveCredentialAction | null>(null);
 const message = ref<{ type: "success" | "error"; text: string } | null>(null);
 useToastMessage(message);
+const applicationOrigin = useRequestURL().origin;
 const modelForm = reactive({
   chatModelId: null as string | null,
   embeddingModelId: null as string | null,
@@ -77,6 +80,20 @@ watch(
 );
 
 const credential = computed(() => data.value?.providerState.credential ?? null);
+const widgetEmbedCode = computed(() => {
+  const publicId = data.value?.assistantSettings.assistant.publicId;
+  if (!publicId) return "";
+  const closingScriptTag = ["</", "script>"].join("");
+  return [
+    "<script",
+    "  async",
+    `  src="${applicationOrigin}/widget/v1/loader.js"`,
+    `  data-assistant-id="${publicId}"`,
+    `>${closingScriptTag}`,
+    "",
+    `<ai-assist assistant-id="${publicId}"></ai-assist>`,
+  ].join("\n");
+});
 const availableModels = computed(
   () => data.value?.modelCatalog.models.filter((model) => model.available) ?? [],
 );
@@ -228,6 +245,48 @@ const formatModel = (model: ProviderModelResponse): string => {
   const price = promptCost !== undefined ? ` · ${promptCost.toFixed(2)} ₽/1M` : "";
   return `${model.id}${providerName}${price}`;
 };
+
+let copyFeedbackTimer: ReturnType<typeof setTimeout> | undefined;
+const copyWidgetCodeFromField = (): boolean => {
+  const field = widgetCodeField.value;
+  if (!field) return false;
+  field.focus();
+  field.select();
+  return document.execCommand("copy");
+};
+
+const copyWidgetCode = async (): Promise<void> => {
+  if (!import.meta.client || !widgetEmbedCode.value) return;
+
+  try {
+    let copied = false;
+    if (navigator.clipboard?.writeText) {
+      try {
+        await navigator.clipboard.writeText(widgetEmbedCode.value);
+        copied = true;
+      } catch {
+        copied = false;
+      }
+    }
+    if (!copied) copied = copyWidgetCodeFromField();
+    if (!copied) throw new Error("Copy command was rejected");
+    isWidgetCodeCopied.value = true;
+    message.value = { type: "success", text: "Код виджета скопирован." };
+    if (copyFeedbackTimer) clearTimeout(copyFeedbackTimer);
+    copyFeedbackTimer = setTimeout(() => {
+      isWidgetCodeCopied.value = false;
+    }, 2_000);
+  } catch {
+    message.value = {
+      type: "error",
+      text: "Не удалось скопировать код автоматически. Выделите его в поле вручную.",
+    };
+  }
+};
+
+onBeforeUnmount(() => {
+  if (copyFeedbackTimer) clearTimeout(copyFeedbackTimer);
+});
 const chatModelOptions = computed(() => [
   { value: null, label: "Не выбрана" },
   ...chatModels.value.map((model) => ({ value: model.id, label: formatModel(model) })),
@@ -464,6 +523,40 @@ const saveModels = async (): Promise<void> => {
     <template v-else-if="data">
       <section class="split-layout" aria-label="Настройки подключения">
         <div class="panel-stack">
+          <section class="panel" aria-labelledby="widget-code-title">
+            <header class="section-header">
+              <div>
+                <h2 id="widget-code-title" class="section-title">Установка виджета на сайт</h2>
+              </div>
+              <button
+                class="icon-button"
+                type="button"
+                :aria-label="isWidgetCodeCopied ? 'Код скопирован' : 'Скопировать код виджета'"
+                :title="isWidgetCodeCopied ? 'Код скопирован' : 'Скопировать код'"
+                @click="copyWidgetCode"
+              >
+                <UiIcon :name="isWidgetCodeCopied ? 'check' : 'copy'" />
+              </button>
+            </header>
+
+            <label class="form-field">
+              <span class="form-field__label">Код для вставки перед закрывающим тегом body</span>
+              <textarea
+                ref="widgetCodeField"
+                class="form-field__control widget-code-field"
+                :value="widgetEmbedCode"
+                readonly
+                spellcheck="false"
+                aria-describedby="widget-code-note"
+                @focus="($event.target as HTMLTextAreaElement).select()"
+              />
+            </label>
+            <p id="widget-code-note" class="form-field__hint">
+              Перед установкой добавьте точный адрес сайта во вкладке «Безопасность» и примените
+              настройки.
+            </p>
+          </section>
+
           <section class="panel" aria-label="Подключение ключа провайдера">
             <form class="form-stack" novalidate @submit.prevent="saveKey">
               <div class="form-row">

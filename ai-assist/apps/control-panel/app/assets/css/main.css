@@ -2149,6 +2149,14 @@ textarea.form-field__control {
   gap: 18px;
 }
 
+.widget-code-field {
+  min-height: 176px;
+  resize: vertical;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
 .button-group {
   display: flex;
   flex-wrap: wrap;

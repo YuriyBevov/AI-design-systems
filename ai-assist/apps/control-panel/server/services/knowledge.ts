@@ -26,6 +26,7 @@ import {
   type RankedKnowledgeChunk,
 } from "@ai-assist/domain";
 import type { AitunnelClient } from "@ai-assist/provider-aitunnel";
+import { AitunnelProviderError } from "@ai-assist/provider-aitunnel";
 import type { H3Event } from "h3";
 
 import { writeAuditEvent } from "../repositories/audit";
@@ -58,9 +59,15 @@ import {
 } from "../repositories/knowledge";
 import { findPendingKnowledgeProcessingRunRecord } from "../repositories/knowledge-processing";
 import { findProjectModelSettings, findProviderCredential } from "../repositories/provider";
-import { getInfrastructure } from "../utils/infrastructure";
+import { getInfrastructure, getServiceEnvironment } from "../utils/infrastructure";
 import { getRequestId } from "../utils/request";
 import { assertCsrf, assertRecentAdminAuthentication, requireProjectScope } from "./auth";
+import { KnowledgeAiNormalizationError, normalizeManualKnowledgeContent } from "./knowledge-ai";
+import {
+  decryptStoredProviderCredential,
+  getAitunnelClient,
+  throwProviderHttpError,
+} from "./provider";
 
 const buildProductFacts = (product: KnowledgeProductInput): string[] => {
   const characteristics = Object.entries(product.characteristics)
@@ -283,7 +290,88 @@ export const createKnowledgeDocument = async (
 ): Promise<KnowledgeDocumentDetailResponse> => {
   const { session, project } = await requireProjectScope(event, projectId, "editor");
   assertCsrf(event, session);
-  const versionValues = buildVersionValues(input);
+  const [modelSettings, credential] = await Promise.all([
+    findProjectModelSettings(project.id),
+    findProviderCredential(project.id),
+  ]);
+  if (!modelSettings?.chatModelId) {
+    throw createError({
+      statusCode: 422,
+      statusMessage: "Перед созданием записи выберите диалоговую модель",
+      data: { code: "KNOWLEDGE_AI_MODEL_REQUIRED" },
+    });
+  }
+  if (!credential) {
+    throw createError({
+      statusCode: 422,
+      statusMessage: "Перед созданием записи добавьте ключ провайдера",
+      data: { code: "PROVIDER_CREDENTIAL_REQUIRED" },
+    });
+  }
+  if (credential.status !== "verified") {
+    throw createError({
+      statusCode: 422,
+      statusMessage: "Перед созданием записи проверьте ключ провайдера",
+      data: { code: "PROVIDER_CREDENTIAL_NOT_READY" },
+    });
+  }
+
+  const environment = getServiceEnvironment();
+  const abortController = new AbortController();
+  const abortOnDisconnect = () => abortController.abort();
+  event.node.res.once("close", abortOnDisconnect);
+  let normalized: Awaited<ReturnType<typeof normalizeManualKnowledgeContent>>;
+  try {
+    normalized = await normalizeManualKnowledgeContent({
+      title: input.title,
+      type: input.type,
+      content: input.content,
+      canonicalUrl: input.canonicalUrl,
+      locale: input.locale,
+      apiKey: decryptStoredProviderCredential(credential),
+      modelId: modelSettings.chatModelId,
+      maxOutputTokens: modelSettings.crawlMaxOutputTokens,
+      timeoutMs: environment.KNOWLEDGE_CRAWL_AI_TIMEOUT_MS,
+      idleTimeoutMs: environment.KNOWLEDGE_CRAWL_AI_IDLE_TIMEOUT_MS,
+      signal: abortController.signal,
+      client: getAitunnelClient(),
+    });
+  } catch (error) {
+    const errorCode =
+      error instanceof KnowledgeAiNormalizationError || error instanceof AitunnelProviderError
+        ? error.code
+        : abortController.signal.aborted
+          ? "KNOWLEDGE_AI_CANCELLED"
+          : "KNOWLEDGE_AI_FAILED";
+    await writeAuditEvent({
+      projectId: project.id,
+      actorUserId: session.userId,
+      action: "knowledge.document_normalization_failed",
+      resourceType: "knowledge_document",
+      requestId: getRequestId(event),
+      metadata: { documentType: input.type, chatModelId: modelSettings.chatModelId, errorCode },
+    }).catch(() => undefined);
+    if (error instanceof KnowledgeAiNormalizationError) {
+      throw createError({
+        statusCode: 422,
+        statusMessage: "ИИ не смог подготовить корректное содержимое записи",
+        data: { code: error.code, retryable: true },
+      });
+    }
+    if (abortController.signal.aborted) {
+      throw createError({
+        statusCode: 499,
+        statusMessage: "Обработка записи отменена",
+        data: { code: "KNOWLEDGE_AI_CANCELLED", retryable: true },
+      });
+    }
+    return throwProviderHttpError(error);
+  } finally {
+    event.node.res.off("close", abortOnDisconnect);
+  }
+
+  const normalizedInput = { ...input, content: normalized.markdown };
+  const versionValues = buildVersionValues(normalizedInput);
   const created = await createKnowledgeDocumentRecord({
     projectId: project.id,
     type: input.type,
@@ -302,6 +390,11 @@ export const createKnowledgeDocument = async (
       versionId: created.version.id,
       versionNo: created.version.versionNo,
       chunkCount: created.version.chunkCount,
+      normalizedByAi: true,
+      requestedChatModelId: modelSettings.chatModelId,
+      resolvedChatModelId: normalized.resolvedModelId,
+      inputTokens: normalized.inputTokens,
+      outputTokens: normalized.outputTokens,
     },
   });
   return loadKnowledgeDocumentDetail(project.id, created.document.id);
