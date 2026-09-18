@@ -94,7 +94,7 @@ const publish = async (): Promise<void> => {
 </script>
 
 <template>
-  <main class="page-frame page-frame--narrow">
+  <main class="page-frame">
     <NuxtLink class="back-link" :to="`/projects/${projectId}/knowledge/documents`">
       <UiIcon name="arrow-left" />
       <span>База знаний</span>

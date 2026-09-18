@@ -87,6 +87,7 @@ export const projectModelSettingsResponseSchema = z.object({
   rerankModelId: z.string().nullable(),
   embeddingDimension: z.number().int().positive().nullable(),
   maxOutputTokens: z.number().int().min(1).max(64_000),
+  crawlMaxOutputTokens: z.number().int().min(1_000).max(64_000),
   temperature: z.number().min(0).max(2).nullable(),
   updatedAt: z.string().datetime().nullable(),
 });
@@ -97,6 +98,7 @@ export const updateProjectModelSettingsRequestSchema = z
     embeddingModelId: z.string().min(1).max(255).nullable().optional(),
     rerankModelId: z.string().min(1).max(255).nullable().optional(),
     maxOutputTokens: z.number().int().min(1).max(64_000).optional(),
+    crawlMaxOutputTokens: z.number().int().min(1_000).max(64_000).optional(),
     temperature: z.number().min(0).max(2).nullable().optional(),
   })
   .strict()

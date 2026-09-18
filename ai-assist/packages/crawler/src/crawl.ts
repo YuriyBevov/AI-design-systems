@@ -64,26 +64,42 @@ export const validateCrawlSource = async (
 
 export const crawlWebsite = async (input: {
   settings: CrawlSettings;
+  targetUrls?: string[];
+  beforePage?: () => Promise<void>;
   onPage: (page: CrawlPageResult, discoveredCount: number) => Promise<void>;
+  fetchConcurrency?: number;
+  processConcurrency?: number;
   lookup?: DnsLookup;
   request?: ResourceRequester;
 }): Promise<{ discoveredCount: number; processedCount: number; profileVersion: string }> => {
   const lookup = input.lookup ?? defaultDnsLookup;
   const validated = await validateCrawlSource(input.settings, lookup);
+  const targetPaths = input.targetUrls?.map((value) => normalizeCrawlUrl(value).pathname);
   const scope = {
     origin: validated.origin,
-    includePathPrefixes: input.settings.includePathPrefixes,
-    includeExactPaths: input.settings.includeExactPaths,
+    includePathPrefixes: targetPaths ? [] : input.settings.includePathPrefixes,
+    includeExactPaths: targetPaths ?? input.settings.includeExactPaths,
     excludePathPrefixes: input.settings.excludePathPrefixes,
   };
   let effectiveDelayMs = input.settings.requestDelayMs;
+  let nextRequestAt = Date.now() + effectiveDelayMs;
+  let requestSchedule = Promise.resolve();
   const isScoped = (url: URL): boolean => isUrlInScope(url, scope);
+  const waitForRequestSlot = async (): Promise<void> => {
+    const scheduled = requestSchedule.then(async () => {
+      const delayMs = Math.max(0, nextRequestAt - Date.now());
+      if (delayMs) await wait(delayMs);
+      nextRequestAt = Date.now() + effectiveDelayMs;
+    });
+    requestSchedule = scheduled.catch(() => undefined);
+    await scheduled;
+  };
   const fetchResource = async (
     url: string | URL,
     allowedContentTypes: string[],
     isAllowedUrl = isScoped,
   ) => {
-    await wait(effectiveDelayMs);
+    await waitForRequestSlot();
     return fetchSafeResource({
       url,
       allowedOrigin: validated.origin,
@@ -109,15 +125,15 @@ export const crawlWebsite = async (input: {
   }
   const robots = parseRobots(robotsResponse.status === 404 ? "" : robotsResponse.body);
   effectiveDelayMs = Math.max(effectiveDelayMs, robots.crawlDelayMs);
+  nextRequestAt = Math.max(nextRequestAt, Date.now() + effectiveDelayMs);
   const start = normalizeCrawlUrl(validated.startUrl);
   if (isScoped(start) && !robots.allows(start)) {
     throw new CrawlerError("CRAWL_START_URL_ROBOTS_FORBIDDEN");
   }
 
-  const sitemapSeeds = [
-    ...robots.sitemapUrls,
-    new URL("/sitemap.xml", validated.origin).toString(),
-  ];
+  const sitemapSeeds = input.targetUrls
+    ? []
+    : [...robots.sitemapUrls, new URL("/sitemap.xml", validated.origin).toString()];
   const sitemapQueue = [...new Set(sitemapSeeds)];
   const visitedSitemaps = new Set<string>();
   const sitemapPages = new Map<string, URL>();
@@ -179,15 +195,22 @@ export const crawlWebsite = async (input: {
       queue.push({ url, depth: 0 });
     }
   };
-  seed(start);
-  for (const path of [...input.settings.includeExactPaths, ...input.settings.includePathPrefixes]) {
-    seed(normalizeCrawlUrl(new URL(path, validated.origin)));
+  if (input.targetUrls) {
+    for (const value of input.targetUrls) seed(normalizeCrawlUrl(value));
+  } else {
+    seed(start);
+    for (const path of [
+      ...input.settings.includeExactPaths,
+      ...input.settings.includePathPrefixes,
+    ]) {
+      seed(normalizeCrawlUrl(new URL(path, validated.origin)));
+    }
   }
   const candidateLimit =
     input.settings.crawlMode === "full"
       ? Math.min(10_000, Math.max(input.settings.maxPages * 2, 100))
       : Math.max(input.settings.maxPages * 5, 100);
-  for (const url of prioritized) {
+  for (const url of input.targetUrls ? [] : prioritized) {
     if (queued.size >= candidateLimit) break;
     if (!queued.has(url.href)) {
       queued.add(url.href);
@@ -195,10 +218,31 @@ export const crawlWebsite = async (input: {
     }
   }
 
+  const fetchConcurrency = Math.max(1, Math.min(10, Math.floor(input.fetchConcurrency ?? 1)));
+  const processConcurrency = Math.max(1, Math.min(20, Math.floor(input.processConcurrency ?? 1)));
+  let claimedCount = 0;
   let processedCount = 0;
+  let pipelineError: unknown;
+  const activeFetches = new Set<Promise<void>>();
+  const activeProcessors = new Set<Promise<void>>();
   const profileVersion = "raw-html-v1";
-  while (queue.length && processedCount < input.settings.maxPages) {
-    const current = queue.shift()!;
+
+  const scheduleProcessing = async (result: CrawlPageResult): Promise<void> => {
+    while (activeProcessors.size >= processConcurrency && !pipelineError) {
+      await Promise.race(activeProcessors);
+    }
+    if (pipelineError) throw pipelineError;
+    const processingTask = input.onPage(result, queued.size).catch((error: unknown) => {
+      pipelineError ??= error;
+    });
+    activeProcessors.add(processingTask);
+    void processingTask.finally(() => {
+      activeProcessors.delete(processingTask);
+    });
+  };
+
+  const fetchPage = async (current: { url: URL; depth: number }): Promise<void> => {
+    await input.beforePage?.();
     let result: CrawlPageResult;
     try {
       const response = await fetchResource(current.url, htmlContentTypes);
@@ -248,8 +292,36 @@ export const crawlWebsite = async (input: {
       };
     }
     processedCount += 1;
-    await input.onPage(result, queued.size);
+    await scheduleProcessing(result);
+  };
+
+  const startFetch = (current: { url: URL; depth: number }): void => {
+    claimedCount += 1;
+    const fetchTask = fetchPage(current).catch((error: unknown) => {
+      pipelineError ??= error;
+    });
+    activeFetches.add(fetchTask);
+    void fetchTask.finally(() => {
+      activeFetches.delete(fetchTask);
+    });
+  };
+
+  while ((queue.length && claimedCount < input.settings.maxPages) || activeFetches.size) {
+    while (
+      queue.length &&
+      claimedCount < input.settings.maxPages &&
+      activeFetches.size < fetchConcurrency &&
+      !pipelineError
+    ) {
+      startFetch(queue.shift()!);
+    }
+    if (pipelineError || !activeFetches.size) break;
+    await Promise.race(activeFetches);
   }
+
+  await Promise.all(activeFetches);
+  await Promise.all(activeProcessors);
+  if (pipelineError) throw pipelineError;
   return {
     discoveredCount: queued.size,
     processedCount,

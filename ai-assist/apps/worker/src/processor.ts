@@ -7,6 +7,10 @@ import {
   knowledgeIndexJobName,
   type KnowledgeIndexJobData,
   type KnowledgeIndexJobResult,
+  knowledgeProcessingJobDataSchema,
+  knowledgeProcessingJobName,
+  type KnowledgeProcessingJobData,
+  type KnowledgeProcessingJobResult,
   systemPingJobDataSchema,
   systemPingJobName,
   type SystemPingJobResult,
@@ -15,6 +19,9 @@ import {
 export type SystemJobProcessorDependencies = {
   processKnowledgeCrawl: (data: KnowledgeCrawlJobData) => Promise<KnowledgeCrawlJobResult>;
   processKnowledgeIndex: (data: KnowledgeIndexJobData) => Promise<KnowledgeIndexJobResult>;
+  processKnowledgeProcessing: (
+    data: KnowledgeProcessingJobData,
+  ) => Promise<KnowledgeProcessingJobResult>;
 };
 
 export const processSystemJob = async (
@@ -22,12 +29,20 @@ export const processSystemJob = async (
   data: unknown,
   workerId: string,
   dependencies: SystemJobProcessorDependencies,
-): Promise<SystemPingJobResult | KnowledgeIndexJobResult | KnowledgeCrawlJobResult> => {
+): Promise<
+  | SystemPingJobResult
+  | KnowledgeIndexJobResult
+  | KnowledgeCrawlJobResult
+  | KnowledgeProcessingJobResult
+> => {
   if (jobName === knowledgeCrawlJobName) {
     return dependencies.processKnowledgeCrawl(knowledgeCrawlJobDataSchema.parse(data));
   }
   if (jobName === knowledgeIndexJobName) {
     return dependencies.processKnowledgeIndex(knowledgeIndexJobDataSchema.parse(data));
+  }
+  if (jobName === knowledgeProcessingJobName) {
+    return dependencies.processKnowledgeProcessing(knowledgeProcessingJobDataSchema.parse(data));
   }
   if (jobName !== systemPingJobName) throw new Error(`Unsupported system job: ${jobName}`);
 

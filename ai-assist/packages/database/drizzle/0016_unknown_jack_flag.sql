@@ -1,0 +1,1 @@
+ALTER TABLE "knowledge_crawl_pages" ADD COLUMN "attempt_count" integer DEFAULT 1 NOT NULL;

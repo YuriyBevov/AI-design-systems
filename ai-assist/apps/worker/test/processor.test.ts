@@ -10,6 +10,9 @@ describe("processSystemJob", () => {
     processKnowledgeIndex: async () => {
       throw new Error("not expected");
     },
+    processKnowledgeProcessing: async () => {
+      throw new Error("not expected");
+    },
   };
 
   it("responds to a valid system ping", async () => {
@@ -75,6 +78,52 @@ describe("processSystemJob", () => {
       { ...dependencies, processKnowledgeCrawl },
     );
     expect(processKnowledgeCrawl).toHaveBeenCalledOnce();
+  });
+
+  it("dispatches a validated knowledge processing job", async () => {
+    const processKnowledgeProcessing = vi.fn(async () => ({
+      runId: "c85e04ac-c414-4262-88d8-6e15386a1b3d",
+      projectId: "a85e04ac-c414-4262-88d8-6e15386a1b3d",
+      status: "succeeded" as const,
+      processedCount: 2,
+      succeededCount: 2,
+      failedCount: 0,
+    }));
+    await processSystemJob(
+      "knowledge.processing",
+      {
+        projectId: "a85e04ac-c414-4262-88d8-6e15386a1b3d",
+        runId: "c85e04ac-c414-4262-88d8-6e15386a1b3d",
+        requestedAt: "2026-09-17T12:00:00.000Z",
+        requestId: "req-test",
+      },
+      "worker-test",
+      { ...dependencies, processKnowledgeProcessing },
+    );
+    expect(processKnowledgeProcessing).toHaveBeenCalledOnce();
+  });
+
+  it("accepts a cooperatively cancelled knowledge processing result", async () => {
+    const processKnowledgeProcessing = vi.fn(async () => ({
+      runId: "c85e04ac-c414-4262-88d8-6e15386a1b3d",
+      projectId: "a85e04ac-c414-4262-88d8-6e15386a1b3d",
+      status: "cancelled" as const,
+      processedCount: 7,
+      succeededCount: 6,
+      failedCount: 1,
+    }));
+    const result = await processSystemJob(
+      "knowledge.processing",
+      {
+        projectId: "a85e04ac-c414-4262-88d8-6e15386a1b3d",
+        runId: "c85e04ac-c414-4262-88d8-6e15386a1b3d",
+        requestedAt: "2026-09-18T07:00:00.000Z",
+        requestId: "req-test",
+      },
+      "worker-test",
+      { ...dependencies, processKnowledgeProcessing },
+    );
+    expect("status" in result && result.status).toBe("cancelled");
   });
 
   it("rejects an unsupported job", async () => {

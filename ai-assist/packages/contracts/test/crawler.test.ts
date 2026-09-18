@@ -3,9 +3,15 @@ import { describe, expect, it } from "vitest";
 import {
   createUrlKnowledgeSourceRequestSchema,
   crawlRunPagesQuerySchema,
+  crawlRunHistoryResponseSchema,
+  controlKnowledgeCrawlRequestSchema,
+  deleteKnowledgeCrawlResponseSchema,
+  deleteUrlKnowledgeSourceQuerySchema,
+  deleteUrlKnowledgeSourceResponseSchema,
   defaultKnowledgeNormalizationPrompt,
   discoverSiteStructureResponseSchema,
   knowledgeCrawlJobDataSchema,
+  knowledgeCrawlJobResultSchema,
   publishCrawlRunRequestSchema,
   reprocessKnowledgeCrawlRequestSchema,
 } from "../src/crawler.js";
@@ -141,9 +147,103 @@ describe("crawler contracts", () => {
     };
     expect(knowledgeCrawlJobDataSchema.safeParse(payload).success).toBe(true);
     expect(knowledgeCrawlJobDataSchema.parse(payload).rawSourceRunId).toBeNull();
+    expect(knowledgeCrawlJobDataSchema.parse(payload).targetUrl).toBeNull();
+    expect(knowledgeCrawlJobDataSchema.parse(payload).failedSourceRunId).toBeNull();
+    expect(
+      knowledgeCrawlJobDataSchema.safeParse({
+        ...payload,
+        targetUrl: "https://shop.example/catalog/box/",
+      }).success,
+    ).toBe(true);
+    expect(
+      knowledgeCrawlJobDataSchema.safeParse({
+        ...payload,
+        failedSourceRunId: "d85e04ac-c414-4262-88d8-6e15386a1b3d",
+      }).success,
+    ).toBe(true);
+    expect(
+      knowledgeCrawlJobDataSchema.safeParse({
+        ...payload,
+        targetUrl: "https://shop.example/catalog/box/",
+        failedSourceRunId: "d85e04ac-c414-4262-88d8-6e15386a1b3d",
+      }).success,
+    ).toBe(false);
     expect(knowledgeCrawlJobDataSchema.safeParse({ ...payload, apiKey: "forbidden" }).success).toBe(
       false,
     );
+  });
+
+  it("accepts only an explicit crawl pause state", () => {
+    expect(controlKnowledgeCrawlRequestSchema.parse({ paused: true })).toEqual({ paused: true });
+    expect(
+      controlKnowledgeCrawlRequestSchema.safeParse({ paused: false, force: true }).success,
+    ).toBe(false);
+  });
+
+  it("accepts the terminal crawl deletion response", () => {
+    expect(deleteKnowledgeCrawlResponseSchema.parse({ deleted: true })).toEqual({ deleted: true });
+    expect(deleteKnowledgeCrawlResponseSchema.safeParse({ deleted: false }).success).toBe(false);
+  });
+
+  it("validates source deletion concurrency and preservation counts", () => {
+    expect(deleteUrlKnowledgeSourceQuerySchema.parse({ expectedVersion: "3" })).toEqual({
+      expectedVersion: 3,
+    });
+    expect(
+      deleteUrlKnowledgeSourceResponseSchema.safeParse({
+        id: "b85e04ac-c414-4262-88d8-6e15386a1b3d",
+        deleted: true,
+        deletedCrawlRuns: 2,
+        preservedDocuments: 12,
+      }).success,
+    ).toBe(true);
+  });
+
+  it("returns source-labelled crawl history", () => {
+    expect(
+      crawlRunHistoryResponseSchema.safeParse({
+        runs: [
+          {
+            id: "c85e04ac-c414-4262-88d8-6e15386a1b3d",
+            projectId: "a85e04ac-c414-4262-88d8-6e15386a1b3d",
+            sourceId: "b85e04ac-c414-4262-88d8-6e15386a1b3d",
+            sourceName: "Каталог",
+            status: "failed",
+            discoveredCount: 1,
+            processedCount: 1,
+            succeededCount: 0,
+            failedCount: 1,
+            newCount: 0,
+            changedCount: 0,
+            unchangedCount: 0,
+            approvedCount: 0,
+            profileVersion: "raw-ai-v1",
+            paused: false,
+            normalizationPrompt: defaultKnowledgeNormalizationPrompt,
+            errorCode: "PROVIDER_TIMEOUT",
+            requestedByEmail: null,
+            requestId: "request-1",
+            startedAt: "2026-09-16T10:00:00.000Z",
+            finishedAt: "2026-09-16T10:01:00.000Z",
+            createdAt: "2026-09-16T10:00:00.000Z",
+            updatedAt: "2026-09-16T10:01:00.000Z",
+          },
+        ],
+      }).success,
+    ).toBe(true);
+  });
+
+  it("accepts a cooperative crawl cancellation result", () => {
+    expect(
+      knowledgeCrawlJobResultSchema.safeParse({
+        runId: "c85e04ac-c414-4262-88d8-6e15386a1b3d",
+        projectId: "a85e04ac-c414-4262-88d8-6e15386a1b3d",
+        status: "cancelled",
+        processedCount: 2,
+        succeededCount: 1,
+        failedCount: 1,
+      }).success,
+    ).toBe(true);
   });
 
   it("accepts only a bounded prompt for repeated AI processing", () => {

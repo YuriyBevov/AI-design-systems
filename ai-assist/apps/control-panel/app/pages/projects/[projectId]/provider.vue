@@ -33,6 +33,7 @@ const modelForm = reactive({
   embeddingModelId: null as string | null,
   rerankModelId: null as string | null,
   maxOutputTokens: 1500,
+  crawlMaxOutputTokens: 20_000,
   temperature: null as number | null,
 });
 
@@ -61,6 +62,7 @@ watch(
     modelForm.embeddingModelId = settings.embeddingModelId;
     modelForm.rerankModelId = settings.rerankModelId;
     modelForm.maxOutputTokens = settings.maxOutputTokens;
+    modelForm.crawlMaxOutputTokens = settings.crawlMaxOutputTokens;
     modelForm.temperature = settings.temperature;
   },
   { immediate: true },
@@ -125,6 +127,11 @@ const clampNumberInput = (
 const clampMaxOutputTokens = (event: Event): void => {
   clampNumberInput(event, 1, maxOutputTokensLimit.value, (value) => {
     modelForm.maxOutputTokens = value;
+  });
+};
+const clampCrawlMaxOutputTokens = (event: Event): void => {
+  clampNumberInput(event, 1_000, maxOutputTokensLimit.value, (value) => {
+    modelForm.crawlMaxOutputTokens = value;
   });
 };
 const clampTemperature = (event: Event): void => {
@@ -247,6 +254,7 @@ const isModelFormDirty = computed(() => {
     (modelForm.embeddingModelId || null) !== savedSettings.embeddingModelId ||
     (modelForm.rerankModelId || null) !== savedSettings.rerankModelId ||
     modelForm.maxOutputTokens !== savedSettings.maxOutputTokens ||
+    modelForm.crawlMaxOutputTokens !== savedSettings.crawlMaxOutputTokens ||
     temperature !== savedSettings.temperature
   );
 });
@@ -384,6 +392,18 @@ const saveModels = async (): Promise<void> => {
     return;
   }
   if (
+    !Number.isInteger(modelForm.crawlMaxOutputTokens) ||
+    modelForm.crawlMaxOutputTokens < 1_000 ||
+    modelForm.crawlMaxOutputTokens > maxOutputTokensLimit.value
+  ) {
+    message.value = {
+      type: "error",
+      text: `Укажите максимум токенов парсинга от 1 000 до ${formatInteger(maxOutputTokensLimit.value)}.`,
+    };
+    isSavingModels.value = false;
+    return;
+  }
+  if (
     typeof modelForm.temperature === "number" &&
     (!Number.isFinite(modelForm.temperature) ||
       modelForm.temperature < 0 ||
@@ -404,6 +424,7 @@ const saveModels = async (): Promise<void> => {
           embeddingModelId: modelForm.embeddingModelId || null,
           rerankModelId: modelForm.rerankModelId || null,
           maxOutputTokens: modelForm.maxOutputTokens,
+          crawlMaxOutputTokens: modelForm.crawlMaxOutputTokens,
           temperature: typeof modelForm.temperature === "number" ? modelForm.temperature : null,
         },
       },
@@ -482,8 +503,15 @@ const saveModels = async (): Promise<void> => {
               <div>
                 <h2 id="models-title" class="section-title">Каталог и выбор моделей</h2>
               </div>
-              <button class="button" type="button" :disabled="isSyncingModels" @click="syncModels">
-                {{ isSyncingModels ? "Синхронизируем…" : "Обновить каталог" }}
+              <button
+                class="icon-button"
+                type="button"
+                :aria-label="isSyncingModels ? 'Синхронизируем каталог' : 'Обновить каталог'"
+                :title="isSyncingModels ? 'Синхронизируем…' : 'Обновить каталог'"
+                :disabled="isSyncingModels"
+                @click="syncModels"
+              >
+                <UiIcon name="refresh" />
               </button>
             </header>
 
@@ -584,6 +612,27 @@ const saveModels = async (): Promise<void> => {
                     ]"
                   />
                 </div>
+                <div class="form-field">
+                  <label class="form-field__label" for="crawl-max-output-tokens">
+                    Максимум токенов обработки страницы
+                  </label>
+                  <input
+                    id="crawl-max-output-tokens"
+                    v-model.number="modelForm.crawlMaxOutputTokens"
+                    class="form-field__control"
+                    type="number"
+                    min="1000"
+                    :max="maxOutputTokensLimit"
+                    required
+                    @input="clampCrawlMaxOutputTokens"
+                  />
+                  <BaseNote
+                    :items="[
+                      'Отдельный бюджет ИИ-нормализации одной страницы после технического парсинга.',
+                      'Рекомендуем 20 000. Для больших общих страниц значение можно увеличить; стоимость и время обработки возрастут.',
+                    ]"
+                  />
+                </div>
               </div>
 
               <div class="form-actions">
@@ -641,7 +690,7 @@ const saveModels = async (): Promise<void> => {
             </div>
           </div>
 
-          <div class="readonly-summary readonly-summary--column panel--push-end">
+          <div class="readonly-summary readonly-summary--column layout-push-end">
             <div>
               <span>Публичный идентификатор</span>
               <code>{{ data.assistantSettings.assistant.publicId }}</code>
@@ -664,6 +713,7 @@ const saveModels = async (): Promise<void> => {
 
       <ReauthenticateModal
         v-if="reauthenticationVisible"
+        description="Для добавления, замены или удаления ключа провайдера подтвердите текущий пароль."
         :pending="isReauthenticating"
         @close="closeReauthentication"
         @confirm="reauthenticate"

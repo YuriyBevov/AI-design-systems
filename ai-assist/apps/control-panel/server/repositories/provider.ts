@@ -218,6 +218,7 @@ export const upsertProjectModelSettings = async (input: {
   embeddingDimension: number | null;
   rerankModelId: string | null;
   maxOutputTokens: number;
+  crawlMaxOutputTokens: number;
   temperature: number | null;
   updatedBy: string;
 }): Promise<void> => {
@@ -233,6 +234,7 @@ export const upsertProjectModelSettings = async (input: {
         embeddingDimension: input.embeddingDimension,
         rerankModelId: input.rerankModelId,
         maxOutputTokens: input.maxOutputTokens,
+        crawlMaxOutputTokens: input.crawlMaxOutputTokens,
         temperature: input.temperature,
         updatedBy: input.updatedBy,
         updatedAt: now,

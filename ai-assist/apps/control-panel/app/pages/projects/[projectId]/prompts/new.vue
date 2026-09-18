@@ -107,7 +107,7 @@ const create = async (action: "apply" | "draft"): Promise<void> => {
 </script>
 
 <template>
-  <main class="page-frame page-frame--narrow">
+  <main class="page-frame">
     <div v-if="error" class="empty-state" role="alert">Проект недоступен.</div>
     <div v-else-if="!canEdit" class="empty-state" role="alert">
       Недостаточно прав для создания роли.

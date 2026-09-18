@@ -1,0 +1,1 @@
+ALTER TABLE "knowledge_crawl_runs" ADD COLUMN "pause_requested_at" timestamp with time zone;

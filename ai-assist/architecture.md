@@ -76,12 +76,19 @@ Route handler не содержит SQL, шифрование, prompt assembly �
 ### Worker
 
 - обработка очередей `sync-source`, `crawl`, `parse-file`, `extract`, `index`, `purge`, `sync-models`;
+- prompt-driven постобработка выбранных knowledge versions с созданием новой immutable version без
+  автоматического переключения публикации;
+- checkpoint-safe pause/resume, cooperative stop и история массовой постобработки с сохранением
+  созданных immutable versions при удалении технического run;
 - SSRF-safe коннекторы к публичным сайтам и feed URL с фиксированным mapping profile;
 - безопасные parsers TXT/Markdown, text PDF, DOCX, CSV/XLSX и XML/YML без выполнения macro/script/external content;
 - SSRF-safe fetch и optional browser rendering;
 - нормализация страниц/товаров;
 - chunking, embeddings, versioned index activation;
-- retry, cancellation, progress и dead-letter behavior.
+- bounded retry и concurrency, pause/resume, cooperative stop acknowledgement между запусками новых
+  страниц, атомарный progress и dead-letter behavior;
+- автоматическая page-level очередь до трёх попыток и отдельный tenant-scoped run для точечного либо
+  пакетного повтора оставшихся failed URL.
 
 ### Domain
 
@@ -155,8 +162,8 @@ sequenceDiagram
     Q->>W: consume
     W->>P: mark running
     W->>S: SSRF-safe discovery/fetch
-    W->>W: raw HTML-to-text
-    W->>P: persist extracted visible text
+    W->>W: HTML-to-text + deterministic boilerplate pruning
+    W->>P: persist cleaned visible text
     W->>AI: classify + clean + Markdown JSON
     W->>W: schema validate + checksum
     W->>P: write draft versions
@@ -173,19 +180,25 @@ sequenceDiagram
 
 1. URL safety and scope.
 2. Fetch metadata/content with limits.
-3. Removal of non-visible technical nodes, then visible body text and link extraction without
-   semantic classification or content-boilerplate removal.
-4. Storage of raw visible text and an immutable operator-prompt snapshot for later reprocessing.
-5. Isolated AI normalization into `info|product|service`, title and detailed Markdown. The default
-   instruction preserves all unique relevant facts without summarization.
+3. Link extraction followed by removal of technical DOM nodes and explicit navigation/template
+   boilerplate without semantic classification.
+4. Storage of cleaned visible text and an immutable operator-prompt snapshot for later reprocessing.
+5. Isolated AI normalization into `info|product|service`, title and detailed Markdown with provider
+   JSON Schema, low reasoning effort, separate total/idle timeouts and one bounded retry. The
+   default instruction preserves all unique relevant facts without summarization.
 6. Strict provider-output validation; source content remains untrusted user data, while immutable
-   safety policy remains separate from the editable prompt.
+   safety policy remains separate from the stored operator prompt.
 7. Deduplication/internal versioning and manual publication.
 8. Chunking and indexing.
 
 После завершения технического обхода Admin API может создать новый AI-only run из сохранённых
 страниц и изменённого операторского prompt-а. Этот путь не выполняет сетевых запросов к сайту и не
 перезаписывает исходный run.
+
+Остановка разрешена только для приостановленного run. API переводит его в `cancelled`, worker
+подтверждает завершение через `finished_at`, не записывая отмену как ошибку источника. Только после
+этого API разрешает удалить run и каскадные page results; созданные документы БЗ остаются отдельными
+сущностями.
 
 Модель не дополняет отсутствующие факты. Ошибка ответа или runtime-схемы даёт page-level failure;
 валидный результат остаётся на ручном подтверждении до публикации.

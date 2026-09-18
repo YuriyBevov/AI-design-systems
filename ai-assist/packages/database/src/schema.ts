@@ -81,6 +81,19 @@ export const knowledgeCrawlReviewStatus = pgEnum("knowledge_crawl_review_status"
   "approved",
   "rejected",
 ]);
+export const knowledgeProcessingRunStatus = pgEnum("knowledge_processing_run_status", [
+  "queued",
+  "running",
+  "succeeded",
+  "partial",
+  "failed",
+  "cancelled",
+]);
+export const knowledgeProcessingItemStatus = pgEnum("knowledge_processing_item_status", [
+  "queued",
+  "succeeded",
+  "failed",
+]);
 export const widgetConversationStatus = pgEnum("widget_conversation_status", ["active", "closed"]);
 export const widgetMessageRole = pgEnum("widget_message_role", ["user", "assistant"]);
 export const widgetMessageStatus = pgEnum("widget_message_status", [
@@ -270,6 +283,7 @@ export const projectModelSettings = pgTable("project_model_settings", {
   rerankModelId: varchar("rerank_model_id", { length: 255 }),
   embeddingDimension: integer("embedding_dimension"),
   maxOutputTokens: integer("max_output_tokens").default(1500).notNull(),
+  crawlMaxOutputTokens: integer("crawl_max_output_tokens").default(20_000).notNull(),
   temperature: doublePrecision("temperature"),
   updatedBy: uuid("updated_by").references(() => users.id, { onDelete: "set null" }),
   ...timestamps,
@@ -728,6 +742,7 @@ export const knowledgeCrawlRuns = pgTable(
     approvedCount: integer("approved_count").default(0).notNull(),
     profileVersion: varchar("profile_version", { length: 100 }).notNull(),
     normalizationPrompt: text("normalization_prompt"),
+    pauseRequestedAt: timestamp("pause_requested_at", { withTimezone: true }),
     errorCode: varchar("error_code", { length: 100 }),
     requestedBy: uuid("requested_by").references(() => users.id, { onDelete: "set null" }),
     requestId: varchar("request_id", { length: 128 }).notNull(),
@@ -775,6 +790,7 @@ export const knowledgeCrawlPages = pgTable(
     warnings: jsonb("warnings").$type<string[]>().default([]).notNull(),
     errorCode: varchar("error_code", { length: 100 }),
     retryable: boolean("retryable").default(false).notNull(),
+    attemptCount: integer("attempt_count").default(1).notNull(),
     reviewStatus: knowledgeCrawlReviewStatus("review_status").default("pending").notNull(),
     fetchedAt: timestamp("fetched_at", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
@@ -783,6 +799,64 @@ export const knowledgeCrawlPages = pgTable(
     uniqueIndex("knowledge_crawl_pages_run_url_uidx").on(table.runId, table.normalizedUrl),
     index("knowledge_crawl_pages_project_run_idx").on(table.projectId, table.runId),
     index("knowledge_crawl_pages_run_review_idx").on(table.runId, table.reviewStatus),
+  ],
+);
+
+export const knowledgeProcessingRuns = pgTable(
+  "knowledge_processing_runs",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    projectId: uuid("project_id")
+      .notNull()
+      .references(() => projects.id, { onDelete: "cascade" }),
+    status: knowledgeProcessingRunStatus("status").default("queued").notNull(),
+    instruction: text("instruction").notNull(),
+    totalCount: integer("total_count").default(0).notNull(),
+    processedCount: integer("processed_count").default(0).notNull(),
+    succeededCount: integer("succeeded_count").default(0).notNull(),
+    failedCount: integer("failed_count").default(0).notNull(),
+    pauseRequestedAt: timestamp("pause_requested_at", { withTimezone: true }),
+    errorCode: varchar("error_code", { length: 100 }),
+    requestedBy: uuid("requested_by").references(() => users.id, { onDelete: "set null" }),
+    requestId: varchar("request_id", { length: 128 }).notNull(),
+    startedAt: timestamp("started_at", { withTimezone: true }),
+    finishedAt: timestamp("finished_at", { withTimezone: true }),
+    ...timestamps,
+  },
+  (table) => [
+    index("knowledge_processing_runs_project_created_idx").on(table.projectId, table.createdAt),
+    uniqueIndex("knowledge_processing_runs_project_pending_uidx")
+      .on(table.projectId)
+      .where(sql`${table.status} in ('queued', 'running')`),
+  ],
+);
+
+export const knowledgeProcessingItems = pgTable(
+  "knowledge_processing_items",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    runId: uuid("run_id")
+      .notNull()
+      .references(() => knowledgeProcessingRuns.id, { onDelete: "cascade" }),
+    projectId: uuid("project_id")
+      .notNull()
+      .references(() => projects.id, { onDelete: "cascade" }),
+    documentId: uuid("document_id")
+      .notNull()
+      .references(() => knowledgeDocuments.id, { onDelete: "cascade" }),
+    status: knowledgeProcessingItemStatus("status").default("queued").notNull(),
+    sourceVersionId: uuid("source_version_id")
+      .notNull()
+      .references(() => knowledgeDocumentVersions.id, { onDelete: "cascade" }),
+    resultVersionId: uuid("result_version_id").references(() => knowledgeDocumentVersions.id, {
+      onDelete: "set null",
+    }),
+    errorCode: varchar("error_code", { length: 100 }),
+    ...timestamps,
+  },
+  (table) => [
+    uniqueIndex("knowledge_processing_items_run_document_uidx").on(table.runId, table.documentId),
+    index("knowledge_processing_items_project_run_idx").on(table.projectId, table.runId),
   ],
 );
 

@@ -4,6 +4,13 @@ import type { AuditEventResponse, ProjectResponse } from "@ai-assist/contracts";
 const route = useRoute();
 const projectId = computed(() => String(route.params.projectId));
 const requestFetch = useRequestFetch();
+type AuditSortColumn = "createdAt" | "action" | "actor" | "resource" | "requestId";
+const {
+  sortColumn: auditSortColumn,
+  sortDirection: auditSortDirection,
+  toggleSort: toggleAuditSort,
+} = useTableSort<AuditSortColumn>("createdAt", "descending");
+const setAuditSort = (column: string): void => toggleAuditSort(column as AuditSortColumn);
 
 const { data, error, refresh, status } = await useAsyncData(
   () => `project-audit-${projectId.value}`,
@@ -47,6 +54,22 @@ const actionLabel = (action: string): string =>
     "knowledge.document_archived": "Документ знаний архивирован",
     "knowledge.document_deleted": "Черновик знаний удалён",
   })[action] ?? action;
+const sortedEvents = computed(() =>
+  sortTableRows(data.value?.events ?? [], auditSortDirection.value, (event) => {
+    switch (auditSortColumn.value) {
+      case "createdAt":
+        return Date.parse(event.createdAt);
+      case "action":
+        return actionLabel(event.action);
+      case "actor":
+        return event.actorEmail ?? "Система";
+      case "resource":
+        return event.resourceType;
+      case "requestId":
+        return event.requestId;
+    }
+  }),
+);
 </script>
 
 <template>
@@ -63,25 +86,56 @@ const actionLabel = (action: string): string =>
 
     <div v-if="error" class="empty-state" role="alert">Журнал недоступен.</div>
 
-    <section v-else class="panel panel--flush" aria-label="События аудита">
+    <section v-else class="panel" aria-label="События аудита">
       <div v-if="!data?.events.length" class="empty-state">Событий пока нет.</div>
       <div v-else class="table-scroll">
         <table class="data-table" aria-label="События аудита">
           <thead>
             <tr>
-              <th>Дата</th>
-              <th>Действие</th>
-              <th>Пользователь</th>
-              <th>Объект</th>
-              <th>Request ID</th>
+              <TableSortHeader
+                label="Дата"
+                column="createdAt"
+                :active-column="auditSortColumn"
+                :direction="auditSortDirection"
+                @sort="setAuditSort"
+              />
+              <TableSortHeader
+                class="data-table__dynamic-column"
+                label="Действие"
+                column="action"
+                :active-column="auditSortColumn"
+                :direction="auditSortDirection"
+                @sort="setAuditSort"
+              />
+              <TableSortHeader
+                label="Пользователь"
+                column="actor"
+                :active-column="auditSortColumn"
+                :direction="auditSortDirection"
+                @sort="setAuditSort"
+              />
+              <TableSortHeader
+                label="Объект"
+                column="resource"
+                :active-column="auditSortColumn"
+                :direction="auditSortDirection"
+                @sort="setAuditSort"
+              />
+              <TableSortHeader
+                label="Request ID"
+                column="requestId"
+                :active-column="auditSortColumn"
+                :direction="auditSortDirection"
+                @sort="setAuditSort"
+              />
             </tr>
           </thead>
           <tbody>
-            <tr v-for="event in data.events" :key="event.id">
+            <tr v-for="event in sortedEvents" :key="event.id">
               <td>
                 <time :datetime="event.createdAt">{{ formatDate(event.createdAt) }}</time>
               </td>
-              <td>
+              <td class="data-table__dynamic-cell">
                 <strong>{{ actionLabel(event.action) }}</strong>
               </td>
               <td>{{ event.actorEmail ?? "Система" }}</td>

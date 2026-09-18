@@ -8,6 +8,7 @@ import {
   modelCapabilities,
   type AitunnelModel,
   type ChatMessage,
+  type ChatResponseFormat,
   type ChatStreamEvent,
   type CredentialVerification,
   type EmbeddingResult,
@@ -269,15 +270,26 @@ export class AitunnelClient {
     messages: ChatMessage[];
     maxOutputTokens: number;
     temperature?: number | null;
+    reasoningEffort?: "low" | "medium" | "high";
+    responseFormat?: ChatResponseFormat;
     timeoutMs?: number;
+    idleTimeoutMs?: number;
     signal?: AbortSignal;
   }): AsyncGenerator<ChatStreamEvent> {
     const timeoutMs = input.timeoutMs ?? this.#http.timeoutMs;
-    const streamTimeoutController = new AbortController();
-    const timeout = setTimeout(() => streamTimeoutController.abort(), timeoutMs);
-    const signal = input.signal
-      ? AbortSignal.any([input.signal, streamTimeoutController.signal])
-      : streamTimeoutController.signal;
+    const totalTimeoutController = new AbortController();
+    const idleTimeoutController = new AbortController();
+    const totalTimeout = setTimeout(() => totalTimeoutController.abort(), timeoutMs);
+    let idleTimeout: ReturnType<typeof setTimeout> | undefined;
+    const resetIdleTimeout = (): void => {
+      if (input.idleTimeoutMs === undefined) return;
+      clearTimeout(idleTimeout);
+      idleTimeout = setTimeout(() => idleTimeoutController.abort(), input.idleTimeoutMs);
+    };
+    resetIdleTimeout();
+    const signals = [totalTimeoutController.signal, idleTimeoutController.signal];
+    if (input.signal) signals.push(input.signal);
+    const signal = AbortSignal.any(signals);
 
     try {
       const response = await requestAitunnel(
@@ -298,6 +310,8 @@ export class AitunnelClient {
             ...(input.temperature === undefined || input.temperature === null
               ? {}
               : { temperature: input.temperature }),
+            ...(input.reasoningEffort ? { reasoning_effort: input.reasoningEffort } : {}),
+            ...(input.responseFormat ? { response_format: input.responseFormat } : {}),
           }),
           signal,
         },
@@ -321,6 +335,7 @@ export class AitunnelClient {
       while (true) {
         const { value, done } = await reader.read();
         if (done) break;
+        resetIdleTimeout();
         totalBytes += value.byteLength;
         if (totalBytes > this.#http.maxResponseBytes) {
           await reader.cancel();
@@ -365,7 +380,7 @@ export class AitunnelClient {
         });
       }
     } catch (error) {
-      if (streamTimeoutController.signal.aborted) {
+      if (totalTimeoutController.signal.aborted || idleTimeoutController.signal.aborted) {
         throw new AitunnelProviderError({
           code: "PROVIDER_TIMEOUT",
           message: "AITUNNEL stream timed out",
@@ -375,7 +390,8 @@ export class AitunnelClient {
       }
       throw error;
     } finally {
-      clearTimeout(timeout);
+      clearTimeout(totalTimeout);
+      clearTimeout(idleTimeout);
     }
   }
 

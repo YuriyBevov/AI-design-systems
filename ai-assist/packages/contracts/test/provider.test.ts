@@ -52,4 +52,16 @@ describe("provider contracts", () => {
         .success,
     ).toBe(false);
   });
+
+  it("accepts a separate bounded crawl output budget", () => {
+    expect(
+      updateProjectModelSettingsRequestSchema.safeParse({ crawlMaxOutputTokens: 20_000 }).success,
+    ).toBe(true);
+    expect(
+      updateProjectModelSettingsRequestSchema.safeParse({ crawlMaxOutputTokens: 999 }).success,
+    ).toBe(false);
+    expect(
+      updateProjectModelSettingsRequestSchema.safeParse({ crawlMaxOutputTokens: 64_001 }).success,
+    ).toBe(false);
+  });
 });

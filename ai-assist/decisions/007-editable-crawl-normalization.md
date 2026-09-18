@@ -3,6 +3,8 @@
 - Статус: принято
 - Дата: 2026-09-15
 - Дополняет: [ADR-005](005-ai-normalized-raw-site-ingestion.md)
+- Пункт об оставлении видимого boilerplate частично заменён:
+  [ADR-009](009-pre-ai-dom-boilerplate-filtering.md)
 
 ## Контекст
 

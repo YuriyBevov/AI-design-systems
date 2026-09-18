@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import type {
   CreateKnowledgeDocumentVersionRequest,
+  DeleteKnowledgeDocumentResponse,
   KnowledgeDocumentDetailResponse,
   KnowledgeDocumentType,
+  ReauthenticateResponse,
 } from "@ai-assist/contracts";
 
 const route = useRoute();
@@ -13,6 +15,10 @@ const documentId = computed(() => String(route.params.documentId));
 const isPublishing = ref(false);
 const isUnpublishing = ref(false);
 const unpublishConfirmationVisible = ref(false);
+const deleteConfirmationVisible = ref(false);
+const reauthenticationVisible = ref(false);
+const isDeleting = ref(false);
+const isReauthenticating = ref(false);
 const message = ref<{ type: "success" | "error"; text: string } | null>(null);
 useToastMessage(message);
 const form = reactive({
@@ -166,10 +172,58 @@ const unpublish = async (): Promise<void> => {
     isUnpublishing.value = false;
   }
 };
+
+const getErrorCode = (requestError: unknown): string | undefined => {
+  const fetchError = requestError as { data?: { code?: string; data?: { code?: string } } };
+  return fetchError.data?.data?.code ?? fetchError.data?.code;
+};
+
+const deleteDocument = async (): Promise<void> => {
+  if (!detail.value || !canEdit.value || isDeleting.value) return;
+  isDeleting.value = true;
+  message.value = null;
+  try {
+    await $fetch<DeleteKnowledgeDocumentResponse>(
+      `/api/v1/projects/${projectId.value}/knowledge/documents/${documentId.value}`,
+      {
+        method: "DELETE",
+        headers: getCsrfHeaders(),
+        query: { expectedVersion: detail.value.document.version },
+      },
+    );
+    await navigateTo(`/projects/${projectId.value}/knowledge/documents`);
+  } catch (requestError) {
+    if (getErrorCode(requestError) === "RECENT_AUTHENTICATION_REQUIRED") {
+      reauthenticationVisible.value = true;
+      return;
+    }
+    await setRequestError(requestError, "Не удалось удалить запись");
+  } finally {
+    isDeleting.value = false;
+  }
+};
+
+const reauthenticate = async (password: string): Promise<void> => {
+  if (isReauthenticating.value) return;
+  isReauthenticating.value = true;
+  try {
+    await $fetch<ReauthenticateResponse>("/api/v1/auth/reauthenticate", {
+      method: "POST",
+      headers: getCsrfHeaders(),
+      body: { password },
+    });
+    reauthenticationVisible.value = false;
+    await deleteDocument();
+  } catch (requestError) {
+    await setRequestError(requestError, "Не удалось подтвердить пароль");
+  } finally {
+    isReauthenticating.value = false;
+  }
+};
 </script>
 
 <template>
-  <main class="page-frame page-frame--narrow">
+  <main class="page-frame">
     <NuxtLink class="back-link" :to="`/projects/${projectId}/knowledge/documents`">
       <UiIcon name="arrow-left" />
       <span>База знаний</span>
@@ -252,6 +306,14 @@ const unpublish = async (): Promise<void> => {
           >
             Снять с публикации
           </button>
+          <button
+            class="button button--danger"
+            type="button"
+            :disabled="isDeleting"
+            @click="deleteConfirmationVisible = true"
+          >
+            Удалить
+          </button>
         </div>
       </form>
     </section>
@@ -266,6 +328,24 @@ const unpublish = async (): Promise<void> => {
       danger
       @close="unpublishConfirmationVisible = false"
       @confirm="unpublish"
+    />
+    <ConfirmModal
+      v-if="deleteConfirmationVisible && !reauthenticationVisible"
+      title="Удалить запись базы знаний?"
+      description="Запись, все её версии, публикации и индексные фрагменты будут удалены без возможности восстановления."
+      confirm-label="Удалить запись"
+      pending-label="Удаляем…"
+      :pending="isDeleting"
+      danger
+      @close="deleteConfirmationVisible = false"
+      @confirm="deleteDocument"
+    />
+    <ReauthenticateModal
+      v-if="reauthenticationVisible"
+      description="Для удаления записи базы знаний подтвердите текущий пароль."
+      :pending="isReauthenticating"
+      @close="reauthenticationVisible = false"
+      @confirm="reauthenticate"
     />
   </main>
 </template>

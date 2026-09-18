@@ -52,7 +52,20 @@ export const serviceEnvironmentSchema = z
       "https://api.aitunnel.ru/public/aitunnel/models",
     ),
     PROVIDER_REQUEST_TIMEOUT_MS: z.coerce.number().int().min(1_000).max(30_000).default(8_000),
-    KNOWLEDGE_CRAWL_AI_TIMEOUT_MS: z.coerce.number().int().min(10_000).max(120_000).default(60_000),
+    KNOWLEDGE_CRAWL_AI_TIMEOUT_MS: z.coerce
+      .number()
+      .int()
+      .min(60_000)
+      .max(900_000)
+      .default(300_000),
+    KNOWLEDGE_CRAWL_AI_IDLE_TIMEOUT_MS: z.coerce
+      .number()
+      .int()
+      .min(10_000)
+      .max(120_000)
+      .default(60_000),
+    KNOWLEDGE_CRAWL_FETCH_CONCURRENCY: z.coerce.number().int().min(1).max(10).default(2),
+    KNOWLEDGE_CRAWL_AI_CONCURRENCY: z.coerce.number().int().min(1).max(20).default(5),
     PROVIDER_RESPONSE_MAX_BYTES: z.coerce
       .number()
       .int()

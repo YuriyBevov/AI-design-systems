@@ -227,6 +227,95 @@ export const deleteKnowledgeDocumentResponseSchema = z.object({
   deleted: z.literal(true),
 });
 
+export const bulkKnowledgeDocumentsRequestSchema = z
+  .object({
+    action: z.enum(["publish", "unpublish", "delete"]),
+    documentIds: z.array(z.string().uuid()).min(1).max(5_000),
+  })
+  .strict()
+  .transform((value) => ({ ...value, documentIds: [...new Set(value.documentIds)] }));
+
+export const bulkKnowledgeDocumentsResponseSchema = z.object({
+  action: z.enum(["publish", "unpublish", "delete"]),
+  processedCount: z.number().int().nonnegative(),
+  skippedCount: z.number().int().nonnegative(),
+});
+
+export const knowledgeProcessingRunStatusSchema = z.enum([
+  "queued",
+  "running",
+  "succeeded",
+  "partial",
+  "failed",
+  "cancelled",
+]);
+
+export const controlKnowledgeProcessingRequestSchema = z.object({ paused: z.boolean() }).strict();
+
+const knowledgeProcessingSelectionSchema = z.discriminatedUnion("scope", [
+  z.object({ scope: z.literal("all") }).strict(),
+  z
+    .object({
+      scope: z.literal("selected"),
+      documentIds: z.array(z.string().uuid()).min(1).max(5_000),
+    })
+    .strict()
+    .transform((value) => ({ ...value, documentIds: [...new Set(value.documentIds)] })),
+]);
+
+export const requestKnowledgeProcessingSchema = z
+  .object({
+    instruction: z.string().trim().min(20).max(10_000),
+    selection: knowledgeProcessingSelectionSchema,
+  })
+  .strict();
+
+export const knowledgeProcessingRunResponseSchema = z.object({
+  id: z.string().uuid(),
+  projectId: z.string().uuid(),
+  status: knowledgeProcessingRunStatusSchema,
+  instruction: z.string().min(20).max(10_000),
+  totalCount: z.number().int().nonnegative(),
+  processedCount: z.number().int().nonnegative(),
+  succeededCount: z.number().int().nonnegative(),
+  failedCount: z.number().int().nonnegative(),
+  paused: z.boolean(),
+  errorCode: z.string().min(1).max(100).nullable(),
+  requestedByEmail: z.string().email().nullable(),
+  requestId: z.string().min(1).max(128),
+  startedAt: z.string().datetime().nullable(),
+  finishedAt: z.string().datetime().nullable(),
+  createdAt: z.string().datetime(),
+  updatedAt: z.string().datetime(),
+});
+
+export const knowledgeProcessingRunHistoryResponseSchema = z.object({
+  runs: z.array(knowledgeProcessingRunResponseSchema).max(5_000),
+});
+
+export const deleteKnowledgeProcessingRunResponseSchema = z.object({
+  deleted: z.literal(true),
+});
+
+export const requestKnowledgeProcessingResponseSchema = z.object({
+  jobId: z.string().min(1).max(255),
+  run: knowledgeProcessingRunResponseSchema,
+});
+
+export const clearKnowledgeDataRequestSchema = z
+  .object({
+    scope: z.enum(["crawl_history", "documents", "sources", "all"]),
+  })
+  .strict();
+
+export const clearKnowledgeDataResponseSchema = z.object({
+  deletedCrawlRuns: z.number().int().nonnegative(),
+  deletedDocuments: z.number().int().nonnegative(),
+  deletedIndexVersions: z.number().int().nonnegative(),
+  deletedSources: z.number().int().nonnegative(),
+  preservedDocuments: z.number().int().nonnegative(),
+});
+
 export const knowledgeRetrievalSourceSchema = z.object({
   chunkId: z.string().uuid(),
   documentId: z.string().uuid(),
@@ -262,4 +351,23 @@ export type KnowledgeIndexVersionResponse = z.infer<typeof knowledgeIndexVersion
 export type KnowledgeIndexStateResponse = z.infer<typeof knowledgeIndexStateResponseSchema>;
 export type RequestKnowledgeReindexResponse = z.infer<typeof requestKnowledgeReindexResponseSchema>;
 export type DeleteKnowledgeDocumentResponse = z.infer<typeof deleteKnowledgeDocumentResponseSchema>;
+export type BulkKnowledgeDocumentsRequest = z.infer<typeof bulkKnowledgeDocumentsRequestSchema>;
+export type BulkKnowledgeDocumentsResponse = z.infer<typeof bulkKnowledgeDocumentsResponseSchema>;
+export type KnowledgeProcessingRunStatus = z.infer<typeof knowledgeProcessingRunStatusSchema>;
+export type ControlKnowledgeProcessingRequest = z.infer<
+  typeof controlKnowledgeProcessingRequestSchema
+>;
+export type RequestKnowledgeProcessing = z.infer<typeof requestKnowledgeProcessingSchema>;
+export type KnowledgeProcessingRunResponse = z.infer<typeof knowledgeProcessingRunResponseSchema>;
+export type KnowledgeProcessingRunHistoryResponse = z.infer<
+  typeof knowledgeProcessingRunHistoryResponseSchema
+>;
+export type DeleteKnowledgeProcessingRunResponse = z.infer<
+  typeof deleteKnowledgeProcessingRunResponseSchema
+>;
+export type RequestKnowledgeProcessingResponse = z.infer<
+  typeof requestKnowledgeProcessingResponseSchema
+>;
+export type ClearKnowledgeDataRequest = z.infer<typeof clearKnowledgeDataRequestSchema>;
+export type ClearKnowledgeDataResponse = z.infer<typeof clearKnowledgeDataResponseSchema>;
 export type KnowledgeRetrievalSource = z.infer<typeof knowledgeRetrievalSourceSchema>;

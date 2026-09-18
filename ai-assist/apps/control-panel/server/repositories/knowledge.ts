@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, max, ne, sql } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, max, ne, sql } from "drizzle-orm";
 
 import {
   knowledgeChunks,
@@ -10,8 +10,10 @@ import {
   knowledgeProducts,
   knowledgeSources,
   users,
+  widgetGenerationSources,
 } from "@ai-assist/database";
 import type {
+  BulkKnowledgeDocumentsRequest,
   KnowledgeDocumentStatus,
   KnowledgeDocumentType,
   KnowledgeIndexStatus,
@@ -602,8 +604,127 @@ export const archiveKnowledgeDocumentRecord = async (input: {
   return rows.length === 1;
 };
 
-export type DeleteKnowledgeDocumentRecordResult =
-  "deleted" | "not_found" | "version_conflict" | "not_draft" | "used";
+export type DeleteKnowledgeDocumentRecordResult = "deleted" | "not_found" | "version_conflict";
+
+export const bulkMutateKnowledgeDocumentRecords = async (input: {
+  projectId: string;
+  documentIds: string[];
+  action: BulkKnowledgeDocumentsRequest["action"];
+  actorUserId: string;
+}): Promise<{ processedCount: number; skippedCount: number }> =>
+  getInfrastructure().database.db.transaction(async (transaction) => {
+    const documents = await transaction
+      .select({
+        id: knowledgeDocuments.id,
+        status: knowledgeDocuments.status,
+        version: knowledgeDocuments.version,
+        activeVersionId: knowledgeDocuments.activeVersionId,
+      })
+      .from(knowledgeDocuments)
+      .where(
+        and(
+          eq(knowledgeDocuments.projectId, input.projectId),
+          inArray(knowledgeDocuments.id, input.documentIds),
+        ),
+      );
+    let processedCount = 0;
+
+    if (input.action === "delete") {
+      const foundIds = documents.map((document) => document.id);
+      if (foundIds.length) {
+        const chunkIds = transaction
+          .select({ id: knowledgeChunks.id })
+          .from(knowledgeChunks)
+          .innerJoin(
+            knowledgeDocumentVersions,
+            eq(knowledgeDocumentVersions.id, knowledgeChunks.documentVersionId),
+          )
+          .where(inArray(knowledgeDocumentVersions.documentId, foundIds));
+        await transaction
+          .delete(widgetGenerationSources)
+          .where(inArray(widgetGenerationSources.knowledgeChunkId, chunkIds));
+        await transaction
+          .delete(knowledgeDocumentPublications)
+          .where(inArray(knowledgeDocumentPublications.documentId, foundIds));
+        const deleted = await transaction
+          .delete(knowledgeDocuments)
+          .where(
+            and(
+              eq(knowledgeDocuments.projectId, input.projectId),
+              inArray(knowledgeDocuments.id, foundIds),
+            ),
+          )
+          .returning({ id: knowledgeDocuments.id });
+        processedCount = deleted.length;
+      }
+    } else if (input.action === "unpublish") {
+      const published = documents.filter(
+        (document) => document.status === "published" && document.activeVersionId,
+      );
+      if (published.length) {
+        const changed = await transaction
+          .update(knowledgeDocuments)
+          .set({
+            activeVersionId: null,
+            status: "draft",
+            version: sql`${knowledgeDocuments.version} + 1`,
+            updatedAt: new Date(),
+          })
+          .where(
+            and(
+              eq(knowledgeDocuments.projectId, input.projectId),
+              inArray(
+                knowledgeDocuments.id,
+                published.map((document) => document.id),
+              ),
+              eq(knowledgeDocuments.status, "published"),
+            ),
+          )
+          .returning({ id: knowledgeDocuments.id });
+        processedCount = changed.length;
+      }
+    } else {
+      for (const document of documents) {
+        if (document.status === "archived") continue;
+        const [latest] = await transaction
+          .select({ id: knowledgeDocumentVersions.id })
+          .from(knowledgeDocumentVersions)
+          .where(eq(knowledgeDocumentVersions.documentId, document.id))
+          .orderBy(desc(knowledgeDocumentVersions.versionNo))
+          .limit(1);
+        if (!latest || document.activeVersionId === latest.id) continue;
+        const [changed] = await transaction
+          .update(knowledgeDocuments)
+          .set({
+            activeVersionId: latest.id,
+            status: "published",
+            version: sql`${knowledgeDocuments.version} + 1`,
+            updatedAt: new Date(),
+          })
+          .where(
+            and(
+              eq(knowledgeDocuments.projectId, input.projectId),
+              eq(knowledgeDocuments.id, document.id),
+              eq(knowledgeDocuments.version, document.version),
+              ne(knowledgeDocuments.status, "archived"),
+            ),
+          )
+          .returning({ id: knowledgeDocuments.id });
+        if (!changed) continue;
+        await transaction.insert(knowledgeDocumentPublications).values({
+          documentId: document.id,
+          documentVersionId: latest.id,
+          publishedBy: input.actorUserId,
+        });
+        processedCount += 1;
+      }
+    }
+
+    return {
+      processedCount,
+      skippedCount: input.documentIds.length - processedCount,
+    };
+  });
 
 export const deleteKnowledgeDocumentRecord = async (input: {
   projectId: string;
@@ -623,12 +744,20 @@ export const deleteKnowledgeDocumentRecord = async (input: {
       .limit(1);
     if (!document) return "not_found";
     if (document.version !== input.expectedVersion) return "version_conflict";
-    const [usage] = await transaction
-      .select({ count: sql<number>`count(*)::int` })
-      .from(knowledgeDocumentPublications)
+    const chunkIds = transaction
+      .select({ id: knowledgeChunks.id })
+      .from(knowledgeChunks)
+      .innerJoin(
+        knowledgeDocumentVersions,
+        eq(knowledgeDocumentVersions.id, knowledgeChunks.documentVersionId),
+      )
+      .where(eq(knowledgeDocumentVersions.documentId, input.documentId));
+    await transaction
+      .delete(widgetGenerationSources)
+      .where(inArray(widgetGenerationSources.knowledgeChunkId, chunkIds));
+    await transaction
+      .delete(knowledgeDocumentPublications)
       .where(eq(knowledgeDocumentPublications.documentId, input.documentId));
-    if ((usage?.count ?? 0) > 0) return "used";
-    if (document.status !== "draft") return "not_draft";
     const deleted = await transaction
       .delete(knowledgeDocuments)
       .where(
@@ -640,6 +769,40 @@ export const deleteKnowledgeDocumentRecord = async (input: {
       )
       .returning({ id: knowledgeDocuments.id });
     return deleted.length === 1 ? "deleted" : "version_conflict";
+  });
+
+export const clearKnowledgeDocumentRecords = async (
+  projectId: string,
+): Promise<{ deletedDocuments: number; deletedIndexVersions: number }> =>
+  getInfrastructure().database.db.transaction(async (transaction) => {
+    const projectDocumentIds = transaction
+      .select({ id: knowledgeDocuments.id })
+      .from(knowledgeDocuments)
+      .where(eq(knowledgeDocuments.projectId, projectId));
+    const projectChunkIds = transaction
+      .select({ id: knowledgeChunks.id })
+      .from(knowledgeChunks)
+      .where(eq(knowledgeChunks.projectId, projectId));
+
+    await transaction
+      .delete(widgetGenerationSources)
+      .where(inArray(widgetGenerationSources.knowledgeChunkId, projectChunkIds));
+    const deletedIndexVersions = await transaction
+      .delete(knowledgeIndexVersions)
+      .where(eq(knowledgeIndexVersions.projectId, projectId))
+      .returning({ id: knowledgeIndexVersions.id });
+    await transaction
+      .delete(knowledgeDocumentPublications)
+      .where(inArray(knowledgeDocumentPublications.documentId, projectDocumentIds));
+    const deletedDocuments = await transaction
+      .delete(knowledgeDocuments)
+      .where(eq(knowledgeDocuments.projectId, projectId))
+      .returning({ id: knowledgeDocuments.id });
+
+    return {
+      deletedDocuments: deletedDocuments.length,
+      deletedIndexVersions: deletedIndexVersions.length,
+    };
   });
 
 export const listPublishedKnowledgeChunkCandidates = async (

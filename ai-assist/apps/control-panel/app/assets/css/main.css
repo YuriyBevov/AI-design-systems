@@ -183,6 +183,7 @@ code {
 }
 
 .app-shell__content {
+  min-width: 0;
   display: flex;
   flex-direction: column;
   padding: var(--space-md);
@@ -427,15 +428,13 @@ code {
 
 .page-frame {
   width: 100%;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
   margin: 0;
   padding: 0;
-}
-
-.page-frame--narrow {
-  width: min(900px, 100%);
+  container-type: inline-size;
 }
 
 .page-frame--fill {
@@ -596,7 +595,8 @@ code {
   font-size: 12px;
 }
 
-.status-badge[data-status="draft"] {
+.status-badge[data-status="draft"],
+.status-badge[data-status="cancelled"] {
   border-color: var(--color-border);
   background: var(--color-surface-muted);
   color: var(--color-text-muted);
@@ -643,8 +643,7 @@ code {
   margin: 0;
 }
 
-.metric-card,
-.panel {
+.metric-card {
   border: 1px solid var(--color-border);
   background: var(--color-surface);
   box-shadow: var(--shadow-shell);
@@ -675,28 +674,18 @@ code {
 }
 
 .panel {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
   margin: 0;
   padding: var(--space-md);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-}
-
-.panel--push-end {
-  margin-top: auto;
-}
-
-.panel--flush {
-  gap: 0;
-  padding: 0;
-  overflow: hidden;
-}
-
-.crawl-result__header {
-  margin: 0;
-  padding: var(--space-md);
-  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-shell);
 }
 
 .crawl-prompt-editor {
@@ -710,6 +699,11 @@ code {
 .prompt-editor__textarea {
   min-height: 220px;
   resize: vertical;
+}
+
+.crawl-normalization-prompt,
+.crawl-prompt-editor {
+  display: none;
 }
 
 .crawl-settings {
@@ -1040,11 +1034,11 @@ code {
 }
 
 .crawl-limit-notice {
-  margin: var(--space-md);
+  margin: 0;
 }
 
 .crawl-pagination {
-  padding: var(--space-md);
+  padding: var(--space-md) 0 0;
   border-top: 1px solid var(--color-border);
 }
 
@@ -1723,6 +1717,13 @@ code {
   white-space: nowrap;
 }
 
+.form-field__label--wrap {
+  overflow: visible;
+  overflow-wrap: anywhere;
+  text-overflow: clip;
+  white-space: normal;
+}
+
 .form-field__label-row.form-field__label > :first-child {
   min-width: 0;
   overflow: hidden;
@@ -2287,7 +2288,11 @@ textarea.form-field__control {
 }
 
 .table-scroll {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
   overflow-x: auto;
+  overscroll-behavior-inline: contain;
 }
 
 .table-controls,
@@ -2309,6 +2314,7 @@ textarea.form-field__control {
 }
 
 .table-controls__limit,
+.table-controls__bulk,
 .pagination__actions {
   display: flex;
   align-items: center;
@@ -2343,6 +2349,8 @@ textarea.form-field__control {
 
 .data-table {
   width: 100%;
+  min-width: 720px;
+  table-layout: fixed;
   border-collapse: collapse;
   font-size: 13px;
   text-align: left;
@@ -2354,7 +2362,39 @@ textarea.form-field__control {
   border-bottom: 1px solid var(--color-border);
   text-align: left;
   vertical-align: middle;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.data-table__selection-column,
+.data-table__selection-cell {
+  width: 52px;
+  text-align: center !important;
+}
+
+.data-table__dynamic-column,
+.data-table__dynamic-cell {
+  width: 320px;
+  max-width: 320px;
+  overflow-wrap: anywhere;
+  white-space: normal !important;
+  word-break: break-word;
+}
+
+.data-table__compact-column {
+  width: 96px;
+}
+
+.data-table__status-column {
+  width: 180px;
+}
+
+.data-table__date-column {
+  width: 172px;
+}
+
+.data-table__actions-column {
+  width: 132px;
 }
 
 .data-table th {
@@ -2363,6 +2403,58 @@ textarea.form-field__control {
   font-size: 11px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.table-sort-button {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+  max-width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-align: left;
+  text-transform: inherit;
+  cursor: pointer;
+}
+
+.table-sort-button:hover,
+.table-sort-button:focus-visible,
+.table-sort-button--active {
+  color: var(--color-text);
+}
+
+.table-sort-button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+.table-sort-button__icon {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 14px;
+  opacity: 0.35;
+  transition:
+    rotate 0.16s ease,
+    opacity 0.16s ease;
+}
+
+.table-sort-button--active .table-sort-button__icon {
+  opacity: 1;
+}
+
+.table-sort-button__icon--ascending {
+  rotate: 180deg;
+}
+
+.data-table time,
+.data-table .status-badge,
+.data-table .table-actions {
+  white-space: nowrap;
 }
 
 .data-table tr:last-child td {
@@ -2371,18 +2463,18 @@ textarea.form-field__control {
 
 .data-table__secondary {
   display: block;
-  max-width: 360px;
+  max-width: 320px;
   margin-top: 4px;
-  overflow: hidden;
   color: var(--color-text-muted);
   font-size: 12px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 
 .data-table td.data-table__wrap {
   min-width: 220px;
-  max-width: 420px;
+  max-width: 320px;
+  overflow-wrap: anywhere;
   white-space: normal;
 }
 
@@ -2391,7 +2483,17 @@ textarea.form-field__control {
   font-weight: 600;
 }
 
+.table-actions {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--space-xs);
+  align-items: center;
+}
+
 .split-layout {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(240px, 320px);
   gap: 20px;
@@ -2402,16 +2504,21 @@ textarea.form-field__control {
 }
 
 .panel-stack {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-.prompt-revisions {
-  padding: 12px;
+@container (max-width: 920px) {
+  .split-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
-.prompt-editor .form-field__label-row {
+.prompt-editor__label-row {
   justify-content: space-between;
 }
 
@@ -2502,12 +2609,6 @@ textarea.form-field__control {
   color: var(--color-text-muted);
   font-size: 11px;
   font-weight: 400;
-}
-
-.prompt-playground {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
 }
 
 .prompt-playground__question {
@@ -2645,10 +2746,7 @@ textarea.form-field__control {
   }
 }
 
-.prompt-danger {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
+.layout-push-end {
   margin-top: auto;
 }
 

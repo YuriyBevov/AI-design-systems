@@ -31,6 +31,17 @@ export type ChatMessage = {
   content: string;
 };
 
+export type ChatResponseFormat =
+  | { type: "json_object" }
+  | {
+      type: "json_schema";
+      json_schema: {
+        name: string;
+        strict?: boolean;
+        schema: Record<string, unknown>;
+      };
+    };
+
 export type ChatStreamEvent =
   | { type: "delta"; text: string }
   | { type: "usage"; inputTokens: number | null; outputTokens: number | null }

@@ -86,7 +86,9 @@ Plaintext и полный provider response не хранятся. В MVP unique
 
 ### `project_model_settings`
 
-`project_id`, `chat_model_id`, `embedding_model_id`, optional `rerank_model_id`, bounded parameters, `updated_by`, timestamps.
+`project_id`, `chat_model_id`, `embedding_model_id`, optional `rerank_model_id`, отдельные bounded
+`max_output_tokens` для ответов ассистента и `crawl_max_output_tokens` для ИИ-нормализации страницы,
+`updated_by`, timestamps.
 
 Embedding setting дополнительно имеет `embedding_profile_version/dimension`. Активный индекс должен быть совместим с ним.
 
@@ -118,18 +120,23 @@ Post-pilot сущность для источников, которым дейс
 
 Реализованная таблица `knowledge_crawl_runs`: `id`, `project_id`, `source_id`, status, requested
 user/request id, profile version, неизменяемый снимок операторского normalization prompt,
-progress/diff/review counters, safe error code и timestamps. Один source имеет не более одного
+nullable `pause_requested_at`, progress/diff/review counters, safe error code и timestamps. Один source имеет не более одного
 `queued|running` run.
 
 Статусы: `queued`, `running`, `succeeded`, `partial`, `failed`, `cancelled`.
+Для остановки paused run API сначала выставляет `cancelled` и очищает pause marker, а worker после
+кооперативного выхода заполняет `finished_at`. Физическое удаление разрешено только после этого
+подтверждения; `knowledge_crawl_pages` удаляются каскадно, связанные документы БЗ сохраняются.
 
 ### `ingestion_page_results`
 
 Реализованная таблица `knowledge_crawl_pages`: tenant/run, normalized URL/depth, HTTP metadata,
 status, document/version ids, `new|changed|unchanged`, type/title/checksum/confidence/warnings,
-safe retryable error code, review status, fetched time, извлечённый сырой заголовок и видимый текст.
-Raw HTML не хранится; сырой текст нужен только для AI-only reprocessing и через admin API не
-отдаётся. API сообщает лишь булеву доступность такого снимка.
+safe retryable error code, `attempt_count` в диапазоне `1..3`, review status, fetched time,
+извлечённый заголовок и очищенный видимый текст после DOM boilerplate filter. Один URL представлен
+одной строкой run: автоматическая повторная попытка обновляет её и не увеличивает unique page
+counters. Raw HTML не хранится; сохранённый текст нужен только для AI-only reprocessing и через
+admin API не отдаётся. API сообщает лишь булеву доступность такого снимка.
 
 Для feed/manual/product sources эквивалентный result хранит external id/cursor, profile version и безопасные error metadata.
 
@@ -152,6 +159,17 @@ Markdown document version, который остаётся источником 
 ### `knowledge_document_publications`
 
 Неизменяемая история активаций: document/version ids, publisher и время. Текущая активная версия определяется `knowledge_documents.active_version_id`; unpublish очищает указатель, не стирая историю.
+
+### `knowledge_processing_runs` / `knowledge_processing_items`
+
+Фоновая массовая постобработка хранит неизменяемую операторскую инструкцию, requester/request id,
+status `queued|running|succeeded|partial|failed|cancelled`, nullable `pause_requested_at`, progress
+counters, safe error code и timestamps.
+Один проект имеет не более одного `queued|running` run. Item фиксирует document и исходную immutable
+version, затем сохраняет result version либо safe error code. Новая версия не становится активной
+автоматически; прежний `active_version_id` обслуживает runtime до явной публикации. Пауза запрещает
+worker-у начинать новые items, а кооперативная остановка подтверждается `finished_at`. Удаление
+терминального run каскадно очищает items, но сохраняет созданные document versions.
 
 ### `knowledge_index_versions`
 

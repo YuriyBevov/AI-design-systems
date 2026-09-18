@@ -3,6 +3,8 @@
 - Статус: принято
 - Дата: 2026-09-15
 - Заменяет extraction-часть ADR-002 и прежние правила HTML-crawler из этапа 6
+- Пункт об отсутствии boilerplate removal частично заменён:
+  [ADR-009](009-pre-ai-dom-boilerplate-filtering.md)
 
 ## Контекст
 

@@ -53,6 +53,9 @@ GET https://api.aitunnel.ru/public/aitunnel/models/rerank
 - `chat_model_id` — generation;
 - `embedding_model_id` + dimension/profile — indexing/query;
 - `rerank_model_id` — optional second-stage ranking.
+- `max_output_tokens` — предел ответа ассистента;
+- `crawl_max_output_tokens` — независимый предел ИИ-нормализации одной страницы, вручную
+  настраиваемый в диапазоне 1 000–64 000 и не выше output limit выбранной chat-модели.
 
 Admin selector показывает только модели нужной capability. При публикации проверяются:
 
@@ -101,7 +104,11 @@ Master key для credential envelope задается отдельно чере
 ## 5. Streaming adapter
 
 - Server открывает upstream streaming и преобразует provider-specific chunks в внутренние events.
-- Prompt preview передаёт выбранные `model`, `max_tokens` и опциональный `temperature`; timeout ограничивает весь stream, а не только получение HTTP-заголовков.
+- Prompt preview передаёт выбранные `model`, `max_tokens` и опциональный `temperature`; общий
+  timeout ограничивает весь stream. Для длинной crawl-нормализации дополнительно используется idle
+  timeout, который сбрасывается при поступлении каждого фрагмента, но не отменяет общий предел.
+- Crawl-нормализация reasoning-моделей передаёт `reasoning_effort=low`, использует строгий
+  `json_schema` response format и отличает `finish_reason=length` от синтаксически неверного ответа.
 - До первого delta возможен ограниченный retry для transient network/429 по политике; после первого delta — только завершение ошибкой.
 - Client disconnect передает AbortSignal upstream.
 - Unknown/malformed chunk фиксируется sanitized error, а не проксируется widget-у.

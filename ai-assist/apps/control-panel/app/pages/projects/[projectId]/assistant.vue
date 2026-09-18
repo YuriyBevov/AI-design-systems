@@ -240,7 +240,7 @@ const applySettings = async (): Promise<void> => {
 </script>
 
 <template>
-  <main class="page-frame page-frame--narrow">
+  <main class="page-frame">
     <div v-if="error" class="empty-state" role="alert">
       Настройки ассистента недоступны или&nbsp;проект не&nbsp;найден.
     </div>
@@ -248,7 +248,7 @@ const applySettings = async (): Promise<void> => {
     <template v-else-if="data">
       <form
         v-if="localTab === 'interface' || localTab === 'security'"
-        class="panel form-stack"
+        class="panel"
         novalidate
         @submit.prevent="applySettings"
       >
@@ -367,12 +367,14 @@ const applySettings = async (): Promise<void> => {
               <h2 class="section-title">Разрешённые URL-адреса</h2>
             </div>
             <button
-              class="button"
+              class="icon-button"
               type="button"
+              aria-label="Добавить URL-адрес"
+              title="Добавить URL-адрес"
               :disabled="!canEdit || form.allowedOrigins.length >= 20"
               @click="addOrigin"
             >
-              Добавить URL-адрес
+              <UiIcon name="plus" />
             </button>
           </header>
 
@@ -462,12 +464,7 @@ const applySettings = async (): Promise<void> => {
         </div>
       </form>
 
-      <form
-        v-if="localTab === 'security'"
-        class="panel form-stack"
-        novalidate
-        @submit.prevent="saveRetention"
-      >
+      <form v-if="localTab === 'security'" class="panel" novalidate @submit.prevent="saveRetention">
         <header class="section-header">
           <div>
             <h2 class="section-title">Хранение диалогов</h2>

@@ -56,6 +56,7 @@ import {
   type KnowledgeIndexVersionRecord,
   type KnowledgeVersionValues,
 } from "../repositories/knowledge";
+import { findPendingKnowledgeProcessingRunRecord } from "../repositories/knowledge-processing";
 import { findProjectModelSettings, findProviderCredential } from "../repositories/provider";
 import { getInfrastructure } from "../utils/infrastructure";
 import { getRequestId } from "../utils/request";
@@ -499,6 +500,18 @@ export const deleteKnowledgeDocument = async (
   const { session, project } = await requireProjectScope(event, projectId, "editor");
   assertCsrf(event, session);
   assertRecentAdminAuthentication(session);
+  if (await findPendingKnowledgeIndexVersion(project.id)) {
+    throw createError({
+      statusCode: 409,
+      statusMessage: "Дождитесь завершения текущей индексации",
+    });
+  }
+  if (await findPendingKnowledgeProcessingRunRecord(project.id)) {
+    throw createError({
+      statusCode: 409,
+      statusMessage: "Дождитесь завершения массовой обработки записей",
+    });
+  }
   const result = await deleteKnowledgeDocumentRecord({
     projectId: project.id,
     documentId,
@@ -506,20 +519,6 @@ export const deleteKnowledgeDocument = async (
   });
   if (result === "not_found") {
     throw createError({ statusCode: 404, statusMessage: "Документ базы знаний не найден" });
-  }
-  if (result === "used") {
-    throw createError({
-      statusCode: 409,
-      statusMessage: "Опубликованный документ базы знаний нужно архивировать, а не удалять",
-      data: { code: "KNOWLEDGE_DELETE_REQUIRES_ARCHIVE" },
-    });
-  }
-  if (result === "not_draft") {
-    throw createError({
-      statusCode: 409,
-      statusMessage: "Удалить можно только неиспользуемый черновик документа базы знаний",
-      data: { code: "KNOWLEDGE_DELETE_DRAFT_ONLY" },
-    });
   }
   if (result === "version_conflict") {
     return throwKnowledgeMutationConflict(project.id, documentId, expectedVersion);

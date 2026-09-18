@@ -135,6 +135,19 @@ export const updateUrlKnowledgeSourceRequestSchema = z
   })
   .strict();
 
+export const deleteUrlKnowledgeSourceQuerySchema = z
+  .object({ expectedVersion: z.coerce.number().int().positive() })
+  .strict();
+
+export const deleteUrlKnowledgeSourceResponseSchema = z
+  .object({
+    id: z.string().uuid(),
+    deleted: z.literal(true),
+    deletedCrawlRuns: z.number().int().nonnegative(),
+    preservedDocuments: z.number().int().nonnegative(),
+  })
+  .strict();
+
 export const crawlRunResponseSchema = z.object({
   id: z.string().uuid(),
   projectId: z.string().uuid(),
@@ -149,6 +162,7 @@ export const crawlRunResponseSchema = z.object({
   unchangedCount: z.number().int().nonnegative(),
   approvedCount: z.number().int().nonnegative(),
   profileVersion: z.string().min(1).max(100),
+  paused: z.boolean(),
   normalizationPrompt: knowledgeNormalizationPromptSchema,
   errorCode: z.string().min(1).max(100).nullable(),
   requestedByEmail: z.string().email().nullable(),
@@ -197,6 +211,7 @@ export const crawlPageResponseSchema = z.object({
   warnings: z.array(z.string().min(1).max(100)),
   errorCode: z.string().min(1).max(100).nullable(),
   retryable: z.boolean(),
+  attemptCount: z.number().int().min(1).max(3),
   reviewStatus: crawlReviewStatusSchema,
   contentPreview: z.string().max(1_000).nullable(),
   fetchedAt: z.string().datetime().nullable(),
@@ -211,6 +226,14 @@ export const crawlRunDetailResponseSchema = z.object({
     totalItems: z.number().int().nonnegative(),
     totalPages: z.number().int().nonnegative(),
   }),
+});
+
+export const crawlRunHistoryItemSchema = crawlRunResponseSchema.extend({
+  sourceName: z.string().min(1).max(160),
+});
+
+export const crawlRunHistoryResponseSchema = z.object({
+  runs: z.array(crawlRunHistoryItemSchema).max(5_000),
 });
 
 export const crawlRunPagesQuerySchema = z
@@ -231,6 +254,10 @@ export const reprocessKnowledgeCrawlRequestSchema = z
     normalizationPrompt: knowledgeNormalizationPromptSchema,
   })
   .strict();
+
+export const controlKnowledgeCrawlRequestSchema = z.object({ paused: z.boolean() }).strict();
+
+export const deleteKnowledgeCrawlResponseSchema = z.object({ deleted: z.literal(true) }).strict();
 
 export const publishCrawlRunRequestSchema = z.discriminatedUnion("selection", [
   z
@@ -265,13 +292,26 @@ export const knowledgeCrawlJobDataSchema = z
     requestedAt: z.string().datetime(),
     requestId: z.string().min(1).max(128),
     rawSourceRunId: z.string().uuid().nullable().default(null),
+    targetUrl: publicSourceUrlSchema.nullable().default(null),
+    failedSourceRunId: z.string().uuid().nullable().default(null),
   })
-  .strict();
+  .strict()
+  .superRefine((value, context) => {
+    const modeCount = [value.rawSourceRunId, value.targetUrl, value.failedSourceRunId].filter(
+      Boolean,
+    ).length;
+    if (modeCount > 1) {
+      context.addIssue({
+        code: "custom",
+        message: "Режимы повторной обработки страниц несовместимы",
+      });
+    }
+  });
 
 export const knowledgeCrawlJobResultSchema = z.object({
   runId: z.string().uuid(),
   projectId: z.string().uuid(),
-  status: z.enum(["succeeded", "partial"]),
+  status: z.enum(["succeeded", "partial", "cancelled"]),
   processedCount: z.number().int().nonnegative(),
   succeededCount: z.number().int().nonnegative(),
   failedCount: z.number().int().nonnegative(),
@@ -294,14 +334,22 @@ export type DiscoverSiteStructureRequest = z.infer<typeof discoverSiteStructureR
 export type DiscoverSiteStructureResponse = z.infer<typeof discoverSiteStructureResponseSchema>;
 export type CreateUrlKnowledgeSourceRequest = z.infer<typeof createUrlKnowledgeSourceRequestSchema>;
 export type UpdateUrlKnowledgeSourceRequest = z.infer<typeof updateUrlKnowledgeSourceRequestSchema>;
+export type DeleteUrlKnowledgeSourceQuery = z.infer<typeof deleteUrlKnowledgeSourceQuerySchema>;
+export type DeleteUrlKnowledgeSourceResponse = z.infer<
+  typeof deleteUrlKnowledgeSourceResponseSchema
+>;
 export type CrawlRunResponse = z.infer<typeof crawlRunResponseSchema>;
 export type UrlKnowledgeSourceResponse = z.infer<typeof urlKnowledgeSourceResponseSchema>;
 export type UrlKnowledgeSourceListResponse = z.infer<typeof urlKnowledgeSourceListResponseSchema>;
 export type CrawlPageResponse = z.infer<typeof crawlPageResponseSchema>;
 export type CrawlRunDetailResponse = z.infer<typeof crawlRunDetailResponseSchema>;
+export type CrawlRunHistoryItem = z.infer<typeof crawlRunHistoryItemSchema>;
+export type CrawlRunHistoryResponse = z.infer<typeof crawlRunHistoryResponseSchema>;
 export type CrawlRunPagesQuery = z.infer<typeof crawlRunPagesQuerySchema>;
 export type RequestKnowledgeCrawlResponse = z.infer<typeof requestKnowledgeCrawlResponseSchema>;
 export type ReprocessKnowledgeCrawlRequest = z.infer<typeof reprocessKnowledgeCrawlRequestSchema>;
+export type ControlKnowledgeCrawlRequest = z.infer<typeof controlKnowledgeCrawlRequestSchema>;
+export type DeleteKnowledgeCrawlResponse = z.infer<typeof deleteKnowledgeCrawlResponseSchema>;
 export type PublishCrawlRunRequest = z.infer<typeof publishCrawlRunRequestSchema>;
 export type PublishCrawlRunResponse = z.infer<typeof publishCrawlRunResponseSchema>;
 export type KnowledgeCrawlJobData = z.infer<typeof knowledgeCrawlJobDataSchema>;

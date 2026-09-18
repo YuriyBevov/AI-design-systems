@@ -135,6 +135,10 @@ GET    /projects/{projectId}/model-settings
 PUT    /projects/{projectId}/model-settings
 ```
 
+Model settings возвращают и принимают независимые параметры `maxOutputTokens` для генерации
+ответов ассистента и `crawlMaxOutputTokens` для ИИ-постобработки одной страницы. Crawl budget
+ограничен диапазоном 1 000–64 000 и техническим `maxOutput` выбранной chat-модели.
+
 `GET /provider` возвращает только:
 
 ```json
@@ -176,14 +180,28 @@ POST   /projects/{projectId}/knowledge/documents/{documentId}/unpublish
 POST   /projects/{projectId}/knowledge/documents/{documentId}/reindex
 POST   /projects/{projectId}/knowledge/documents/{documentId}/archive
 DELETE /projects/{projectId}/knowledge/documents/{documentId}
+POST   /projects/{projectId}/knowledge/documents/bulk
+GET    /projects/{projectId}/knowledge/processing-runs
+POST   /projects/{projectId}/knowledge/processing-runs
+PATCH  /projects/{projectId}/knowledge/processing-runs/{runId}
+DELETE /projects/{projectId}/knowledge/processing-runs/{runId}
+POST   /projects/{projectId}/knowledge/processing-runs/{runId}/stop
+DELETE /projects/{projectId}/knowledge/data
 
 GET    /projects/{projectId}/knowledge/sources
 POST   /projects/{projectId}/knowledge/sources/discover
 POST   /projects/{projectId}/knowledge/sources
 PATCH  /projects/{projectId}/knowledge/sources/{sourceId}
+DELETE /projects/{projectId}/knowledge/sources/{sourceId}
 POST   /projects/{projectId}/knowledge/sources/{sourceId}/crawl
+GET    /projects/{projectId}/knowledge/crawl-runs
 GET    /projects/{projectId}/knowledge/crawl-runs/{runId}
+PATCH  /projects/{projectId}/knowledge/crawl-runs/{runId}
+DELETE /projects/{projectId}/knowledge/crawl-runs/{runId}
+POST   /projects/{projectId}/knowledge/crawl-runs/{runId}/stop
 POST   /projects/{projectId}/knowledge/crawl-runs/{runId}/reprocess
+POST   /projects/{projectId}/knowledge/crawl-runs/{runId}/retry-failed
+POST   /projects/{projectId}/knowledge/crawl-runs/{runId}/pages/{pageId}/retry
 POST   /projects/{projectId}/knowledge/crawl-runs/{runId}/publish
 
 POST   /projects/{projectId}/knowledge/uploads
@@ -205,7 +223,41 @@ source URL. На API legacy `manual|page` соответствуют польз�
 одним пользовательским действием. Mutation API сохраняет `expectedVersion`; write требует
 Editor/Owner и CSRF.
 
-Публикация атомарно переключает `activeVersionId`. Повторная публикация уже активной версии возвращает `409 KNOWLEDGE_VERSION_ALREADY_ACTIVE`; unpublish сразу очищает active pointer и исключает chunks из следующего retrieval; использовавшийся документ нельзя физически удалить (`409 KNOWLEDGE_DELETE_REQUIRES_ARCHIVE`). Все чтения и retrieval tenant-scoped. Project-level `reindex` и URL source/crawl endpoints реализованы; отдельный playground/retrieve, feed/file imports и универсальный ingestion jobs API остаются следующими срезами.
+`POST /knowledge/documents/bulk` принимает `{ action: publish|unpublish|delete, documentIds[] }`.
+Идентификаторы дедуплицируются, выбор ограничен 5 000 записями и всегда проверяется в рамках текущего
+проекта. Массовое удаление требует свежего подтверждения пароля.
+
+`POST /knowledge/processing-runs` принимает инструкцию длиной 20–10 000 символов и scope `all` либо
+`selected` с `documentIds`. Endpoint фиксирует последние версии выбранных записей, создаёт фоновый
+job `knowledge.processing` и возвращает `202`. Worker создаёт новые immutable versions, но не меняет
+`active_version_id`: публикация остаётся отдельным явным действием оператора. Активный crawl, index
+build или другой processing run блокирует конфликтующие массовые изменения ответом `409`.
+
+`GET /knowledge/processing-runs` возвращает историю до 5 000 запусков. `PATCH` принимает строгий
+body `{ paused: boolean }` и управляет выполняющимся run. `POST .../stop` переводит queued/running
+run в кооперативную остановку; новые items не запускаются, уже начатые завершаются.
+`DELETE` разрешён только для терминального run и удаляет его items/BullMQ job, сохраняя созданные
+версии документов. Control/delete требуют Editor/Owner, CSRF и project scope.
+
+Публикация атомарно переключает `activeVersionId`. Повторная публикация уже активной версии
+возвращает `409 KNOWLEDGE_VERSION_ALREADY_ACTIVE`; unpublish сразу очищает active pointer и
+исключает chunks из следующего retrieval. Подтверждённое удаление документа удаляет его версии,
+публикации, chunks, embeddings и сохранённые ссылки generation provenance; тексты прошлых диалогов
+не удаляются. Все чтения и retrieval tenant-scoped. Project-level `reindex` и URL source/crawl
+endpoints реализованы; отдельный playground/retrieve, feed/file imports и универсальный ingestion
+jobs API остаются следующими срезами.
+
+`DELETE /knowledge/data` принимает строгий body
+`{ scope: "crawl_history"|"documents"|"sources"|"all" }`, доступен только Owner после недавнего
+подтверждения пароля и возвращает количества удалённых runs, documents, index versions, sources и
+сохранённых при отвязке документов. Очистка документов запрещена во время индексации; очистка
+истории и источников — пока существует queued/running crawl. Scope `sources` удаляет URL-источники,
+их настройки и историю, но сохраняет созданные записи БЗ во внутреннем источнике. Scope `all`
+удаляет также URL-источники. Сообщения диалогов и audit log не удаляются.
+
+`DELETE /knowledge/sources/{sourceId}?expectedVersion=N` удаляет один URL-источник и его историю,
+сохраняя связанные записи БЗ. Операция доступна Owner, требует CSRF и недавнего подтверждения
+пароля; активный crawl нужно сначала остановить.
 
 URL source create/update выполняет строгую schema, DNS/IP и scope validation, но не выполняет crawl
 внутри request. `POST .../sources/discover` принимает `{ startUrl, maxDepth }`, безопасно читает
@@ -214,7 +266,9 @@ robots/sitemap и навигационные меню главной стран�
 `includeExactPaths`. Worker последовательно получает сырой body text, затем вызывает AITUNNEL chat
 для удаления шума, классификации `info|product|service` и формирования Markdown JSON. Для crawl
 обязательны verified credential и chat model. Provider output строго валидируется; на страницу
-создаётся не более одной записи. Ручная batch-публикация и versioned reindex сохраняются.
+создаётся не более одной записи. Бюджет ответа настраивается отдельно через
+`crawlMaxOutputTokens`; исчерпание бюджета возвращает `CRAWL_AI_OUTPUT_TRUNCATED`. Ручная
+batch-публикация и versioned reindex сохраняются.
 
 Настройки URL-источника содержат `normalizationPrompt` длиной 100–10 000 символов. Run возвращает
 снимок использованного prompt-а, а каждая страница — только `hasRawContent`, без самого сырого текста.
@@ -222,6 +276,24 @@ robots/sitemap и навигационные меню главной стран�
 требует Editor/Owner, CSRF и завершённый tenant-scoped run с сохранённым сырьём, обновляет prompt
 источника по optimistic version и возвращает `202` с новым run. Worker повторно вызывает только ИИ;
 fetch сайта не выполняется. Неизменяемая safety-инструкция не входит в редактируемый контракт.
+
+Run содержит `paused: boolean`. `PATCH .../crawl-runs/{runId}` принимает `{ paused: boolean }` и
+доступен Editor/Owner с CSRF только для выполняющегося run. Пауза применяется между страницами.
+`POST .../crawl-runs/{runId}/stop` доступен только для `running` run с установленной паузой и
+переводит его в `cancelled`; до подтверждения worker поле `finishedAt` остаётся `null`. Worker
+завершает текущую операцию, фиксирует `finishedAt` и не записывает остановку в `lastErrorCode`
+источника. `GET .../crawl-runs` возвращает полную историю проекта в обратном хронологическом
+порядке. `DELETE .../crawl-runs/{runId}` разрешён для любого терминального
+`succeeded|partial|failed|cancelled` run, возвращает `{ deleted: true }`, удаляет сохранившийся
+BullMQ job и каскадно удаляет page results. Уже созданные документы и их версии сохраняются.
+`POST .../pages/{pageId}/retry` не принимает URL из клиента: сервер повторно читает tenant-scoped
+страницу, создаёт новый одно-страничный run и возвращает `202`. Пока по источнику есть queued/running
+run, точечный повтор возвращает `409`. Каждая page response содержит `attemptCount: 1|2|3`.
+После основной очереди worker автоматически повторяет только failed URL до общего лимита в три
+page-level попытки и обновляет существующую строку страницы без увеличения `processedCount`.
+`POST .../crawl-runs/{runId}/retry-failed` не принимает body или URL, требует Editor/Owner и CSRF,
+повторно читает все failed pages завершённого tenant-scoped run и возвращает `202` с новым run.
+Если ошибок нет либо источник уже обрабатывается, endpoint возвращает `409`.
 
 Целевой первый pilot поддерживает `url`, `feed`, `file`, `manual` и `product`; `mysql` и `api` не принимаются. В текущей реализации готовы `manual|product` document endpoints и URL-specific source/crawl endpoints. Пока upload/import flow не завершён целиком, общего endpoint с выбором `file|feed|mysql|api` нет.
 

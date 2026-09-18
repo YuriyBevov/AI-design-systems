@@ -23,6 +23,13 @@ const form = reactive({
 const isSaving = ref(false);
 const isUserModalOpen = ref(false);
 const pendingUserId = ref<string | null>(null);
+type UserSortColumn = "name" | "role" | "projects" | "status";
+const {
+  sortColumn: userSortColumn,
+  sortDirection: userSortDirection,
+  toggleSort: toggleUserSort,
+} = useTableSort<UserSortColumn>("name");
+const setUserSort = (column: string): void => toggleUserSort(column as UserSortColumn);
 const message = ref<{ type: "success" | "error"; text: string } | null>(null);
 useToastMessage(message);
 
@@ -66,6 +73,20 @@ const userProjectNames = (user: UserResponse): string => {
       .join(", ") || "Нет проектов"
   );
 };
+const sortedUsers = computed(() =>
+  sortTableRows(users.value ?? [], userSortDirection.value, (user) => {
+    switch (userSortColumn.value) {
+      case "name":
+        return `${user.name} ${user.email}`;
+      case "role":
+        return roleLabel(user.role);
+      case "projects":
+        return userProjectNames(user);
+      case "status":
+        return statusLabel(user.status);
+    }
+  }),
+);
 
 const resetForm = (): void => {
   Object.assign(form, {
@@ -206,7 +227,7 @@ const changeStatus = async (user: UserResponse): Promise<void> => {
       </button>
     </header>
 
-    <section class="panel panel--flush" aria-label="Пользователи">
+    <section class="panel" aria-label="Пользователи">
       <div v-if="usersError" class="empty-state" role="alert">
         Не удалось загрузить пользователей.
       </div>
@@ -215,16 +236,41 @@ const changeStatus = async (user: UserResponse): Promise<void> => {
         <table class="data-table" aria-label="Пользователи">
           <thead>
             <tr>
-              <th scope="col">Пользователь</th>
-              <th scope="col">Роль</th>
-              <th scope="col">Проекты</th>
-              <th scope="col">Статус</th>
-              <th scope="col">Действия</th>
+              <TableSortHeader
+                class="data-table__dynamic-column"
+                label="Пользователь"
+                column="name"
+                :active-column="userSortColumn"
+                :direction="userSortDirection"
+                @sort="setUserSort"
+              />
+              <TableSortHeader
+                label="Роль"
+                column="role"
+                :active-column="userSortColumn"
+                :direction="userSortDirection"
+                @sort="setUserSort"
+              />
+              <TableSortHeader
+                label="Проекты"
+                column="projects"
+                :active-column="userSortColumn"
+                :direction="userSortDirection"
+                @sort="setUserSort"
+              />
+              <TableSortHeader
+                label="Статус"
+                column="status"
+                :active-column="userSortColumn"
+                :direction="userSortDirection"
+                @sort="setUserSort"
+              />
+              <th class="data-table__actions-column" scope="col">Действия</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="user in users" :key="user.id">
-              <td>
+            <tr v-for="user in sortedUsers" :key="user.id">
+              <td class="data-table__dynamic-cell">
                 <strong>{{ user.name }}</strong>
                 <span class="data-table__secondary">{{ user.email }}</span>
               </td>
@@ -236,28 +282,37 @@ const changeStatus = async (user: UserResponse): Promise<void> => {
                 </span>
               </td>
               <td>
-                <div class="button-group">
+                <div class="table-actions">
                   <button
-                    class="button button--compact"
+                    class="icon-button icon-button--compact icon-button--ghost"
                     type="button"
+                    aria-label="Изменить пользователя"
+                    title="Изменить"
                     :disabled="pendingUserId === user.id"
                     @click="startEditing(user)"
                   >
-                    Изменить
+                    <UiIcon name="edit" />
                   </button>
                   <button
-                    class="button button--compact"
-                    :class="user.status === 'active' ? 'button--danger' : 'button--primary'"
+                    class="icon-button icon-button--compact icon-button--ghost"
+                    :class="{ 'icon-button--danger': user.status === 'active' }"
                     type="button"
+                    :aria-label="
+                      user.status === 'active'
+                        ? 'Деактивировать пользователя'
+                        : 'Активировать пользователя'
+                    "
                     :disabled="pendingUserId === user.id || isOnlyActiveAdministrator(user)"
                     :title="
                       isOnlyActiveAdministrator(user)
                         ? 'Нельзя деактивировать единственного администратора'
-                        : undefined
+                        : user.status === 'active'
+                          ? 'Деактивировать'
+                          : 'Активировать'
                     "
                     @click="changeStatus(user)"
                   >
-                    {{ user.status === "active" ? "Деактивировать" : "Активировать" }}
+                    <UiIcon name="power" />
                   </button>
                 </div>
               </td>

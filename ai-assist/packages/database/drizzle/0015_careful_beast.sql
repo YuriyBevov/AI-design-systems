@@ -1,0 +1,1 @@
+ALTER TABLE "project_model_settings" ADD COLUMN "crawl_max_output_tokens" integer DEFAULT 20000 NOT NULL;

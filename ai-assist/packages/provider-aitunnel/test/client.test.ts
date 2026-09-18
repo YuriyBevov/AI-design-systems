@@ -121,7 +121,9 @@ describe("AITUNNEL client", () => {
           model: "model-a",
           max_tokens: 100,
           temperature: 0.2,
+          reasoning_effort: "low",
           stream: true,
+          response_format: { type: "json_object" },
         });
         return new Response(
           new ReadableStream({
@@ -142,6 +144,8 @@ describe("AITUNNEL client", () => {
       messages: [{ role: "user", content: "Привет" }],
       maxOutputTokens: 100,
       temperature: 0.2,
+      reasoningEffort: "low",
+      responseFormat: { type: "json_object" },
     })) {
       events.push(event);
     }
@@ -173,7 +177,7 @@ describe("AITUNNEL client", () => {
     await expect(consume()).rejects.toMatchObject({ code: "PROVIDER_BAD_RESPONSE" });
   });
 
-  it("applies the timeout to the complete stream", async () => {
+  it("times out an idle stream", async () => {
     const client = createClient(
       asFetch(
         async (_input, init) =>
@@ -202,6 +206,48 @@ describe("AITUNNEL client", () => {
     };
 
     await expect(consume()).rejects.toMatchObject({ code: "PROVIDER_TIMEOUT" });
+  });
+
+  it("keeps a long stream alive while chunks continue to arrive", async () => {
+    const encoder = new TextEncoder();
+    const chunks = [
+      'data: {"choices":[{"delta":{"content":"A"}}]}\n\n',
+      'data: {"choices":[{"delta":{"content":"B"}}]}\n\n',
+      'data: {"choices":[{"finish_reason":"stop"}]}\n\n',
+      "data: [DONE]\n\n",
+    ];
+    const client = createClient(
+      asFetch(
+        async () =>
+          new Response(
+            new ReadableStream({
+              async start(controller) {
+                for (const chunk of chunks) {
+                  await new Promise((resolve) => setTimeout(resolve, 20));
+                  controller.enqueue(encoder.encode(chunk));
+                }
+                controller.close();
+              },
+            }),
+            { status: 200, headers: { "content-type": "text/event-stream" } },
+          ),
+      ),
+    );
+
+    const events = [];
+    for await (const event of client.streamChat({
+      apiKey: "sk-aitunnel-fake",
+      model: "model-a",
+      messages: [{ role: "user", content: "test" }],
+      maxOutputTokens: 100,
+      timeoutMs: 120,
+      idleTimeoutMs: 30,
+    })) {
+      events.push(event);
+    }
+
+    expect(events).toContainEqual({ type: "delta", text: "A" });
+    expect(events).toContainEqual({ type: "delta", text: "B" });
   });
 
   it("normalizes embeddings and usage", async () => {

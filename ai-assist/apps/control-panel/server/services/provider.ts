@@ -456,6 +456,7 @@ export const getProjectModelSettings = async (
     rerankModelId: settings?.rerankModelId ?? null,
     embeddingDimension: settings?.embeddingDimension ?? null,
     maxOutputTokens: settings?.maxOutputTokens ?? 1500,
+    crawlMaxOutputTokens: settings?.crawlMaxOutputTokens ?? 20_000,
     temperature: settings?.temperature ?? null,
     updatedAt: settings?.updatedAt.toISOString() ?? null,
   };
@@ -479,6 +480,7 @@ export const updateProjectModelSettings = async (
     rerankModelId:
       update.rerankModelId !== undefined ? update.rerankModelId : (current?.rerankModelId ?? null),
     maxOutputTokens: update.maxOutputTokens ?? current?.maxOutputTokens ?? 1500,
+    crawlMaxOutputTokens: update.crawlMaxOutputTokens ?? current?.crawlMaxOutputTokens ?? 20_000,
     temperature:
       update.temperature !== undefined ? update.temperature : (current?.temperature ?? null),
     embeddingDimension:
@@ -497,7 +499,11 @@ export const updateProjectModelSettings = async (
   ]);
   if (next.chatModelId) {
     const chatModel = await findProviderModel(next.chatModelId, "chat");
-    if (chatModel?.maxOutput && next.maxOutputTokens > chatModel.maxOutput) {
+    if (
+      chatModel?.maxOutput &&
+      (next.maxOutputTokens > chatModel.maxOutput ||
+        next.crawlMaxOutputTokens > chatModel.maxOutput)
+    ) {
       throw createError({
         statusCode: 422,
         statusMessage: "Максимум токенов ответа превышает ограничение модели",

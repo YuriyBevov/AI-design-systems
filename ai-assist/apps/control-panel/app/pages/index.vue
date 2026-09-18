@@ -143,7 +143,7 @@ const checkReadiness = async (): Promise<void> => {
 
     <form
       v-else-if="projectDetails"
-      class="panel form-stack"
+      class="panel"
       aria-labelledby="project-settings-title"
       novalidate
       @submit.prevent="saveProjectSettings"
@@ -260,12 +260,14 @@ const checkReadiness = async (): Promise<void> => {
           <h2 id="health-title" class="section-title">Состояние сервисов</h2>
         </div>
         <button
-          class="button"
+          class="icon-button"
           type="button"
+          :aria-label="readiness.status === 'checking' ? 'Проверяем сервисы' : 'Проверить сервисы'"
+          :title="readiness.status === 'checking' ? 'Проверяем…' : 'Проверить сервисы'"
           :disabled="readiness.status === 'checking'"
           @click="checkReadiness"
         >
-          {{ readiness.status === "checking" ? "Проверяем…" : "Проверить" }}
+          <UiIcon name="refresh" />
         </button>
       </header>
 

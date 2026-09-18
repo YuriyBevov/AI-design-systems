@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, inArray, isNotNull, max, ne, sql } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, isNotNull, isNull, max, ne, sql } from "drizzle-orm";
 
 import {
   knowledgeCrawlPages,
@@ -48,6 +48,7 @@ export type CrawlRunRecord = {
   approvedCount: number;
   profileVersion: string;
   normalizationPrompt: string | null;
+  pauseRequestedAt: Date | null;
   errorCode: string | null;
   requestedByEmail: string | null;
   requestId: string;
@@ -75,6 +76,7 @@ export type CrawlPageRecord = {
   warnings: string[];
   errorCode: string | null;
   retryable: boolean;
+  attemptCount: number;
   reviewStatus: CrawlReviewStatus;
   contentPreview: string | null;
   fetchedAt: Date | null;
@@ -109,6 +111,7 @@ const runSelection = {
   approvedCount: knowledgeCrawlRuns.approvedCount,
   profileVersion: knowledgeCrawlRuns.profileVersion,
   normalizationPrompt: knowledgeCrawlRuns.normalizationPrompt,
+  pauseRequestedAt: knowledgeCrawlRuns.pauseRequestedAt,
   errorCode: knowledgeCrawlRuns.errorCode,
   requestedByEmail: users.emailNormalized,
   requestId: knowledgeCrawlRuns.requestId,
@@ -191,6 +194,189 @@ export const updateUrlSourceRecord = async (input: {
   return source ?? null;
 };
 
+export type DeleteUrlSourceRecordResult =
+  | { status: "not_found" | "version_conflict" | "active" }
+  | {
+      status: "deleted";
+      deletedSources: number;
+      deletedCrawlRuns: number;
+      preservedDocuments: number;
+    };
+
+export const deleteUrlSourceRecord = async (input: {
+  projectId: string;
+  sourceId: string;
+  expectedVersion: number;
+}): Promise<DeleteUrlSourceRecordResult> =>
+  getInfrastructure().database.db.transaction(async (transaction) => {
+    const [source] = await transaction
+      .select({ id: knowledgeSources.id, version: knowledgeSources.version })
+      .from(knowledgeSources)
+      .where(
+        and(
+          eq(knowledgeSources.projectId, input.projectId),
+          eq(knowledgeSources.id, input.sourceId),
+          eq(knowledgeSources.type, "url"),
+        ),
+      )
+      .limit(1)
+      .for("update");
+    if (!source) return { status: "not_found" };
+    if (source.version !== input.expectedVersion) return { status: "version_conflict" };
+
+    const [activeRun] = await transaction
+      .select({ id: knowledgeCrawlRuns.id })
+      .from(knowledgeCrawlRuns)
+      .where(
+        and(
+          eq(knowledgeCrawlRuns.sourceId, source.id),
+          inArray(knowledgeCrawlRuns.status, ["queued", "running"]),
+        ),
+      )
+      .limit(1);
+    if (activeRun) return { status: "active" };
+
+    const [document] = await transaction
+      .select({ id: knowledgeDocuments.id })
+      .from(knowledgeDocuments)
+      .where(eq(knowledgeDocuments.sourceId, source.id))
+      .limit(1);
+    let preservedDocuments = 0;
+    if (document) {
+      const systemKey = "detached-url-documents";
+      await transaction
+        .insert(knowledgeSources)
+        .values({
+          projectId: input.projectId,
+          type: "manual",
+          name: "Импортированные записи сайта",
+          systemKey,
+        })
+        .onConflictDoNothing({ target: [knowledgeSources.projectId, knowledgeSources.systemKey] });
+      const [detachedSource] = await transaction
+        .select({ id: knowledgeSources.id })
+        .from(knowledgeSources)
+        .where(
+          and(
+            eq(knowledgeSources.projectId, input.projectId),
+            eq(knowledgeSources.systemKey, systemKey),
+          ),
+        )
+        .limit(1);
+      if (!detachedSource) throw new Error("Detached knowledge source creation failed");
+      const preserved = await transaction
+        .update(knowledgeDocuments)
+        .set({
+          sourceId: detachedSource.id,
+          sourceExternalId: null,
+          updatedAt: new Date(),
+        })
+        .where(eq(knowledgeDocuments.sourceId, source.id))
+        .returning({ id: knowledgeDocuments.id });
+      preservedDocuments = preserved.length;
+    }
+    const deletedRuns = await transaction
+      .delete(knowledgeCrawlRuns)
+      .where(eq(knowledgeCrawlRuns.sourceId, source.id))
+      .returning({ id: knowledgeCrawlRuns.id });
+    const deletedSources = await transaction
+      .delete(knowledgeSources)
+      .where(eq(knowledgeSources.id, source.id))
+      .returning({ id: knowledgeSources.id });
+    return {
+      status: "deleted",
+      deletedSources: deletedSources.length,
+      deletedCrawlRuns: deletedRuns.length,
+      preservedDocuments,
+    };
+  });
+
+export const deleteUrlSourceRecords = async (input: {
+  projectId: string;
+  preserveDocuments: boolean;
+}): Promise<DeleteUrlSourceRecordResult> =>
+  getInfrastructure().database.db.transaction(async (transaction) => {
+    const sources = await transaction
+      .select({ id: knowledgeSources.id })
+      .from(knowledgeSources)
+      .where(and(eq(knowledgeSources.projectId, input.projectId), eq(knowledgeSources.type, "url")))
+      .for("update");
+    if (!sources.length) {
+      return {
+        status: "deleted",
+        deletedSources: 0,
+        deletedCrawlRuns: 0,
+        preservedDocuments: 0,
+      };
+    }
+    const sourceIds = sources.map((source) => source.id);
+    const [activeRun] = await transaction
+      .select({ id: knowledgeCrawlRuns.id })
+      .from(knowledgeCrawlRuns)
+      .where(
+        and(
+          inArray(knowledgeCrawlRuns.sourceId, sourceIds),
+          inArray(knowledgeCrawlRuns.status, ["queued", "running"]),
+        ),
+      )
+      .limit(1);
+    if (activeRun) return { status: "active" };
+
+    let preservedDocuments = 0;
+    if (input.preserveDocuments) {
+      const [document] = await transaction
+        .select({ id: knowledgeDocuments.id })
+        .from(knowledgeDocuments)
+        .where(inArray(knowledgeDocuments.sourceId, sourceIds))
+        .limit(1);
+      if (document) {
+        const systemKey = "detached-url-documents";
+        await transaction
+          .insert(knowledgeSources)
+          .values({
+            projectId: input.projectId,
+            type: "manual",
+            name: "Импортированные записи сайта",
+            systemKey,
+          })
+          .onConflictDoNothing({
+            target: [knowledgeSources.projectId, knowledgeSources.systemKey],
+          });
+        const [detachedSource] = await transaction
+          .select({ id: knowledgeSources.id })
+          .from(knowledgeSources)
+          .where(
+            and(
+              eq(knowledgeSources.projectId, input.projectId),
+              eq(knowledgeSources.systemKey, systemKey),
+            ),
+          )
+          .limit(1);
+        if (!detachedSource) throw new Error("Detached knowledge source creation failed");
+        const preserved = await transaction
+          .update(knowledgeDocuments)
+          .set({ sourceId: detachedSource.id, sourceExternalId: null, updatedAt: new Date() })
+          .where(inArray(knowledgeDocuments.sourceId, sourceIds))
+          .returning({ id: knowledgeDocuments.id });
+        preservedDocuments = preserved.length;
+      }
+    }
+    const deletedRuns = await transaction
+      .delete(knowledgeCrawlRuns)
+      .where(inArray(knowledgeCrawlRuns.sourceId, sourceIds))
+      .returning({ id: knowledgeCrawlRuns.id });
+    const deletedSources = await transaction
+      .delete(knowledgeSources)
+      .where(inArray(knowledgeSources.id, sourceIds))
+      .returning({ id: knowledgeSources.id });
+    return {
+      status: "deleted",
+      deletedSources: deletedSources.length,
+      deletedCrawlRuns: deletedRuns.length,
+      preservedDocuments,
+    };
+  });
+
 export const findLatestCrawlRunRecords = async (projectId: string): Promise<CrawlRunRecord[]> => {
   const rows = await runQuery()
     .where(eq(knowledgeCrawlRuns.projectId, projectId))
@@ -200,6 +386,12 @@ export const findLatestCrawlRunRecords = async (projectId: string): Promise<Craw
   for (const row of rows) if (!latest.has(row.sourceId)) latest.set(row.sourceId, row);
   return [...latest.values()];
 };
+
+export const listCrawlRunRecords = async (projectId: string): Promise<CrawlRunRecord[]> =>
+  runQuery()
+    .where(eq(knowledgeCrawlRuns.projectId, projectId))
+    .orderBy(desc(knowledgeCrawlRuns.createdAt))
+    .limit(5_000);
 
 export const findCrawlRunRecord = async (
   projectId: string,
@@ -266,6 +458,163 @@ export const failQueuedCrawlRunRecord = async (runId: string, errorCode: string)
     .where(and(eq(knowledgeCrawlRuns.id, runId), eq(knowledgeCrawlRuns.status, "queued")));
 };
 
+export const setCrawlRunPausedRecord = async (input: {
+  projectId: string;
+  runId: string;
+  paused: boolean;
+}): Promise<CrawlRunRecord | null> => {
+  const [updated] = await getInfrastructure()
+    .database.db.update(knowledgeCrawlRuns)
+    .set({ pauseRequestedAt: input.paused ? new Date() : null, updatedAt: new Date() })
+    .where(
+      and(
+        eq(knowledgeCrawlRuns.projectId, input.projectId),
+        eq(knowledgeCrawlRuns.id, input.runId),
+        eq(knowledgeCrawlRuns.status, "running"),
+      ),
+    )
+    .returning({ id: knowledgeCrawlRuns.id });
+  return updated ? findCrawlRunRecord(input.projectId, updated.id) : null;
+};
+
+export const stopPausedCrawlRunRecord = async (input: {
+  projectId: string;
+  runId: string;
+}): Promise<CrawlRunRecord | null> => {
+  const [updated] = await getInfrastructure()
+    .database.db.update(knowledgeCrawlRuns)
+    .set({
+      status: "cancelled",
+      pauseRequestedAt: null,
+      errorCode: null,
+      finishedAt: null,
+      updatedAt: new Date(),
+    })
+    .where(
+      and(
+        eq(knowledgeCrawlRuns.projectId, input.projectId),
+        eq(knowledgeCrawlRuns.id, input.runId),
+        eq(knowledgeCrawlRuns.status, "running"),
+        isNotNull(knowledgeCrawlRuns.pauseRequestedAt),
+      ),
+    )
+    .returning({ id: knowledgeCrawlRuns.id });
+  return updated ? findCrawlRunRecord(input.projectId, updated.id) : null;
+};
+
+export const deleteTerminalCrawlRunRecord = async (input: {
+  projectId: string;
+  runId: string;
+}): Promise<boolean> => {
+  const [deleted] = await getInfrastructure()
+    .database.db.delete(knowledgeCrawlRuns)
+    .where(
+      and(
+        eq(knowledgeCrawlRuns.projectId, input.projectId),
+        eq(knowledgeCrawlRuns.id, input.runId),
+        inArray(knowledgeCrawlRuns.status, ["succeeded", "partial", "failed", "cancelled"]),
+      ),
+    )
+    .returning({ id: knowledgeCrawlRuns.id });
+  return Boolean(deleted);
+};
+
+export const deleteTerminalCrawlRunRecords = async (projectId: string): Promise<string[]> => {
+  return getInfrastructure().database.db.transaction(async (transaction) => {
+    const deleted = await transaction
+      .delete(knowledgeCrawlRuns)
+      .where(
+        and(
+          eq(knowledgeCrawlRuns.projectId, projectId),
+          inArray(knowledgeCrawlRuns.status, ["succeeded", "partial", "failed", "cancelled"]),
+        ),
+      )
+      .returning({ id: knowledgeCrawlRuns.id });
+    await transaction
+      .update(knowledgeSources)
+      .set({
+        lastCrawledAt: null,
+        lastSuccessfulCrawlAt: null,
+        lastErrorCode: null,
+        updatedAt: new Date(),
+      })
+      .where(and(eq(knowledgeSources.projectId, projectId), eq(knowledgeSources.type, "url")));
+    return deleted.map((run) => run.id);
+  });
+};
+
+export const acknowledgeStoppedCrawlRunRecord = async (input: {
+  projectId: string;
+  runId: string;
+  sourceId: string;
+}): Promise<CrawlRunRecord | null> => {
+  const stoppedAt = new Date();
+  await getInfrastructure().database.db.transaction(async (transaction) => {
+    await transaction
+      .update(knowledgeCrawlRuns)
+      .set({ finishedAt: stoppedAt, updatedAt: stoppedAt })
+      .where(
+        and(
+          eq(knowledgeCrawlRuns.projectId, input.projectId),
+          eq(knowledgeCrawlRuns.id, input.runId),
+          eq(knowledgeCrawlRuns.status, "cancelled"),
+          isNull(knowledgeCrawlRuns.finishedAt),
+        ),
+      );
+    await transaction
+      .update(knowledgeSources)
+      .set({ lastErrorCode: null, updatedAt: stoppedAt })
+      .where(
+        and(
+          eq(knowledgeSources.projectId, input.projectId),
+          eq(knowledgeSources.id, input.sourceId),
+          eq(knowledgeSources.lastErrorCode, "CRAWL_RUN_NOT_RUNNING"),
+        ),
+      );
+  });
+  return findCrawlRunRecord(input.projectId, input.runId);
+};
+
+export const findCrawlPageRetryRecord = async (
+  projectId: string,
+  runId: string,
+  pageId: string,
+): Promise<{ id: string; normalizedUrl: string } | null> => {
+  const [page] = await getInfrastructure()
+    .database.db.select({
+      id: knowledgeCrawlPages.id,
+      normalizedUrl: knowledgeCrawlPages.normalizedUrl,
+    })
+    .from(knowledgeCrawlPages)
+    .where(
+      and(
+        eq(knowledgeCrawlPages.projectId, projectId),
+        eq(knowledgeCrawlPages.runId, runId),
+        eq(knowledgeCrawlPages.id, pageId),
+      ),
+    )
+    .limit(1);
+  return page ?? null;
+};
+
+export const hasFailedCrawlPageRecords = async (
+  projectId: string,
+  runId: string,
+): Promise<boolean> => {
+  const [page] = await getInfrastructure()
+    .database.db.select({ id: knowledgeCrawlPages.id })
+    .from(knowledgeCrawlPages)
+    .where(
+      and(
+        eq(knowledgeCrawlPages.projectId, projectId),
+        eq(knowledgeCrawlPages.runId, runId),
+        eq(knowledgeCrawlPages.status, "failed"),
+      ),
+    )
+    .limit(1);
+  return Boolean(page);
+};
+
 export const listCrawlPageRecords = async (
   projectId: string,
   runId: string,
@@ -295,6 +644,7 @@ export const listCrawlPageRecords = async (
         warnings: knowledgeCrawlPages.warnings,
         errorCode: knowledgeCrawlPages.errorCode,
         retryable: knowledgeCrawlPages.retryable,
+        attemptCount: knowledgeCrawlPages.attemptCount,
         reviewStatus: knowledgeCrawlPages.reviewStatus,
         contentPreview: sql<
           string | null

@@ -363,7 +363,7 @@ const deleteRevision = async (): Promise<void> => {
 
     <template v-else-if="detail">
       <section class="split-layout" aria-label="Редактор и версии роли агента">
-        <article class="panel prompt-editor" aria-label="Основные данные роли агента">
+        <article class="panel" aria-label="Основные данные роли агента">
           <form class="form-stack" novalidate @submit.prevent="saveMetadata">
             <div class="form-grid" :class="{ 'form-grid--with-action': canEdit && !isArchived }">
               <label class="form-field">
@@ -406,7 +406,7 @@ const deleteRevision = async (): Promise<void> => {
 
           <form class="form-stack" novalidate @submit.prevent="apply">
             <label class="form-field">
-              <span class="form-field__label form-field__label-row">
+              <span class="form-field__label form-field__label-row prompt-editor__label-row">
                 <span>Роль и поведение агента</span>
                 <span class="prompt-editor__counter">{{ draftContent.length }} / 50000</span>
               </span>
@@ -452,7 +452,7 @@ const deleteRevision = async (): Promise<void> => {
         </article>
 
         <aside class="panel-stack" aria-label="Версии и тестирование роли агента">
-          <section class="panel prompt-revisions" aria-label="Версии роли агента">
+          <section class="panel" aria-label="Версии роли агента">
             <ol class="prompt-revision-list">
               <li
                 v-for="revision in detail.revisions"
@@ -517,7 +517,7 @@ const deleteRevision = async (): Promise<void> => {
 
           <section
             v-if="selectedRevision && canEdit && !isArchived"
-            class="panel prompt-playground"
+            class="panel"
             aria-label="Предпросмотр ответа агента"
           >
             <form class="form-stack" novalidate @submit.prevent="runPreview">
@@ -554,29 +554,27 @@ const deleteRevision = async (): Promise<void> => {
             </form>
           </section>
 
-          <section
-            v-if="canEdit"
-            class="panel prompt-danger"
-            aria-label="Архивация и удаление роли"
-          >
-            <div class="button-group">
-              <button
-                v-if="!isArchived"
-                class="button"
-                type="button"
-                @click="archiveConfirmationVisible = true"
-              >
-                Архивировать
-              </button>
-              <button
-                class="button button--danger"
-                type="button"
-                @click="deleteConfirmationVisible = true"
-              >
-                Удалить
-              </button>
-            </div>
-          </section>
+          <div v-if="canEdit" class="layout-push-end">
+            <section class="panel" aria-label="Архивация и удаление роли">
+              <div class="button-group">
+                <button
+                  v-if="!isArchived"
+                  class="button"
+                  type="button"
+                  @click="archiveConfirmationVisible = true"
+                >
+                  Архивировать
+                </button>
+                <button
+                  class="button button--danger"
+                  type="button"
+                  @click="deleteConfirmationVisible = true"
+                >
+                  Удалить
+                </button>
+              </div>
+            </section>
+          </div>
         </aside>
       </section>
 

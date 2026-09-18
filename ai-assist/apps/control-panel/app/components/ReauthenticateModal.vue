@@ -2,8 +2,12 @@
 const props = withDefaults(
   defineProps<{
     pending?: boolean;
+    description?: string;
   }>(),
-  { pending: false },
+  {
+    pending: false,
+    description: "Повторное подтверждение защищает критические изменения данных.",
+  },
 );
 
 const emit = defineEmits<{
@@ -19,11 +23,7 @@ const close = (): void => {
 </script>
 
 <template>
-  <BaseModal
-    title="Подтвердите пароль"
-    description="Повторное подтверждение защищает добавление, замену и удаление ключа провайдера"
-    @close="close"
-  >
+  <BaseModal title="Подтвердите пароль" :description="description" @close="close">
     <form
       id="reauthentication-form"
       class="modal-form"
@@ -44,6 +44,7 @@ const close = (): void => {
           :disabled="pending"
         />
       </label>
+      <p>{{ description }}</p>
       <BaseNote
         :items="[
           'Подтверждение действует 30 минут.',

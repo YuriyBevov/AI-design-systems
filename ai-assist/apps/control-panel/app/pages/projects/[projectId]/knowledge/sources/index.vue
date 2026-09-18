@@ -1,14 +1,20 @@
 <script setup lang="ts">
 import { defaultKnowledgeNormalizationPrompt } from "@ai-assist/contracts";
 import type {
+  ClearKnowledgeDataResponse,
   CrawlChangeType,
   CrawlPageResponse,
   CrawlRunDetailResponse,
+  CrawlRunHistoryResponse,
+  CrawlRunResponse,
   CrawlRunStatus,
+  DeleteKnowledgeCrawlResponse,
+  DeleteUrlKnowledgeSourceResponse,
   DiscoverSiteStructureResponse,
   ProjectResponse,
   PublishCrawlRunResponse,
   RequestKnowledgeCrawlResponse,
+  ReauthenticateResponse,
   SiteStructureNode,
   UrlKnowledgeSourceListResponse,
   UrlKnowledgeSourceResponse,
@@ -29,6 +35,20 @@ const isDiscovering = ref(false);
 const runningSourceId = ref<string | null>(null);
 const isPublishing = ref(false);
 const isReprocessing = ref(false);
+const isChangingPause = ref(false);
+const isStoppingRun = ref(false);
+const isDeletingRun = ref(false);
+const isManagingData = ref(false);
+type DestructiveAction =
+  | { kind: "clear_history" }
+  | { kind: "clear_sources" }
+  | { kind: "delete_source"; source: UrlKnowledgeSourceResponse };
+const destructiveAction = ref<DestructiveAction | null>(null);
+const reauthenticationVisible = ref(false);
+const isReauthenticating = ref(false);
+const crawlRunConfirmation = ref<"stop" | "delete" | null>(null);
+const isRetryingPageId = ref<string | null>(null);
+const isRetryingFailedPages = ref(false);
 const selectedRun = ref<CrawlRunDetailResponse | null>(null);
 const promptRunId = ref<string | null>(null);
 const normalizationPromptDraft = ref(defaultKnowledgeNormalizationPrompt);
@@ -37,6 +57,30 @@ const selectAllRunPages = ref(false);
 const selectionRunId = ref<string | null>(null);
 const crawlPage = ref(1);
 const crawlPageSize = 50;
+type SourceSortColumn = "name" | "limits" | "latestRun";
+type CrawlHistorySortColumn = "source" | "createdAt" | "status" | "result";
+type CrawlPageSortColumn = "page" | "type" | "change" | "confidence" | "review";
+const {
+  sortColumn: sourceSortColumn,
+  sortDirection: sourceSortDirection,
+  toggleSort: toggleSourceSort,
+} = useTableSort<SourceSortColumn>("name");
+const {
+  sortColumn: crawlHistorySortColumn,
+  sortDirection: crawlHistorySortDirection,
+  toggleSort: toggleCrawlHistorySort,
+} = useTableSort<CrawlHistorySortColumn>("createdAt", "descending");
+const {
+  sortColumn: crawlPageSortColumn,
+  sortDirection: crawlPageSortDirection,
+  toggleSort: toggleCrawlPageSort,
+} = useTableSort<CrawlPageSortColumn>("page");
+const setSourceSort = (column: string): void => toggleSourceSort(column as SourceSortColumn);
+const setCrawlHistorySort = (column: string): void =>
+  toggleCrawlHistorySort(column as CrawlHistorySortColumn);
+const setCrawlPageSort = (column: string): void =>
+  toggleCrawlPageSort(column as CrawlPageSortColumn);
+const showNormalizationPromptEditor = false;
 const structure = ref<DiscoverSiteStructureResponse | null>(null);
 const structureStartUrl = ref<string | null>(null);
 const selectedStructurePaths = ref<string[]>([]);
@@ -51,13 +95,16 @@ const form = reactive({
 const { data, error, refresh } = await useAsyncData(
   () => `project-knowledge-sources-${projectId.value}`,
   async () => {
-    const [project, sourceList] = await Promise.all([
+    const [project, sourceList, crawlHistory] = await Promise.all([
       requestFetch<ProjectResponse>(`/api/v1/projects/${projectId.value}`),
       requestFetch<UrlKnowledgeSourceListResponse>(
         `/api/v1/projects/${projectId.value}/knowledge/sources`,
       ),
+      requestFetch<CrawlRunHistoryResponse>(
+        `/api/v1/projects/${projectId.value}/knowledge/crawl-runs`,
+      ),
     ]);
-    return { project, sourceList };
+    return { project, sourceList, crawlHistory };
   },
 );
 
@@ -67,6 +114,31 @@ const role = computed(
     data.value?.project.role,
 );
 const canEdit = computed(() => role.value === "owner" || role.value === "editor");
+const isOwner = computed(() => role.value === "owner");
+const destructiveConfirmation = computed(() => {
+  const action = destructiveAction.value;
+  if (action?.kind === "delete_source") {
+    return {
+      title: "Удалить источник сайта?",
+      description: `Источник «${action.source.name}», его настройки и история парсинга будут удалены. Созданные записи базы знаний сохранятся.`,
+      label: "Удалить источник",
+    };
+  }
+  if (action?.kind === "clear_sources") {
+    return {
+      title: "Очистить настроенные источники?",
+      description:
+        "Все источники сайта, их настройки и история парсинга будут удалены. Созданные записи базы знаний сохранятся.",
+      label: "Очистить источники",
+    };
+  }
+  return {
+    title: "Очистить историю парсинга?",
+    description:
+      "Все завершённые, ошибочные и остановленные запуски вместе с постраничными результатами будут удалены. Записи базы знаний сохранятся.",
+    label: "Очистить историю",
+  };
+});
 const selectedRunSource = computed(() =>
   data.value?.sourceList.sources.find((source) => source.id === selectedRun.value?.run.sourceId),
 );
@@ -84,18 +156,71 @@ watch(
   { immediate: true },
 );
 
-const runStatusLabel = (status: CrawlRunStatus): string =>
-  ({
-    queued: "В очереди",
-    running: "Выполняется",
-    succeeded: "Завершён",
-    partial: "Завершён с ошибками",
-    failed: "Ошибка",
-    cancelled: "Отменён",
-  })[status];
+const runStatusLabel = (
+  status: CrawlRunStatus,
+  paused = false,
+  finishedAt: string | null = null,
+): string =>
+  status === "cancelled"
+    ? finishedAt
+      ? "Остановлен"
+      : "Останавливается"
+    : paused
+      ? "Приостановлен"
+      : {
+          queued: "В очереди",
+          running: "Выполняется",
+          succeeded: "Завершён",
+          partial: "Завершён с ошибками",
+          failed: "Ошибка",
+          cancelled: "Остановлен",
+        }[status];
 
 const changeLabel = (change: CrawlChangeType | null): string =>
   change ? { new: "Новый", changed: "Изменён", unchanged: "Без изменений" }[change] : "—";
+
+const sortedSources = computed(() =>
+  sortTableRows(data.value?.sourceList.sources ?? [], sourceSortDirection.value, (source) => {
+    switch (sourceSortColumn.value) {
+      case "name":
+        return `${source.name} ${source.settings.startUrl}`;
+      case "limits":
+        return source.settings.maxPages;
+      case "latestRun":
+        return source.latestRun ? Date.parse(source.latestRun.createdAt) : null;
+    }
+  }),
+);
+const sortedCrawlHistory = computed(() =>
+  sortTableRows(data.value?.crawlHistory.runs ?? [], crawlHistorySortDirection.value, (run) => {
+    switch (crawlHistorySortColumn.value) {
+      case "source":
+        return run.sourceName;
+      case "createdAt":
+        return Date.parse(run.createdAt);
+      case "status":
+        return runStatusLabel(run.status, run.paused, run.finishedAt);
+      case "result":
+        return run.succeededCount;
+    }
+  }),
+);
+const sortedCrawlPages = computed(() =>
+  sortTableRows(selectedRun.value?.pages ?? [], crawlPageSortDirection.value, (page) => {
+    switch (crawlPageSortColumn.value) {
+      case "page":
+        return page.title ?? page.normalizedUrl;
+      case "type":
+        return page.documentType ?? "";
+      case "change":
+        return changeLabel(page.changeType);
+      case "confidence":
+        return page.confidence;
+      case "review":
+        return `${page.reviewStatus} ${page.errorCode ?? ""}`;
+    }
+  }),
+);
 
 const formatDate = (value: string): string =>
   new Intl.DateTimeFormat("ru-RU", { dateStyle: "medium", timeStyle: "short" }).format(
@@ -108,7 +233,7 @@ const structureNodes = computed(() => flattenNodes(structure.value?.nodes ?? [])
 const mapStructureNode = (node: SiteStructureNode): TreeSelectNode => ({
   id: node.path,
   label: node.label,
-  description: `(${node.path}) · вложенных узлов: ${node.descendantCount}`,
+  description: `${node.path} • вложенных узлов: ${node.descendantCount}`,
   children: node.children.map(mapStructureNode),
 });
 const structureTree = computed(() => (structure.value?.nodes ?? []).map(mapStructureNode));
@@ -264,7 +389,7 @@ const latestRunId = computed(
 watch(
   latestRunId,
   (runId) => {
-    if (runId && selectedRun.value?.run.id !== runId) void loadRun(runId);
+    if (runId && !selectedRun.value) void loadRun(runId);
   },
   { immediate: true },
 );
@@ -275,7 +400,8 @@ const schedulePoll = (): void => {
   if (pollTimer) clearTimeout(pollTimer);
   const status = selectedRun.value?.run.status;
   const runId = selectedRun.value?.run.id;
-  if ((status === "queued" || status === "running") && runId) {
+  const stopping = status === "cancelled" && !selectedRun.value?.run.finishedAt;
+  if ((status === "queued" || status === "running" || stopping) && runId) {
     pollTimer = setTimeout(async () => {
       await Promise.all([loadRun(runId), refresh()]);
       schedulePoll();
@@ -413,6 +539,250 @@ const startCrawl = async (source: UrlKnowledgeSourceResponse): Promise<void> => 
   }
 };
 
+const setCrawlPaused = async (paused: boolean): Promise<void> => {
+  if (!canEdit.value || !selectedRun.value || isChangingPause.value) return;
+  isChangingPause.value = true;
+  message.value = null;
+  try {
+    await $fetch(
+      `/api/v1/projects/${projectId.value}/knowledge/crawl-runs/${selectedRun.value.run.id}`,
+      {
+        method: "PATCH",
+        headers: getCsrfHeaders(),
+        body: { paused },
+      },
+    );
+    message.value = {
+      type: "success",
+      text: paused ? "Парсинг будет приостановлен после текущей страницы." : "Парсинг продолжен.",
+    };
+    await Promise.all([loadRun(selectedRun.value.run.id), refresh()]);
+  } catch (requestError) {
+    const fetchError = requestError as { data?: { statusMessage?: string } };
+    message.value = {
+      type: "error",
+      text: fetchError.data?.statusMessage ?? "Не удалось изменить состояние парсинга",
+    };
+  } finally {
+    isChangingPause.value = false;
+  }
+};
+
+const stopCrawl = async (): Promise<void> => {
+  if (
+    !canEdit.value ||
+    !selectedRun.value ||
+    selectedRun.value.run.status !== "running" ||
+    !selectedRun.value.run.paused ||
+    isStoppingRun.value
+  )
+    return;
+  isStoppingRun.value = true;
+  message.value = null;
+  try {
+    const run = await $fetch<CrawlRunResponse>(
+      `/api/v1/projects/${projectId.value}/knowledge/crawl-runs/${selectedRun.value.run.id}/stop`,
+      { method: "POST", headers: getCsrfHeaders() },
+    );
+    crawlRunConfirmation.value = null;
+    message.value = {
+      type: "success",
+      text: "Остановка запрошена. После завершения worker запуск можно будет удалить.",
+    };
+    await Promise.all([loadRun(run.id), refresh()]);
+  } catch (requestError) {
+    const fetchError = requestError as { data?: { statusMessage?: string } };
+    message.value = {
+      type: "error",
+      text: fetchError.data?.statusMessage ?? "Не удалось остановить парсинг",
+    };
+  } finally {
+    isStoppingRun.value = false;
+  }
+};
+
+const deleteCrawl = async (): Promise<void> => {
+  if (
+    !canEdit.value ||
+    !selectedRun.value ||
+    ["queued", "running"].includes(selectedRun.value.run.status) ||
+    isDeletingRun.value
+  )
+    return;
+  const runId = selectedRun.value.run.id;
+  isDeletingRun.value = true;
+  message.value = null;
+  try {
+    await $fetch<DeleteKnowledgeCrawlResponse>(
+      `/api/v1/projects/${projectId.value}/knowledge/crawl-runs/${runId}`,
+      { method: "DELETE", headers: getCsrfHeaders() },
+    );
+    crawlRunConfirmation.value = null;
+    selectedRun.value = null;
+    promptRunId.value = null;
+    selectionRunId.value = null;
+    selectedPageIds.value = [];
+    selectAllRunPages.value = false;
+    message.value = { type: "success", text: "Запуск и его результаты удалены." };
+    await refresh();
+    if (latestRunId.value) await loadRun(latestRunId.value);
+  } catch (requestError) {
+    const fetchError = requestError as { data?: { statusMessage?: string } };
+    message.value = {
+      type: "error",
+      text: fetchError.data?.statusMessage ?? "Не удалось удалить парсинг",
+    };
+  } finally {
+    isDeletingRun.value = false;
+  }
+};
+
+const getErrorCode = (requestError: unknown): string | undefined => {
+  const fetchError = requestError as { data?: { code?: string; data?: { code?: string } } };
+  return fetchError.data?.data?.code ?? fetchError.data?.code;
+};
+
+const executeDestructiveAction = async (): Promise<void> => {
+  const action = destructiveAction.value;
+  if (!isOwner.value || !action || isManagingData.value) return;
+  isManagingData.value = true;
+  message.value = null;
+  try {
+    if (action.kind === "delete_source") {
+      const result = await $fetch<DeleteUrlKnowledgeSourceResponse>(
+        `/api/v1/projects/${projectId.value}/knowledge/sources/${action.source.id}`,
+        {
+          method: "DELETE",
+          headers: getCsrfHeaders(),
+          query: { expectedVersion: action.source.version },
+        },
+      );
+      if (selectedRun.value?.run.sourceId === action.source.id) selectedRun.value = null;
+      message.value = {
+        type: "success",
+        text: `Источник удалён. Сохранено записей БЗ: ${result.preservedDocuments}.`,
+      };
+    } else {
+      const result = await $fetch<ClearKnowledgeDataResponse>(
+        `/api/v1/projects/${projectId.value}/knowledge/data`,
+        {
+          method: "DELETE",
+          headers: getCsrfHeaders(),
+          body: { scope: action.kind === "clear_sources" ? "sources" : "crawl_history" },
+        },
+      );
+      selectedRun.value = null;
+      message.value =
+        action.kind === "clear_sources"
+          ? {
+              type: "success",
+              text: `Удалено источников: ${result.deletedSources}; сохранено записей БЗ: ${result.preservedDocuments}.`,
+            }
+          : {
+              type: "success",
+              text: `История очищена. Удалено запусков: ${result.deletedCrawlRuns}.`,
+            };
+    }
+    destructiveAction.value = null;
+    await refresh();
+  } catch (requestError) {
+    if (getErrorCode(requestError) === "RECENT_AUTHENTICATION_REQUIRED") {
+      reauthenticationVisible.value = true;
+      return;
+    }
+    const fetchError = requestError as { data?: { statusMessage?: string } };
+    message.value = {
+      type: "error",
+      text: fetchError.data?.statusMessage ?? "Не удалось удалить данные источника",
+    };
+  } finally {
+    isManagingData.value = false;
+  }
+};
+
+const reauthenticate = async (password: string): Promise<void> => {
+  if (isReauthenticating.value) return;
+  isReauthenticating.value = true;
+  try {
+    await $fetch<ReauthenticateResponse>("/api/v1/auth/reauthenticate", {
+      method: "POST",
+      headers: getCsrfHeaders(),
+      body: { password },
+    });
+    reauthenticationVisible.value = false;
+    await executeDestructiveAction();
+  } catch (requestError) {
+    const fetchError = requestError as { data?: { statusMessage?: string } };
+    message.value = {
+      type: "error",
+      text: fetchError.data?.statusMessage ?? "Не удалось подтвердить пароль",
+    };
+  } finally {
+    isReauthenticating.value = false;
+  }
+};
+
+const requestRunDelete = async (runId: string): Promise<void> => {
+  await loadRun(runId);
+  crawlRunConfirmation.value = "delete";
+};
+
+const retryCrawlPage = async (page: CrawlPageResponse): Promise<void> => {
+  if (!canEdit.value || !selectedRun.value || isRetryingPageId.value) return;
+  isRetryingPageId.value = page.id;
+  message.value = null;
+  try {
+    const result = await $fetch<RequestKnowledgeCrawlResponse>(
+      `/api/v1/projects/${projectId.value}/knowledge/crawl-runs/${selectedRun.value.run.id}/pages/${page.id}/retry`,
+      { method: "POST", headers: getCsrfHeaders() },
+    );
+    message.value = { type: "success", text: "Точечный парсинг страницы поставлен в очередь." };
+    await refresh();
+    await loadRun(result.run.id);
+  } catch (requestError) {
+    const fetchError = requestError as { data?: { statusMessage?: string } };
+    message.value = {
+      type: "error",
+      text: fetchError.data?.statusMessage ?? "Не удалось повторно обработать страницу",
+    };
+  } finally {
+    isRetryingPageId.value = null;
+  }
+};
+
+const retryFailedCrawlPages = async (): Promise<void> => {
+  if (
+    !canEdit.value ||
+    !selectedRun.value ||
+    !selectedRun.value.run.failedCount ||
+    ["queued", "running"].includes(selectedRun.value.run.status) ||
+    isRetryingFailedPages.value
+  )
+    return;
+  isRetryingFailedPages.value = true;
+  message.value = null;
+  try {
+    const result = await $fetch<RequestKnowledgeCrawlResponse>(
+      `/api/v1/projects/${projectId.value}/knowledge/crawl-runs/${selectedRun.value.run.id}/retry-failed`,
+      { method: "POST", headers: getCsrfHeaders() },
+    );
+    message.value = {
+      type: "success",
+      text: "Страницы с ошибками поставлены в отдельную очередь парсинга.",
+    };
+    await refresh();
+    await loadRun(result.run.id);
+  } catch (requestError) {
+    const fetchError = requestError as { data?: { statusMessage?: string } };
+    message.value = {
+      type: "error",
+      text: fetchError.data?.statusMessage ?? "Не удалось повторить страницы с ошибками",
+    };
+  } finally {
+    isRetryingFailedPages.value = false;
+  }
+};
+
 const toggleSource = async (source: UrlKnowledgeSourceResponse): Promise<void> => {
   if (!canEdit.value) return;
   message.value = null;
@@ -537,7 +907,10 @@ const publishRun = async (): Promise<void> => {
                   required
                 />
               </div>
-              <div class="form-field form-field--wide prompt-editor">
+              <div
+                v-if="showNormalizationPromptEditor"
+                class="form-field form-field--wide prompt-editor crawl-normalization-prompt"
+              >
                 <div class="form-field__label-row">
                   <label class="form-field__label" for="crawl-normalization-prompt">
                     Промпт ИИ после технического парсинга
@@ -614,7 +987,7 @@ const publishRun = async (): Promise<void> => {
                     v-model="selectedStructurePaths"
                     :nodes="structureTree"
                     label="Разделы сайта для парсинга"
-                    :initially-expanded-depth="1"
+                    :initially-expanded-depth="0"
                   />
                   <div v-else class="empty-state">Структура сайта не найдена.</div>
                   <p v-if="structureNodes.length" class="site-tree__summary">
@@ -637,7 +1010,23 @@ const publishRun = async (): Promise<void> => {
         </form>
       </section>
 
-      <section class="panel panel--flush" aria-label="Настроенные источники сайта">
+      <section class="panel" aria-labelledby="configured-sources-title">
+        <header class="section-header">
+          <div>
+            <h2 id="configured-sources-title" class="section-title">Настроенные источники сайта</h2>
+          </div>
+          <button
+            v-if="isOwner"
+            class="icon-button icon-button--danger"
+            type="button"
+            aria-label="Очистить источники"
+            title="Очистить источники"
+            :disabled="isManagingData || !data.sourceList.sources.length"
+            @click="destructiveAction = { kind: 'clear_sources' }"
+          >
+            <UiIcon name="trash" />
+          </button>
+        </header>
         <div v-if="!data.sourceList.sources.length" class="empty-state">
           Источники пока не добавлены.
         </div>
@@ -645,15 +1034,34 @@ const publishRun = async (): Promise<void> => {
           <table class="data-table" aria-label="Настроенные источники сайта">
             <thead>
               <tr>
-                <th scope="col">Источник</th>
-                <th scope="col">Ограничения</th>
-                <th scope="col">Последний запуск</th>
-                <th scope="col">Действия</th>
+                <TableSortHeader
+                  class="data-table__dynamic-column"
+                  label="Источник"
+                  column="name"
+                  :active-column="sourceSortColumn"
+                  :direction="sourceSortDirection"
+                  @sort="setSourceSort"
+                />
+                <TableSortHeader
+                  label="Ограничения"
+                  column="limits"
+                  :active-column="sourceSortColumn"
+                  :direction="sourceSortDirection"
+                  @sort="setSourceSort"
+                />
+                <TableSortHeader
+                  label="Последний запуск"
+                  column="latestRun"
+                  :active-column="sourceSortColumn"
+                  :direction="sourceSortDirection"
+                  @sort="setSourceSort"
+                />
+                <th class="data-table__actions-column" scope="col">Действия</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="source in data.sourceList.sources" :key="source.id">
-                <td>
+              <tr v-for="source in sortedSources" :key="source.id">
+                <td class="data-table__dynamic-cell">
                   <strong>{{ source.name }}</strong>
                   <span class="data-table__secondary">{{ source.settings.startUrl }}</span>
                 </td>
@@ -673,29 +1081,67 @@ const publishRun = async (): Promise<void> => {
                     type="button"
                     @click="loadRun(source.latestRun.id)"
                   >
-                    {{ runStatusLabel(source.latestRun.status) }} ·
+                    {{
+                      runStatusLabel(
+                        source.latestRun.status,
+                        source.latestRun.paused,
+                        source.latestRun.finishedAt,
+                      )
+                    }}
+                    ·
                     {{ formatDate(source.latestRun.createdAt) }}
                   </button>
                   <span v-else>Не запускался</span>
                 </td>
                 <td>
-                  <div class="button-row">
+                  <div class="table-actions">
                     <button
                       v-if="canEdit && source.status === 'active'"
-                      class="button button--compact"
+                      class="icon-button icon-button--compact icon-button--ghost"
                       type="button"
+                      :aria-label="
+                        runningSourceId === source.id ? 'Запускаем парсинг' : 'Запустить парсинг'
+                      "
+                      :title="runningSourceId === source.id ? 'Запускаем…' : 'Запустить'"
                       :disabled="Boolean(runningSourceId) || source.latestRun?.status === 'running'"
                       @click="startCrawl(source)"
                     >
-                      {{ runningSourceId === source.id ? "Запускаем…" : "Запустить" }}
+                      <UiIcon name="play" />
                     </button>
                     <button
                       v-if="canEdit"
-                      class="button button--text"
+                      class="icon-button icon-button--compact icon-button--ghost"
                       type="button"
+                      :aria-label="
+                        source.status === 'active'
+                          ? 'Переместить источник в архив'
+                          : 'Вернуть источник из архива'
+                      "
+                      :title="
+                        ['queued', 'running'].includes(source.latestRun?.status ?? '')
+                          ? 'Дождитесь завершения парсинга'
+                          : source.status === 'active'
+                            ? 'В архив'
+                            : 'Вернуть'
+                      "
+                      :disabled="['queued', 'running'].includes(source.latestRun?.status ?? '')"
                       @click="toggleSource(source)"
                     >
-                      {{ source.status === "active" ? "В архив" : "Вернуть" }}
+                      <UiIcon :name="source.status === 'active' ? 'archive' : 'restore'" />
+                    </button>
+                    <button
+                      v-if="isOwner"
+                      class="icon-button icon-button--compact icon-button--ghost icon-button--danger"
+                      type="button"
+                      aria-label="Удалить источник"
+                      title="Удалить"
+                      :disabled="
+                        isManagingData ||
+                        ['queued', 'running'].includes(source.latestRun?.status ?? '')
+                      "
+                      @click="destructiveAction = { kind: 'delete_source', source }"
+                    >
+                      <UiIcon name="trash" />
                     </button>
                   </div>
                 </td>
@@ -705,31 +1151,196 @@ const publishRun = async (): Promise<void> => {
         </div>
       </section>
 
-      <section v-if="selectedRun" class="panel panel--flush" aria-labelledby="crawl-result-title">
-        <header class="section-header crawl-result__header">
+      <section class="panel" aria-labelledby="crawl-history-title">
+        <header class="section-header">
           <div>
-            <h2 id="crawl-result-title" class="section-title">
-              {{ runStatusLabel(selectedRun.run.status) }}
-            </h2>
+            <h2 id="crawl-history-title" class="section-title">История парсинга</h2>
           </div>
           <button
-            v-if="
-              canEdit &&
-              ['succeeded', 'partial'].includes(selectedRun.run.status) &&
-              reviewablePageCount > 0
-            "
-            class="button button--primary"
+            v-if="isOwner"
+            class="icon-button icon-button--danger"
             type="button"
-            :disabled="isPublishing || !selectedPublicationCount"
-            @click="publishRun"
+            aria-label="Очистить историю"
+            title="Очистить историю"
+            :disabled="isManagingData || !data.crawlHistory.runs.length"
+            @click="destructiveAction = { kind: 'clear_history' }"
           >
-            {{
-              isPublishing ? "Публикуем…" : `Опубликовать выбранные (${selectedPublicationCount})`
-            }}
+            <UiIcon name="trash" />
           </button>
+        </header>
+        <div v-if="!data.crawlHistory.runs.length" class="empty-state">
+          Запусков парсинга пока нет.
+        </div>
+        <div v-else class="table-scroll">
+          <table class="data-table" aria-label="История запусков парсинга">
+            <thead>
+              <tr>
+                <TableSortHeader
+                  class="data-table__dynamic-column"
+                  label="Источник"
+                  column="source"
+                  :active-column="crawlHistorySortColumn"
+                  :direction="crawlHistorySortDirection"
+                  @sort="setCrawlHistorySort"
+                />
+                <TableSortHeader
+                  label="Запущен"
+                  column="createdAt"
+                  :active-column="crawlHistorySortColumn"
+                  :direction="crawlHistorySortDirection"
+                  @sort="setCrawlHistorySort"
+                />
+                <TableSortHeader
+                  label="Статус"
+                  column="status"
+                  :active-column="crawlHistorySortColumn"
+                  :direction="crawlHistorySortDirection"
+                  @sort="setCrawlHistorySort"
+                />
+                <TableSortHeader
+                  label="Результат"
+                  column="result"
+                  :active-column="crawlHistorySortColumn"
+                  :direction="crawlHistorySortDirection"
+                  @sort="setCrawlHistorySort"
+                />
+                <th class="data-table__actions-column" scope="col">Действия</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="run in sortedCrawlHistory" :key="run.id">
+                <td class="data-table__dynamic-cell">{{ run.sourceName }}</td>
+                <td>{{ formatDate(run.createdAt) }}</td>
+                <td>{{ runStatusLabel(run.status, run.paused, run.finishedAt) }}</td>
+                <td>{{ run.succeededCount }} успешно · {{ run.failedCount }} ошибок</td>
+                <td>
+                  <div class="table-actions">
+                    <button
+                      class="icon-button icon-button--compact icon-button--ghost"
+                      type="button"
+                      aria-label="Открыть результат парсинга"
+                      title="Открыть"
+                      @click="loadRun(run.id)"
+                    >
+                      <UiIcon name="eye" />
+                    </button>
+                    <button
+                      v-if="canEdit && !['queued', 'running'].includes(run.status)"
+                      class="icon-button icon-button--compact icon-button--ghost icon-button--danger"
+                      type="button"
+                      aria-label="Удалить запуск парсинга"
+                      title="Удалить"
+                      @click="requestRunDelete(run.id)"
+                    >
+                      <UiIcon name="trash" />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section v-if="selectedRun" class="panel" aria-labelledby="crawl-result-title">
+        <header class="section-header">
+          <div>
+            <h2 id="crawl-result-title" class="section-title">
+              {{
+                runStatusLabel(
+                  selectedRun.run.status,
+                  selectedRun.run.paused,
+                  selectedRun.run.finishedAt,
+                )
+              }}
+            </h2>
+          </div>
+          <div v-if="canEdit" class="button-row">
+            <button
+              v-if="selectedRun.run.status === 'running'"
+              class="icon-button"
+              type="button"
+              :aria-label="
+                isChangingPause
+                  ? 'Сохраняем состояние парсинга'
+                  : selectedRun.run.paused
+                    ? 'Продолжить парсинг'
+                    : 'Приостановить парсинг'
+              "
+              :title="
+                isChangingPause
+                  ? 'Сохраняем…'
+                  : selectedRun.run.paused
+                    ? 'Продолжить'
+                    : 'Приостановить'
+              "
+              :disabled="isChangingPause"
+              @click="setCrawlPaused(!selectedRun.run.paused)"
+            >
+              <UiIcon :name="selectedRun.run.paused ? 'play' : 'pause'" />
+            </button>
+            <button
+              v-if="selectedRun.run.status === 'running' && selectedRun.run.paused"
+              class="icon-button icon-button--danger"
+              type="button"
+              aria-label="Остановить парсинг"
+              title="Остановить"
+              :disabled="isStoppingRun || isChangingPause"
+              @click="crawlRunConfirmation = 'stop'"
+            >
+              <UiIcon name="stop" />
+            </button>
+            <button
+              v-if="
+                !['queued', 'running'].includes(selectedRun.run.status) &&
+                selectedRun.run.failedCount > 0
+              "
+              class="icon-button"
+              type="button"
+              :aria-label="
+                isRetryingFailedPages
+                  ? 'Запускаем повторный парсинг страниц с ошибками'
+                  : `Повторить страницы с ошибками: ${selectedRun.run.failedCount}`
+              "
+              :title="
+                isRetryingFailedPages
+                  ? 'Запускаем…'
+                  : `Повторить ошибки (${selectedRun.run.failedCount})`
+              "
+              :disabled="isRetryingFailedPages"
+              @click="retryFailedCrawlPages"
+            >
+              <UiIcon name="refresh" />
+            </button>
+            <button
+              v-if="!['queued', 'running'].includes(selectedRun.run.status)"
+              class="icon-button icon-button--danger"
+              type="button"
+              aria-label="Удалить запуск парсинга"
+              title="Удалить"
+              :disabled="isDeletingRun"
+              @click="crawlRunConfirmation = 'delete'"
+            >
+              <UiIcon name="trash" />
+            </button>
+            <button
+              v-if="
+                ['succeeded', 'partial'].includes(selectedRun.run.status) && reviewablePageCount > 0
+              "
+              class="icon-button"
+              type="button"
+              :aria-label="`Опубликовать выбранные записи: ${selectedPublicationCount}`"
+              :title="`Опубликовать выбранные (${selectedPublicationCount})`"
+              :disabled="isPublishing || !selectedPublicationCount"
+              @click="publishRun"
+            >
+              <UiIcon name="publish" />
+            </button>
+          </div>
         </header>
 
         <section
+          v-if="showNormalizationPromptEditor"
           class="crawl-prompt-editor prompt-editor"
           aria-labelledby="crawl-prompt-editor-title"
         >
@@ -769,7 +1380,9 @@ const publishRun = async (): Promise<void> => {
           class="crawl-progress"
         >
           <div class="crawl-progress__header">
-            <strong>Идёт обход сайта</strong>
+            <strong>{{
+              selectedRun.run.paused ? "Парсинг приостановлен" : "Идёт обход сайта"
+            }}</strong>
             <span>
               {{ selectedRun.run.processedCount }} из
               {{ selectedRun.run.discoveredCount || "уточняется" }}
@@ -858,15 +1471,47 @@ const publishRun = async (): Promise<void> => {
             <thead>
               <tr>
                 <th scope="col" class="crawl-result__selection-column">Выбор</th>
-                <th scope="col">Страница</th>
-                <th scope="col">Тип</th>
-                <th scope="col">Изменение</th>
-                <th scope="col">Точность</th>
-                <th scope="col">Проверка</th>
+                <TableSortHeader
+                  class="data-table__dynamic-column"
+                  label="Страница"
+                  column="page"
+                  :active-column="crawlPageSortColumn"
+                  :direction="crawlPageSortDirection"
+                  @sort="setCrawlPageSort"
+                />
+                <TableSortHeader
+                  label="Тип"
+                  column="type"
+                  :active-column="crawlPageSortColumn"
+                  :direction="crawlPageSortDirection"
+                  @sort="setCrawlPageSort"
+                />
+                <TableSortHeader
+                  label="Изменение"
+                  column="change"
+                  :active-column="crawlPageSortColumn"
+                  :direction="crawlPageSortDirection"
+                  @sort="setCrawlPageSort"
+                />
+                <TableSortHeader
+                  label="Точность"
+                  column="confidence"
+                  :active-column="crawlPageSortColumn"
+                  :direction="crawlPageSortDirection"
+                  @sort="setCrawlPageSort"
+                />
+                <TableSortHeader
+                  label="Проверка"
+                  column="review"
+                  :active-column="crawlPageSortColumn"
+                  :direction="crawlPageSortDirection"
+                  @sort="setCrawlPageSort"
+                />
+                <th class="data-table__actions-column" scope="col">Действия</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="page in selectedRun.pages" :key="page.id">
+              <tr v-for="page in sortedCrawlPages" :key="page.id">
                 <td class="crawl-result__selection-cell">
                   <input
                     type="checkbox"
@@ -876,7 +1521,7 @@ const publishRun = async (): Promise<void> => {
                     @change="setPageSelected(page.id, !selectedPageIds.includes(page.id))"
                   />
                 </td>
-                <td>
+                <td class="data-table__dynamic-cell">
                   <strong>{{ page.title ?? page.errorCode ?? "Не извлечено" }}</strong>
                   <span class="data-table__secondary">{{ page.normalizedUrl }}</span>
                   <details v-if="page.contentPreview" class="crawl-preview">
@@ -908,9 +1553,34 @@ const publishRun = async (): Promise<void> => {
                     {{ page.reviewStatus === "approved" ? "Опубликовано" : "Открыть запись" }}
                   </NuxtLink>
                   <span v-else>{{ page.errorCode ?? "Пропущено" }}</span>
+                  <span v-if="page.status === 'failed'" class="data-table__secondary">
+                    Попыток: {{ page.attemptCount }} из 3
+                  </span>
                   <span v-if="page.warnings.length" class="data-table__secondary">
                     {{ page.warnings.join(", ") }}
                   </span>
+                </td>
+                <td>
+                  <div class="table-actions">
+                    <button
+                      v-if="canEdit"
+                      class="icon-button icon-button--compact icon-button--ghost"
+                      type="button"
+                      :aria-label="
+                        isRetryingPageId === page.id
+                          ? 'Запускаем повторный парсинг страницы'
+                          : 'Парсить страницу заново'
+                      "
+                      :title="isRetryingPageId === page.id ? 'Запускаем…' : 'Парсить заново'"
+                      :disabled="
+                        ['queued', 'running'].includes(selectedRun.run.status) ||
+                        Boolean(isRetryingPageId)
+                      "
+                      @click="retryCrawlPage(page)"
+                    >
+                      <UiIcon name="refresh" />
+                    </button>
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -944,5 +1614,47 @@ const publishRun = async (): Promise<void> => {
         </nav>
       </section>
     </template>
+
+    <ConfirmModal
+      v-if="crawlRunConfirmation === 'stop'"
+      title="Остановить парсинг?"
+      description="Запуск нельзя будет продолжить. Уже обработанные страницы и созданные записи базы знаний сохранятся."
+      confirm-label="Остановить"
+      pending-label="Останавливаем…"
+      :pending="isStoppingRun"
+      danger
+      @close="crawlRunConfirmation = null"
+      @confirm="stopCrawl"
+    />
+
+    <ConfirmModal
+      v-if="crawlRunConfirmation === 'delete'"
+      title="Удалить запуск парсинга?"
+      description="Запуск и его постраничные результаты будут удалены. Уже созданные записи базы знаний сохранятся."
+      confirm-label="Удалить"
+      pending-label="Удаляем…"
+      :pending="isDeletingRun"
+      danger
+      @close="crawlRunConfirmation = null"
+      @confirm="deleteCrawl"
+    />
+    <ConfirmModal
+      v-if="destructiveAction && !reauthenticationVisible"
+      :title="destructiveConfirmation.title"
+      :description="destructiveConfirmation.description"
+      :confirm-label="destructiveConfirmation.label"
+      pending-label="Удаляем…"
+      :pending="isManagingData"
+      danger
+      @close="destructiveAction = null"
+      @confirm="executeDestructiveAction"
+    />
+    <ReauthenticateModal
+      v-if="reauthenticationVisible"
+      description="Для удаления источников или истории парсинга подтвердите текущий пароль."
+      :pending="isReauthenticating"
+      @close="reauthenticationVisible = false"
+      @confirm="reauthenticate"
+    />
   </main>
 </template>

@@ -9,7 +9,9 @@ import pino from "pino";
 
 import { processSystemJob } from "./processor.js";
 import { createKnowledgeIndexProcessor } from "./knowledge-indexer.js";
-import { createKnowledgeCrawlProcessor } from "./knowledge-crawler.js";
+import { createConcurrencyLimiter, createKnowledgeCrawlProcessor } from "./knowledge-crawler.js";
+import { createKnowledgeProcessingProcessor } from "./knowledge-processing.js";
+import { systemWorkerOptions } from "./worker-options.js";
 
 const environment = parseServiceEnvironment(process.env);
 const logger = pino({
@@ -25,7 +27,17 @@ const connection = new IORedis(environment.REDIS_URL, {
 });
 const database = createDatabase(environment.DATABASE_URL);
 const processKnowledgeIndex = createKnowledgeIndexProcessor({ database, environment });
-const processKnowledgeCrawl = createKnowledgeCrawlProcessor({ database, environment });
+const runWithAiLimit = createConcurrencyLimiter(environment.KNOWLEDGE_CRAWL_AI_CONCURRENCY);
+const processKnowledgeCrawl = createKnowledgeCrawlProcessor({
+  database,
+  environment,
+  runWithAiLimit,
+});
+const processKnowledgeProcessing = createKnowledgeProcessingProcessor({
+  database,
+  environment,
+  runWithAiLimit,
+});
 
 const worker = new Worker(
   systemQueueName,
@@ -33,10 +45,11 @@ const worker = new Worker(
     processSystemJob(job.name, job.data, workerId, {
       processKnowledgeCrawl,
       processKnowledgeIndex,
+      processKnowledgeProcessing,
     }),
   {
     connection,
-    concurrency: 2,
+    ...systemWorkerOptions,
   },
 );
 
@@ -58,6 +71,14 @@ worker.on("failed", (job, error) => {
     },
     "job failed",
   );
+});
+
+worker.on("lockRenewalFailed", (jobIds) => {
+  logger.error({ jobIds }, "worker job lock renewal failed");
+});
+
+worker.on("stalled", (jobId) => {
+  logger.warn({ jobId }, "worker job recovered from a stalled state");
 });
 
 const shutdown = async (signal: NodeJS.Signals): Promise<void> => {
