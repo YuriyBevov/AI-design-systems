@@ -108,6 +108,7 @@ const sortedEvents = computed(() =>
                 @sort="setAuditSort"
               />
               <TableSortHeader
+                class="data-table__dynamic-column data-table__dynamic-column--compact"
                 label="Пользователь"
                 column="actor"
                 :active-column="auditSortColumn"
@@ -122,6 +123,7 @@ const sortedEvents = computed(() =>
                 @sort="setAuditSort"
               />
               <TableSortHeader
+                class="data-table__dynamic-column data-table__dynamic-column--compact"
                 label="Request ID"
                 column="requestId"
                 :active-column="auditSortColumn"
@@ -136,12 +138,20 @@ const sortedEvents = computed(() =>
                 <time :datetime="event.createdAt">{{ formatDate(event.createdAt) }}</time>
               </td>
               <td class="data-table__dynamic-cell">
-                <strong>{{ actionLabel(event.action) }}</strong>
+                <div class="data-table__clamp">
+                  <strong>{{ actionLabel(event.action) }}</strong>
+                </div>
               </td>
-              <td>{{ event.actorEmail ?? "Система" }}</td>
+              <td class="data-table__dynamic-cell data-table__dynamic-cell--compact">
+                <div class="data-table__nowrap data-table__nowrap--compact">
+                  {{ event.actorEmail ?? "Система" }}
+                </div>
+              </td>
               <td>{{ event.resourceType }}</td>
-              <td>
-                <code>{{ event.requestId }}</code>
+              <td class="data-table__dynamic-cell data-table__dynamic-cell--compact">
+                <div class="data-table__nowrap data-table__nowrap--compact">
+                  <code>{{ event.requestId }}</code>
+                </div>
               </td>
             </tr>
           </tbody>

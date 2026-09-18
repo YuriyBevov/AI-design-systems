@@ -134,6 +134,13 @@
       "when": 1789716808947,
       "tag": "0018_strong_pyro",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1789733312760,
+      "tag": "0019_square_the_professor",
+      "breakpoints": true
     }
   ]
 }

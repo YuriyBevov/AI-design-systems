@@ -848,6 +848,7 @@ export const knowledgeProcessingItems = pgTable(
     sourceVersionId: uuid("source_version_id")
       .notNull()
       .references(() => knowledgeDocumentVersions.id, { onDelete: "cascade" }),
+    attemptCount: integer("attempt_count").default(0).notNull(),
     resultVersionId: uuid("result_version_id").references(() => knowledgeDocumentVersions.id, {
       onDelete: "set null",
     }),

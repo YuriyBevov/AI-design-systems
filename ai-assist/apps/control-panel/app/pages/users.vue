@@ -252,6 +252,7 @@ const changeStatus = async (user: UserResponse): Promise<void> => {
                 @sort="setUserSort"
               />
               <TableSortHeader
+                class="data-table__dynamic-column"
                 label="Проекты"
                 column="projects"
                 :active-column="userSortColumn"
@@ -271,11 +272,15 @@ const changeStatus = async (user: UserResponse): Promise<void> => {
           <tbody>
             <tr v-for="user in sortedUsers" :key="user.id">
               <td class="data-table__dynamic-cell">
-                <strong>{{ user.name }}</strong>
-                <span class="data-table__secondary">{{ user.email }}</span>
+                <div class="data-table__clamp">
+                  <strong>{{ user.name }}</strong>
+                  <span class="data-table__secondary data-table__nowrap">{{ user.email }}</span>
+                </div>
               </td>
               <td>{{ roleLabel(user.role) }}</td>
-              <td class="data-table__wrap">{{ userProjectNames(user) }}</td>
+              <td class="data-table__dynamic-cell">
+                <div class="data-table__clamp">{{ userProjectNames(user) }}</div>
+              </td>
               <td>
                 <span class="status-badge status-badge--compact" :data-status="user.status">
                   {{ statusLabel(user.status) }}

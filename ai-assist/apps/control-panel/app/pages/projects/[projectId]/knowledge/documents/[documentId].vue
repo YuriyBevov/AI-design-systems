@@ -220,30 +220,32 @@ const reauthenticate = async (password: string): Promise<void> => {
     isReauthenticating.value = false;
   }
 };
+
+const closeDocument = async (): Promise<void> => {
+  await navigateTo(`/projects/${projectId.value}/knowledge/documents`);
+};
 </script>
 
 <template>
   <main class="page-frame">
-    <NuxtLink class="back-link" :to="`/projects/${projectId}/knowledge/documents`">
-      <UiIcon name="arrow-left" />
-      <span>База знаний</span>
-    </NuxtLink>
+    <template v-if="error">
+      <NuxtLink class="back-link" :to="`/projects/${projectId}/knowledge/documents`">
+        <UiIcon name="arrow-left" />
+        <span>База знаний</span>
+      </NuxtLink>
+      <div class="empty-state" role="alert">Запись недоступна.</div>
+    </template>
 
-    <div v-if="error" class="empty-state" role="alert">Запись недоступна.</div>
-
-    <section v-else-if="detail" class="panel" aria-labelledby="knowledge-edit-title">
-      <header class="section-header">
-        <div>
-          <h2 id="knowledge-edit-title" class="section-title">Запись базы знаний</h2>
-        </div>
+    <BaseModal v-else-if="detail" title="Запись базы знаний" size="full" @close="closeDocument">
+      <template #header-actions>
         <span class="status-badge status-badge--compact" :data-status="detail.document.status">
           {{ detail.document.status === "published" ? "Опубликована" : "Не опубликована" }}
         </span>
-      </header>
+      </template>
 
-      <form class="form-stack" novalidate @submit.prevent="publish">
-        <div class="form-grid">
-          <label class="form-field form-field--wide">
+      <form class="knowledge-editor" novalidate @submit.prevent="publish">
+        <div class="knowledge-editor__toolbar">
+          <label class="form-field">
             <span class="form-field__label">Название</span>
             <input
               v-model.trim="form.title"
@@ -261,22 +263,12 @@ const reauthenticate = async (password: string): Promise<void> => {
               v-model="form.type"
               :options="typeOptions"
               label="Тип записи"
+              width="content"
               :disabled="!canEdit"
             />
           </div>
 
-          <label class="form-field form-field--wide">
-            <span class="form-field__label">Описание в формате Markdown</span>
-            <textarea
-              v-model="form.content"
-              class="form-field__control knowledge-editor__textarea"
-              maxlength="30000"
-              required
-              :disabled="!canEdit"
-            />
-          </label>
-
-          <label class="form-field form-field--wide">
+          <label class="form-field">
             <span class="form-field__label">URL источника</span>
             <input
               v-model.trim="form.canonicalUrl"
@@ -286,37 +278,58 @@ const reauthenticate = async (password: string): Promise<void> => {
               :disabled="!canEdit"
             />
           </label>
+
+          <div v-if="canEdit" class="knowledge-editor__actions">
+            <button
+              class="icon-button icon-button--compact icon-button--ghost"
+              type="submit"
+              :aria-label="
+                isPublishing
+                  ? 'Публикуем запись'
+                  : isChanged
+                    ? 'Опубликовать изменения'
+                    : 'Опубликовать запись'
+              "
+              :title="isChanged ? 'Опубликовать изменения' : 'Опубликовать'"
+              :disabled="isPublishing || (detail.document.status === 'published' && !isChanged)"
+            >
+              <UiIcon name="publish" />
+            </button>
+            <button
+              v-if="detail.document.status === 'published'"
+              class="icon-button icon-button--compact icon-button--ghost"
+              type="button"
+              aria-label="Снять запись с публикации"
+              title="Снять с публикации"
+              @click="unpublishConfirmationVisible = true"
+            >
+              <UiIcon name="unpublish" />
+            </button>
+            <button
+              class="icon-button icon-button--compact icon-button--ghost icon-button--danger"
+              type="button"
+              aria-label="Удалить запись"
+              title="Удалить"
+              :disabled="isDeleting"
+              @click="deleteConfirmationVisible = true"
+            >
+              <UiIcon name="trash" />
+            </button>
+          </div>
         </div>
 
-        <div v-if="canEdit" class="form-actions">
-          <button
-            class="button button--primary"
-            type="submit"
-            :disabled="isPublishing || (detail.document.status === 'published' && !isChanged)"
-          >
-            {{
-              isPublishing ? "Публикуем…" : isChanged ? "Опубликовать изменения" : "Опубликовать"
-            }}
-          </button>
-          <button
-            v-if="detail.document.status === 'published'"
-            class="button"
-            type="button"
-            @click="unpublishConfirmationVisible = true"
-          >
-            Снять с публикации
-          </button>
-          <button
-            class="button button--danger"
-            type="button"
-            :disabled="isDeleting"
-            @click="deleteConfirmationVisible = true"
-          >
-            Удалить
-          </button>
-        </div>
+        <label class="form-field knowledge-editor__content">
+          <span class="form-field__label">Описание в формате Markdown</span>
+          <textarea
+            v-model="form.content"
+            class="form-field__control knowledge-editor__textarea"
+            maxlength="30000"
+            required
+            :disabled="!canEdit"
+          />
+        </label>
       </form>
-    </section>
+    </BaseModal>
 
     <ConfirmModal
       v-if="unpublishConfirmationVisible"

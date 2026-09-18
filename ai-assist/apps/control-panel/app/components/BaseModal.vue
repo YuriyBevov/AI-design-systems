@@ -13,7 +13,7 @@ const props = withDefaults(
   defineProps<{
     title: string;
     description?: string;
-    size?: "default" | "wide";
+    size?: "default" | "wide" | "full";
   }>(),
   { description: undefined, size: "default" },
 );
@@ -48,6 +48,7 @@ const handlePointerDownOutside = async (event: Event): Promise<void> => {
         class="modal__panel"
         :class="{
           'modal__panel--wide': size === 'wide',
+          'modal__panel--full': size === 'full',
           'modal__panel--attention': isAttentionAnimating,
         }"
         @pointer-down-outside="handlePointerDownOutside"

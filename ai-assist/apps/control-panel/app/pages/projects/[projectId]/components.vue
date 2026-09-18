@@ -40,6 +40,7 @@ const checkboxValue = ref(false);
 const selectedRegions = ref<string[]>(["moscow", "moscow-region"]);
 const activeTabPreview = ref("interface");
 const isModalPreviewOpen = ref(false);
+const isFullModalPreviewOpen = ref(false);
 const isConfirmModalPreviewOpen = ref(false);
 const isReauthenticateModalPreviewOpen = ref(false);
 const toast = useToast();
@@ -310,6 +311,9 @@ const regionTreeNodes: TreeSelectNode[] = [
         <button class="button" type="button" @click="isModalPreviewOpen = true">
           Открыть форму
         </button>
+        <button class="button" type="button" @click="isFullModalPreviewOpen = true">
+          Открыть полноширинную форму
+        </button>
         <button
           class="button button--danger"
           type="button"
@@ -387,6 +391,22 @@ const regionTreeNodes: TreeSelectNode[] = [
           Готово
         </button>
         <button class="button" type="button" @click="isModalPreviewOpen = false">Отмена</button>
+      </template>
+    </BaseModal>
+
+    <BaseModal
+      v-if="isFullModalPreviewOpen"
+      title="Пример полноширинного модального окна"
+      size="full"
+      @close="isFullModalPreviewOpen = false"
+    >
+      <p class="section-description">
+        Полноширинный вариант используется для крупных редакторов с несколькими полями.
+      </p>
+      <template #footer>
+        <button class="button" type="button" @click="isFullModalPreviewOpen = false">
+          Закрыть
+        </button>
       </template>
     </BaseModal>
 

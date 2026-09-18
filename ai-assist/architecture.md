@@ -80,6 +80,8 @@ Route handler не содержит SQL, шифрование, prompt assembly �
   автоматического переключения публикации;
 - checkpoint-safe pause/resume, cooperative stop и история массовой постобработки с сохранением
   созданных immutable versions при удалении технического run;
+- автоматические item-level повторы временных ошибок постобработки до трёх попыток и отдельный
+  tenant-scoped запуск только для failed документов завершённого run;
 - SSRF-safe коннекторы к публичным сайтам и feed URL с фиксированным mapping profile;
 - безопасные parsers TXT/Markdown, text PDF, DOCX, CSV/XLSX и XML/YML без выполнения macro/script/external content;
 - SSRF-safe fetch и optional browser rendering;

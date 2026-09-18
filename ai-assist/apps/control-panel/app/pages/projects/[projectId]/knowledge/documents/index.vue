@@ -15,6 +15,7 @@ import type {
   ProjectResponse,
   ReauthenticateResponse,
   RequestKnowledgeProcessingResponse,
+  RequestKnowledgeReindexResponse,
 } from "@ai-assist/contracts";
 
 const route = useRoute();
@@ -141,6 +142,23 @@ const activeProcessingRun = computed(
     ) ?? null,
 );
 const latestProcessingRun = computed(() => processingRuns.value[0] ?? null);
+const pendingIndex = computed(() => {
+  const latest = data.value?.indexState.latest;
+  return latest && (latest.status === "queued" || latest.status === "building") ? latest : null;
+});
+const indexTaskLabel = computed(() => {
+  if (isRequestingIndex.value && !pendingIndex.value) return "Создаём задачу переиндексации";
+  return pendingIndex.value?.status === "building"
+    ? "Переиндексация выполняется"
+    : "Переиндексация ожидает запуска";
+});
+const indexTaskDetails = computed(() => {
+  const index = pendingIndex.value;
+  if (!index || index.status === "queued" || index.chunkCount === 0) {
+    return "Подготавливаем данные";
+  }
+  return `${index.documentCount} документов · ${index.chunkCount} фрагментов`;
+});
 const sortedProcessingRuns = computed(() =>
   sortTableRows(processingRuns.value, processingSortDirection.value, (run) => {
     switch (processingSortColumn.value) {
@@ -432,8 +450,8 @@ const formatDate = (value: string): string =>
 const indexStatusLabel = (status: string): string =>
   ({
     queued: "В очереди",
-    building: "Строится",
-    active: "Активен",
+    building: "Выполняется",
+    active: "Завершено",
     superseded: "Заменён",
     failed: "Ошибка",
   })[status] ?? status;
@@ -554,6 +572,43 @@ const deleteProcessingRun = async (): Promise<void> => {
   }
 };
 
+const retryFailedProcessingRun = async (run: KnowledgeProcessingRunResponse): Promise<void> => {
+  if (
+    !canEdit.value ||
+    controllingProcessingRunId.value ||
+    activeProcessingRun.value ||
+    run.failedCount === 0 ||
+    !["partial", "failed"].includes(run.status)
+  )
+    return;
+  controllingProcessingRunId.value = run.id;
+  message.value = null;
+  try {
+    const result = await $fetch<RequestKnowledgeProcessingResponse>(
+      `/api/v1/projects/${projectId.value}/knowledge/processing-runs/${run.id}/retry-failed`,
+      { method: "POST", headers: getCsrfHeaders() },
+    );
+    replaceProcessingRun(result.run);
+    message.value = {
+      type: "success",
+      text: `Ошибочные записи поставлены в очередь: ${result.run.totalCount}.`,
+    };
+    await refresh();
+  } catch (requestError) {
+    const fetchError = requestError as { data?: { statusMessage?: string; message?: string } };
+    message.value = {
+      type: "error",
+      text:
+        fetchError.data?.statusMessage ??
+        fetchError.data?.message ??
+        "Не удалось повторить обработку ошибочных записей",
+    };
+    await refresh();
+  } finally {
+    controllingProcessingRunId.value = null;
+  }
+};
+
 const applyBulkAction = async (): Promise<void> => {
   if (!canEdit.value || !selectedDocumentIds.value.length || isApplyingBulkAction.value) return;
   if (bulkAction.value === "delete") {
@@ -633,10 +688,17 @@ const requestReindex = async (): Promise<void> => {
   isRequestingIndex.value = true;
   message.value = null;
   try {
-    await $fetch(`/api/v1/projects/${projectId.value}/knowledge/reindex`, {
-      method: "POST",
-      headers: getCsrfHeaders(),
-    });
+    const result = await $fetch<RequestKnowledgeReindexResponse>(
+      `/api/v1/projects/${projectId.value}/knowledge/reindex`,
+      {
+        method: "POST",
+        headers: getCsrfHeaders(),
+      },
+    );
+    if (data.value) {
+      data.value.indexState.latest = result.index;
+      setKnowledgeIndexState(projectId.value, data.value.indexState);
+    }
     message.value = { type: "success", text: "Переиндексация поставлена в очередь." };
     await refresh();
   } catch (requestError) {
@@ -762,6 +824,19 @@ const togglePublication = async (document: KnowledgeDocumentSummaryResponse): Pr
                 <UiIcon name="refresh" />
               </button>
             </header>
+
+            <div
+              v-if="isRequestingIndex || pendingIndex"
+              class="task-progress"
+              role="status"
+              aria-live="polite"
+            >
+              <div class="task-progress__header">
+                <strong>{{ indexTaskLabel }}</strong>
+                <span>{{ indexTaskDetails }}</span>
+              </div>
+              <progress :aria-label="indexTaskLabel">Выполняется переиндексация</progress>
+            </div>
 
             <dl class="settings-summary">
               <div>
@@ -918,7 +993,9 @@ const togglePublication = async (document: KnowledgeDocumentSummaryResponse): Pr
                       />
                     </td>
                     <td class="data-table__dynamic-cell">
-                      <strong>{{ document.title }}</strong>
+                      <div class="data-table__clamp">
+                        <strong>{{ document.title }}</strong>
+                      </div>
                     </td>
                     <td>{{ typeLabel(document.type) }}</td>
                     <td>
@@ -1091,7 +1168,8 @@ const togglePublication = async (document: KnowledgeDocumentSummaryResponse): Pr
                 />
                 <span class="field-note">
                   Агент создаст новые версии {{ selectedDocumentCount ? "выбранных" : "всех" }}
-                  записей. Статус публикации не изменится.
+                  записей. Статус публикации не изменится. Временные ошибки автоматически
+                  повторяются до трёх раз.
                 </span>
               </label>
 
@@ -1180,7 +1258,7 @@ const togglePublication = async (document: KnowledgeDocumentSummaryResponse): Pr
                   @sort="setProcessingSort"
                 />
                 <TableSortHeader
-                  class="data-table__dynamic-column"
+                  class="data-table__dynamic-column data-table__dynamic-column--compact"
                   label="Запустил"
                   column="requestedBy"
                   :active-column="processingSortColumn"
@@ -1195,26 +1273,39 @@ const togglePublication = async (document: KnowledgeDocumentSummaryResponse): Pr
                   :direction="processingSortDirection"
                   @sort="setProcessingSort"
                 />
-                <th class="data-table__dynamic-column" scope="col">Ошибка</th>
+                <th
+                  class="data-table__dynamic-column data-table__dynamic-column--compact"
+                  scope="col"
+                >
+                  Ошибка
+                </th>
                 <th class="data-table__actions-column" scope="col">Действия</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="run in sortedProcessingRuns" :key="run.id">
-                <td class="data-table__dynamic-cell">{{ run.instruction }}</td>
+                <td class="data-table__dynamic-cell">
+                  <div class="data-table__clamp">{{ run.instruction }}</div>
+                </td>
                 <td>
                   <span class="status-badge status-badge--compact" :data-status="run.status">
                     {{ processingStatusLabel(run.status, run.paused, run.finishedAt) }}
                   </span>
                 </td>
                 <td>{{ run.processedCount }} из {{ run.totalCount }}</td>
-                <td class="data-table__dynamic-cell">{{ run.requestedByEmail ?? "—" }}</td>
+                <td class="data-table__dynamic-cell data-table__dynamic-cell--compact">
+                  <div class="data-table__nowrap data-table__nowrap--compact">
+                    {{ run.requestedByEmail ?? "—" }}
+                  </div>
+                </td>
                 <td>
                   <time :datetime="run.createdAt">{{ formatDate(run.createdAt) }}</time>
                 </td>
-                <td class="data-table__dynamic-cell">
-                  <code v-if="run.errorCode">{{ run.errorCode }}</code>
-                  <span v-else>—</span>
+                <td class="data-table__dynamic-cell data-table__dynamic-cell--compact">
+                  <div class="data-table__clamp data-table__clamp--compact">
+                    <code v-if="run.errorCode">{{ run.errorCode }}</code>
+                    <span v-else>—</span>
+                  </div>
                 </td>
                 <td>
                   <div class="table-actions">
@@ -1243,7 +1334,11 @@ const togglePublication = async (document: KnowledgeDocumentSummaryResponse): Pr
                       <UiIcon name="stop" />
                     </button>
                     <button
-                      v-else-if="canEdit && !(run.status === 'cancelled' && !run.finishedAt)"
+                      v-if="
+                        canEdit &&
+                        !['queued', 'running'].includes(run.status) &&
+                        !(run.status === 'cancelled' && !run.finishedAt)
+                      "
                       class="icon-button icon-button--compact icon-button--ghost icon-button--danger"
                       type="button"
                       aria-label="Удалить запуск постобработки"
@@ -1252,6 +1347,21 @@ const togglePublication = async (document: KnowledgeDocumentSummaryResponse): Pr
                       @click="processingRunToDelete = run"
                     >
                       <UiIcon name="trash" />
+                    </button>
+                    <button
+                      v-if="
+                        canEdit && run.failedCount > 0 && ['partial', 'failed'].includes(run.status)
+                      "
+                      class="icon-button icon-button--compact icon-button--ghost"
+                      type="button"
+                      aria-label="Повторить ошибочные записи постобработки"
+                      title="Повторить ошибки"
+                      :disabled="
+                        Boolean(controllingProcessingRunId) || Boolean(activeProcessingRun)
+                      "
+                      @click="retryFailedProcessingRun(run)"
+                    >
+                      <UiIcon name="refresh" />
                     </button>
                   </div>
                 </td>

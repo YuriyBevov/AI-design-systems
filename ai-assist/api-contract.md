@@ -186,6 +186,7 @@ POST   /projects/{projectId}/knowledge/processing-runs
 PATCH  /projects/{projectId}/knowledge/processing-runs/{runId}
 DELETE /projects/{projectId}/knowledge/processing-runs/{runId}
 POST   /projects/{projectId}/knowledge/processing-runs/{runId}/stop
+POST   /projects/{projectId}/knowledge/processing-runs/{runId}/retry-failed
 DELETE /projects/{projectId}/knowledge/data
 
 GET    /projects/{projectId}/knowledge/sources
@@ -238,6 +239,14 @@ body `{ paused: boolean }` и управляет выполняющимся run.
 run в кооперативную остановку; новые items не запускаются, уже начатые завершаются.
 `DELETE` разрешён только для терминального run и удаляет его items/BullMQ job, сохраняя созданные
 версии документов. Control/delete требуют Editor/Owner, CSRF и project scope.
+
+Worker автоматически повторяет временные ошибки отдельной записи до трёх item-level попыток.
+Повторяются `PROVIDER_RATE_LIMITED`, `PROVIDER_TIMEOUT`, `PROVIDER_BAD_RESPONSE`,
+`PROVIDER_UNAVAILABLE` и `CRAWL_AI_RESPONSE_INVALID`; постоянные ошибки сразу становятся
+терминальными. `POST .../processing-runs/{runId}/retry-failed` не принимает body, разрешён только для
+`partial|failed` run с ошибочными items и создаёт новый `202` run только по этим document ids с той
+же неизменяемой инструкцией. Документы и их актуальные versions повторно проверяются на сервере;
+запуск блокируется, если уже выполняется crawl, indexing или другая постобработка.
 
 Публикация атомарно переключает `activeVersionId`. Повторная публикация уже активной версии
 возвращает `409 KNOWLEDGE_VERSION_ALREADY_ACTIVE`; unpublish сразу очищает active pointer и

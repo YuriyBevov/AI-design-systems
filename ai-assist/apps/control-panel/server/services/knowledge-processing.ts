@@ -22,6 +22,7 @@ import {
   createKnowledgeProcessingRunRecord,
   deleteTerminalKnowledgeProcessingRunRecord,
   failQueuedKnowledgeProcessingRunRecord,
+  findFailedKnowledgeProcessingDocuments,
   findKnowledgeProcessingRunRecord,
   findLatestKnowledgeProcessingRunRecord,
   findPendingKnowledgeProcessingRunRecord,
@@ -42,6 +43,33 @@ const toRunResponse = (run: KnowledgeProcessingRunRecord): KnowledgeProcessingRu
   createdAt: run.createdAt.toISOString(),
   updatedAt: run.updatedAt.toISOString(),
 });
+
+const enqueueKnowledgeProcessingRun = async (input: {
+  projectId: string;
+  runId: string;
+  requestId: string;
+}): Promise<string> => {
+  const jobId = `knowledge-processing-${input.runId}`;
+  try {
+    await getInfrastructure().systemQueue.add(
+      knowledgeProcessingJobName,
+      {
+        projectId: input.projectId,
+        runId: input.runId,
+        requestedAt: new Date().toISOString(),
+        requestId: input.requestId,
+      },
+      { jobId, attempts: 1, removeOnComplete: 100 },
+    );
+  } catch {
+    await failQueuedKnowledgeProcessingRunRecord(
+      input.runId,
+      "KNOWLEDGE_PROCESSING_QUEUE_UNAVAILABLE",
+    );
+    throw createError({ statusCode: 503, statusMessage: "Очередь обработки недоступна" });
+  }
+  return jobId;
+};
 
 const removeKnowledgeProcessingRunJob = async (runId: string): Promise<void> => {
   const job = await getInfrastructure().systemQueue.getJob(`knowledge-processing-${runId}`);
@@ -142,22 +170,11 @@ export const requestKnowledgeProcessing = async (
     }
     throw error;
   }
-  const jobId = `knowledge-processing-${run.id}`;
-  try {
-    await getInfrastructure().systemQueue.add(
-      knowledgeProcessingJobName,
-      {
-        projectId: project.id,
-        runId: run.id,
-        requestedAt: new Date().toISOString(),
-        requestId,
-      },
-      { jobId, attempts: 1, removeOnComplete: 100 },
-    );
-  } catch {
-    await failQueuedKnowledgeProcessingRunRecord(run.id, "KNOWLEDGE_PROCESSING_QUEUE_UNAVAILABLE");
-    throw createError({ statusCode: 503, statusMessage: "Очередь обработки недоступна" });
-  }
+  const jobId = await enqueueKnowledgeProcessingRun({
+    projectId: project.id,
+    runId: run.id,
+    requestId,
+  });
   await writeAuditEvent({
     projectId: project.id,
     actorUserId: session.userId,
@@ -166,6 +183,77 @@ export const requestKnowledgeProcessing = async (
     resourceId: run.id,
     requestId,
     metadata: { totalCount: run.totalCount, selection: input.selection.scope },
+  });
+  return { jobId, run: toRunResponse(run) };
+};
+
+export const retryFailedKnowledgeProcessing = async (
+  event: H3Event,
+  projectId: string,
+  sourceRunId: string,
+): Promise<RequestKnowledgeProcessingResponse> => {
+  const { session, project } = await requireProjectScope(event, projectId, "editor");
+  assertCsrf(event, session);
+  await assertKnowledgeIsMutable(project.id);
+  const sourceRun = await findKnowledgeProcessingRunRecord(project.id, sourceRunId);
+  if (!sourceRun) {
+    throw createError({ statusCode: 404, statusMessage: "Запуск постобработки не найден" });
+  }
+  if (!["partial", "failed"].includes(sourceRun.status) || sourceRun.failedCount === 0) {
+    throw createError({
+      statusCode: 409,
+      statusMessage: "У запуска нет ошибок, доступных для повторной обработки",
+    });
+  }
+  const failed = await findFailedKnowledgeProcessingDocuments({
+    projectId: project.id,
+    runId: sourceRun.id,
+  });
+  if (!failed?.documentIds.length) {
+    throw createError({
+      statusCode: 409,
+      statusMessage: "Ошибочные записи этого запуска больше недоступны",
+    });
+  }
+  const requestId = getRequestId(event);
+  let run: KnowledgeProcessingRunRecord;
+  try {
+    run = await createKnowledgeProcessingRunRecord({
+      projectId: project.id,
+      requestedBy: session.userId,
+      requestId,
+      instruction: failed.instruction,
+      documentIds: failed.documentIds,
+    });
+  } catch (error) {
+    if (error instanceof Error && error.message === "KNOWLEDGE_PROCESSING_DOCUMENTS_REQUIRED") {
+      throw createError({ statusCode: 409, statusMessage: "Нет доступных записей для повтора" });
+    }
+    if ((error as { code?: string }).code === "23505") {
+      throw createError({
+        statusCode: 409,
+        statusMessage: "Массовая обработка уже выполняется",
+      });
+    }
+    throw error;
+  }
+  const jobId = await enqueueKnowledgeProcessingRun({
+    projectId: project.id,
+    runId: run.id,
+    requestId,
+  });
+  await writeAuditEvent({
+    projectId: project.id,
+    actorUserId: session.userId,
+    action: "knowledge.processing_failed_retry_requested",
+    resourceType: "knowledge_processing_run",
+    resourceId: run.id,
+    requestId,
+    metadata: {
+      sourceRunId: sourceRun.id,
+      requestedCount: failed.documentIds.length,
+      queuedCount: run.totalCount,
+    },
   });
   return { jobId, run: toRunResponse(run) };
 };

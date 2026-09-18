@@ -166,10 +166,13 @@ Markdown document version, который остаётся источником 
 status `queued|running|succeeded|partial|failed|cancelled`, nullable `pause_requested_at`, progress
 counters, safe error code и timestamps.
 Один проект имеет не более одного `queued|running` run. Item фиксирует document и исходную immutable
-version, затем сохраняет result version либо safe error code. Новая версия не становится активной
-автоматически; прежний `active_version_id` обслуживает runtime до явной публикации. Пауза запрещает
-worker-у начинать новые items, а кооперативная остановка подтверждается `finished_at`. Удаление
-терминального run каскадно очищает items, но сохраняет созданные document versions.
+version, `attempt_count`, затем сохраняет result version либо safe error code. Временная ошибка
+оставляет item в `queued` до следующей попытки; после трёх попыток либо постоянной ошибки item
+переходит в `failed`. Новая версия не становится активной автоматически; прежний
+`active_version_id` обслуживает runtime до явной публикации. Пауза запрещает worker-у начинать новые
+items, а кооперативная остановка подтверждается `finished_at`. Удаление терминального run каскадно
+очищает items, но сохраняет созданные document versions. Ручной повтор ошибок создаёт новый run по
+failed document ids исходного запуска и фиксирует уже актуальные versions этих документов.
 
 ### `knowledge_index_versions`
 

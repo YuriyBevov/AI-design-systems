@@ -1043,6 +1043,7 @@ const publishRun = async (): Promise<void> => {
                   @sort="setSourceSort"
                 />
                 <TableSortHeader
+                  class="data-table__dynamic-column"
                   label="Ограничения"
                   column="limits"
                   :active-column="sourceSortColumn"
@@ -1062,17 +1063,23 @@ const publishRun = async (): Promise<void> => {
             <tbody>
               <tr v-for="source in sortedSources" :key="source.id">
                 <td class="data-table__dynamic-cell">
-                  <strong>{{ source.name }}</strong>
-                  <span class="data-table__secondary">{{ source.settings.startUrl }}</span>
+                  <div class="data-table__clamp">
+                    <strong>{{ source.name }}</strong>
+                    <span class="data-table__secondary data-table__nowrap">
+                      {{ source.settings.startUrl }}
+                    </span>
+                  </div>
                 </td>
-                <td>
-                  {{ source.settings.crawlMode === "full" ? "Полный" : "Быстрый" }} режим ·
-                  {{
-                    source.settings.includePathPrefixes.length +
-                    source.settings.includeExactPaths.length
-                  }}
-                  разделов · {{ source.settings.maxPages }} стр. · глубина
-                  {{ source.settings.maxDepth }} · {{ source.settings.requestDelayMs }} мс
+                <td class="data-table__dynamic-cell">
+                  <div class="data-table__clamp">
+                    {{ source.settings.crawlMode === "full" ? "Полный" : "Быстрый" }} режим ·
+                    {{
+                      source.settings.includePathPrefixes.length +
+                      source.settings.includeExactPaths.length
+                    }}
+                    разделов · {{ source.settings.maxPages }} стр. · глубина
+                    {{ source.settings.maxDepth }} · {{ source.settings.requestDelayMs }} мс
+                  </div>
                 </td>
                 <td>
                   <button
@@ -1209,7 +1216,9 @@ const publishRun = async (): Promise<void> => {
             </thead>
             <tbody>
               <tr v-for="run in sortedCrawlHistory" :key="run.id">
-                <td class="data-table__dynamic-cell">{{ run.sourceName }}</td>
+                <td class="data-table__dynamic-cell">
+                  <div class="data-table__clamp">{{ run.sourceName }}</div>
+                </td>
                 <td>{{ formatDate(run.createdAt) }}</td>
                 <td>{{ runStatusLabel(run.status, run.paused, run.finishedAt) }}</td>
                 <td>{{ run.succeededCount }} успешно · {{ run.failedCount }} ошибок</td>
@@ -1377,9 +1386,9 @@ const publishRun = async (): Promise<void> => {
 
         <div
           v-if="selectedRun.run.status === 'queued' || selectedRun.run.status === 'running'"
-          class="crawl-progress"
+          class="task-progress"
         >
-          <div class="crawl-progress__header">
+          <div class="task-progress__header">
             <strong>{{
               selectedRun.run.paused ? "Парсинг приостановлен" : "Идёт обход сайта"
             }}</strong>
@@ -1501,6 +1510,7 @@ const publishRun = async (): Promise<void> => {
                   @sort="setCrawlPageSort"
                 />
                 <TableSortHeader
+                  class="data-table__dynamic-column"
                   label="Проверка"
                   column="review"
                   :active-column="crawlPageSortColumn"
@@ -1522,8 +1532,12 @@ const publishRun = async (): Promise<void> => {
                   />
                 </td>
                 <td class="data-table__dynamic-cell">
-                  <strong>{{ page.title ?? page.errorCode ?? "Не извлечено" }}</strong>
-                  <span class="data-table__secondary">{{ page.normalizedUrl }}</span>
+                  <div class="data-table__clamp">
+                    <strong>{{ page.title ?? page.errorCode ?? "Не извлечено" }}</strong>
+                    <span class="data-table__secondary data-table__nowrap">
+                      {{ page.normalizedUrl }}
+                    </span>
+                  </div>
                   <details v-if="page.contentPreview" class="crawl-preview">
                     <summary>Фрагмент</summary>
                     <p>{{ page.contentPreview }}</p>
@@ -1544,21 +1558,23 @@ const publishRun = async (): Promise<void> => {
                 <td>
                   {{ page.confidence === null ? "—" : `${Math.round(page.confidence * 100)}%` }}
                 </td>
-                <td>
-                  <NuxtLink
-                    v-if="page.documentId"
-                    class="data-table__link"
-                    :to="`/projects/${projectId}/knowledge/documents/${page.documentId}`"
-                  >
-                    {{ page.reviewStatus === "approved" ? "Опубликовано" : "Открыть запись" }}
-                  </NuxtLink>
-                  <span v-else>{{ page.errorCode ?? "Пропущено" }}</span>
-                  <span v-if="page.status === 'failed'" class="data-table__secondary">
-                    Попыток: {{ page.attemptCount }} из 3
-                  </span>
-                  <span v-if="page.warnings.length" class="data-table__secondary">
-                    {{ page.warnings.join(", ") }}
-                  </span>
+                <td class="data-table__dynamic-cell">
+                  <div class="data-table__clamp">
+                    <NuxtLink
+                      v-if="page.documentId"
+                      class="data-table__link"
+                      :to="`/projects/${projectId}/knowledge/documents/${page.documentId}`"
+                    >
+                      {{ page.reviewStatus === "approved" ? "Опубликовано" : "Открыть запись" }}
+                    </NuxtLink>
+                    <span v-else>{{ page.errorCode ?? "Пропущено" }}</span>
+                    <span v-if="page.status === 'failed'" class="data-table__secondary">
+                      Попыток: {{ page.attemptCount }} из 3
+                    </span>
+                    <span v-if="page.warnings.length" class="data-table__secondary">
+                      {{ page.warnings.join(", ") }}
+                    </span>
+                  </div>
                 </td>
                 <td>
                   <div class="table-actions">

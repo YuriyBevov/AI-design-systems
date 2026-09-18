@@ -57,6 +57,22 @@ const processingErrorCode = (error: unknown): string => {
   return "KNOWLEDGE_PROCESSING_FAILED";
 };
 
+export const knowledgeProcessingItemMaxAttempts = 3;
+
+const retryableProcessingErrorCodes = new Set([
+  "PROVIDER_RATE_LIMITED",
+  "PROVIDER_TIMEOUT",
+  "PROVIDER_BAD_RESPONSE",
+  "PROVIDER_UNAVAILABLE",
+  "CRAWL_AI_RESPONSE_INVALID",
+]);
+
+export const isRetryableKnowledgeProcessingErrorCode = (code: string): boolean =>
+  retryableProcessingErrorCodes.has(code);
+
+export const knowledgeProcessingRetryDelayMs = (completedAttemptCount: number): number =>
+  Math.min(10_000, 2_000 * 2 ** Math.max(0, completedAttemptCount - 1));
+
 const forEachConcurrent = async <Item>(
   items: Item[],
   concurrency: number,
@@ -267,6 +283,8 @@ export const createKnowledgeProcessingProcessor = (input: {
           itemId: knowledgeProcessingItems.id,
           documentId: knowledgeProcessingItems.documentId,
           sourceVersionId: knowledgeProcessingItems.sourceVersionId,
+          attemptCount: knowledgeProcessingItems.attemptCount,
+          errorCode: knowledgeProcessingItems.errorCode,
           title: knowledgeDocumentVersions.title,
           plainText: knowledgeDocumentVersions.plainText,
           canonicalUrl: knowledgeDocumentVersions.canonicalUrl,
@@ -325,191 +343,248 @@ export const createKnowledgeProcessingProcessor = (input: {
         }
       };
 
-      await forEachConcurrent(
-        items,
-        input.environment.KNOWLEDGE_CRAWL_AI_CONCURRENCY,
-        async (item) => {
-          if (!(await waitForProcessingResume())) return false;
-          try {
-            const page: CrawlPageResult = {
-              normalizedUrl:
-                item.canonicalUrl ?? `https://knowledge.local/documents/${item.documentId}`,
-              depth: 0,
-              status: "succeeded",
-              httpStatus: 200,
-              contentType: "text/markdown",
-              extracted: {
-                title: item.title,
-                sourceUrl:
-                  item.canonicalUrl ?? `https://knowledge.local/documents/${item.documentId}`,
-                content: item.plainText,
-                links: [],
-              },
-              errorCode: null,
-              retryable: false,
-              fetchedAt: null,
-            };
-            const processed = await runWithAiLimit(() =>
-              processRawPage({
-                page,
-                apiKey,
-                modelId: chatModelId,
-                maxOutputTokens: modelSettings.crawlMaxOutputTokens,
-                timeoutMs: input.environment.KNOWLEDGE_CRAWL_AI_TIMEOUT_MS,
-                idleTimeoutMs: input.environment.KNOWLEDGE_CRAWL_AI_IDLE_TIMEOUT_MS,
-                normalizationPrompt: [
-                  "Отредактируй существующую запись базы знаний по инструкции оператора.",
-                  "Сохрани все подтверждённые факты, которые инструкция не просит удалить или изменить.",
-                  "Не выдумывай новые факты и не добавляй сведения из внешних источников.",
-                  `Инструкция оператора: ${claimed.instruction}`,
-                ].join("\n"),
-                client,
-              }),
-            );
-            const version = createProcessedVersion({
-              processed,
-              canonicalUrl: item.canonicalUrl,
-              locale: item.locale,
-              tags: item.tags,
-            });
-            await input.database.db.transaction(async (transaction) => {
-              const [document] = await transaction
-                .select({ status: knowledgeDocuments.status, version: knowledgeDocuments.version })
-                .from(knowledgeDocuments)
-                .where(
-                  and(
-                    eq(knowledgeDocuments.id, item.documentId),
-                    eq(knowledgeDocuments.projectId, data.projectId),
-                  ),
-                )
-                .limit(1);
-              if (!document || document.status === "archived") {
-                throw new KnowledgeProcessingError("KNOWLEDGE_PROCESSING_DOCUMENT_UNAVAILABLE");
-              }
-              const [latest] = await transaction
-                .select({
-                  id: knowledgeDocumentVersions.id,
-                  versionNo: knowledgeDocumentVersions.versionNo,
-                  contentChecksum: knowledgeDocumentVersions.contentChecksum,
-                })
-                .from(knowledgeDocumentVersions)
-                .where(eq(knowledgeDocumentVersions.documentId, item.documentId))
-                .orderBy(desc(knowledgeDocumentVersions.versionNo))
-                .limit(1);
-              if (!latest || latest.id !== item.sourceVersionId) {
-                throw new KnowledgeProcessingError("KNOWLEDGE_PROCESSING_VERSION_CONFLICT");
-              }
+      const markItemFailed = async (itemId: string, code: string): Promise<void> => {
+        await input.database.db.transaction(async (transaction) => {
+          const failed = await transaction
+            .update(knowledgeProcessingItems)
+            .set({ status: "failed", errorCode: code, updatedAt: new Date() })
+            .where(
+              and(
+                eq(knowledgeProcessingItems.id, itemId),
+                eq(knowledgeProcessingItems.status, "queued"),
+              ),
+            )
+            .returning({ id: knowledgeProcessingItems.id });
+          if (failed.length) {
+            await transaction
+              .update(knowledgeProcessingRuns)
+              .set({
+                processedCount: sql`${knowledgeProcessingRuns.processedCount} + 1`,
+                failedCount: sql`${knowledgeProcessingRuns.failedCount} + 1`,
+                updatedAt: new Date(),
+              })
+              .where(eq(knowledgeProcessingRuns.id, data.runId));
+          }
+        });
+      };
 
-              let resultVersionId = latest.id;
-              if (latest.contentChecksum !== version.contentChecksum) {
-                const [updated] = await transaction
-                  .update(knowledgeDocuments)
-                  .set({
-                    type: version.documentType,
-                    version: sql`${knowledgeDocuments.version} + 1`,
-                    updatedAt: new Date(),
+      let pendingItems = items;
+      while (pendingItems.length) {
+        const retryItems: typeof items = [];
+        await forEachConcurrent(
+          pendingItems,
+          input.environment.KNOWLEDGE_CRAWL_AI_CONCURRENCY,
+          async (item) => {
+            if (!(await waitForProcessingResume())) return false;
+            if (item.attemptCount >= knowledgeProcessingItemMaxAttempts) {
+              await markItemFailed(
+                item.itemId,
+                item.errorCode ?? "KNOWLEDGE_PROCESSING_ATTEMPTS_EXHAUSTED",
+              );
+              return true;
+            }
+            const attemptCount = item.attemptCount + 1;
+            const [attempted] = await input.database.db
+              .update(knowledgeProcessingItems)
+              .set({ attemptCount, errorCode: null, updatedAt: new Date() })
+              .where(
+                and(
+                  eq(knowledgeProcessingItems.id, item.itemId),
+                  eq(knowledgeProcessingItems.status, "queued"),
+                  eq(knowledgeProcessingItems.attemptCount, item.attemptCount),
+                ),
+              )
+              .returning({ id: knowledgeProcessingItems.id });
+            if (!attempted) return true;
+            try {
+              const page: CrawlPageResult = {
+                normalizedUrl:
+                  item.canonicalUrl ?? `https://knowledge.local/documents/${item.documentId}`,
+                depth: 0,
+                status: "succeeded",
+                httpStatus: 200,
+                contentType: "text/markdown",
+                extracted: {
+                  title: item.title,
+                  sourceUrl:
+                    item.canonicalUrl ?? `https://knowledge.local/documents/${item.documentId}`,
+                  content: item.plainText,
+                  links: [],
+                },
+                errorCode: null,
+                retryable: false,
+                fetchedAt: null,
+              };
+              const processed = await runWithAiLimit(() =>
+                processRawPage({
+                  page,
+                  apiKey,
+                  modelId: chatModelId,
+                  maxOutputTokens: modelSettings.crawlMaxOutputTokens,
+                  timeoutMs: input.environment.KNOWLEDGE_CRAWL_AI_TIMEOUT_MS,
+                  idleTimeoutMs: input.environment.KNOWLEDGE_CRAWL_AI_IDLE_TIMEOUT_MS,
+                  normalizationPrompt: [
+                    "Отредактируй существующую запись базы знаний по инструкции оператора.",
+                    "Сохрани все подтверждённые факты, которые инструкция не просит удалить или изменить.",
+                    "Не выдумывай новые факты и не добавляй сведения из внешних источников.",
+                    `Инструкция оператора: ${claimed.instruction}`,
+                  ].join("\n"),
+                  client,
+                }),
+              );
+              const version = createProcessedVersion({
+                processed,
+                canonicalUrl: item.canonicalUrl,
+                locale: item.locale,
+                tags: item.tags,
+              });
+              await input.database.db.transaction(async (transaction) => {
+                const [document] = await transaction
+                  .select({
+                    status: knowledgeDocuments.status,
+                    version: knowledgeDocuments.version,
                   })
+                  .from(knowledgeDocuments)
                   .where(
                     and(
                       eq(knowledgeDocuments.id, item.documentId),
                       eq(knowledgeDocuments.projectId, data.projectId),
-                      eq(knowledgeDocuments.version, document.version),
                     ),
                   )
-                  .returning({ id: knowledgeDocuments.id });
-                if (!updated) {
+                  .limit(1);
+                if (!document || document.status === "archived") {
+                  throw new KnowledgeProcessingError("KNOWLEDGE_PROCESSING_DOCUMENT_UNAVAILABLE");
+                }
+                const [latest] = await transaction
+                  .select({
+                    id: knowledgeDocumentVersions.id,
+                    versionNo: knowledgeDocumentVersions.versionNo,
+                    contentChecksum: knowledgeDocumentVersions.contentChecksum,
+                  })
+                  .from(knowledgeDocumentVersions)
+                  .where(eq(knowledgeDocumentVersions.documentId, item.documentId))
+                  .orderBy(desc(knowledgeDocumentVersions.versionNo))
+                  .limit(1);
+                if (!latest || latest.id !== item.sourceVersionId) {
                   throw new KnowledgeProcessingError("KNOWLEDGE_PROCESSING_VERSION_CONFLICT");
                 }
-                const [createdVersion] = await transaction
-                  .insert(knowledgeDocumentVersions)
-                  .values({
-                    documentId: item.documentId,
-                    versionNo: latest.versionNo + 1,
-                    title: version.title,
-                    canonicalUrl: item.canonicalUrl,
-                    locale: item.locale,
-                    plainText: version.plainText,
-                    tags: item.tags,
-                    contentChecksum: version.contentChecksum,
-                    createdBy: claimed.requestedBy,
-                  })
-                  .returning({ id: knowledgeDocumentVersions.id });
-                if (!createdVersion) {
-                  throw new KnowledgeProcessingError("KNOWLEDGE_PROCESSING_VERSION_CREATE_FAILED");
+
+                let resultVersionId = latest.id;
+                if (latest.contentChecksum !== version.contentChecksum) {
+                  const [updated] = await transaction
+                    .update(knowledgeDocuments)
+                    .set({
+                      type: version.documentType,
+                      version: sql`${knowledgeDocuments.version} + 1`,
+                      updatedAt: new Date(),
+                    })
+                    .where(
+                      and(
+                        eq(knowledgeDocuments.id, item.documentId),
+                        eq(knowledgeDocuments.projectId, data.projectId),
+                        eq(knowledgeDocuments.version, document.version),
+                      ),
+                    )
+                    .returning({ id: knowledgeDocuments.id });
+                  if (!updated) {
+                    throw new KnowledgeProcessingError("KNOWLEDGE_PROCESSING_VERSION_CONFLICT");
+                  }
+                  const [createdVersion] = await transaction
+                    .insert(knowledgeDocumentVersions)
+                    .values({
+                      documentId: item.documentId,
+                      versionNo: latest.versionNo + 1,
+                      title: version.title,
+                      canonicalUrl: item.canonicalUrl,
+                      locale: item.locale,
+                      plainText: version.plainText,
+                      tags: item.tags,
+                      contentChecksum: version.contentChecksum,
+                      createdBy: claimed.requestedBy,
+                    })
+                    .returning({ id: knowledgeDocumentVersions.id });
+                  if (!createdVersion) {
+                    throw new KnowledgeProcessingError(
+                      "KNOWLEDGE_PROCESSING_VERSION_CREATE_FAILED",
+                    );
+                  }
+                  resultVersionId = createdVersion.id;
+                  if (version.product) {
+                    await transaction.insert(knowledgeProducts).values({
+                      documentVersionId: resultVersionId,
+                      characteristics: {},
+                    });
+                  }
+                  await transaction.insert(knowledgeChunks).values(
+                    version.chunks.map((chunk, ordinal) => ({
+                      projectId: data.projectId,
+                      documentVersionId: resultVersionId,
+                      ordinal,
+                      plainText: chunk.text,
+                      tokenCount: chunk.tokenCount,
+                      contentChecksum: chunk.contentChecksum,
+                    })),
+                  );
                 }
-                resultVersionId = createdVersion.id;
-                if (version.product) {
-                  await transaction.insert(knowledgeProducts).values({
-                    documentVersionId: resultVersionId,
-                    characteristics: {},
-                  });
-                }
-                await transaction.insert(knowledgeChunks).values(
-                  version.chunks.map((chunk, ordinal) => ({
-                    projectId: data.projectId,
-                    documentVersionId: resultVersionId,
-                    ordinal,
-                    plainText: chunk.text,
-                    tokenCount: chunk.tokenCount,
-                    contentChecksum: chunk.contentChecksum,
-                  })),
-                );
-              }
-              const succeeded = await transaction
-                .update(knowledgeProcessingItems)
-                .set({
-                  status: "succeeded",
-                  resultVersionId,
-                  errorCode: null,
-                  updatedAt: new Date(),
-                })
-                .where(
-                  and(
-                    eq(knowledgeProcessingItems.id, item.itemId),
-                    eq(knowledgeProcessingItems.status, "queued"),
-                  ),
-                )
-                .returning({ id: knowledgeProcessingItems.id });
-              if (succeeded.length) {
-                await transaction
-                  .update(knowledgeProcessingRuns)
+                const succeeded = await transaction
+                  .update(knowledgeProcessingItems)
                   .set({
-                    processedCount: sql`${knowledgeProcessingRuns.processedCount} + 1`,
-                    succeededCount: sql`${knowledgeProcessingRuns.succeededCount} + 1`,
+                    status: "succeeded",
+                    resultVersionId,
+                    errorCode: null,
                     updatedAt: new Date(),
                   })
-                  .where(eq(knowledgeProcessingRuns.id, data.runId));
+                  .where(
+                    and(
+                      eq(knowledgeProcessingItems.id, item.itemId),
+                      eq(knowledgeProcessingItems.status, "queued"),
+                    ),
+                  )
+                  .returning({ id: knowledgeProcessingItems.id });
+                if (succeeded.length) {
+                  await transaction
+                    .update(knowledgeProcessingRuns)
+                    .set({
+                      processedCount: sql`${knowledgeProcessingRuns.processedCount} + 1`,
+                      succeededCount: sql`${knowledgeProcessingRuns.succeededCount} + 1`,
+                      updatedAt: new Date(),
+                    })
+                    .where(eq(knowledgeProcessingRuns.id, data.runId));
+                }
+              });
+              return true;
+            } catch (error) {
+              const code = processingErrorCode(error);
+              if (
+                attemptCount < knowledgeProcessingItemMaxAttempts &&
+                isRetryableKnowledgeProcessingErrorCode(code)
+              ) {
+                await input.database.db
+                  .update(knowledgeProcessingItems)
+                  .set({ errorCode: code, updatedAt: new Date() })
+                  .where(
+                    and(
+                      eq(knowledgeProcessingItems.id, item.itemId),
+                      eq(knowledgeProcessingItems.status, "queued"),
+                    ),
+                  );
+                retryItems.push({ ...item, attemptCount, errorCode: code });
+                return true;
               }
-            });
-            return true;
-          } catch (error) {
-            const code = processingErrorCode(error);
-            await input.database.db.transaction(async (transaction) => {
-              const failed = await transaction
-                .update(knowledgeProcessingItems)
-                .set({ status: "failed", errorCode: code, updatedAt: new Date() })
-                .where(
-                  and(
-                    eq(knowledgeProcessingItems.id, item.itemId),
-                    eq(knowledgeProcessingItems.status, "queued"),
-                  ),
-                )
-                .returning({ id: knowledgeProcessingItems.id });
-              if (failed.length) {
-                await transaction
-                  .update(knowledgeProcessingRuns)
-                  .set({
-                    processedCount: sql`${knowledgeProcessingRuns.processedCount} + 1`,
-                    failedCount: sql`${knowledgeProcessingRuns.failedCount} + 1`,
-                    updatedAt: new Date(),
-                  })
-                  .where(eq(knowledgeProcessingRuns.id, data.runId));
-              }
-            });
-            return true;
-          }
-        },
-      );
+              await markItemFailed(item.itemId, code);
+              return true;
+            }
+          },
+        );
+        pendingItems = retryItems;
+        if (pendingItems.length) {
+          if (!(await waitForProcessingResume())) break;
+          const completedAttemptCount = Math.max(...pendingItems.map((item) => item.attemptCount));
+          await new Promise((resolve) =>
+            setTimeout(resolve, knowledgeProcessingRetryDelayMs(completedAttemptCount)),
+          );
+        }
+      }
 
       const [counts] = await input.database.db
         .select({

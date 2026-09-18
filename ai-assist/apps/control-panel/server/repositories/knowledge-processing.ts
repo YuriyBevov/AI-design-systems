@@ -172,6 +172,36 @@ export const createKnowledgeProcessingRunRecord = async (input: {
   return created;
 };
 
+export const findFailedKnowledgeProcessingDocuments = async (input: {
+  projectId: string;
+  runId: string;
+}): Promise<{ instruction: string; documentIds: string[] } | null> => {
+  const [run] = await getInfrastructure()
+    .database.db.select({ instruction: knowledgeProcessingRuns.instruction })
+    .from(knowledgeProcessingRuns)
+    .where(
+      and(
+        eq(knowledgeProcessingRuns.projectId, input.projectId),
+        eq(knowledgeProcessingRuns.id, input.runId),
+        inArray(knowledgeProcessingRuns.status, ["partial", "failed"]),
+      ),
+    )
+    .limit(1);
+  if (!run) return null;
+  const items = await getInfrastructure()
+    .database.db.select({ documentId: knowledgeProcessingItems.documentId })
+    .from(knowledgeProcessingItems)
+    .where(
+      and(
+        eq(knowledgeProcessingItems.projectId, input.projectId),
+        eq(knowledgeProcessingItems.runId, input.runId),
+        eq(knowledgeProcessingItems.status, "failed"),
+      ),
+    )
+    .orderBy(asc(knowledgeProcessingItems.createdAt), asc(knowledgeProcessingItems.id));
+  return { instruction: run.instruction, documentIds: items.map((item) => item.documentId) };
+};
+
 export const failQueuedKnowledgeProcessingRunRecord = async (
   runId: string,
   errorCode: string,
